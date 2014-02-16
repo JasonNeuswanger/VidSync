@@ -1,0 +1,58 @@
+//
+// Prefix header for all source files of the 'VidSync' target in the 'VidSync' project
+//
+
+#ifdef __cplusplus
+#include "opencv2/opencv.hpp"
+#endif
+
+#ifdef __OBJC__
+
+#import <Foundation/Foundation.h>
+#import <CoreData/CoreData.h>
+#import <Cocoa/Cocoa.h>
+#import <Accelerate/Accelerate.h>
+#import <QTKit/QTKit.h>
+#import <QuartzCore/QuartzCore.h>
+#import <AVFoundation/AVFoundation.h>
+#import <AVKit/AVKit.h>
+
+#import "UtilityFunctions.h"
+#import "VideoWindowController.h"
+#import "VSProject.h"
+#import "VSVideoClip.h"
+#import "VSCalibration.h"
+#import "VSCalibrationPoint.h"
+#import "VSDistortionLine.h"
+#import "VSDistortionPoint.h"
+#import "VSPoint.h"
+#import "VSHintLine.h"
+#import "VSEventScreenpoint.h"
+#import "VidSyncDocument.h"
+#import "VideoOverlayView.h"
+#import "VideoOverlayWindow.h"
+#import "MagnifiedPreviewView.h"
+#import "VS2DMatrixToStringTransformer.h"
+#import "VSScientificNotationFormatter.h"
+#import "VSVisibleItem.h"
+#import "VSTrackedObjectType.h"
+#import "VSTrackedEventType.h"
+#import "VSTrackedObject.h"
+#import "VSTrackedEvent.h"
+#import "VSVisibleItemArrayController.h"
+#import "CalibScreenPtArrayController.h"
+#import "CalibDistortionLineArrayController.h"
+#import "TypesArrayController.h"
+#import "TypeIndexNameSortedArrayController.h"
+#import "TrackedObjectArrayController.h"
+#import "TrackedEventArrayController.h"
+#import "EventsOtherObjectsArrayController.h"
+#import "EventsPointsController.h"
+#import "EventAwareTableView.h"
+#import "VSAnnotation.h"
+#import "ObjectAddPanel.h"
+#import "VSAnnotationArrayController.h"
+#import "ObjectSynonymizeArrayController.h"
+#import "PlayWhilePressedButton.h"
+
+#endif

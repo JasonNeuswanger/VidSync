@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
+	<false/>
+	<key>IDESourceControlProjectIdentifier</key>
+	<string>0EEE4C55-322E-4134-82A8-2B3CDBF86EFB</string>
+	<key>IDESourceControlProjectName</key>
+	<string>VidSync</string>
+	<key>IDESourceControlProjectOriginsDictionary</key>
+	<dict>
+		<key>E9C11EE9-6AB5-46FB-96F1-0426A941B1B3</key>
+		<string>https://github.com/JasonNeuswanger/VidSync.git</string>
+	</dict>
+	<key>IDESourceControlProjectPath</key>
+	<string>VidSync.xcodeproj/project.xcworkspace</string>
+	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
+	<dict>
+		<key>E9C11EE9-6AB5-46FB-96F1-0426A941B1B3</key>
+		<string>../..</string>
+	</dict>
+	<key>IDESourceControlProjectURL</key>
+	<string>https://github.com/JasonNeuswanger/VidSync.git</string>
+	<key>IDESourceControlProjectVersion</key>
+	<integer>110</integer>
+	<key>IDESourceControlProjectWCCIdentifier</key>
+	<string>E9C11EE9-6AB5-46FB-96F1-0426A941B1B3</string>
+	<key>IDESourceControlProjectWCConfigurations</key>
+	<array>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>E9C11EE9-6AB5-46FB-96F1-0426A941B1B3</string>
+			<key>IDESourceControlWCCName</key>
+			<string>VidSync</string>
+		</dict>
+	</array>
+</dict>
+</plist>
