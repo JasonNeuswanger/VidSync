@@ -100,6 +100,7 @@
         [self fitVideoOverlay];
         
         if (self.videoClip.isMasterClipOf == self.videoClip.project && self.videoClip.project.currentTimecode) {	// If the master clip is loaded and there's a saved current time, go to it
+            [self.videoClip.project.document setSyncedPlaybackScrubberTickCount];
             [self.videoClip.windowController.playerView.player seekToTime:[UtilityFunctions CMTimeFromString:self.videoClip.project.currentTimecode] toleranceBefore:kCMTimeZero toleranceAfter:kCMTimeZero];
             [self.videoClip.project.document reSync];
         }

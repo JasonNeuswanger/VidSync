@@ -70,7 +70,8 @@ static void *AVSPPlayerCurrentTimeContext = &AVSPPlayerCurrentTimeContext;
 	[mainWindowController setShouldCloseDocument:YES];
 	[mainWindowController setShouldCascadeWindows:NO];
 	[self addWindowController:mainWindowController];
-	for (VSVideoClip *clip in [self.project.videoClips allObjects]) {
+    
+    for (VSVideoClip *clip in [self.project.videoClips allObjects]) {
 		[self addWindowController:[[VideoWindowController alloc] initWithVideoClip:clip inManagedObjectContext:[self managedObjectContext]]];
 	}
 
@@ -93,7 +94,7 @@ static void *AVSPPlayerCurrentTimeContext = &AVSPPlayerCurrentTimeContext;
 
 }
 
-- (void)windowControllerDidLoadNib:(NSWindowController *)windowController
+- (void) windowControllerDidLoadNib:(NSWindowController *)windowController
 {
 	if (windowController == mainWindowController) { // only do after the main window loads its nib (this is when videoClipArrayController is non-null, for example)
 		NSString *fileName = [[self fileURL] absoluteString];
@@ -119,7 +120,18 @@ static void *AVSPPlayerCurrentTimeContext = &AVSPPlayerCurrentTimeContext;
 		playForwardAtRate2WhilePressedButton.advancedRateToUse = 2;
 		playBackwardAtRate2WhilePressedButton.direction = -1.0;
 		playBackwardAtRate2WhilePressedButton.advancedRateToUse = 2;
+        
+        scrubberMaxTime = 1000000000;
+        [syncedPlaybackScrubber setMaxValue:(double) scrubberMaxTime];
 	}
+}
+
+- (void) setSyncedPlaybackScrubberTickCount
+{
+    
+    CMTimeRange masterTimeRange = [[[self.project.masterClip.windowController.videoAsset tracksWithMediaType:AVMediaTypeVideo] firstObject] timeRange];
+    NSInteger masterTimeDurationMinutes = round(CMTimeGetSeconds(masterTimeRange.duration)/60.0f);
+    [syncedPlaybackScrubber setNumberOfTickMarks:masterTimeDurationMinutes+1];  // adds 1 extra tickmark because there's a tick at 0. will be close but not exactly 1 tick/minute now
 }
 
 - (id)initWithType:(NSString *)type error:(NSError **)error {	// This method is called only when a new document is created.

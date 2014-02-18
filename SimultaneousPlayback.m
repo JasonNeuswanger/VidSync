@@ -20,13 +20,20 @@
 	}
 }
 
-- (void) updateMasterTimeDisplay
+- (void) updateMasterTimeDisplay // also updates the synced playback scrubber
 {
 	[masterTimeDisplay setStringValue:[UtilityFunctions CMStringFromTime:[self currentMasterTime]]];
+    
+    CMTimeRange masterTimeRange = [[[self.project.masterClip.windowController.videoAsset tracksWithMediaType:AVMediaTypeVideo] firstObject] timeRange];
+    CMTimeRange sliderRange = CMTimeRangeMake(CMTimeMake(0,scrubberMaxTime),CMTimeMake(scrubberMaxTime,scrubberMaxTime));
+    CMTime sliderTimeToSet = CMTimeMapTimeFromRangeToRange([self currentMasterTime],masterTimeRange,sliderRange);
+    
+    double newSliderTime = (double) sliderTimeToSet.value;
+    [syncedPlaybackScrubber setDoubleValue:newSliderTime];
 }
 
 #pragma mark
-#pragma mark Simple Playback 
+#pragma mark Simple Playback
 
 - (IBAction) playAll:(id)sender
 {
@@ -186,6 +193,18 @@
     }
 }
 
+- (IBAction) setTimeFromScrubber:(id)sender
+{
+    NSSlider *slider = (NSSlider *)sender;
+    
+    CMTimeRange masterTimeRange = [[[self.project.masterClip.windowController.videoAsset tracksWithMediaType:AVMediaTypeVideo] firstObject] timeRange];
+    CMTime newTimeOnSliderScale = CMTimeMake(round([slider doubleValue]),scrubberMaxTime);
+    CMTimeRange sliderRange = CMTimeRangeMake(CMTimeMake(0,scrubberMaxTime),CMTimeMake(scrubberMaxTime,scrubberMaxTime));
+    CMTime timeToSet = CMTimeMapTimeFromRangeToRange(newTimeOnSliderScale,sliderRange,masterTimeRange);
+    
+    [self goToMasterTime:timeToSet];
+}
+
 
 #pragma mark
 #pragma mark Notification Handlers
@@ -193,7 +212,7 @@
 - (void) movieRateDidChange	// makes the playOrPauseButton behave so that it pauses if anything is playing, and plays only if everything is paused
 {
 	if (self.project.masterClip.windowController.playerView.player.rate != 0.0) {	// some movie is playing; change simultaneous playback button text and action to "pause"
-		[playOrPauseButton setTitle:@"Pause"];
+		[playOrPauseButton setTitle:@"❙❙"];
 		[playOrPauseButton setAction:@selector(pauseAll:)];
 	} else {	// some movie is paused; check if all movies are paused, and if so, set simultaneous playback button text and action to "play"
 		BOOL allArePaused = YES;
@@ -203,7 +222,7 @@
 			}
 		}
 		if (allArePaused) {
-			[playOrPauseButton setTitle:@"Play"];
+			[playOrPauseButton setTitle:@"►"];
 			[playOrPauseButton setAction:@selector(playAll:)];			
 		}
 	}
@@ -216,7 +235,7 @@
 		if ([[notification object] isEqualTo:self.project.masterClip.windowController.playerView.player.currentItem]) {
 			[self reSync];
 			[eventsPointsController rearrangeObjects];
-			[masterTimeDisplay setStringValue:[UtilityFunctions CMStringFromTime:[self currentMasterTime]]];
+            [self updateMasterTimeDisplay];
 			stopTime = kCMTimeIndefinite;	// If the user does anything manually to the video while it's playing, it overrides and wipes out an advanced playback stopTime if one was set.
 		}
 	}

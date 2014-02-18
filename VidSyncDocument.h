@@ -43,6 +43,10 @@
 	IBOutlet NSTableView *eventsPointsTable;
 	
 	IBOutlet NSButton *playOrPauseButton;
+    
+    IBOutlet NSSlider *__weak syncedPlaybackScrubber;
+    int scrubberMaxTime;
+    
 	IBOutlet PlayWhilePressedButton *__weak playForwardAtRate1WhilePressedButton,*__weak playBackwardAtRate1WhilePressedButton,*__weak playForwardAtRate2WhilePressedButton,*__weak playBackwardAtRate2WhilePressedButton;
 	IBOutlet NSTextField *bookmarkTextLabel;
 	IBOutlet NSButton *goToBookmarkButton;
@@ -112,6 +116,7 @@
 
 - (id) initWithType:(NSString *)type error:(NSError **)error;
 - (void) windowControllerDidLoadNib:(NSWindowController *)windowController;
+- (void) setSyncedPlaybackScrubberTickCount;
 - (VSProject *) project;
 
 - (void) anyTableViewSelectionDidChange:(NSNotification *)notification;
@@ -161,6 +166,7 @@
 - (IBAction) advancedStepBackwardAll:(id)sender;
 - (void) setStopTimeForDuration:(float)duration atRate:(float)rate;
 - (void) checkForStopAtCurrentTime;
+- (IBAction) setTimeFromScrubber:(id)sender;
 
 - (void) setAllVideoRates:(float)rate;
 - (void) movieTimeDidChange:(NSNotification *)notification;
