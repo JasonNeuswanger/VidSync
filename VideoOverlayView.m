@@ -1005,7 +1005,7 @@
 - (BOOL)acceptsFirstResponder {
 	return YES;
 }
-
+ 
 - (void)keyUp:(NSEvent *)theEvent {
 	VideoWindowController *vwc = _delegate;
 	[vwc handleOverlayKeyUp:theEvent];

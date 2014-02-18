@@ -171,26 +171,19 @@
 
 - (void) fitVideoOverlay // creates the video overlay and/or fits it to the video view
 {
-	float movieControlsHeight;
-	if (playerView.controlsStyle == AVPlayerViewControlsStyleInline) {
-		movieControlsHeight = 24.0;
-	} else {
-		movieControlsHeight = 0.0;
-	}
-	float videoAspectRatio = movieSize.width / movieSize.height; 
-	float videoAspectRatioWithControls = movieSize.width / (movieSize.height + movieControlsHeight);
+	float videoAspectRatio = movieSize.width / movieSize.height;
 	float viewAspectRatio = [playerView frame].size.width / [playerView frame].size.height;
 	float xPosOffset,yPosOffset;
-	if (viewAspectRatio < videoAspectRatioWithControls) { // Movie width determines window size; black-space above and below
+	if (viewAspectRatio < videoAspectRatio) { // Movie width determines window size; black-space above and below
 		overlayWidth = [playerView frame].size.width;
 		overlayHeight = overlayWidth / videoAspectRatio;
-		xPosOffset = 0.0;
-		yPosOffset = ([playerView frame].size.height - overlayHeight + movieControlsHeight) / 2.0;
+		xPosOffset = 0.0f;
+		yPosOffset = ([playerView frame].size.height - overlayHeight) / 2.0f;
 	} else { // Movie height determines window size; black-space left and right
-		overlayHeight = [playerView frame].size.height - movieControlsHeight;
+		overlayHeight = [playerView frame].size.height;
 		overlayWidth = overlayHeight * videoAspectRatio;
-		xPosOffset = ([playerView frame].size.width - overlayWidth) / 2.0;
-		yPosOffset = movieControlsHeight;
+		xPosOffset = ([playerView frame].size.width - overlayWidth) / 2.0f;
+		yPosOffset = 0.0f;
 	}
     
 	NSPoint baseOrigin, screenOrigin;
@@ -708,13 +701,7 @@
 
 - (void) resizeVideoToFactor:(float)sizeFactor
 {
-	float controlsHeight;
-	if (playerView.controlsStyle == AVPlayerViewControlsStyleInline) {
-		controlsHeight = 24.0; // Previously used [QTMovieView controllerBarHeight] but I don't know an AVPlayerView equivalent so I manually measured the height in Photoshop as 24 pixels
-	} else {
-		controlsHeight = 0.0;
-	}
-	NSSize newSize = NSMakeSize(sizeFactor*movieSize.width,sizeFactor*movieSize.height+controlsHeight);
+	NSSize newSize = NSMakeSize(sizeFactor*movieSize.width,sizeFactor*movieSize.height+26);
 	NSSize minSize = [[self window] minSize];
 	if (newSize.width < minSize.width) newSize.width = minSize.width;
 	if (newSize.height < minSize.height) newSize.height = minSize.height;
@@ -725,29 +712,37 @@
 - (IBAction) setAsMaster:(id)sender
 {	
 	[self.videoClip setAsMaster];
-	for (VSVideoClip *clip in self.videoClip.project.videoClips) clip.syncIsLocked = [NSNumber numberWithBool:NO];
+	for (VSVideoClip *clip in self.videoClip.project.videoClips) {
+        clip.syncIsLocked = [NSNumber numberWithBool:NO];
+        [clip.windowController setMovieViewControllerVisible:YES];
+    }
 }
 
 - (IBAction) lockSyncOffset:(id)sender
 {
-	float startSizeFactor = [playerView frame].size.width / movieSize.width;
 	if ([sender state] == NSOnState) {
+        self.videoClip.syncIsLocked = [NSNumber numberWithBool:YES];
 		[self setMovieViewControllerVisible:NO];
-		[self.videoClip setSyncOffset];		
+        [self.videoClip.project.masterClip.windowController setMovieViewControllerVisible:NO];
+        [self.videoClip setSyncOffset];
 	} else {
+        self.videoClip.syncIsLocked = [NSNumber numberWithBool:FALSE];
+        BOOL allClipsAreUnsynced = YES;
+        for (VSVideoClip *clip in self.videoClip.project.videoClips) if ([clip.syncIsLocked boolValue]) allClipsAreUnsynced = NO;
+        if (allClipsAreUnsynced) [self.videoClip.project.masterClip.windowController setMovieViewControllerVisible:YES];
 		[self setMovieViewControllerVisible:YES];
 	}
-	[self resizeVideoToFactor:startSizeFactor];	// resize video window to account for the changed presence/absence of the controller bar
-	
 }
 
 - (void) setMovieViewControllerVisible:(BOOL)setting
 {
     if (setting) {
-		playerView.controlsStyle = AVPlayerViewControlsStyleInline;
+		playerView.controlsStyle = AVPlayerViewControlsStyleFloating;
         playerView.showsFrameSteppingButtons = YES;
+        [overlayWindow setIgnoresMouseEvents:TRUE];
     } else {
 		playerView.controlsStyle = AVPlayerViewControlsStyleNone;
+        [overlayWindow setIgnoresMouseEvents:FALSE];
     }
 }
 
