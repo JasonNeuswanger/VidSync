@@ -28,6 +28,10 @@
 #import "VSPoint.h"
 #import "VSHintLine.h"
 #import "VSEventScreenpoint.h"
+#import "VideoControlButton.h"
+#import "PlayWhilePressedButton.h"
+#import "SyncedPlaybackView.h"
+#import "SyncedPlaybackPanel.h"
 #import "VidSyncDocument.h"
 #import "VideoOverlayView.h"
 #import "VideoOverlayWindow.h"
@@ -53,6 +57,5 @@
 #import "ObjectAddPanel.h"
 #import "VSAnnotationArrayController.h"
 #import "ObjectSynonymizeArrayController.h"
-#import "PlayWhilePressedButton.h"
 
 #endif

@@ -105,6 +105,8 @@
             [self.videoClip.project.document reSync];
         }
         
+        if (self.videoClip.syncIsLocked) [self.videoClip.project.document.syncedPlaybackPanel orderFront:self]; // this will make the synced playback panel visible if any videos are synced
+        
         } else {
         // This asset has no video tracks. Ask to locate a new file or something
         }
@@ -725,12 +727,14 @@
 		[self setMovieViewControllerVisible:NO];
         [self.videoClip.project.masterClip.windowController setMovieViewControllerVisible:NO];
         [self.videoClip setSyncOffset];
+        [self.videoClip.project.document.syncedPlaybackPanel orderFront:self];
 	} else {
         self.videoClip.syncIsLocked = [NSNumber numberWithBool:FALSE];
         BOOL allClipsAreUnsynced = YES;
         for (VSVideoClip *clip in self.videoClip.project.videoClips) if ([clip.syncIsLocked boolValue]) allClipsAreUnsynced = NO;
         if (allClipsAreUnsynced) [self.videoClip.project.masterClip.windowController setMovieViewControllerVisible:YES];
 		[self setMovieViewControllerVisible:YES];
+        [self.videoClip.project.document.syncedPlaybackPanel close];
 	}
 }
 

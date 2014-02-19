@@ -18,7 +18,10 @@
 @class ObjectSynonymizeArrayController;
 @class TypesArrayController;
 @class CalibDistortionLineArrayController;
+@class VideoControlButton;
 @class PlayWhilePressedButton;
+@class SyncedPlaybackView;
+@class SyncedPlaybackPanel;
 
 @interface VidSyncDocument: NSPersistentDocument {
 	
@@ -42,8 +45,10 @@
 	IBOutlet ObjectSynonymizeArrayController *objectSynonymizeController;
 	IBOutlet NSTableView *eventsPointsTable;
 	
-	IBOutlet NSButton *playOrPauseButton;
+	IBOutlet VideoControlButton *playOrPauseButton;
     
+    IBOutlet SyncedPlaybackPanel *__weak syncedPlaybackPanel;
+    IBOutlet SyncedPlaybackView *__weak syncedPlaybackView;
     IBOutlet NSSlider *__weak syncedPlaybackScrubber;
     int scrubberMaxTime;
     
@@ -112,6 +117,8 @@
 @property IBOutlet MagnifiedPreviewView *magnifiedCalibrationPreview;
 @property IBOutlet MagnifiedPreviewView *magnifiedMeasurementPreview;
 @property IBOutlet MagnifiedPreviewView *magnifiedDistortionPreview;
+
+@property (readonly, weak) IBOutlet SyncedPlaybackPanel *syncedPlaybackPanel;
 
 
 - (id) initWithType:(NSString *)type error:(NSError **)error;

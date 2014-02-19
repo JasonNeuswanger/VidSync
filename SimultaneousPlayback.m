@@ -209,22 +209,15 @@
 #pragma mark
 #pragma mark Notification Handlers
 
-- (void) movieRateDidChange	// makes the playOrPauseButton behave so that it pauses if anything is playing, and plays only if everything is paused
+- (void) movieRateDidChange	// makes the playOrPauseButton behave so that it pauses if the masterClip is playing, and plays only if the masterClip is paused. this function is only called for masterClip rate changes
 {
-	if (self.project.masterClip.windowController.playerView.player.rate != 0.0) {	// some movie is playing; change simultaneous playback button text and action to "pause"
-		[playOrPauseButton setTitle:@"❙❙"];
+	if (fabs(self.project.masterClip.windowController.playerView.player.rate) > 0.0f) {	// masterClip is playing; change simultaneous playback button text and action to "pause"
+        [playOrPauseButton setCustomTitle:@"\uf04c" withColor:[NSColor whiteColor]];
 		[playOrPauseButton setAction:@selector(pauseAll:)];
-	} else {	// some movie is paused; check if all movies are paused, and if so, set simultaneous playback button text and action to "play"
-		BOOL allArePaused = YES;
-		for (VSVideoClip *clip in [self.project.videoClips allObjects]) {
-			if (clip.windowController.playerView.player.rate != 0.0) {
-				allArePaused = NO;
-			}
-		}
-		if (allArePaused) {
-			[playOrPauseButton setTitle:@"►"];
-			[playOrPauseButton setAction:@selector(playAll:)];			
-		}
+	} else {	// masterClip is paused; check if all movies are paused, and if so, set simultaneous playback button text and action to "play"
+        [playOrPauseButton setCustomTitle:@"\uf04b" withColor:[NSColor whiteColor]];
+        [playOrPauseButton setAction:@selector(playAll:)];
+        
 	}
 }
 

@@ -37,6 +37,7 @@
 
 @synthesize mainWindow;
 @synthesize frontVideoClip;
+@synthesize syncedPlaybackPanel;
 
 @synthesize directOpenCVView;
 @synthesize directOpenCVWindow;
@@ -53,6 +54,10 @@ static void *AVSPPlayerCurrentTimeContext = &AVSPPlayerCurrentTimeContext;
     self = [super init];
     if (self != nil) {
 		shutterClick = [[NSSound alloc] initWithContentsOfFile:[[NSBundle mainBundle] pathForSoundResource:@"CameraClick"] byReference:YES];
+        
+        NSURL *fontPathURL = [NSURL fileURLWithPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/Fonts"]];
+        CTFontManagerCreateFontDescriptorsFromURL((__bridge CFURLRef)(fontPathURL));
+        
 		stopTime = kCMTimeIndefinite;
 		
 		decimalFormatter = [[NSNumberFormatter alloc] init];

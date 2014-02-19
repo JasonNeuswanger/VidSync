@@ -35,6 +35,7 @@
                 <outlet property="playOrPauseButton" destination="103247" id="103309"/>
                 <outlet property="pointRecalculatePanel" destination="103591" id="103596"/>
                 <outlet property="pointRecalculateProgressIndicator" destination="103003" id="103595"/>
+                <outlet property="syncedPlaybackPanel" destination="s4r-NB-r3v" id="usq-Eu-r66"/>
                 <outlet property="syncedPlaybackScrubber" destination="AUE-Bz-KZS" id="W5y-ip-iS1"/>
                 <outlet property="trackedEventTypesController" destination="101331" id="103422"/>
                 <outlet property="trackedEventsController" destination="101602" id="102058"/>
@@ -345,10 +346,10 @@
                                                         <subviews>
                                                             <customView focusRingType="none" id="103628" customClass="MagnifiedPreviewView">
                                                                 <rect key="frame" x="17" y="235" width="258" height="233"/>
-                                                                <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES" heightSizable="YES"/>
+                                                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                             </customView>
                                                             <textField verticalHuggingPriority="750" id="103629">
-                                                                <rect key="frame" x="280" y="451" width="73" height="17"/>
+                                                                <rect key="frame" x="280" y="450.99999991097678" width="73" height="17"/>
                                                                 <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
                                                                 <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Plumblines" id="103630">
                                                                     <font key="font" metaFont="system"/>
@@ -490,7 +491,7 @@
                                                             </button>
                                                             <button id="103648">
                                                                 <rect key="frame" x="83" y="206" width="102" height="23"/>
-                                                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                                 <buttonCell key="cell" type="check" title="Uncorrected" bezelStyle="regularSquare" imagePosition="left" alignment="left" state="on" inset="2" id="103649">
                                                                     <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                                                     <font key="font" metaFont="system"/>
@@ -501,7 +502,7 @@
                                                             </button>
                                                             <button id="104061">
                                                                 <rect key="frame" x="193" y="206" width="84" height="23"/>
-                                                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                                 <buttonCell key="cell" type="check" title="Corrected" bezelStyle="regularSquare" imagePosition="left" alignment="left" state="on" inset="2" id="104062">
                                                                     <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                                                     <font key="font" metaFont="system"/>
@@ -512,7 +513,7 @@
                                                             </button>
                                                             <textField verticalHuggingPriority="750" id="103662">
                                                                 <rect key="frame" x="7" y="170" width="142" height="17"/>
-                                                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                                 <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Distortion parameters" id="103663">
                                                                     <font key="font" metaFont="system"/>
                                                                     <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -521,14 +522,14 @@
                                                             </textField>
                                                             <box autoresizesSubviews="NO" verticalHuggingPriority="750" title="Box" boxType="separator" titlePosition="noTitle" id="103664">
                                                                 <rect key="frame" x="9" y="156" width="258" height="5"/>
-                                                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                                 <color key="borderColor" white="0.0" alpha="0.41999999999999998" colorSpace="calibratedWhite"/>
                                                                 <color key="fillColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                                                 <font key="titleFont" metaFont="system"/>
                                                             </box>
                                                             <textField verticalHuggingPriority="750" id="103665">
                                                                 <rect key="frame" x="14" y="47" width="237" height="17"/>
-                                                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                                 <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="center of distortion / principal point:" id="103669">
                                                                     <font key="font" metaFont="system"/>
                                                                     <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -537,7 +538,7 @@
                                                             </textField>
                                                             <textField verticalHuggingPriority="750" id="103677">
                                                                 <rect key="frame" x="7" y="131" width="35" height="17"/>
-                                                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                                 <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="k1 =" id="103681">
                                                                     <font key="font" metaFont="system"/>
                                                                     <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -546,7 +547,7 @@
                                                             </textField>
                                                             <textField verticalHuggingPriority="750" id="103678">
                                                                 <rect key="frame" x="47" y="128" width="80" height="22"/>
-                                                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                                 <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="103679">
                                                                     <numberFormatter key="formatter" formatterBehavior="custom10_4" positiveFormat="#0.###############" negativeFormat="#0.###############" usesGroupingSeparator="NO" groupingSize="0" minimumIntegerDigits="1" maximumIntegerDigits="42" minimumFractionDigits="0" maximumFractionDigits="15" id="103680" customClass="VSScientificNotationFormatter">
                                                                         <real key="roundingIncrement" value="0.0"/>
@@ -554,7 +555,7 @@
                                                                             <bool key="localizesFormat" value="YES"/>
                                                                         </metadata>
                                                                     </numberFormatter>
-                                                                    <font key="font" metaFont="system"/>
+                                                                    <font key="font" metaFont="smallSystem"/>
                                                                     <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                                                                     <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                                                 </textFieldCell>
@@ -569,7 +570,7 @@
                                                             </textField>
                                                             <textField verticalHuggingPriority="750" id="104037">
                                                                 <rect key="frame" x="7" y="106" width="35" height="17"/>
-                                                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                                 <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="k2 =" id="104041">
                                                                     <font key="font" metaFont="system"/>
                                                                     <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -578,7 +579,7 @@
                                                             </textField>
                                                             <textField verticalHuggingPriority="750" id="104038">
                                                                 <rect key="frame" x="47" y="103" width="80" height="22"/>
-                                                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                                 <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="104039">
                                                                     <numberFormatter key="formatter" formatterBehavior="custom10_4" positiveFormat="#0.###############" negativeFormat="#0.###############" usesGroupingSeparator="NO" groupingSize="0" minimumIntegerDigits="1" maximumIntegerDigits="42" minimumFractionDigits="0" maximumFractionDigits="15" id="104040" customClass="VSScientificNotationFormatter">
                                                                         <real key="roundingIncrement" value="0.0"/>
@@ -586,7 +587,7 @@
                                                                             <bool key="localizesFormat" value="YES"/>
                                                                         </metadata>
                                                                     </numberFormatter>
-                                                                    <font key="font" metaFont="system"/>
+                                                                    <font key="font" metaFont="smallSystem"/>
                                                                     <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                                                                     <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                                                 </textFieldCell>
@@ -601,7 +602,7 @@
                                                             </textField>
                                                             <textField verticalHuggingPriority="750" id="104043">
                                                                 <rect key="frame" x="7" y="81" width="35" height="17"/>
-                                                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                                 <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="k3 =" id="104047">
                                                                     <font key="font" metaFont="system"/>
                                                                     <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -610,7 +611,7 @@
                                                             </textField>
                                                             <textField verticalHuggingPriority="750" id="104044">
                                                                 <rect key="frame" x="47" y="78" width="80" height="22"/>
-                                                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                                 <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="104045">
                                                                     <numberFormatter key="formatter" formatterBehavior="custom10_4" positiveFormat="#0.###############" negativeFormat="#0.###############" usesGroupingSeparator="NO" groupingSize="0" minimumIntegerDigits="1" maximumIntegerDigits="42" minimumFractionDigits="0" maximumFractionDigits="15" id="104046" customClass="VSScientificNotationFormatter">
                                                                         <real key="roundingIncrement" value="0.0"/>
@@ -618,7 +619,7 @@
                                                                             <bool key="localizesFormat" value="YES"/>
                                                                         </metadata>
                                                                     </numberFormatter>
-                                                                    <font key="font" metaFont="system"/>
+                                                                    <font key="font" metaFont="smallSystem"/>
                                                                     <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                                                                     <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                                                 </textFieldCell>
@@ -633,7 +634,7 @@
                                                             </textField>
                                                             <textField verticalHuggingPriority="750" id="103671">
                                                                 <rect key="frame" x="176" y="17" width="74" height="22"/>
-                                                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                                 <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="103672">
                                                                     <numberFormatter key="formatter" formatterBehavior="custom10_4" positiveFormat="#.##" negativeFormat="#.##" usesGroupingSeparator="NO" groupingSize="0" minimumIntegerDigits="0" maximumIntegerDigits="42" minimumFractionDigits="0" maximumFractionDigits="2" id="103673">
                                                                         <real key="roundingIncrement" value="0.0"/>
@@ -641,7 +642,7 @@
                                                                             <bool key="localizesFormat" value="YES"/>
                                                                         </metadata>
                                                                     </numberFormatter>
-                                                                    <font key="font" metaFont="system"/>
+                                                                    <font key="font" metaFont="smallSystem"/>
                                                                     <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                                                                     <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                                                 </textFieldCell>
@@ -656,7 +657,7 @@
                                                             </textField>
                                                             <button verticalHuggingPriority="750" id="103675">
                                                                 <rect key="frame" x="186" y="165" width="72" height="25"/>
-                                                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                                 <buttonCell key="cell" type="roundTextured" title="Calculate" bezelStyle="texturedRounded" alignment="center" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="103676">
                                                                     <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                                                     <font key="font" metaFont="system"/>
@@ -671,7 +672,7 @@
                                                             </button>
                                                             <scrollView autohidesScrollers="YES" horizontalLineScroll="16" horizontalPageScroll="10" verticalLineScroll="16" verticalPageScroll="10" usesPredominantAxisScrolling="NO" id="103686">
                                                                 <rect key="frame" x="283" y="7" width="234" height="258"/>
-                                                                <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
+                                                                <autoresizingMask key="autoresizingMask" flexibleMinX="YES" heightSizable="YES"/>
                                                                 <clipView key="contentView" id="vm2-fg-kIE">
                                                                     <rect key="frame" x="1" y="17" width="232" height="240"/>
                                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -762,7 +763,7 @@
                                                             </button>
                                                             <textField verticalHuggingPriority="750" id="104028">
                                                                 <rect key="frame" x="14" y="20" width="39" height="17"/>
-                                                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                                 <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="x0 = " id="104032">
                                                                     <font key="font" metaFont="system"/>
                                                                     <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -771,7 +772,7 @@
                                                             </textField>
                                                             <textField verticalHuggingPriority="750" id="104029">
                                                                 <rect key="frame" x="51" y="17" width="74" height="22"/>
-                                                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                                 <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="104030">
                                                                     <numberFormatter key="formatter" formatterBehavior="custom10_4" positiveFormat="#.##" negativeFormat="#.##" usesGroupingSeparator="NO" groupingSize="0" minimumIntegerDigits="0" maximumIntegerDigits="42" minimumFractionDigits="0" maximumFractionDigits="2" id="104031">
                                                                         <real key="roundingIncrement" value="0.0"/>
@@ -779,7 +780,7 @@
                                                                             <bool key="localizesFormat" value="YES"/>
                                                                         </metadata>
                                                                     </numberFormatter>
-                                                                    <font key="font" metaFont="system"/>
+                                                                    <font key="font" metaFont="smallSystem"/>
                                                                     <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                                                                     <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                                                 </textFieldCell>
@@ -794,7 +795,7 @@
                                                             </textField>
                                                             <textField verticalHuggingPriority="750" id="104034">
                                                                 <rect key="frame" x="139" y="20" width="38" height="17"/>
-                                                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                                 <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="y0 = " id="104035">
                                                                     <font key="font" metaFont="system"/>
                                                                     <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -803,7 +804,7 @@
                                                             </textField>
                                                             <textField verticalHuggingPriority="750" id="104064">
                                                                 <rect key="frame" x="14" y="209" width="65" height="17"/>
-                                                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                                 <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Overlays:" id="104065">
                                                                     <font key="font" metaFont="system"/>
                                                                     <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -812,7 +813,7 @@
                                                             </textField>
                                                             <textField verticalHuggingPriority="750" id="104068">
                                                                 <rect key="frame" x="138" y="131" width="35" height="17"/>
-                                                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                                 <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="p1 =" id="104082">
                                                                     <font key="font" metaFont="system"/>
                                                                     <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -821,7 +822,7 @@
                                                             </textField>
                                                             <textField verticalHuggingPriority="750" id="104069">
                                                                 <rect key="frame" x="178" y="128" width="80" height="22"/>
-                                                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                                 <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="104080">
                                                                     <numberFormatter key="formatter" formatterBehavior="custom10_4" positiveFormat="#0.###############" negativeFormat="#0.###############" usesGroupingSeparator="NO" groupingSize="0" minimumIntegerDigits="1" maximumIntegerDigits="42" minimumFractionDigits="0" maximumFractionDigits="15" id="104081" customClass="VSScientificNotationFormatter">
                                                                         <real key="roundingIncrement" value="0.0"/>
@@ -829,7 +830,7 @@
                                                                             <bool key="localizesFormat" value="YES"/>
                                                                         </metadata>
                                                                     </numberFormatter>
-                                                                    <font key="font" metaFont="system"/>
+                                                                    <font key="font" metaFont="smallSystem"/>
                                                                     <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                                                                     <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                                                 </textFieldCell>
@@ -843,7 +844,7 @@
                                                             </textField>
                                                             <textField verticalHuggingPriority="750" id="104070">
                                                                 <rect key="frame" x="138" y="106" width="35" height="17"/>
-                                                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                                 <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="p2 =" id="104079">
                                                                     <font key="font" metaFont="system"/>
                                                                     <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -852,7 +853,7 @@
                                                             </textField>
                                                             <textField verticalHuggingPriority="750" id="104071">
                                                                 <rect key="frame" x="178" y="103" width="80" height="22"/>
-                                                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                                 <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="104077">
                                                                     <numberFormatter key="formatter" formatterBehavior="custom10_4" positiveFormat="#0.###############" negativeFormat="#0.###############" usesGroupingSeparator="NO" groupingSize="0" minimumIntegerDigits="1" maximumIntegerDigits="42" minimumFractionDigits="0" maximumFractionDigits="15" id="104078" customClass="VSScientificNotationFormatter">
                                                                         <real key="roundingIncrement" value="0.0"/>
@@ -860,7 +861,7 @@
                                                                             <bool key="localizesFormat" value="YES"/>
                                                                         </metadata>
                                                                     </numberFormatter>
-                                                                    <font key="font" metaFont="system"/>
+                                                                    <font key="font" metaFont="smallSystem"/>
                                                                     <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                                                                     <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                                                 </textFieldCell>
@@ -874,7 +875,7 @@
                                                             </textField>
                                                             <textField verticalHuggingPriority="750" id="104072">
                                                                 <rect key="frame" x="138" y="81" width="35" height="17"/>
-                                                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                                 <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="p3 =" id="104076">
                                                                     <font key="font" metaFont="system"/>
                                                                     <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -883,7 +884,7 @@
                                                             </textField>
                                                             <textField verticalHuggingPriority="750" id="104073">
                                                                 <rect key="frame" x="178" y="78" width="80" height="22"/>
-                                                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                                 <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="104074">
                                                                     <numberFormatter key="formatter" formatterBehavior="custom10_4" positiveFormat="#0.###############" negativeFormat="#0.###############" usesGroupingSeparator="NO" groupingSize="0" minimumIntegerDigits="1" maximumIntegerDigits="42" minimumFractionDigits="0" maximumFractionDigits="15" id="104075" customClass="VSScientificNotationFormatter">
                                                                         <real key="roundingIncrement" value="0.0"/>
@@ -891,7 +892,7 @@
                                                                             <bool key="localizesFormat" value="YES"/>
                                                                         </metadata>
                                                                     </numberFormatter>
-                                                                    <font key="font" metaFont="system"/>
+                                                                    <font key="font" metaFont="smallSystem"/>
                                                                     <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                                                                     <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                                                 </textFieldCell>
@@ -3670,7 +3671,7 @@ IA
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                             <textFieldCell key="cell" controlSize="small" sendsActionOnEndEditing="YES" id="102923">
                                                 <font key="font" metaFont="smallSystem"/>
-                                                <string key="title">Overlays will only look the same on captured images and video as they do in Vidsync if the video clip is sized at 100% at the time of export.  Otherwise, the overlay graphics will be magnified (if the clip is at less than 100%) or shrunken, which is actually useful for generating easy-to-see presentation graphics.  This "bug" is kept in because it's useful for that purpose.</string>
+                                                <string key="title">Overlays will only look the same on captured images and video as they do in Vidsync if the video clip is sized at 100% at the time of export.  Otherwise, the overlay graphics will be shrunken (if the clip is at more than 100% zoom) or magnified (if the clip is at less than 100% zoom), which is useful for generating easy-to-see presentation graphics.</string>
                                                 <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                                 <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                             </textFieldCell>
@@ -7984,114 +7985,132 @@ Some useful refractive index values are:  1.000 for air, 1.335 for fresh water, 
                 </subviews>
             </view>
         </window>
-        <window identifier="ScrubberWindow" title="Synchronized Playback Controls" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" oneShot="NO" showsToolbarButton="NO" frameAutosaveName="Synchronized Playback Controls" animationBehavior="default" id="s4r-NB-r3v">
-            <windowStyleMask key="styleMask" titled="YES" miniaturizable="YES" resizable="YES" texturedBackground="YES"/>
+        <window identifier="SyncedPlaybackPanel" title="Synchronized Playback Controls" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" oneShot="NO" showsToolbarButton="NO" visibleAtLaunch="NO" frameAutosaveName="Synchronized Playback Controls" animationBehavior="default" id="s4r-NB-r3v" customClass="SyncedPlaybackPanel">
+            <windowStyleMask key="styleMask" resizable="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
-            <rect key="contentRect" x="196" y="274" width="900" height="24"/>
+            <rect key="contentRect" x="196" y="274" width="900" height="59"/>
             <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1578"/>
-            <value key="minSize" type="size" width="780" height="24"/>
-            <value key="maxSize" type="size" width="100000" height="24"/>
+            <value key="minSize" type="size" width="780" height="59"/>
+            <value key="maxSize" type="size" width="100000" height="59"/>
             <view key="contentView" id="0I4-1q-wVJ">
-                <rect key="frame" x="0.0" y="0.0" width="900" height="24"/>
+                <rect key="frame" x="0.0" y="0.0" width="900" height="59"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
-                    <slider verticalHuggingPriority="750" id="AUE-Bz-KZS">
-                        <rect key="frame" x="208" y="5" width="481" height="20"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
-                        <sliderCell key="cell" controlSize="small" continuous="YES" alignment="left" maxValue="100" tickMarkPosition="below" numberOfTickMarks="100" sliderType="linear" id="5DL-JP-QSf"/>
+                    <customView id="DDr-UO-CNh" customClass="SyncedPlaybackView">
+                        <rect key="frame" x="0.0" y="0.0" width="900" height="59"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <slider verticalHuggingPriority="750" id="AUE-Bz-KZS">
+                                <rect key="frame" x="223" y="21" width="466" height="20"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
+                                <sliderCell key="cell" controlSize="small" continuous="YES" alignment="left" maxValue="100" tickMarkPosition="below" numberOfTickMarks="100" sliderType="linear" id="5DL-JP-QSf"/>
+                                <connections>
+                                    <action selector="setTimeFromScrubber:" target="-2" id="yRH-RK-FHs"/>
+                                </connections>
+                            </slider>
+                            <textField toolTip="Current time (measured relative to start of the master clip)" verticalHuggingPriority="750" id="103583">
+                                <rect key="frame" x="690" y="24" width="206" height="14"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
+                                <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" placeholderString="-0:00:00:00:1234/2997" id="103584">
+                                    <font key="font" metaFont="smallSystem"/>
+                                    <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                    <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                </textFieldCell>
+                            </textField>
+                            <button toolTip="Step Backward (Command+LeftArrow)" verticalHuggingPriority="750" tag="1" id="103244" customClass="VideoControlButton">
+                                <rect key="frame" x="80" y="8" width="26" height="44"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                <buttonCell key="cell" type="square" title="⇤" bezelStyle="shadowlessSquare" alignment="center" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="103257">
+                                    <behavior key="behavior" lightByContents="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                    <string key="keyEquivalent"></string>
+                                    <modifierMask key="keyEquivalentModifierMask" command="YES"/>
+                                </buttonCell>
+                                <connections>
+                                    <action selector="stepBackwardAll:" target="-2" id="103261"/>
+                                </connections>
+                            </button>
+                            <button toolTip="Play Backward (Command+DownArrow)" verticalHuggingPriority="750" tag="1" id="103248" customClass="VideoControlButton">
+                                <rect key="frame" x="43" y="8" width="27" height="44"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                <buttonCell key="cell" type="square" title="◀︎" bezelStyle="shadowlessSquare" alignment="center" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="103253">
+                                    <behavior key="behavior" lightByContents="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                    <string key="keyEquivalent"></string>
+                                    <modifierMask key="keyEquivalentModifierMask" command="YES"/>
+                                </buttonCell>
+                                <connections>
+                                    <action selector="playAllBackward:" target="-2" id="103264"/>
+                                </connections>
+                            </button>
+                            <button toolTip="Step Forward (Command+RightArrow)" verticalHuggingPriority="750" tag="2" id="103245" customClass="VideoControlButton">
+                                <rect key="frame" x="152" y="8" width="27" height="44"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                <buttonCell key="cell" type="square" title="⇥" bezelStyle="shadowlessSquare" alignment="center" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="103256">
+                                    <behavior key="behavior" lightByContents="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                    <string key="keyEquivalent"></string>
+                                    <modifierMask key="keyEquivalentModifierMask" command="YES"/>
+                                </buttonCell>
+                                <connections>
+                                    <action selector="stepForwardAll:" target="-2" id="103260"/>
+                                </connections>
+                            </button>
+                            <button toolTip="Fast Backward (Command+Option+LeftArrow)" verticalHuggingPriority="750" tag="1" id="103243" customClass="VideoControlButton">
+                                <rect key="frame" x="7" y="8" width="26" height="44"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                <buttonCell key="cell" type="square" title="⇇" bezelStyle="shadowlessSquare" alignment="center" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="103258">
+                                    <behavior key="behavior" lightByContents="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                    <string key="keyEquivalent"></string>
+                                    <modifierMask key="keyEquivalentModifierMask" option="YES" command="YES"/>
+                                </buttonCell>
+                                <connections>
+                                    <action selector="fastBackwardAll:" target="-2" id="103263"/>
+                                </connections>
+                            </button>
+                            <button toolTip="Fast Forward (Command+Option+RightArrow)" verticalHuggingPriority="750" tag="2" id="103246" customClass="VideoControlButton">
+                                <rect key="frame" x="189" y="8" width="26" height="44"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                <buttonCell key="cell" type="square" title="⇉" bezelStyle="shadowlessSquare" alignment="center" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="103255">
+                                    <behavior key="behavior" lightByContents="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                    <string key="keyEquivalent"></string>
+                                    <modifierMask key="keyEquivalentModifierMask" option="YES" command="YES"/>
+                                </buttonCell>
+                                <connections>
+                                    <action selector="fastForwardAll:" target="-2" id="103262"/>
+                                </connections>
+                            </button>
+                            <button toolTip="Play/Pause (Command+UpArrow)" verticalHuggingPriority="750" id="103247" customClass="VideoControlButton">
+                                <rect key="frame" x="116" y="8" width="26" height="44"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                <buttonCell key="cell" type="square" title="►" bezelStyle="shadowlessSquare" alignment="center" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="103254">
+                                    <behavior key="behavior" lightByContents="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                    <string key="keyEquivalent"></string>
+                                    <modifierMask key="keyEquivalentModifierMask" command="YES"/>
+                                </buttonCell>
+                                <connections>
+                                    <action selector="playAll:" target="-2" id="103265"/>
+                                </connections>
+                            </button>
+                        </subviews>
                         <connections>
-                            <action selector="setTimeFromScrubber:" target="-2" id="yRH-RK-FHs"/>
+                            <outlet property="fastBackwardButton" destination="103243" id="pWX-KA-ssw"/>
+                            <outlet property="fastForwardButton" destination="103246" id="b4y-iL-IVc"/>
+                            <outlet property="playBackwardButton" destination="103248" id="ufa-7k-60l"/>
+                            <outlet property="playOrPauseButton" destination="103247" id="Lok-ET-Wut"/>
+                            <outlet property="stepBackwardButton" destination="103244" id="KIp-XZ-TWu"/>
+                            <outlet property="stepForwardButton" destination="103245" id="LOr-y8-aYn"/>
                         </connections>
-                    </slider>
-                    <textField toolTip="Current time (measured relative to start of the master clip)" verticalHuggingPriority="750" id="103583">
-                        <rect key="frame" x="690" y="8" width="206" height="14"/>
-                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
-                        <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" placeholderString="-0:00:00:00:1234/2997" id="103584">
-                            <font key="font" metaFont="smallSystem"/>
-                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
-                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                        </textFieldCell>
-                    </textField>
-                    <button toolTip="Step Backward (Command+LeftArrow)" verticalHuggingPriority="750" tag="1" id="103244">
-                        <rect key="frame" x="40" y="5" width="26" height="19"/>
-                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                        <buttonCell key="cell" type="roundTextured" title="⇤" bezelStyle="texturedRounded" alignment="center" controlSize="small" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="103257">
-                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                            <font key="font" metaFont="smallSystem"/>
-                            <string key="keyEquivalent"></string>
-                            <modifierMask key="keyEquivalentModifierMask" command="YES"/>
-                        </buttonCell>
-                        <connections>
-                            <action selector="stepBackwardAll:" target="-2" id="103261"/>
-                        </connections>
-                    </button>
-                    <button toolTip="Play Backward (Command+DownArrow)" verticalHuggingPriority="750" tag="1" id="103248">
-                        <rect key="frame" x="73" y="5" width="27" height="19"/>
-                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                        <buttonCell key="cell" type="roundTextured" title="◀︎" bezelStyle="texturedRounded" alignment="center" controlSize="small" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="103253">
-                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                            <font key="font" metaFont="smallSystem"/>
-                            <string key="keyEquivalent"></string>
-                            <modifierMask key="keyEquivalentModifierMask" command="YES"/>
-                        </buttonCell>
-                        <connections>
-                            <action selector="playAllBackward:" target="-2" id="103264"/>
-                        </connections>
-                    </button>
-                    <button toolTip="Step Forward (Command+RightArrow)" verticalHuggingPriority="750" tag="2" id="103245">
-                        <rect key="frame" x="140" y="5" width="27" height="19"/>
-                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                        <buttonCell key="cell" type="roundTextured" title="⇥" bezelStyle="texturedRounded" alignment="center" controlSize="small" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="103256">
-                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                            <font key="font" size="11" name="LucidaGrande"/>
-                            <string key="keyEquivalent"></string>
-                            <modifierMask key="keyEquivalentModifierMask" command="YES"/>
-                        </buttonCell>
-                        <connections>
-                            <action selector="stepForwardAll:" target="-2" id="103260"/>
-                        </connections>
-                    </button>
-                    <button toolTip="Fast Backward (Command+Option+LeftArrow)" verticalHuggingPriority="750" tag="1" id="103243">
-                        <rect key="frame" x="7" y="5" width="26" height="19"/>
-                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                        <buttonCell key="cell" type="roundTextured" title="⇇" bezelStyle="texturedRounded" alignment="center" controlSize="small" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="103258">
-                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                            <font key="font" metaFont="smallSystem"/>
-                            <string key="keyEquivalent"></string>
-                            <modifierMask key="keyEquivalentModifierMask" option="YES" command="YES"/>
-                        </buttonCell>
-                        <connections>
-                            <action selector="fastBackwardAll:" target="-2" id="103263"/>
-                        </connections>
-                    </button>
-                    <button toolTip="Fast Forward (Command+Option+RightArrow)" verticalHuggingPriority="750" tag="2" id="103246">
-                        <rect key="frame" x="174" y="5" width="26" height="19"/>
-                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                        <buttonCell key="cell" type="roundTextured" title="⇉" bezelStyle="texturedRounded" alignment="center" controlSize="small" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="103255">
-                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                            <font key="font" metaFont="smallSystem"/>
-                            <string key="keyEquivalent"></string>
-                            <modifierMask key="keyEquivalentModifierMask" option="YES" command="YES"/>
-                        </buttonCell>
-                        <connections>
-                            <action selector="fastForwardAll:" target="-2" id="103262"/>
-                        </connections>
-                    </button>
-                    <button toolTip="Play/Pause (Command+UpArrow)" verticalHuggingPriority="750" id="103247">
-                        <rect key="frame" x="106" y="5" width="26" height="19"/>
-                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                        <buttonCell key="cell" type="roundTextured" title="►" bezelStyle="texturedRounded" alignment="center" controlSize="small" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="103254">
-                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                            <font key="font" metaFont="smallSystem"/>
-                            <string key="keyEquivalent"></string>
-                            <modifierMask key="keyEquivalentModifierMask" command="YES"/>
-                        </buttonCell>
-                        <connections>
-                            <action selector="playAll:" target="-2" id="103265"/>
-                        </connections>
-                    </button>
+                    </customView>
                 </subviews>
             </view>
         </window>
+        <customView id="zv5-Ge-l2k">
+            <rect key="frame" x="0.0" y="0.0" width="889" height="27"/>
+            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+        </customView>
     </objects>
 </document>
