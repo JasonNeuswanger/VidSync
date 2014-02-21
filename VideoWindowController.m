@@ -481,11 +481,9 @@
 
 - (void) handleOverlayMouseUp:(NSPoint)coords fromEvent:(NSEvent *)theEvent
 {
-    if (self.videoClip.project.document.portraitSubject != nil) {
+    if (self.videoClip.project.document.portraitSubject != nil && [[[[self.document mainTabView] selectedTabViewItem] label] isEqualToString:@"Measurement"]) {
         portraitDragCurrentCoords = [self convertOverlayToVideoCoords:coords];
-        
-        // here, create the portrait
-        
+
         NSImage *__strong returnImage = [NSImage alloc];
         
         NSPoint startPoint = NSMakePoint(portraitDragStartCoords.x,portraitDragStartCoords.y);
@@ -514,7 +512,8 @@
 
 - (void) handleOverlayMouseDrag:(NSPoint)coords fromEvent:(NSEvent *)theEvent
 {
-    if (self.videoClip.project.document.portraitSubject != nil) {
+    if (self.videoClip.project.document.portraitSubject != nil && [[[[self.document mainTabView] selectedTabViewItem] label] isEqualToString:@"Measurement"]) {
+        [self updateMagnifiedPreviewWithCenter:[self convertOverlayToVideoCoords:coords]];
         portraitDragCurrentCoords = [self convertOverlayToVideoCoords:coords];
         [self refreshOverlay];
     }
@@ -534,10 +533,8 @@
     }
     VidSyncDocument *doc = self.document;
 	
-    if (self.videoClip.project.document.portraitSubject != nil) {   // if in portrait mode, handle everything differently
-    
+    if (self.videoClip.project.document.portraitSubject != nil && [[[doc.mainTabView selectedTabViewItem] label] isEqualToString:@"Measurement"]) {   // if in portrait mode, handle everything differently
         portraitDragStartCoords = videoCoords;
-
     } else {
         if ([[[doc.mainTabView selectedTabViewItem] label] isEqualToString:@"Calibration"]) {
             if ([[[doc.calibrationInputTabView selectedTabViewItem] label] isEqualToString:@"3D Calibration Frame Input"]) {	// don't process clicks while on "Results" tab

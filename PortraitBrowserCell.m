@@ -10,4 +10,19 @@
 
 @implementation PortraitBrowserCell
 
+- (NSRect) frame {
+    NSRect superFrame = [super frame];
+    /* Not doing anything for now in this subclass
+    NSLog(@"Frame is %@",[NSValue valueWithRect:superFrame]);
+    NSRect newFrame;
+    newFrame.origin = superFrame.origin;
+    newFrame.size = NSMakeSize(100,35); // floats w, h */
+    return superFrame;
+}
+
+- (NSRect) selectionFrame {                         // Not doing anything for now in this subclass
+    NSRect superFrame = [super selectionFrame];
+    return superFrame;
+}
+
 @end

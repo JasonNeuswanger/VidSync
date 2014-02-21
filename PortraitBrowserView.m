@@ -10,22 +10,16 @@
 
 @implementation PortraitBrowserView
 
-- (id)initWithFrame:(NSRect)frame
+- (void) awakeFromNib
 {
-    self = [super initWithFrame:frame];
-    if (self) {
-        NSLog(@"Initiated a custom view");
-        [self setIntercellSpacing:NSMakeSize(2.0f,2.0f)];
-        [self setDelegate:self];
-    }
-    return self;
+    [self setIntercellSpacing:NSMakeSize(2.0f,2.0f)];
+    [self setValue:[NSColor grayColor] forKey:IKImageBrowserBackgroundColorKey];
+    // I could eventually use an NSColor colorWithPattern for the background, and IKImageBrowserGroupHeaderLayer, a custom CALayer, to stylize the group headings. Not worth the trouble for now.
 }
 
 - (void)drawRect:(NSRect)dirtyRect
 {
 	[super drawRect:dirtyRect];
-	
-    // Drawing code here.
 }
 
 - (IKImageBrowserCell*)	newCellForRepresentedItem:(id) anItem
