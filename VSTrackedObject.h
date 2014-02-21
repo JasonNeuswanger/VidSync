@@ -10,6 +10,8 @@
 
 
 @interface VSTrackedObject : VSVisibleItem {
+    
+    NSString __strong *portraitStatus;
 	
 }
 
@@ -18,11 +20,13 @@
 @property (strong) VSTrackedObjectType *type;
 @property (strong) VSProject *project;
 @property (strong) NSSet *trackedEvents;
+@property (strong) NSOrderedSet *portraits;
 
 + (int) highestObjectIndexInProject:(VSProject *)project;
 
 - (NSNumber *) numEvents;
 - (NSString *) tableGlyphForColor;
+- (NSAttributedString *) tableGlyphForPortrait;
 
 - (NSXMLNode *) representationAsXMLNode;
 - (NSXMLNode *) representationAsXMLChildOfEvent;

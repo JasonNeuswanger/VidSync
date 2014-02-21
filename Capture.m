@@ -12,35 +12,6 @@
 
 #pragma mark
 #pragma mark IBActions
-/*
-- (IBAction)captureStills:(id)sender
-{
-	[self setAllVideoRates:0.0];				// pause all movies
-	[self reSync];								// make sure they're all perfectly synchronized (also refreshes all their overlays)	
-	NSMutableSet *clipsToExportFrom = [NSMutableSet set];
-	if ([[exportClipSelectionPopUpButton selectedItem] representedObject] == nil) {								// if the null placeholder "All Clips" is selected, select all clips
-		for  (VSVideoClip *videoClip in self.project.videoClips) [clipsToExportFrom addObject:videoClip];
-	} else {																									// otherwise, select only the clip(s) with the selected name
-		NSString *exportClipName = [[exportClipSelectionPopUpButton selectedItem] representedObject];
-		for  (VSVideoClip *videoClip in self.project.videoClips) if ([videoClip.clipName isEqualToString:exportClipName]) [clipsToExportFrom addObject:videoClip];
-	}
-	NSImage *outImage;
-	NSString *outFilePath;
-	BOOL success = YES;
-	for (VSVideoClip *videoClip in clipsToExportFrom) {
-		outImage = [self stillNSImageFromVSVideoClip:videoClip atMasterTime:[self currentMasterTime]];
-		if ([outImage isValid]) {
-			outFilePath = [self fileNameForExportedFileFromClip:videoClip withExtension:@"jpg"];				// construct the filename & path
-			[self saveNSImageAsJpeg:outImage destination:outFilePath];											// write the image
-		} else {
-			success = NO;
-			NSRunAlertPanel(@"Error saving frames",@"The frame image generated was not valid.",@"Ok",nil,nil);
-		}
-	}
-	if (success) [shutterClick play];
-}
-
-*/
 
 - (IBAction)captureStills:(id)sender
 {

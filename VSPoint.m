@@ -308,7 +308,7 @@ NSPoint project2DPoint(NSPoint pt, double projectionMatrix[9])
 	if ([self.trackedEvent.name isEqualToString:@""] || self.trackedEvent.name == nil) {
 		eventString = [NSString stringWithFormat:@"%@ %@",self.trackedEvent.type.name,self.trackedEvent.index];
 	} else {
-		eventString = [NSString stringWithFormat:@"%@ %@ (%@)",self.trackedEvent.type.name,self.trackedEvent.index,self.trackedEvent.name];				
+		eventString = [NSString stringWithFormat:@"%@ %@ (%@) (Notes: %@)",self.trackedEvent.type.name,self.trackedEvent.index,self.trackedEvent.name,self.trackedEvent.notes];
 	}
     
     NSMutableString *screenCoordsString = [NSMutableString stringWithString:@""];

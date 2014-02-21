@@ -169,6 +169,11 @@
 	return [self.project.masterClip.windowController.playerView.player currentTime];
 }
 
+- (NSString *) currentMasterTimeString
+{
+    return [UtilityFunctions CMStringFromTime:[self currentMasterTime]];
+}
+
 - (void) goToMasterTime:(CMTime)time
 {
 	[self.project.masterClip.windowController.playerView.player seekToTime:time toleranceBefore:kCMTimeZero toleranceAfter:kCMTimeZero];

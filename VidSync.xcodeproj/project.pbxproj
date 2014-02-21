@@ -30,11 +30,19 @@
 		96070351152A718C00905BCC /* libopencv_objdetect.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 96070344152A718C00905BCC /* libopencv_objdetect.a */; };
 		96070352152A718C00905BCC /* libopencv_video.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 96070345152A718C00905BCC /* libopencv_video.a */; };
 		96070357153365BF00905BCC /* DistortionIcon.icns in Resources */ = {isa = PBXBuildFile; fileRef = 96070356153365BF00905BCC /* DistortionIcon.icns */; };
+		9612EC0B18B5825300BBED62 /* VSTrackedObjectPortrait.m in Sources */ = {isa = PBXBuildFile; fileRef = 9612EC0A18B5825300BBED62 /* VSTrackedObjectPortrait.m */; };
+		9612EC0E18B597F700BBED62 /* PortraitsArrayController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9612EC0D18B597F700BBED62 /* PortraitsArrayController.m */; };
+		9612EC1118B59A6900BBED62 /* ObjectsPortraitsArrayController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9612EC1018B59A6900BBED62 /* ObjectsPortraitsArrayController.m */; };
+		9612EC1418B5AA5F00BBED62 /* OrderedSetArrayValueTransformer.m in Sources */ = {isa = PBXBuildFile; fileRef = 9612EC1318B5AA5F00BBED62 /* OrderedSetArrayValueTransformer.m */; };
+		9612EC1718B5EDE400BBED62 /* PortraitBrowserView.m in Sources */ = {isa = PBXBuildFile; fileRef = 9612EC1618B5EDE400BBED62 /* PortraitBrowserView.m */; };
+		9612EC1A18B5EE0100BBED62 /* PortraitBrowserCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 9612EC1918B5EE0100BBED62 /* PortraitBrowserCell.m */; };
+		9612EC1D18B68EAD00BBED62 /* AllPortraitsArrayController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9612EC1C18B68EAD00BBED62 /* AllPortraitsArrayController.m */; };
 		961A2F4318B3F7C4009EA198 /* VideoScrubberBackground.png in Resources */ = {isa = PBXBuildFile; fileRef = 961A2F4218B3F7C4009EA198 /* VideoScrubberBackground.png */; };
 		961A2F4618B40AB2009EA198 /* SyncedPlaybackPanel.m in Sources */ = {isa = PBXBuildFile; fileRef = 961A2F4518B40AB2009EA198 /* SyncedPlaybackPanel.m */; };
 		961A2F4918B40D05009EA198 /* SyncedPlaybackView.m in Sources */ = {isa = PBXBuildFile; fileRef = 961A2F4818B40D05009EA198 /* SyncedPlaybackView.m */; };
 		961A2F4B18B42506009EA198 /* Fonts in Resources */ = {isa = PBXBuildFile; fileRef = 961A2F4A18B42506009EA198 /* Fonts */; };
 		961A2F4E18B43FCE009EA198 /* VideoControlButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 961A2F4D18B43FCE009EA198 /* VideoControlButton.m */; };
+		961A2F5218B5293D009EA198 /* ImageKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 961A2F5118B5293D009EA198 /* ImageKit.framework */; };
 		9658610511738CA700BC99D5 /* Example Quadrat.VidSyncQuadrat in Resources */ = {isa = PBXBuildFile; fileRef = 9658610311738CA700BC99D5 /* Example Quadrat.VidSyncQuadrat */; };
 		9658610611738CA700BC99D5 /* Example Types.VidSyncTypes in Resources */ = {isa = PBXBuildFile; fileRef = 9658610411738CA700BC99D5 /* Example Types.VidSyncTypes */; };
 		96823015151333C900F91ED2 /* libgsl.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 96822FE6151333C800F91ED2 /* libgsl.a */; };
@@ -180,6 +188,21 @@
 		96070354152A842000905BCC /* VidSyncProject 1.10.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "VidSyncProject 1.10.xcdatamodel"; sourceTree = "<group>"; };
 		96070355153350A700905BCC /* VidSyncProject 1.11.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "VidSyncProject 1.11.xcdatamodel"; sourceTree = "<group>"; };
 		96070356153365BF00905BCC /* DistortionIcon.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = DistortionIcon.icns; sourceTree = "<group>"; };
+		9612EC0818B57A1300BBED62 /* VidSyncProject 1.12.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = file; path = "VidSyncProject 1.12.xcdatamodel"; sourceTree = "<group>"; };
+		9612EC0918B5825300BBED62 /* VSTrackedObjectPortrait.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VSTrackedObjectPortrait.h; sourceTree = "<group>"; };
+		9612EC0A18B5825300BBED62 /* VSTrackedObjectPortrait.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VSTrackedObjectPortrait.m; sourceTree = "<group>"; };
+		9612EC0C18B597F700BBED62 /* PortraitsArrayController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PortraitsArrayController.h; sourceTree = "<group>"; };
+		9612EC0D18B597F700BBED62 /* PortraitsArrayController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PortraitsArrayController.m; sourceTree = "<group>"; };
+		9612EC0F18B59A6900BBED62 /* ObjectsPortraitsArrayController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ObjectsPortraitsArrayController.h; sourceTree = "<group>"; };
+		9612EC1018B59A6900BBED62 /* ObjectsPortraitsArrayController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObjectsPortraitsArrayController.m; sourceTree = "<group>"; };
+		9612EC1218B5AA5F00BBED62 /* OrderedSetArrayValueTransformer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OrderedSetArrayValueTransformer.h; sourceTree = "<group>"; };
+		9612EC1318B5AA5F00BBED62 /* OrderedSetArrayValueTransformer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OrderedSetArrayValueTransformer.m; sourceTree = "<group>"; };
+		9612EC1518B5EDE400BBED62 /* PortraitBrowserView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PortraitBrowserView.h; sourceTree = "<group>"; };
+		9612EC1618B5EDE400BBED62 /* PortraitBrowserView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PortraitBrowserView.m; sourceTree = "<group>"; };
+		9612EC1818B5EE0100BBED62 /* PortraitBrowserCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PortraitBrowserCell.h; sourceTree = "<group>"; };
+		9612EC1918B5EE0100BBED62 /* PortraitBrowserCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PortraitBrowserCell.m; sourceTree = "<group>"; };
+		9612EC1B18B68EAD00BBED62 /* AllPortraitsArrayController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AllPortraitsArrayController.h; sourceTree = "<group>"; };
+		9612EC1C18B68EAD00BBED62 /* AllPortraitsArrayController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AllPortraitsArrayController.m; sourceTree = "<group>"; };
 		961A2F4218B3F7C4009EA198 /* VideoScrubberBackground.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = VideoScrubberBackground.png; sourceTree = "<group>"; };
 		961A2F4418B40AB2009EA198 /* SyncedPlaybackPanel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SyncedPlaybackPanel.h; sourceTree = "<group>"; };
 		961A2F4518B40AB2009EA198 /* SyncedPlaybackPanel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SyncedPlaybackPanel.m; sourceTree = "<group>"; };
@@ -188,6 +211,7 @@
 		961A2F4A18B42506009EA198 /* Fonts */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Fonts; sourceTree = "<group>"; };
 		961A2F4C18B43FCE009EA198 /* VideoControlButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VideoControlButton.h; sourceTree = "<group>"; };
 		961A2F4D18B43FCE009EA198 /* VideoControlButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VideoControlButton.m; sourceTree = "<group>"; };
+		961A2F5118B5293D009EA198 /* ImageKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ImageKit.framework; path = Quartz.framework/Frameworks/ImageKit.framework; sourceTree = "<group>"; };
 		965510C214B2BE7000A4D9E3 /* VidSyncProject 1.04.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "VidSyncProject 1.04.xcdatamodel"; sourceTree = "<group>"; };
 		9658610311738CA700BC99D5 /* Example Quadrat.VidSyncQuadrat */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = "Example Quadrat.VidSyncQuadrat"; sourceTree = "<group>"; };
 		9658610411738CA700BC99D5 /* Example Types.VidSyncTypes */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = "Example Types.VidSyncTypes"; sourceTree = "<group>"; };
@@ -688,6 +712,7 @@
 				96EF209810917270001DEF3A /* Accelerate.framework in Frameworks */,
 				96EF20BE109172BC001DEF3A /* QTKit.framework in Frameworks */,
 				96EF25741096A113001DEF3A /* QuartzCore.framework in Frameworks */,
+				961A2F5218B5293D009EA198 /* ImageKit.framework in Frameworks */,
 				96823015151333C900F91ED2 /* libgsl.a in Frameworks */,
 				96823016151333C900F91ED2 /* libgslblas.a in Frameworks */,
 				96823017151333C900F91ED2 /* libgslblock.a in Frameworks */,
@@ -757,6 +782,7 @@
 		1058C7A6FEA54F5311CA2CBB /* Linked Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				961A2F5118B5293D009EA198 /* ImageKit.framework */,
 				969BEE03183FF5FB006E6AAC /* CoreMedia.framework */,
 				969BEE01183FF437006E6AAC /* AVKit.framework */,
 				969BEDFF183FF42C006E6AAC /* AVFoundation.framework */,
@@ -831,10 +857,10 @@
 				96EF200A10915B28001DEF3A /* VidSyncIcon.icns */,
 				2F7446A70DB6BCF400F9684A /* MainMenu.xib */,
 				2F7446A90DB6BCF400F9684A /* VidSyncProject.xib */,
+				96EF227510956DE9001DEF3A /* VideoClipWindow.xib */,
 				2A37F4B9FDCFA73011CA2CEA /* Credits.rtf */,
 				8D15AC360486D014006FF6A4 /* VidSync-Info.plist */,
 				089C165FFE840EACC02AAC07 /* InfoPlist.strings */,
-				96EF227510956DE9001DEF3A /* VideoClipWindow.xib */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -1305,6 +1331,8 @@
 				96AD322D10B7D70E00FA1217 /* VSTrackedEventType.m */,
 				96E1284C10F678C900DAF12C /* VSTrackedObject.h */,
 				96E1284D10F678C900DAF12C /* VSTrackedObject.m */,
+				9612EC0918B5825300BBED62 /* VSTrackedObjectPortrait.h */,
+				9612EC0A18B5825300BBED62 /* VSTrackedObjectPortrait.m */,
 				96E128DF10FC474000DAF12C /* VSTrackedEvent.h */,
 				96E128E010FC474000DAF12C /* VSTrackedEvent.m */,
 				96AE9617116315CC00118398 /* VSAnnotation.h */,
@@ -1348,6 +1376,14 @@
 				96FA1CF01155ACCA0065DF96 /* EventsPointsController.m */,
 				96A0CB591165D22200845DCD /* VSAnnotationArrayController.h */,
 				96A0CB5A1165D22200845DCD /* VSAnnotationArrayController.m */,
+				9612EC0C18B597F700BBED62 /* PortraitsArrayController.h */,
+				9612EC0D18B597F700BBED62 /* PortraitsArrayController.m */,
+				9612EC1B18B68EAD00BBED62 /* AllPortraitsArrayController.h */,
+				9612EC1C18B68EAD00BBED62 /* AllPortraitsArrayController.m */,
+				9612EC0F18B59A6900BBED62 /* ObjectsPortraitsArrayController.h */,
+				9612EC1018B59A6900BBED62 /* ObjectsPortraitsArrayController.m */,
+				9612EC1218B5AA5F00BBED62 /* OrderedSetArrayValueTransformer.h */,
+				9612EC1318B5AA5F00BBED62 /* OrderedSetArrayValueTransformer.m */,
 			);
 			name = "Controller Classes";
 			sourceTree = "<group>";
@@ -1377,6 +1413,10 @@
 				961A2F4518B40AB2009EA198 /* SyncedPlaybackPanel.m */,
 				961A2F4718B40D05009EA198 /* SyncedPlaybackView.h */,
 				961A2F4818B40D05009EA198 /* SyncedPlaybackView.m */,
+				9612EC1518B5EDE400BBED62 /* PortraitBrowserView.h */,
+				9612EC1618B5EDE400BBED62 /* PortraitBrowserView.m */,
+				9612EC1818B5EE0100BBED62 /* PortraitBrowserCell.h */,
+				9612EC1918B5EE0100BBED62 /* PortraitBrowserCell.m */,
 			);
 			name = "View Classes";
 			sourceTree = "<group>";
@@ -1482,6 +1522,7 @@
 				96EF24E810967B62001DEF3A /* VideoOverlayView.m in Sources */,
 				96EF265110976B7B001DEF3A /* MagnifiedPreviewView.m in Sources */,
 				96EEB8D210A9F4B1005C500F /* SimultaneousPlayback.m in Sources */,
+				9612EC1718B5EDE400BBED62 /* PortraitBrowserView.m in Sources */,
 				96DC9B461152C7600078A956 /* VSPoint.m in Sources */,
 				961A2F4918B40D05009EA198 /* SyncedPlaybackView.m in Sources */,
 				96DC9B411152C64E0078A956 /* VSEventScreenPoint.m in Sources */,
@@ -1498,6 +1539,7 @@
 				96E128DC10FC418B00DAF12C /* TrackedEventArrayController.m in Sources */,
 				96E128E110FC474000DAF12C /* VSTrackedEvent.m in Sources */,
 				96010D4710FCF0A300944387 /* EventsOtherObjectsArrayController.m in Sources */,
+				9612EC0E18B597F700BBED62 /* PortraitsArrayController.m in Sources */,
 				96010ED610FE410500944387 /* VSVisibleItemArrayController.m in Sources */,
 				96FA1CF11155ACCA0065DF96 /* EventsPointsController.m in Sources */,
 				96897AE7115992EA00B3C3C3 /* UtilityFunctions.mm in Sources */,
@@ -1511,12 +1553,17 @@
 				96A0CB5B1165D22200845DCD /* VSAnnotationArrayController.m in Sources */,
 				961A2F4618B40AB2009EA198 /* SyncedPlaybackPanel.m in Sources */,
 				96A0CE6D1166CBA600845DCD /* Capture.m in Sources */,
+				9612EC1D18B68EAD00BBED62 /* AllPortraitsArrayController.m in Sources */,
+				9612EC1418B5AA5F00BBED62 /* OrderedSetArrayValueTransformer.m in Sources */,
+				9612EC1118B59A6900BBED62 /* ObjectsPortraitsArrayController.m in Sources */,
 				969065B5116AEA0B002B3F20 /* ObjectSynonymizeArrayController.m in Sources */,
 				9690663D116AFB08002B3F20 /* TypeIndexNameSortedArrayController.m in Sources */,
 				9697F59D116D165E00BA3BB1 /* DataExport.m in Sources */,
 				969DB353116FF3AF00DBA9F4 /* TypesArrayController.m in Sources */,
 				96BDA40B117B826100C39399 /* VSDistortionLine.m in Sources */,
 				96BDA421117B84D900C39399 /* CalibDistortionLineArrayController.mm in Sources */,
+				9612EC1A18B5EE0100BBED62 /* PortraitBrowserCell.m in Sources */,
+				9612EC0B18B5825300BBED62 /* VSTrackedObjectPortrait.m in Sources */,
 				96BDA48A117B925300C39399 /* VSDistortionPoint.m in Sources */,
 				96D559601182501300032E44 /* PlayWhilePressedButton.m in Sources */,
 				96BBAD60151A93760066E9CC /* VSScientificNotationFormatter.m in Sources */,
@@ -1568,6 +1615,11 @@
 				CLANG_ENABLE_OBJC_ARC = YES;
 				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					/Users/jason/Documents/VidSync,
+					/Users/jason/Documents/VidSync/Quartz.framework/Frameworks,
+				);
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
 				GCC_ENABLE_OBJC_GC = unsupported;
@@ -1603,6 +1655,11 @@
 				CLANG_ENABLE_OBJC_ARC = YES;
 				COMBINE_HIDPI_IMAGES = YES;
 				DEBUG_INFORMATION_FORMAT = dwarf;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					/Users/jason/Documents/VidSync,
+					/Users/jason/Documents/VidSync/Quartz.framework/Frameworks,
+				);
 				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
 				GCC_ENABLE_OBJC_GC = unsupported;
 				GCC_MODEL_TUNING = G5;
@@ -1689,6 +1746,7 @@
 		96AE98861165348400118398 /* VidSyncProject.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
+				9612EC0818B57A1300BBED62 /* VidSyncProject 1.12.xcdatamodel */,
 				96070353152A7F9800905BCC /* VidSyncProject 1.09.xcdatamodel */,
 				96A3718E15202B3C008DCB6C /* VidSyncProject 1.08.xcdatamodel */,
 				96BBAD5D151A8C270066E9CC /* VidSyncProject 1.07.xcdatamodel */,

@@ -24,6 +24,8 @@
 @synthesize playerLayer;
 @synthesize assetImageGenerator;
 @synthesize videoAsset;
+@synthesize portraitDragStartCoords;
+@synthesize portraitDragCurrentCoords;
 
 - (VideoWindowController *)initWithVideoClip:(VSVideoClip *)inVideoClip inManagedObjectContext:(NSManagedObjectContext *)moc
 {
@@ -441,6 +443,83 @@
 	}
 }
 
+#pragma mark
+#pragma mark Drag Events (for portraits)
+
+/*---
+ 
+ MAIN FUNCTION
+ ----------------------------------
+ 
+ The "Add new portrait" button activates "Portrait Mode" in the VidSyncDocument, which must respond appropriately to portrait drawing in any video clip.
+ 
+ Portrait mode should change the mouse cursor.
+ 
+ Portrait mode is deactivated by right-clicking anywhere, or by left-clicking anywhere that isn't on a video, or by finishing a portrait.
+ 
+ The portrait mode toggle variable includes the reference to the Object being portraited.
+ 
+ When a left-click is made on the video in portrait mode, it sets portraitStartCoords. Mouse drags update portraitMostRecentCoords. MouseUps end portrait mode if it's on, and restores the cursor.
+ 
+ 
+ // Maybe do observer/keypath thing for portraitSubject
+ 
+ MISC
+ ----------------------------------
+ 
+ Portraits are recorded with timestamps as well as their dimensions.
+ 
+ The indicator line should be dotted, thick black under thinner yellow for ideal contrast
+ 
+ Portraits should only work in edit mode, and of course they don't result in other event creation
+ 
+ If the left and rightclicks while in portraitmode are in the same spot, they don't result in portrait creation and end portrait mode
+ 
+ Make sure the magnified preview keeps updating while I'm doing the box.
+ 
+ ---*/
+
+- (void) handleOverlayMouseUp:(NSPoint)coords fromEvent:(NSEvent *)theEvent
+{
+    if (self.videoClip.project.document.portraitSubject != nil) {
+        portraitDragCurrentCoords = [self convertOverlayToVideoCoords:coords];
+        
+        // here, create the portrait
+        
+        NSImage *__strong returnImage = [NSImage alloc];
+        
+        NSPoint startPoint = NSMakePoint(portraitDragStartCoords.x,portraitDragStartCoords.y);
+        NSPoint endPoint = portraitDragCurrentCoords;
+        float width = fabs(startPoint.x - endPoint.x);
+        float height = fabs(startPoint.y - endPoint.y);
+		NSRect imageRect = NSMakeRect(MIN(startPoint.x,endPoint.x),MIN(startPoint.y,endPoint.y),width,height);
+        imageRect.origin.y = movieSize.height - imageRect.origin.y - imageRect.size.height;    // Flips the rect around to account for difference between top-left and bottom-left zeroed coordinate systems
+        CMTime offset = [UtilityFunctions CMTimeFromString:videoClip.syncOffset];
+        CMTime movieTime = CMTimeSubtract([[self document] currentMasterTime],offset);
+        CMTime actualCopiedTime;
+        NSError *err;
+        CGImageRef fullScreenImage = [assetImageGenerator copyCGImageAtTime:movieTime actualTime:&actualCopiedTime error:&err];
+        CGImageRef portraitImage = CGImageCreateWithImageInRect(fullScreenImage,imageRect);
+        if (err != nil) [NSApp presentError:err];
+        returnImage = [returnImage initWithCGImage:portraitImage size:NSZeroSize];
+        
+        VSTrackedObject *currentObject = [[[[self document] trackedObjectsController] selectedObjects] firstObject];
+        
+        [[[self document] objectsPortraitsArrayController] addImage:returnImage ofObject:currentObject fromSourceClip:self.videoClip withTimecode:[[self document] currentMasterTimeString]];
+        
+        self.videoClip.project.document.portraitSubject = nil;
+        [self refreshOverlay];
+    }
+}
+
+- (void) handleOverlayMouseDrag:(NSPoint)coords fromEvent:(NSEvent *)theEvent
+{
+    if (self.videoClip.project.document.portraitSubject != nil) {
+        portraitDragCurrentCoords = [self convertOverlayToVideoCoords:coords];
+        [self refreshOverlay];
+    }
+}
+
 
 #pragma mark
 #pragma mark Click Events
@@ -453,49 +532,56 @@
     } else {
         videoCoords = [self convertOverlayToVideoCoords:coords];
     }
-	VidSyncDocument *doc = self.document;
-	if ([[[doc.mainTabView selectedTabViewItem] label] isEqualToString:@"Calibration"]) {
-		if ([[[doc.calibrationInputTabView selectedTabViewItem] label] isEqualToString:@"3D Calibration Frame Input"]) {	// don't process clicks while on "Results" tab
-			if ([videoClip isAtCalibrationTime]) {
-				[self.videoClip.calibration processClickOnSurface:[[doc.calibrationSurfaceTabView selectedTabViewItem] label] withCoords:videoCoords];
-			} else {
-				NSRunAlertPanel(@"Not At Calibration Frame",@"Ignoring calibration click because this video isn't at the current calibration time.  Use 'Go to Calibration Frame' to go there, or 'Use Current Frame' to select this frame as the calibration frame.",@"Ok",nil,nil);
+    VidSyncDocument *doc = self.document;
+	
+    if (self.videoClip.project.document.portraitSubject != nil) {   // if in portrait mode, handle everything differently
+    
+        portraitDragStartCoords = videoCoords;
+
+    } else {
+        if ([[[doc.mainTabView selectedTabViewItem] label] isEqualToString:@"Calibration"]) {
+            if ([[[doc.calibrationInputTabView selectedTabViewItem] label] isEqualToString:@"3D Calibration Frame Input"]) {	// don't process clicks while on "Results" tab
+                if ([videoClip isAtCalibrationTime]) {
+                    [self.videoClip.calibration processClickOnSurface:[[doc.calibrationSurfaceTabView selectedTabViewItem] label] withCoords:videoCoords];
+                } else {
+                    NSRunAlertPanel(@"Not At Calibration Frame",@"Ignoring calibration click because this video isn't at the current calibration time.  Use 'Go to Calibration Frame' to go there, or 'Use Current Frame' to select this frame as the calibration frame.",@"Ok",nil,nil);
+                }
+            } else if ([[[doc.calibrationInputTabView selectedTabViewItem] label] isEqualToString:@"Lens Distortion"]) {
+                [doc.distortionLinesController appendPointToSelectedLineAt:videoCoords];
+                [self updateMagnifiedPreviewWithCenter:videoCoords];
             }
-		} else if ([[[doc.calibrationInputTabView selectedTabViewItem] label] isEqualToString:@"Lens Distortion"]) {
-			[doc.distortionLinesController appendPointToSelectedLineAt:videoCoords];
-			[self updateMagnifiedPreviewWithCenter:videoCoords];
-		}
-	} else if ([[[doc.mainTabView selectedTabViewItem] label] isEqualToString:@"Measurement"]) {
-		if ([[doc.trackedObjectsController selectedObjects] count] == 1) {
-			if ([[doc.trackedEventsController selectedObjects] count] == 1) {
-				VSTrackedEvent *activeEvent = [[doc.trackedEventsController selectedObjects] objectAtIndex:0];
-				VSEventScreenPoint *newScreenPoint = [NSEntityDescription insertNewObjectForEntityForName:@"VSEventScreenPoint" inManagedObjectContext:managedObjectContext]; 
-				newScreenPoint.videoClip = videoClip;
-				newScreenPoint.screenX = [NSNumber numberWithFloat:videoCoords.x];
-				newScreenPoint.screenY = [NSNumber numberWithFloat:videoCoords.y];			
-				CMTime masterTime = [videoClip.project.document currentMasterTime];		// Current timecode of the project's masterClip
-				VSPoint *point = [activeEvent pointToTakeScreenPointFromClip:videoClip atTime:masterTime];	// Retrieve or create the appropriate VSPoint to add this VSScreenPoint to
-				newScreenPoint.point = point;
-				[point handleScreenPointChange];
-				[doc.eventsPointsController setSelectedObjects:[NSArray arrayWithObject:point]];
-				if ([self.videoClip isCalibrated]) [newScreenPoint calculateHintLines];
-			} else {
-				NSRunAlertPanel(@"No Selected Event",@"Ignoring measurement click because there is no selected event.",@"Ok",nil,nil);
-			}
-		} else {
-			NSRunAlertPanel(@"No Selected Object",@"Ignoring measurement click because there is no selected object.",@"Ok",nil,nil);
-		}
-	} else if ([[[doc.mainTabView selectedTabViewItem] label] isEqualToString:@"Annotation"]) {	
-		// The work of creating an annotation is handled by the createNewAnnotation action.
-		// However, I have to lock in the timecode and coordinate values from the click immediately, since they may change after the panel button is submitted.
-		newAnnotationStartTimecode = [UtilityFunctions CMStringFromTime:[videoClip.project.document currentMasterTime]];
-		newAnnotationCoords = videoCoords;
-		NSRect currentWindowFrame = [[self window] frame];
-		[newAnnotationContents setStringValue:@""];
-		[newAnnotationPanel setFrameTopLeftPoint:NSMakePoint(coords.x + currentWindowFrame.origin.x,coords.y + currentWindowFrame.origin.y)];
-		[newAnnotationPanel makeKeyAndOrderFront:self];
-	}
-	[self.videoClip.project.document refreshOverlaysOfAllClips:self];
+        } else if ([[[doc.mainTabView selectedTabViewItem] label] isEqualToString:@"Measurement"]) {
+            if ([[doc.trackedObjectsController selectedObjects] count] == 1) {
+                if ([[doc.trackedEventsController selectedObjects] count] == 1) {
+                    VSTrackedEvent *activeEvent = [[doc.trackedEventsController selectedObjects] objectAtIndex:0];
+                    VSEventScreenPoint *newScreenPoint = [NSEntityDescription insertNewObjectForEntityForName:@"VSEventScreenPoint" inManagedObjectContext:managedObjectContext];
+                    newScreenPoint.videoClip = videoClip;
+                    newScreenPoint.screenX = [NSNumber numberWithFloat:videoCoords.x];
+                    newScreenPoint.screenY = [NSNumber numberWithFloat:videoCoords.y];
+                    CMTime masterTime = [videoClip.project.document currentMasterTime];		// Current timecode of the project's masterClip
+                    VSPoint *point = [activeEvent pointToTakeScreenPointFromClip:videoClip atTime:masterTime];	// Retrieve or create the appropriate VSPoint to add this VSScreenPoint to
+                    newScreenPoint.point = point;
+                    [point handleScreenPointChange];
+                    [doc.eventsPointsController setSelectedObjects:[NSArray arrayWithObject:point]];
+                    if ([self.videoClip isCalibrated]) [newScreenPoint calculateHintLines];
+                } else {
+                    NSRunAlertPanel(@"No Selected Event",@"Ignoring measurement click because there is no selected event.",@"Ok",nil,nil);
+                }
+            } else {
+                NSRunAlertPanel(@"No Selected Object",@"Ignoring measurement click because there is no selected object.",@"Ok",nil,nil);
+            }
+        } else if ([[[doc.mainTabView selectedTabViewItem] label] isEqualToString:@"Annotation"]) {
+            // The work of creating an annotation is handled by the createNewAnnotation action.
+            // However, I have to lock in the timecode and coordinate values from the click immediately, since they may change after the panel button is submitted.
+            newAnnotationStartTimecode = [UtilityFunctions CMStringFromTime:[videoClip.project.document currentMasterTime]];
+            newAnnotationCoords = videoCoords;
+            NSRect currentWindowFrame = [[self window] frame];
+            [newAnnotationContents setStringValue:@""];
+            [newAnnotationPanel setFrameTopLeftPoint:NSMakePoint(coords.x + currentWindowFrame.origin.x,coords.y + currentWindowFrame.origin.y)];
+            [newAnnotationPanel makeKeyAndOrderFront:self];
+        }
+        [self.videoClip.project.document refreshOverlaysOfAllClips:self];
+    }
 }
 
 - (IBAction) createNewAnnotation:(id)sender
@@ -722,7 +808,8 @@
 
 - (IBAction) lockSyncOffset:(id)sender
 {
-	if ([sender state] == NSOnState) {
+    NSButton *button = (NSButton *) sender;
+	if ([button state] == NSOnState) {
         self.videoClip.syncIsLocked = [NSNumber numberWithBool:YES];
 		[self setMovieViewControllerVisible:NO];
         [self.videoClip.project.masterClip.windowController setMovieViewControllerVisible:NO];

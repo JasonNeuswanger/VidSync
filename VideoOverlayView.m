@@ -80,6 +80,7 @@
 	[self drawHintLines];
 	[self drawAnnotations];
 	[self drawQuadratCoordinateGrids];
+    [self drawPortraitSelectionBox];
 	if (showUncorrectedDistortionOverlay || showCorrectedDistortionOverlay) [self drawDistortionCorrections];
 	if (showPixelErrorOverlay) [self drawScreenPointToIdealScreenPointComparison];
 }
@@ -124,6 +125,29 @@
 		}
 	}
 	self.visibleAnnotations = tempVisibleAnnotations;
+}
+
+- (void) drawPortraitSelectionBox {
+    VideoWindowController *vwc = _delegate;
+    if (vwc.videoClip.project.document.portraitSubject != nil) {
+        NSPoint startPoint = [vwc convertVideoToOverlayCoords:vwc.portraitDragStartCoords];
+        NSPoint endPoint = [vwc convertVideoToOverlayCoords:vwc.portraitDragCurrentCoords];
+        float width = fabs(startPoint.x - endPoint.x);
+        float height = fabs(startPoint.y - endPoint.y);
+        NSColor *selectionColor = [NSUnarchiver unarchiveObjectWithData:[[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"pointSelectionIndicatorColor"]];
+		NSRect selectionRect = NSMakeRect(MIN(startPoint.x,endPoint.x),MIN(startPoint.y,endPoint.y),width,height);
+		NSBezierPath *selectedOutline = [NSBezierPath bezierPathWithRect:selectionRect];
+        double dashes[2];
+        dashes[0] = 5.0;
+        dashes[1] = 3.0;
+        [selectedOutline setLineDash:dashes count:2 phase:0.0];
+		[[NSColor blackColor] set];
+		[selectedOutline setLineWidth:2.6];
+		[selectedOutline stroke];
+        [selectionColor set];
+		[selectedOutline setLineWidth:2.0];
+		[selectedOutline stroke];
+    }
 }
 
 - (void) drawAnnotations
@@ -977,17 +1001,28 @@
 - (void)mouseMoved:(NSEvent *)theEvent {
 	VideoWindowController *vwc = _delegate;
 	NSPoint mousePosition = [self convertPoint:[theEvent locationInWindow] fromView:nil];
-    mousePosition.x = floor(mousePosition.x);   // Here, I'm accounting for a weird bug in Lion in which mouseMoved events deliver apparently "subpixel" coordinates but
+    mousePosition.x = floor(mousePosition.x);   // Here, I'm accounting for a weird behavior in Lion in which mouseMoved events deliver apparently "subpixel" coordinates but
     mousePosition.y = ceil(mousePosition.y);    // mouseDown doesn't, so the position of a click doesn't match where the mouse had moved to.  The subpixel coordinates weren't real anyway.
 	[vwc updateMagnifiedPreviewWithCenter:[vwc convertOverlayToVideoCoords:mousePosition]];
 	[[vwc window] makeKeyAndOrderFront:nil]; // the delegate is the VideoWindowController
 	[vwc makeOverlayKeyWindow];	// make the overlay the key window, so it receives keyDown events
 	[vwc.document setFrontVideoClip:vwc.videoClip];
+    if (vwc.videoClip.project.document.portraitSubject != nil) [[NSCursor crosshairCursor] set];   // Prevents portrait selection crosshair cursor from resetting to arrow when window is ordered to front
 }
 
 - (void)mouseDown:(NSEvent *)theEvent {	
 	NSPoint mousePosition = [self convertPoint:[theEvent locationInWindow] fromView:nil];
 	[_delegate handleOverlayClick:mousePosition fromEvent:theEvent];	// tell the VideoWindowController to figure out what to do
+}
+
+- (void)mouseUp:(NSEvent *)theEvent {
+	NSPoint mousePosition = [self convertPoint:[theEvent locationInWindow] fromView:nil];
+	[_delegate handleOverlayMouseUp:mousePosition fromEvent:theEvent];	// tell the VideoWindowController to figure out what to do
+}
+
+- (void)mouseDragged:(NSEvent *)theEvent {
+	NSPoint mousePosition = [self convertPoint:[theEvent locationInWindow] fromView:nil];
+	[_delegate handleOverlayMouseDrag:mousePosition fromEvent:theEvent];	// tell the VideoWindowController to figure out what to do
 }
 
 - (void)rightMouseDown:(NSEvent *)theEvent {	

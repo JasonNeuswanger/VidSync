@@ -16,6 +16,7 @@
 @dynamic type;
 @dynamic project;
 @dynamic trackedEvents;
+@dynamic portraits;
 
 + (int) highestObjectIndexInProject:(VSProject *)project
 {
@@ -32,6 +33,21 @@
 - (NSString *) tableGlyphForColor
 {
 	return @"█";
+}
+
+- (NSAttributedString *) tableGlyphForPortrait
+{
+    NSMutableAttributedString *glyph;
+    if ([self.portraits count] > 0) {
+        glyph =  [[NSMutableAttributedString alloc] initWithString:@"\uf030"];
+    } else {
+        glyph =  [[NSMutableAttributedString alloc] initWithString:@" "];
+    }
+    
+    NSRange glyphRange = NSMakeRange(0, [glyph length]);
+    [glyph addAttribute:NSFontAttributeName value:[NSFont fontWithName:@"FontAwesome" size:9.0f] range:glyphRange];
+    
+    return glyph;
 }
 
 + (NSSet *)keyPathsForValuesAffectingNumEvents

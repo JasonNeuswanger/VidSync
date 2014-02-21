@@ -14,6 +14,7 @@
 @class EventsPointsController;
 @class CalibScreenPtArrayController;
 @class VSVideoClip;
+@class VSTrackedObject;
 @class VSVisibleItemArrayController;
 @class ObjectSynonymizeArrayController;
 @class TypesArrayController;
@@ -22,6 +23,7 @@
 @class PlayWhilePressedButton;
 @class SyncedPlaybackView;
 @class SyncedPlaybackPanel;
+@class ObjectsPortraitsArrayController;
 
 @interface VidSyncDocument: NSPersistentDocument {
 	
@@ -84,6 +86,11 @@
     
     IBOutlet NSImageView *__weak directOpenCVView;
     IBOutlet NSWindow *__weak directOpenCVWindow;
+    
+    VSTrackedObject *__weak portraitSubject;
+    
+    IBOutlet ObjectsPortraitsArrayController *__weak objectsPortraitsArrayController;
+    IBOutlet NSButton *__weak allPortraitBrowserOpenButton;
 	
 }
 
@@ -118,8 +125,11 @@
 @property IBOutlet MagnifiedPreviewView *magnifiedMeasurementPreview;
 @property IBOutlet MagnifiedPreviewView *magnifiedDistortionPreview;
 
+@property (weak) IBOutlet ObjectsPortraitsArrayController *objectsPortraitsArrayController;
+
 @property (readonly, weak) IBOutlet SyncedPlaybackPanel *syncedPlaybackPanel;
 
+@property (weak) VSTrackedObject *portraitSubject;
 
 - (id) initWithType:(NSString *)type error:(NSError **)error;
 - (void) windowControllerDidLoadNib:(NSWindowController *)windowController;
@@ -145,6 +155,9 @@
 - (IBAction) refreshOverlaysOfAllClips:(id)sender;
 - (IBAction) recalculateAllPoints:(id)sender;
 
+- (void) setPortraitSubject:(VSTrackedObject *)subject; // Not synthesizing the getters and setters here because the synthesized ones don't seem to
+- (VSTrackedObject *) portraitSubject;                  // play nice with the Interface Builder bindings
+
 @end
 
 @interface VidSyncDocument (SimultaneousPlayback)
@@ -154,6 +167,7 @@
 
 
 - (CMTime) currentMasterTime;
+- (NSString *) currentMasterTimeString;
 - (void) goToMasterTime:(CMTime)time;
 - (BOOL) currentMasterTimeIs:(CMTime)time;
 
@@ -179,6 +193,8 @@
 - (void) movieTimeDidChange:(NSNotification *)notification;
 - (void) movieRateDidChange;
 - (void) reSync;
+
+- (void)imageBrowser:(IKImageBrowserView *)aBrowser cellWasDoubleClickedAtIndex:(NSUInteger)index;
 
 @end // VidSyncDocument (SimultaneousPlayback)
 

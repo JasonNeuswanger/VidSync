@@ -41,6 +41,7 @@
 - (void) drawConnectingLinesForTrackedEvent:(VSTrackedEvent *)trackedEvent;
 - (void) drawConnectingLinesLengthLabelFromVSPoint:(VSPoint *)point toVSPoint:(VSPoint *)otherPoint onLine:(NSPoint[2])line inColor:(NSColor *)color;
 - (void) drawDistortionCorrections;
+- (void) drawPortraitSelectionBox;
 
 - (void) calculateVisibleAnnotations;
 - (void) drawAnnotations;
@@ -54,6 +55,8 @@
 
 - (void)mouseMoved:(NSEvent *)theEvent;
 - (void)mouseDown:(NSEvent *)theEvent;
+- (void)mouseDragged:(NSEvent *)theEvent;
+- (void)mouseUp:(NSEvent *)theEvent;
 - (void)rightMouseDown:(NSEvent *)theEvent;
 - (void)keyDown:(NSEvent *)theEvent;
 - (BOOL)acceptsFirstResponder;

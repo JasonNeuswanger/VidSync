@@ -35,6 +35,8 @@
 	NSWindow *overlayWindow;
 	VideoOverlayView *overlayView;
 	float overlayWidth,overlayHeight;
+    
+    NSPoint portraitDragStartCoords, portraitDragCurrentCoords;
 		
 }
 
@@ -51,6 +53,8 @@
 @property  VideoOverlayView *overlayView;
 @property float overlayWidth;
 @property float overlayHeight;
+@property NSPoint portraitDragStartCoords;
+@property NSPoint portraitDragCurrentCoords;
 
 - (VideoWindowController *)initWithVideoClip:(VSVideoClip *)inVideoClip inManagedObjectContext:(NSManagedObjectContext *)moc;
 - (void)setUpPlaybackOfAsset:(AVAsset *)asset withKeys:(NSArray *)keys;
@@ -73,6 +77,8 @@
 - (void) handleOverlayKeyDownInAnnotateMode:(NSEvent *)theEvent;
 
 - (void) handleOverlayClick:(NSPoint)coords fromEvent:(NSEvent *)theEvent;
+- (void) handleOverlayMouseUp:(NSPoint)coords fromEvent:(NSEvent *)theEvent;
+- (void) handleOverlayMouseDrag:(NSPoint)coords fromEvent:(NSEvent *)theEvent;
 - (void) handleOverlayRightClick:(NSPoint)coords;
 - (IBAction) createNewAnnotation:(id)sender;
 - (void) handleOverlayRightClickInDistortionMode:(NSPoint)coords;

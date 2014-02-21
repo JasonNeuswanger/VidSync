@@ -46,6 +46,8 @@
 @synthesize magnifiedMeasurementPreview;
 @synthesize magnifiedDistortionPreview;
 
+@synthesize objectsPortraitsArrayController;
+
 static void *AVSPPlayerRateContext = &AVSPPlayerRateContext;
 static void *AVSPPlayerCurrentTimeContext = &AVSPPlayerCurrentTimeContext;
 
@@ -69,6 +71,16 @@ static void *AVSPPlayerCurrentTimeContext = &AVSPPlayerCurrentTimeContext;
     return self;
 }
 
+- (NSError*) application:(NSApplication*)application willPresentError:(NSError*)error
+{
+    if (error)
+    {
+        NSDictionary* userInfo = [error userInfo];
+        NSLog (@"User encountered the following error: %@", userInfo);
+    }
+    return error;
+}
+
 - (void)makeWindowControllers
 {
 	mainWindowController = [[NSWindowController alloc] initWithWindowNibName:@"VidSyncProject" owner:self];
@@ -81,6 +93,7 @@ static void *AVSPPlayerCurrentTimeContext = &AVSPPlayerCurrentTimeContext;
 	}
 
     [self addObserver:self forKeyPath:@"project.masterClip.windowController.playerView.player.rate" options:NSKeyValueObservingOptionNew context:AVSPPlayerRateContext];
+    [self addObserver:self forKeyPath:@"portraitSubject" options:NSKeyValueObservingOptionNew context:NULL];
 
 	[[NSNotificationCenter defaultCenter] addObserver:self
 											 selector:@selector(movieTimeDidChange:)
@@ -128,6 +141,10 @@ static void *AVSPPlayerCurrentTimeContext = &AVSPPlayerCurrentTimeContext;
         
         scrubberMaxTime = 1000000000;
         [syncedPlaybackScrubber setMaxValue:(double) scrubberMaxTime];
+        
+        NSMutableAttributedString *portraitWindowOpenButtonTitle =[[NSMutableAttributedString alloc] initWithAttributedString:[[NSMutableAttributedString alloc] initWithString:@"\uf030"]];
+        [portraitWindowOpenButtonTitle addAttribute:NSFontAttributeName value:[NSFont fontWithName:@"FontAwesome" size:12.0f] range:NSMakeRange(0,1)];
+        [allPortraitBrowserOpenButton setAttributedTitle:portraitWindowOpenButtonTitle];
 	}
 }
 
@@ -342,6 +359,7 @@ static void *AVSPPlayerCurrentTimeContext = &AVSPPlayerCurrentTimeContext;
 				[trackedEventsController setSelectionIndex:0];	// Select the object's first event
 				[eventsPointsController setSelectionIndex:0];	// and that event's first point
 				[objectSynonymizeController rearrangeObjects];
+                [objectsPortraitsArrayController refreshImageBrowserView];
 				
 			}
 			
@@ -360,6 +378,12 @@ static void *AVSPPlayerCurrentTimeContext = &AVSPPlayerCurrentTimeContext;
     } else if ([keyPath isEqualToString:@"project.masterClip.windowController.playerView.player.rate"]) {
         // trigger player rate change handler
         [self movieRateDidChange];
+    } else if ([keyPath isEqualToString:@"portraitSubject"]) {
+        if (portraitSubject == nil) {
+            [[NSCursor arrowCursor] set];
+        } else {
+            [[NSCursor crosshairCursor] set];
+        }
     }
 }
 
@@ -487,5 +511,26 @@ static void *AVSPPlayerCurrentTimeContext = &AVSPPlayerCurrentTimeContext;
     if (fetchError != nil) [self presentError:fetchError];
 }
 
+- (void) setPortraitSubject:(VSTrackedObject *)subject
+{
+    portraitSubject = subject;
+}
+
+- (VSTrackedObject *) portraitSubject
+{
+    return portraitSubject;
+}
+
+#pragma mark
+#pragma mark Delegate method for PortraitBrowserView, following IKImageBrowserDelegate informal protocol)
+
+// Double-clicking on a portrait takes the video to the time at which the portrait was created, and brings that window to the front
+
+- (void)imageBrowser:(IKImageBrowserView *)aBrowser cellWasDoubleClickedAtIndex:(NSUInteger)index
+{
+    VSTrackedObjectPortrait *portrait = (VSTrackedObjectPortrait *) [[[aBrowser dataSource] arrangedObjects] objectAtIndex:index];
+    [self goToMasterTime:[UtilityFunctions CMTimeFromString:portrait.timecode]];
+    [[portrait.sourceVideoClip.windowController window] makeKeyAndOrderFront:self];
+}
 
 @end

@@ -128,6 +128,10 @@
 	[initialValueDict setObject:[NSNumber numberWithBool:NO] forKey:@"includeScreenCoordsInExports"];	
 	[initialValueDict setObject:@"" forKey:@"exportedFileNameCustomText"];	
 	
+    // initial values for portrait browser zoom sliders
+    
+    [initialValueDict setObject:[NSNumber numberWithFloat:1.0] forKey:@"allPortraitsBrowserZoom"];
+    [initialValueDict setObject:[NSNumber numberWithFloat:1.0] forKey:@"objectsPortraitsBrowserZoom"];
 	
 	[[NSUserDefaultsController sharedUserDefaultsController] setInitialValues:initialValueDict];
 
