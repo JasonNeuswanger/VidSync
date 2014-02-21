@@ -10,35 +10,35 @@
 
 @implementation VideoControlButton
 
-@synthesize fontSize;
-
 - (void) awakeFromNib
 {
     [self setBordered:NO];
-    self.fontSize = 25;
     [self setNeedsDisplay];
+    pressedHighlightColor = [NSColor grayColor];
 }
 
 
 - (void) mouseDown:(NSEvent *)theEvent
 {
-    [self setCustomTitle:[self title] withColor:[NSColor grayColor]];
+    [self setCustomTitle:[self title] withColor:pressedHighlightColor fontSize:fontSizeSet];
 	[super mouseDown:theEvent];
 	[self mouseUp:theEvent];		// the [super mouseDown] kills the normal mouseUp; it also waits until the mouse is actually up to execute this call to mouseUp.
 }
 
 - (void) mouseUp:(NSEvent *)theEvent
 {
-    [self setCustomTitle:[self title] withColor:[NSColor whiteColor]];
+    [self setCustomTitle:[self title] withColor:[NSColor whiteColor] fontSize:fontSizeSet];
 	[super mouseUp:theEvent];
 }
 
-- (void) setCustomTitle:(NSString *)title withColor:(NSColor *)color {
+- (void) setCustomTitle:(NSString *)title withColor:(NSColor *)color fontSize:(float)fontSize {
+    fontSizeSet = fontSize;
     NSMutableAttributedString *colorTitle =[[NSMutableAttributedString alloc] initWithAttributedString:[[NSMutableAttributedString alloc] initWithString:title]];
     NSRange titleRange = NSMakeRange(0, [colorTitle length]);
     [colorTitle addAttribute:NSForegroundColorAttributeName value:color range:titleRange];
-    [colorTitle addAttribute:NSFontAttributeName value:[NSFont fontWithName:@"FontAwesome" size:25.0f] range:titleRange];
+    [colorTitle addAttribute:NSFontAttributeName value:[NSFont fontWithName:@"FontAwesome" size:fontSize] range:titleRange];
     [self setAttributedTitle:colorTitle];
+//    NSLog(@"Set an attributed title for %@ of length %@ to %@",title,[NSNumber numberWithInt:[colorTitle length]],colorTitle);
 }
 
 @end

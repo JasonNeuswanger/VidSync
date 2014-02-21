@@ -9,11 +9,12 @@
 #import <Cocoa/Cocoa.h>
 
 @class VideoControlButton;
+@class BookmarkControlButton;
 
 @interface SyncedPlaybackView : NSView {
     
-    IBOutlet VideoControlButton *playOrPauseButton, *stepForwardButton, *stepBackwardButton, *playBackwardButton, *fastForwardButton, *fastBackwardButton;
-    
+    IBOutlet VideoControlButton *playOrPauseButton, *stepForwardButton, *stepBackwardButton, *playBackwardButton, *fastForwardButton, *fastBackwardButton, *bookmarkSetButton1, *bookmarkSetButton2, *bookmarkGoButton1, *bookmarkGoButton2;
+
 }
 
 @end

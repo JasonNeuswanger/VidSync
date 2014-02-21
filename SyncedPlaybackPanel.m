@@ -74,4 +74,16 @@
     [self setFrameOrigin:newOrigin];
 }
 
+/*--- These key/main window settings are necessary to make text fields in this window editable ---*/
+
+- (BOOL) canBecomeKeyWindow
+{
+    return YES;
+}
+
+- (BOOL) canBecomeMainWindow
+{
+    return YES;
+}
+
 @end

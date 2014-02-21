@@ -9,9 +9,8 @@
 #import <Cocoa/Cocoa.h>
 
 
-@interface PlayWhilePressedButton : NSButton {
+@interface PlayWhilePressedButton : VideoControlButton {
 
-	IBOutlet VidSyncDocument *document;
 	float direction;
 	int advancedRateToUse;
 	

@@ -13,6 +13,12 @@
 @synthesize direction;
 @synthesize advancedRateToUse;
 
+- (void) awakeFromNib
+{
+    [super awakeFromNib];
+    pressedHighlightColor = [NSColor greenColor];
+}
+
 - (void) mouseDown:(NSEvent *)theEvent
 {
     [self startPlaying];

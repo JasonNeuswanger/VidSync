@@ -33,14 +33,17 @@
 
 	// initial values for advanced playback controls
 	
-	[initialValueDict setObject:[NSNumber numberWithFloat:1.5] forKey:@"advancedPlaybackRate1"];	
-	[initialValueDict setObject:[NSNumber numberWithFloat:0.25] forKey:@"advancedPlaybackRate2"];	
-	[initialValueDict setObject:[NSNumber numberWithInt:3] forKey:@"advancedPlaybackStepFrames"];	
-	[initialValueDict setObject:[NSNumber numberWithInt:0] forKey:@"advancedPlaybackDurationType"];	
-	[initialValueDict setObject:[NSNumber numberWithFloat:5.0] forKey:@"advancedPlaybackExactDuration"];	
-	[initialValueDict setObject:[NSNumber numberWithFloat:2.0] forKey:@"advancedPlaybackMinRandomDuration"];	
-	[initialValueDict setObject:[NSNumber numberWithFloat:10.0] forKey:@"advancedPlaybackMaxRandomDuration"];	
-	
+	[initialValueDict setObject:[NSNumber numberWithInt:3] forKey:@"advancedPlaybackStepFrames"];
+	[initialValueDict setObject:[NSNumber numberWithFloat:0.33] forKey:@"advancedPlaybackRate1"];
+	[initialValueDict setObject:[NSNumber numberWithFloat:2.0] forKey:@"advancedPlaybackRate2"];
+	[initialValueDict setObject:[NSNumber numberWithInt:0] forKey:@"advancedPlaybackMode1"];
+	[initialValueDict setObject:[NSNumber numberWithFloat:5.0] forKey:@"advancedPlaybackExactDuration1"];
+	[initialValueDict setObject:[NSNumber numberWithFloat:2.0] forKey:@"advancedPlaybackMinRandomDuration1"];
+	[initialValueDict setObject:[NSNumber numberWithFloat:10.0] forKey:@"advancedPlaybackMaxRandomDuration1"];
+    [initialValueDict setObject:[NSNumber numberWithInt:0] forKey:@"advancedPlaybackMode2"];
+	[initialValueDict setObject:[NSNumber numberWithFloat:5.0] forKey:@"advancedPlaybackExactDuration2"];
+	[initialValueDict setObject:[NSNumber numberWithFloat:2.0] forKey:@"advancedPlaybackMinRandomDuration2"];
+	[initialValueDict setObject:[NSNumber numberWithFloat:10.0] forKey:@"advancedPlaybackMaxRandomDuration2"];
 	
 	// initial values for the magnified preview settings
 	[initialValueDict setObject:[NSNumber numberWithFloat:3.5] forKey:@"previewMagnification"];		

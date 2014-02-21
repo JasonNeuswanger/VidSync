@@ -48,6 +48,9 @@
 
 @synthesize objectsPortraitsArrayController;
 
+@synthesize bookmarkIsSet1;
+@synthesize bookmarkIsSet2;
+
 static void *AVSPPlayerRateContext = &AVSPPlayerRateContext;
 static void *AVSPPlayerCurrentTimeContext = &AVSPPlayerCurrentTimeContext;
 
@@ -61,6 +64,8 @@ static void *AVSPPlayerCurrentTimeContext = &AVSPPlayerCurrentTimeContext;
         CTFontManagerCreateFontDescriptorsFromURL((__bridge CFURLRef)(fontPathURL));
         
 		stopTime = kCMTimeIndefinite;
+        bookmarkIsSet1 = NO;
+        bookmarkIsSet2 = NO;
 		
 		decimalFormatter = [[NSNumberFormatter alloc] init];
 		[decimalFormatter setFormatterBehavior:NSNumberFormatterBehavior10_4];
@@ -95,7 +100,7 @@ static void *AVSPPlayerCurrentTimeContext = &AVSPPlayerCurrentTimeContext;
     [self addObserver:self forKeyPath:@"project.masterClip.windowController.playerView.player.rate" options:NSKeyValueObservingOptionNew context:AVSPPlayerRateContext];
     [self addObserver:self forKeyPath:@"portraitSubject" options:NSKeyValueObservingOptionNew context:NULL];
 
-	[[NSNotificationCenter defaultCenter] addObserver:self
+    [[NSNotificationCenter defaultCenter] addObserver:self
 											 selector:@selector(movieTimeDidChange:)
 												 name:AVPlayerItemTimeJumpedNotification
                                                object:project.masterClip.windowController.playerView.player.currentItem];
@@ -145,6 +150,10 @@ static void *AVSPPlayerCurrentTimeContext = &AVSPPlayerCurrentTimeContext;
         NSMutableAttributedString *portraitWindowOpenButtonTitle =[[NSMutableAttributedString alloc] initWithAttributedString:[[NSMutableAttributedString alloc] initWithString:@"\uf030"]];
         [portraitWindowOpenButtonTitle addAttribute:NSFontAttributeName value:[NSFont fontWithName:@"FontAwesome" size:12.0f] range:NSMakeRange(0,1)];
         [allPortraitBrowserOpenButton setAttributedTitle:portraitWindowOpenButtonTitle];
+        
+        [self addObserver:syncedPlaybackView forKeyPath:@"bookmarkIsSet1" options:NSKeyValueObservingOptionNew context:NULL];
+        [self addObserver:syncedPlaybackView forKeyPath:@"bookmarkIsSet2" options:NSKeyValueObservingOptionNew context:NULL];
+
 	}
 }
 

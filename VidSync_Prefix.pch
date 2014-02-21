@@ -65,5 +65,7 @@
 #import "OrderedSetArrayValueTransformer.h"
 #import "PortraitBrowserView.h"
 #import "PortraitBrowserCell.h"
+#import "PlaybackRateDescriptionTransformer.h"
+#import "SyncedPlaybackPanelControlBox.h"
 
 #endif

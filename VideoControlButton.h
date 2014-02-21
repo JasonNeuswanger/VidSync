@@ -12,12 +12,12 @@
     
 	IBOutlet VidSyncDocument *document;
     
-    unsigned int fontSize;
-	
+    float fontSizeSet;
+    
+    NSColor *pressedHighlightColor;
+    
 }
 
-@property (assign) unsigned int fontSize;
-
-- (void) setCustomTitle:(NSString *)title withColor:(NSColor *)color;
+- (void) setCustomTitle:(NSString *)title withColor:(NSColor *)color fontSize:(float)fontSize;
 
 @end

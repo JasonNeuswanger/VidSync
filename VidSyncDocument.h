@@ -55,9 +55,9 @@
     int scrubberMaxTime;
     
 	IBOutlet PlayWhilePressedButton *__weak playForwardAtRate1WhilePressedButton,*__weak playBackwardAtRate1WhilePressedButton,*__weak playForwardAtRate2WhilePressedButton,*__weak playBackwardAtRate2WhilePressedButton;
-	IBOutlet NSTextField *bookmarkTextLabel;
 	IBOutlet NSButton *goToBookmarkButton;
-	CMTime bookmarkTime;
+	CMTime bookmarkTime1, bookmarkTime2;
+    BOOL bookmarkIsSet1, bookmarkIsSet2;
 	
 	IBOutlet NSTextField *masterTimeDisplay;
 
@@ -130,6 +130,9 @@
 @property (readonly, weak) IBOutlet SyncedPlaybackPanel *syncedPlaybackPanel;
 
 @property (weak) VSTrackedObject *portraitSubject;
+
+@property BOOL bookmarkIsSet1;
+@property BOOL bookmarkIsSet2;
 
 - (id) initWithType:(NSString *)type error:(NSError **)error;
 - (void) windowControllerDidLoadNib:(NSWindowController *)windowController;
