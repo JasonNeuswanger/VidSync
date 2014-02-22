@@ -31,6 +31,9 @@
 	
 	VSProject *__weak project;
 	NSWindowController *mainWindowController;
+    
+    NSWindowController *advancedPlaybackWindowController;
+    
 	NSTimer *playbackTimer;
 	IBOutlet MagnifiedPreviewView *magnifiedCalibrationPreview,*magnifiedMeasurementPreview,*magnifiedDistortionPreview;
 	IBOutlet VideoClipArrayController *__weak videoClipArrayController;

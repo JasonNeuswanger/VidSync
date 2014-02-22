@@ -93,6 +93,9 @@ static void *AVSPPlayerCurrentTimeContext = &AVSPPlayerCurrentTimeContext;
 	[mainWindowController setShouldCascadeWindows:NO];
 	[self addWindowController:mainWindowController];
     
+    advancedPlaybackWindowController = [[NSWindowController alloc] init];
+    [self addWindowController:advancedPlaybackWindowController];
+    
     for (VSVideoClip *clip in [self.project.videoClips allObjects]) {
 		[self addWindowController:[[VideoWindowController alloc] initWithVideoClip:clip inManagedObjectContext:[self managedObjectContext]]];
 	}
@@ -154,6 +157,8 @@ static void *AVSPPlayerCurrentTimeContext = &AVSPPlayerCurrentTimeContext;
         [portraitWindowOpenButtonTitle addAttribute:NSFontAttributeName value:[NSFont fontWithName:@"FontAwesome" size:12.0f] range:NSMakeRange(0,1)];
         [allPortraitBrowserOpenButton setAttributedTitle:portraitWindowOpenButtonTitle];
         
+        
+        [advancedPlaybackWindowController setWindow:syncedPlaybackPanel];   // Need to have a separate window controller for this window or it doesn't close. Need to set it here, after nib loads the window.
         [self addObserver:syncedPlaybackView forKeyPath:@"bookmarkIsSet1" options:NSKeyValueObservingOptionNew context:NULL];
         [self addObserver:syncedPlaybackView forKeyPath:@"bookmarkIsSet2" options:NSKeyValueObservingOptionNew context:NULL];
 

@@ -30,7 +30,9 @@
 	[initialValueDict setObject:@"All Frames" forKey:@"selectedEventsPointsTimeFilter"];
 	[initialValueDict setObject:[NSNumber numberWithFloat:0.05] forKey:@"calibrationRefinementIgnoresHighestPercent"];	
 	[initialValueDict setObject:[NSNumber numberWithFloat:20.0] forKey:@"hintLineDrawInterval"];
-
+    [initialValueDict setObject:[NSNumber numberWithBool:YES] forKey:@"showScreenItemDropShadows"];
+    [initialValueDict setObject:[NSNumber numberWithBool:1.5] forKey:@"screenItemDropShadowBlurRadius"];
+    
 	// initial values for advanced playback controls
 	
 	[initialValueDict setObject:[NSNumber numberWithInt:3] forKey:@"advancedPlaybackStepFrames"];

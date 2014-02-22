@@ -50,7 +50,9 @@
 		[[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKeyPath:@"values.distortionPointSize" options:0 context:NULL];
 		[[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKeyPath:@"values.showDistortionConnectingLines" options:0 context:NULL];
 		[[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKeyPath:@"values.showDistortionTipToTipLines" options:0 context:NULL];
-		[[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKeyPath:@"values.showDistortionCorrectedPoints" options:0 context:NULL];		
+		[[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKeyPath:@"values.showDistortionCorrectedPoints" options:0 context:NULL];
+		[[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKeyPath:@"values.showScreenItemDropShadows" options:0 context:NULL];
+		[[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKeyPath:@"values.screenItemDropShadowBlurRadius" options:0 context:NULL];
 	}
     return self;
 }
@@ -167,7 +169,7 @@
 
     BOOL hasShadow = YES;   // MAKE THIS A CORE DATA ATTRIBUTE OF THE ANNOTATION
     if (hasShadow) {
-        NSShadow *shadow = [[NSShadow alloc] init];
+        NSShadow *shadow = [NSShadow new];
         [shadow setShadowBlurRadius:4.0f];
         [shadow setShadowColor:[NSColor blackColor]];
         [shadow setShadowOffset:CGSizeMake(1.0f,-1.0f)];
@@ -516,6 +518,15 @@
 												alpha:opacity];
 	[pointColor setStroke];
 	[pointColor setFill];
+    
+    if ([[[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"showScreenItemDropShadows"] boolValue] == YES) {
+        NSShadow *shadow = [NSShadow new];
+        [shadow setShadowColor: [NSColor blackColor]];
+        [shadow setShadowBlurRadius: [[[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"screenItemDropShadowBlurRadius"] boolValue]];
+        [shadow setShadowOffset: NSMakeSize(0.0f,-0.0f)];
+        [shadow set];
+    }
+    
 	float shapeSize = [screenPoint.point.trackedEvent.type.size floatValue]*magnification;
 	NSRect shapeRect = NSMakeRect(point.x-shapeSize,point.y-shapeSize,2.0*shapeSize,2.0*shapeSize);	
 	if ([screenPoint.point.trackedEvent.type.shape isEqualToString:@"Circle"]) {
@@ -746,7 +757,7 @@
 		for (VSHintLine *hintLine in visibleHintLines) {	// only draw hintlines for the current timecode
 			if ([hintLine.fromScreenPoint.point.trackedEvent.trackedObjects count] == 1) {	// If the line is associated with just one object, draw it.
 				[self drawHintLine:hintLine 
-						   ofWidth:1.0 
+						   ofWidth:1.5
 				 fromTrackedObject:[hintLine.fromScreenPoint.point.trackedEvent.trackedObjects anyObject]];
 			} else {	// If the line is associated with more than one object, draw it as nested lines of increasing thickness, representing all their colors.
 				for(int i=0; i < [hintLine.fromScreenPoint.point.trackedEvent.trackedObjects count]; i++) {
@@ -765,12 +776,18 @@
 	float hintLineDrawInterval = [[[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"hintLineDrawInterval"] floatValue];
 	NSBezierPath *path = [hintLine bezierPathForLineWithInterval:hintLineDrawInterval];
 	if (path) {
+        if ([[[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"showScreenItemDropShadows"] boolValue] == YES) {
+            NSShadow *shadow = [NSShadow new];
+            [shadow setShadowColor: [NSColor blackColor]];
+            [shadow setShadowBlurRadius: [[[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"screenItemDropShadowBlurRadius"] boolValue]];
+            [shadow setShadowOffset: NSMakeSize(0.0f,-0.0f)];
+            [shadow set];
+        }
 		[obj.color setStroke];
 		[path setLineWidth:width];
 		[path stroke];
 	}
 }
-
 
 - (void) drawCalibrationScreenPoints
 {
@@ -806,6 +823,14 @@
 		textOffset = NSMakePoint(1.2*radius,-1.63*radius);
 		pointsArrayController = calibrationPoint.calibration.videoClip.project.document.calibScreenPtBackArrayController;
 	}
+    // set up drop shadows
+    if ([[[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"showScreenItemDropShadows"] boolValue] == YES) {
+        NSShadow *shadow = [NSShadow new];
+        [shadow setShadowColor: [NSColor blackColor]];
+        [shadow setShadowBlurRadius: [[[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"screenItemDropShadowBlurRadius"] boolValue]];
+        [shadow setShadowOffset: NSMakeSize(0.0f,-0.0f)];
+        [shadow set];
+    }
 	// draw the circle around the point
 	[pointColor setStroke];
 	NSRect circleRect = NSMakeRect(point.x-radius,point.y-radius,2.0*radius,2.0*radius);
