@@ -16,7 +16,11 @@
     
     NSColor *pressedHighlightColor;
     
+    BOOL enabled;
+    
 }
+
+@property BOOL enabled;
 
 - (void) setCustomTitle:(NSString *)title withColor:(NSColor *)color fontSize:(float)fontSize;
 

@@ -159,13 +159,25 @@
 {
 	const float selectionPadding = 5.0;
 	VideoWindowController *vwc = _delegate;
+    
 	NSFont *font = [NSFont fontWithName:annotation.shape size:[annotation.size floatValue]];
 	NSMutableDictionary *attrs = [NSMutableDictionary new];
 	[attrs setObject:font forKey:NSFontAttributeName];
 	[attrs setObject:[annotation.color colorWithAlphaComponent:annotation.tempOpacity] forKey:NSForegroundColorAttributeName];
 
+    BOOL hasShadow = YES;   // MAKE THIS A CORE DATA ATTRIBUTE OF THE ANNOTATION
+    if (hasShadow) {
+        NSShadow *shadow = [[NSShadow alloc] init];
+        [shadow setShadowBlurRadius:4.0f];
+        [shadow setShadowColor:[NSColor blackColor]];
+        [shadow setShadowOffset:CGSizeMake(1.0f,-1.0f)];
+        [attrs setObject:shadow forKey:NSShadowAttributeName];
+    }
+    
 	NSMutableAttributedString *annotationString = [[NSMutableAttributedString alloc] initWithString:annotation.notes attributes:attrs];
-	
+
+    
+    
 	NSPoint scaledPoint = [vwc convertVideoToOverlayCoords:NSMakePoint([annotation.screenX floatValue],[annotation.screenY floatValue])];
 	
 	NSRect bounds = [annotationString boundingRectWithSize:NSMakeSize([annotation.width floatValue],vwc.overlayHeight-2*selectionPadding) options:NSStringDrawingTruncatesLastVisibleLine|NSStringDrawingUsesLineFragmentOrigin];

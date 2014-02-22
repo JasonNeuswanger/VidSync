@@ -12,6 +12,8 @@
 
     NSPoint initialLocation;
     
+    IBOutlet VidSyncDocument *document;
+    
 }
 
 @property (assign) NSPoint initialLocation;

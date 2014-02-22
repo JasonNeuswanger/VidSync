@@ -74,6 +74,15 @@
     [self setFrameOrigin:newOrigin];
 }
 
+- (void) scrollWheel:(NSEvent *)theEvent
+{
+    if ([theEvent deltaY] > 0) {
+        [document stepBackwardAll:self];
+    } else if ([theEvent deltaY] < 0) {
+        [document stepForwardAll:self];
+    }
+}
+
 /*--- These key/main window settings are necessary to make text fields in this window editable ---*/
 
 - (BOOL) canBecomeKeyWindow

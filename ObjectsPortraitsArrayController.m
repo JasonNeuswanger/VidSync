@@ -24,6 +24,7 @@
     newPortrait.trackedObject = object;
     [newPortrait setImage:image];
     [self addObject:newPortrait];
+    [[self managedObjectContext] processPendingChanges];
     [self refreshImageBrowserView];
 }
 

@@ -10,25 +10,33 @@
 
 @implementation VideoControlButton
 
+@synthesize enabled;
+
 - (void) awakeFromNib
 {
     [self setBordered:NO];
     [self setNeedsDisplay];
     pressedHighlightColor = [NSColor grayColor];
+    enabled = YES;
 }
 
 
 - (void) mouseDown:(NSEvent *)theEvent
 {
-    [self setCustomTitle:[self title] withColor:pressedHighlightColor fontSize:fontSizeSet];
-	[super mouseDown:theEvent];
-	[self mouseUp:theEvent];		// the [super mouseDown] kills the normal mouseUp; it also waits until the mouse is actually up to execute this call to mouseUp.
+    if (enabled) {
+        [self setCustomTitle:[self title] withColor:pressedHighlightColor fontSize:fontSizeSet];
+        [super mouseDown:theEvent];
+        [self mouseUp:theEvent];		// the [super mouseDown] kills the normal mouseUp; it also waits until the mouse is actually up to execute this call to mouseUp.
+    }
 }
 
 - (void) mouseUp:(NSEvent *)theEvent
 {
-    [self setCustomTitle:[self title] withColor:[NSColor whiteColor] fontSize:fontSizeSet];
-	[super mouseUp:theEvent];
+    if (enabled) {
+        NSLog(@"button is enabled, changing color");
+        [self setCustomTitle:[self title] withColor:[NSColor whiteColor] fontSize:fontSizeSet];
+        [super mouseUp:theEvent];
+    }
 }
 
 - (void) setCustomTitle:(NSString *)title withColor:(NSColor *)color fontSize:(float)fontSize {
