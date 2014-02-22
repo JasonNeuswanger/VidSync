@@ -12,6 +12,9 @@
 
 - (void) playbackLoopActions // This is called by a timer every 0.03 seconds.  If the masterClip is playing, refresh all overlays. 
 {
+    
+    // It seems to not be calling this function at all while the button is pressed down
+    
 	if (project.masterClip.windowController.playerView.player.rate != 0.0) {
 		for (VSVideoClip *videoClip in self.project.videoClips) [videoClip.windowController refreshOverlay];
 		[eventsPointsController rearrangeObjects];
