@@ -24,6 +24,7 @@
 @class SyncedPlaybackView;
 @class SyncedPlaybackPanel;
 @class ObjectsPortraitsArrayController;
+@class MainProjectWindow;
 
 @interface VidSyncDocument: NSPersistentDocument {
 	
@@ -64,7 +65,7 @@
 	
 	IBOutlet NSTextField *masterTimeDisplay;
 
-	IBOutlet NSWindow *__weak mainWindow;
+	IBOutlet MainProjectWindow *__weak mainWindow;
 	IBOutlet NSTabView *__weak mainTabView;
 	IBOutlet NSTabView *__weak calibrationSurfaceTabView;
 	IBOutlet NSTabView *__weak calibrationInputTabView;

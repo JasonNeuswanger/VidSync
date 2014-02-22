@@ -167,8 +167,7 @@
 	[attrs setObject:font forKey:NSFontAttributeName];
 	[attrs setObject:[annotation.color colorWithAlphaComponent:annotation.tempOpacity] forKey:NSForegroundColorAttributeName];
 
-    BOOL hasShadow = YES;   // MAKE THIS A CORE DATA ATTRIBUTE OF THE ANNOTATION
-    if (hasShadow) {
+    if ([[[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"showScreenItemDropShadows"] boolValue] == YES) {
         NSShadow *shadow = [NSShadow new];
         [shadow setShadowBlurRadius:4.0f];
         [shadow setShadowColor:[NSColor blackColor]];
@@ -221,6 +220,13 @@
 	NSBezierPath *path;
 	[pixelErrorLineColor setStroke];
 	[pixelErrorPointColor setFill];
+    if ([[[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"showScreenItemDropShadows"] boolValue] == YES) {
+        NSShadow *shadow = [NSShadow new];
+        [shadow setShadowColor: [NSColor blackColor]];
+        [shadow setShadowBlurRadius: [[[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"screenItemDropShadowBlurRadius"] floatValue]];
+        [shadow setShadowOffset: NSMakeSize(0.0f,-0.0f)];
+        [shadow set];
+    }
 	for (VSEventScreenPoint *screenPoint in vwc.videoClip.eventScreenPoints) {
 		if ([screenPoint.point has3Dcoords]) {
 			point = [vwc convertVideoToOverlayCoords:NSMakePoint([screenPoint.screenX floatValue],[screenPoint.screenY floatValue])];
@@ -271,6 +277,15 @@
 	[correctedTipsToTipsPath setLineWidth:lineWidth];
 	
 	[distortedPointColor setFill];
+    
+    if ([[[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"showScreenItemDropShadows"] boolValue] == YES) {
+        NSShadow *shadow = [NSShadow new];
+        [shadow setShadowColor: [NSColor blackColor]];
+        [shadow setShadowBlurRadius: [[[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"screenItemDropShadowBlurRadius"] floatValue]];
+        [shadow setShadowOffset: NSMakeSize(0.0f,-0.0f)];
+        [shadow set];
+    }
+    
 	for (VSDistortionLine *distortionLine in distortionLines) {
 		
 		distortionPoints = [[distortionLine.distortionPoints allObjects] sortedArrayUsingDescriptors:[NSArray arrayWithObject:indexDescriptor]]; // all points on current line, sorted by index
@@ -522,7 +537,7 @@
     if ([[[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"showScreenItemDropShadows"] boolValue] == YES) {
         NSShadow *shadow = [NSShadow new];
         [shadow setShadowColor: [NSColor blackColor]];
-        [shadow setShadowBlurRadius: [[[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"screenItemDropShadowBlurRadius"] boolValue]];
+        [shadow setShadowBlurRadius: [[[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"screenItemDropShadowBlurRadius"] floatValue]];
         [shadow setShadowOffset: NSMakeSize(0.0f,-0.0f)];
         [shadow set];
     }
@@ -779,7 +794,7 @@
         if ([[[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"showScreenItemDropShadows"] boolValue] == YES) {
             NSShadow *shadow = [NSShadow new];
             [shadow setShadowColor: [NSColor blackColor]];
-            [shadow setShadowBlurRadius: [[[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"screenItemDropShadowBlurRadius"] boolValue]];
+            [shadow setShadowBlurRadius: [[[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"screenItemDropShadowBlurRadius"] floatValue]];
             [shadow setShadowOffset: NSMakeSize(0.0f,-0.0f)];
             [shadow set];
         }
@@ -827,7 +842,7 @@
     if ([[[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"showScreenItemDropShadows"] boolValue] == YES) {
         NSShadow *shadow = [NSShadow new];
         [shadow setShadowColor: [NSColor blackColor]];
-        [shadow setShadowBlurRadius: [[[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"screenItemDropShadowBlurRadius"] boolValue]];
+        [shadow setShadowBlurRadius: [[[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"screenItemDropShadowBlurRadius"] floatValue]];
         [shadow setShadowOffset: NSMakeSize(0.0f,-0.0f)];
         [shadow set];
     }
@@ -904,9 +919,17 @@
 				}			
 			}	
 		}
+        
+        NSShadow *shadow = [NSShadow new];
+        if ([[[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"showScreenItemDropShadows"] boolValue] == YES) {
+            [shadow setShadowBlurRadius:4.0f];
+            [shadow setShadowColor:[NSColor blackColor]];
+            [shadow setShadowOffset:CGSizeMake(1.0f,-1.0f)];
+        }
+        
 		NSDictionary *textAttributes = [NSDictionary dictionaryWithObjectsAndKeys:
 										[NSFont fontWithName:@"Helvetica" size:11.0],NSFontAttributeName,
-										pointColor,NSForegroundColorAttributeName,nil];
+										pointColor,NSForegroundColorAttributeName,shadow,NSShadowAttributeName,nil];
 		NSString *label = [NSString stringWithFormat:@"%1.2f\n%1.2f\n%1.2f",worldX,worldY,worldZ];
 		[label drawAtPoint:NSMakePoint(point.x+textOffset.x,point.y+textOffset.y) withAttributes:textAttributes];
 	}
@@ -921,21 +944,28 @@
 	NSColor *frontColor = [NSUnarchiver unarchiveObjectWithData:[[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"quadratOverlayColorFront"]];
 	NSColor *backColor = [NSUnarchiver unarchiveObjectWithData:[[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"quadratOverlayColorBack"]];
 	
-	if ((shouldDrawFront || shouldDrawBack) && quadratCoordinateGrids == nil) {	// quadratCoordinateGrids holds a multidimensional array of NSBezierPaths representing all the grid lines
-		[self calculateQuadratCoordinateGrids];
-	}
-	if (shouldDrawBack) {
-		[backColor setStroke];
-		for (NSArray *directionArray in [quadratCoordinateGrids objectAtIndex:1]) {
-			for (NSBezierPath *path in directionArray) [path stroke];
-		}
-	}		
-	if (shouldDrawFront) {
-		[frontColor setStroke];
-		for (NSArray *directionArray in [quadratCoordinateGrids objectAtIndex:0]) {
-			for (NSBezierPath *path in directionArray) [path stroke];
-		}
-	}
+	if (shouldDrawFront || shouldDrawBack) {	// quadratCoordinateGrids holds a multidimensional array of NSBezierPaths representing all the grid lines
+		if (quadratCoordinateGrids == nil) [self calculateQuadratCoordinateGrids];
+        if ([[[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"showScreenItemDropShadows"] boolValue] == YES) {
+            NSShadow *shadow = [NSShadow new];
+            [shadow setShadowColor: [NSColor blackColor]];
+            [shadow setShadowBlurRadius: [[[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"screenItemDropShadowBlurRadius"] floatValue]];
+            [shadow setShadowOffset: NSMakeSize(0.0f,-0.0f)];
+            [shadow set];
+        }
+        if (shouldDrawBack) {
+            [backColor setStroke];
+            for (NSArray *directionArray in [quadratCoordinateGrids objectAtIndex:1]) {
+                for (NSBezierPath *path in directionArray) [path stroke];
+            }
+        }
+        if (shouldDrawFront) {
+            [frontColor setStroke];
+            for (NSArray *directionArray in [quadratCoordinateGrids objectAtIndex:0]) {
+                for (NSBezierPath *path in directionArray) [path stroke];
+            }
+        }
+    }
 }
 
 - (void) calculateQuadratCoordinateGrids
@@ -965,10 +995,11 @@
     NSSet *calibPoints = ([surface isEqualToString:@"Front"]) ? vwc.videoClip.calibration.pointsFront : vwc.videoClip.calibration.pointsBack;
     if ([calibPoints count] < 2) return outPathsArray;
     NSArray *calibPointsOrdered = [[calibPoints allObjects] sortedArrayUsingDescriptors:[NSArray arrayWithObjects:[NSSortDescriptor sortDescriptorWithKey:@"worldHcoord" ascending:YES],[NSSortDescriptor sortDescriptorWithKey:@"worldVcoord" ascending:YES],nil]];
-    float hGridSpacing = abs([[[calibPointsOrdered objectAtIndex:1] worldHcoord] floatValue] - [[[calibPointsOrdered objectAtIndex:2] worldHcoord] floatValue]);
-    float vGridSpacing= abs([[[calibPointsOrdered objectAtIndex:1] worldVcoord] floatValue] - [[[calibPointsOrdered objectAtIndex:2] worldVcoord] floatValue]);
+    
+    float hGridSpacing = fabs([[[calibPointsOrdered objectAtIndex:1] worldHcoord] floatValue] - [[[calibPointsOrdered objectAtIndex:2] worldHcoord] floatValue]);
+    float vGridSpacing= fabs([[[calibPointsOrdered objectAtIndex:1] worldVcoord] floatValue] - [[[calibPointsOrdered objectAtIndex:2] worldVcoord] floatValue]);
     float gridSpacing = (hGridSpacing > vGridSpacing) ? hGridSpacing : vGridSpacing;
-        
+    
 	float lineWidth = [[[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"quadratGridOverlayLineThickness"] floatValue];
     
     NSPoint bottomLeft = [vwc.videoClip.calibration projectScreenPoint:NSMakePoint(0.0,0.0) toQuadratSurface:surface];

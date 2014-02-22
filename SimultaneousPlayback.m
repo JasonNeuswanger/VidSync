@@ -79,8 +79,6 @@
 
 - (IBAction) advancedStepForwardAll:(id)sender
 {
-	// These step functions still don't work on just the right timescale all the time for all values of numFrames.  For example, with numFrames = 5, it works fine for a few runs and then 
-	// subtracts three from the timeValue.  Deal with it later.
 	int numFrames = [[[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"advancedPlaybackStepFrames"] intValue];
 	for (VSVideoClip *clip in [self.project.videoClips allObjects]) [clip.windowController.playerView.player.currentItem stepByCount:numFrames];
 }

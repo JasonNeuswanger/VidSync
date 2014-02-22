@@ -40,6 +40,7 @@
 		9612EC2018B6FFE300BBED62 /* PlaybackRateDescriptionTransformer.m in Sources */ = {isa = PBXBuildFile; fileRef = 9612EC1F18B6FFE300BBED62 /* PlaybackRateDescriptionTransformer.m */; };
 		9612EC2318B741F500BBED62 /* SyncedPlaybackPanelControlBox.m in Sources */ = {isa = PBXBuildFile; fileRef = 9612EC2218B741F500BBED62 /* SyncedPlaybackPanelControlBox.m */; };
 		9612EC2518B74A6F00BBED62 /* TallVideoScrubberBackground.png in Resources */ = {isa = PBXBuildFile; fileRef = 9612EC2418B74A6F00BBED62 /* TallVideoScrubberBackground.png */; };
+		9612EC2B18B9426700BBED62 /* MainProjectWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = 9612EC2A18B9426700BBED62 /* MainProjectWindow.m */; };
 		961A2F4618B40AB2009EA198 /* SyncedPlaybackPanel.m in Sources */ = {isa = PBXBuildFile; fileRef = 961A2F4518B40AB2009EA198 /* SyncedPlaybackPanel.m */; };
 		961A2F4918B40D05009EA198 /* SyncedPlaybackView.m in Sources */ = {isa = PBXBuildFile; fileRef = 961A2F4818B40D05009EA198 /* SyncedPlaybackView.m */; };
 		961A2F4B18B42506009EA198 /* Fonts in Resources */ = {isa = PBXBuildFile; fileRef = 961A2F4A18B42506009EA198 /* Fonts */; };
@@ -210,6 +211,8 @@
 		9612EC2118B741F500BBED62 /* SyncedPlaybackPanelControlBox.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SyncedPlaybackPanelControlBox.h; sourceTree = "<group>"; };
 		9612EC2218B741F500BBED62 /* SyncedPlaybackPanelControlBox.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SyncedPlaybackPanelControlBox.m; sourceTree = "<group>"; };
 		9612EC2418B74A6F00BBED62 /* TallVideoScrubberBackground.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = TallVideoScrubberBackground.png; sourceTree = "<group>"; };
+		9612EC2918B9426700BBED62 /* MainProjectWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MainProjectWindow.h; sourceTree = "<group>"; };
+		9612EC2A18B9426700BBED62 /* MainProjectWindow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MainProjectWindow.m; sourceTree = "<group>"; };
 		961A2F4418B40AB2009EA198 /* SyncedPlaybackPanel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SyncedPlaybackPanel.h; sourceTree = "<group>"; };
 		961A2F4518B40AB2009EA198 /* SyncedPlaybackPanel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SyncedPlaybackPanel.m; sourceTree = "<group>"; };
 		961A2F4718B40D05009EA198 /* SyncedPlaybackView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SyncedPlaybackView.h; sourceTree = "<group>"; };
@@ -1397,6 +1400,8 @@
 		96EF24E310967B07001DEF3A /* View Classes */ = {
 			isa = PBXGroup;
 			children = (
+				9612EC2918B9426700BBED62 /* MainProjectWindow.h */,
+				9612EC2A18B9426700BBED62 /* MainProjectWindow.m */,
 				96EF24E610967B62001DEF3A /* VideoOverlayView.h */,
 				96EF24E710967B62001DEF3A /* VideoOverlayView.m */,
 				96A5DEBB1162501500D58616 /* VideoOverlayWindow.h */,
@@ -1548,6 +1553,7 @@
 				96E1284410F57EF900DAF12C /* TrackedObjectArrayController.m in Sources */,
 				96E1284E10F678C900DAF12C /* VSTrackedObject.m in Sources */,
 				96E128DC10FC418B00DAF12C /* TrackedEventArrayController.m in Sources */,
+				9612EC2B18B9426700BBED62 /* MainProjectWindow.m in Sources */,
 				96E128E110FC474000DAF12C /* VSTrackedEvent.m in Sources */,
 				96010D4710FCF0A300944387 /* EventsOtherObjectsArrayController.m in Sources */,
 				9612EC0E18B597F700BBED62 /* PortraitsArrayController.m in Sources */,

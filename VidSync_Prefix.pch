@@ -67,5 +67,6 @@
 #import "PortraitBrowserCell.h"
 #import "PlaybackRateDescriptionTransformer.h"
 #import "SyncedPlaybackPanelControlBox.h"
+#import "MainProjectWindow.h"
 
 #endif

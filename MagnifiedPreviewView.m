@@ -162,8 +162,12 @@
     previewReticle.backgroundColor = CGColorGetConstantColor(kCGColorClear);
     previewReticle.strokeColor = reticleColor;
     previewReticle.fillColor = CGColorGetConstantColor(kCGColorClear);
-    previewReticle.lineWidth = 1.0f;
+    previewReticle.lineWidth = 1.2f;
     previewReticle.contentsGravity = kCAGravityCenter;
+    previewReticle.shadowColor = [NSColor blackColor].CGColor;
+    previewReticle.shadowRadius = 1.0;
+    previewReticle.shadowOffset = CGSizeMake(0,0);
+    previewReticle.shadowOpacity = 1.0;
 
     CGPoint crosshairsh[2] = {CGPointMake(z-c/25.0f,z),CGPointMake(z+c/25.0f,z)};
     CGPoint crosshairsv[2] = {CGPointMake(z,z-c/25.0f),CGPointMake(z,z+c/25.0f)};
@@ -221,7 +225,11 @@
 	previewDot.backgroundColor = crosshairsColor;
 	CGColorRelease(crosshairsColor);
 	previewDot.bounds = CGRectMake(0.0,0.0,previewDotSize,previewDotSize);
-	previewDot.frame = CGRectMake(0.0,0.0,previewDotSize,previewDotSize);	
+	previewDot.frame = CGRectMake(0.0,0.0,previewDotSize,previewDotSize);
+    previewDot.shadowColor = [NSColor blackColor].CGColor;
+    previewDot.shadowRadius = 1.0;
+    previewDot.shadowOffset = CGSizeMake(0,0);
+    previewDot.shadowOpacity = 1.0;
     [previewDot setNeedsDisplay];
 }
 

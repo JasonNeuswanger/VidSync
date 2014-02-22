@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="4514" systemVersion="13A603" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="4514" systemVersion="13B42" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
     <dependencies>
         <deployment version="1090" defaultVersion="1090" identifier="macosx"/>
         <plugIn identifier="com.apple.AVKitIBPlugin" version="3338"/>
@@ -62,7 +62,7 @@
                         </connections>
                     </button>
                     <textField focusRingType="none" verticalHuggingPriority="750" id="31">
-                        <rect key="frame" x="407" y="477" width="135" height="19"/>
+                        <rect key="frame" x="398" y="477" width="142" height="19"/>
                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
                         <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" focusRingType="none" drawsBackground="YES" id="32">
                             <font key="font" metaFont="smallSystem"/>
@@ -79,7 +79,7 @@
                         </connections>
                     </textField>
                     <textField verticalHuggingPriority="750" id="33">
-                        <rect key="frame" x="338" y="479" width="64" height="14"/>
+                        <rect key="frame" x="328" y="479" width="64" height="14"/>
                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
                         <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Sync Offset" id="34">
                             <font key="font" metaFont="smallSystem"/>
@@ -137,8 +137,8 @@
                 <string>isMasterClipOf</string>
             </declaredKeys>
             <connections>
-                <binding destination="-2" name="contentObject" keyPath="videoClip" id="38"/>
                 <binding destination="-2" name="managedObjectContext" keyPath="managedObjectContext" id="39"/>
+                <binding destination="-2" name="contentObject" keyPath="videoClip" id="38"/>
             </connections>
         </objectController>
         <window title="New Annotation" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" hidesOnDeactivate="YES" oneShot="NO" visibleAtLaunch="NO" animationBehavior="default" id="85" userLabel="Annotation Add Panel" customClass="NSPanel">
@@ -231,7 +231,7 @@
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <popUpButtonCell key="cell" type="push" title="Cambria" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" selectedItem="133" id="122">
                             <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
-                            <font key="font" metaFont="system"/>
+                            <font key="font" metaFont="menu"/>
                             <menu key="menu" title="OtherViews" id="123">
                                 <items>
                                     <menuItem title="Cambria" state="on" id="133"/>

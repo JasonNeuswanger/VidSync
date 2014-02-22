@@ -209,7 +209,7 @@
             </items>
         </menu>
         <window title="VidSync Preferences" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" oneShot="NO" releasedWhenClosed="NO" visibleAtLaunch="NO" frameAutosaveName="prefWindow" animationBehavior="default" id="515">
-            <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES"/>
+            <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES" texturedBackground="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="235" y="253" width="665" height="361"/>
             <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1578"/>
@@ -271,7 +271,7 @@
                                             </textFieldCell>
                                         </textField>
                                         <button id="536">
-                                            <rect key="frame" x="286" y="244" width="225" height="18"/>
+                                            <rect key="frame" x="15" y="79" width="225" height="18"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <buttonCell key="cell" type="check" title="Show front surface grid overlay" bezelStyle="regularSquare" imagePosition="left" alignment="left" state="on" inset="2" id="537">
                                                 <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -280,9 +280,12 @@
                                                     <binding destination="567" name="value" keyPath="values.quadratShowSurfaceGridOverlayFront" id="579"/>
                                                 </connections>
                                             </buttonCell>
+                                            <connections>
+                                                <binding destination="567" name="value" keyPath="values.quadratShowSurfaceGridOverlayFront" id="jME-Nf-5bv"/>
+                                            </connections>
                                         </button>
                                         <button id="538">
-                                            <rect key="frame" x="286" y="216" width="225" height="18"/>
+                                            <rect key="frame" x="15" y="51" width="225" height="18"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <buttonCell key="cell" type="check" title="Show back surface grid overlay" bezelStyle="regularSquare" imagePosition="left" alignment="left" state="on" inset="2" id="539">
                                                 <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -291,9 +294,12 @@
                                                     <binding destination="567" name="value" keyPath="values.quadratShowSurfaceGridOverlayBack" id="577"/>
                                                 </connections>
                                             </buttonCell>
+                                            <connections>
+                                                <binding destination="567" name="value" keyPath="values.quadratShowSurfaceGridOverlayBack" id="6xY-fO-813"/>
+                                            </connections>
                                         </button>
                                         <textField verticalHuggingPriority="750" id="544">
-                                            <rect key="frame" x="240" y="187" width="47" height="22"/>
+                                            <rect key="frame" x="499" y="91" width="47" height="22"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="545">
                                                 <numberFormatter key="formatter" formatterBehavior="default10_4" positiveFormat="#,##0.###" negativeFormat="#,##0.###" numberStyle="decimal" minimumIntegerDigits="1" maximumIntegerDigits="309" minimumFractionDigits="0" maximumFractionDigits="3" id="546">
@@ -311,7 +317,7 @@
                                             </connections>
                                         </textField>
                                         <textField verticalHuggingPriority="750" id="557">
-                                            <rect key="frame" x="289" y="157" width="47" height="22"/>
+                                            <rect key="frame" x="548" y="61" width="47" height="22"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="558">
                                                 <numberFormatter key="formatter" formatterBehavior="default10_4" positiveFormat="#,##0.###" negativeFormat="#,##0.###" numberStyle="decimal" minimumIntegerDigits="1" maximumIntegerDigits="309" minimumFractionDigits="0" maximumFractionDigits="3" id="559">
@@ -329,7 +335,7 @@
                                             </connections>
                                         </textField>
                                         <textField verticalHuggingPriority="750" id="550">
-                                            <rect key="frame" x="14" y="189" width="221" height="17"/>
+                                            <rect key="frame" x="273" y="93" width="221" height="17"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Grid overlay line thickness (pixels)" id="551">
                                                 <font key="font" metaFont="system"/>
@@ -338,7 +344,7 @@
                                             </textFieldCell>
                                         </textField>
                                         <textField verticalHuggingPriority="750" id="560">
-                                            <rect key="frame" x="13" y="162" width="271" height="17"/>
+                                            <rect key="frame" x="272" y="66" width="271" height="17"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Front surface point overlay circle diameter" id="561">
                                                 <font key="font" metaFont="system"/>
@@ -347,7 +353,7 @@
                                             </textFieldCell>
                                         </textField>
                                         <textField verticalHuggingPriority="750" id="562">
-                                            <rect key="frame" x="289" y="132" width="47" height="22"/>
+                                            <rect key="frame" x="548" y="36" width="47" height="22"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="565">
                                                 <numberFormatter key="formatter" formatterBehavior="default10_4" positiveFormat="#,##0.###" negativeFormat="#,##0.###" numberStyle="decimal" minimumIntegerDigits="1" maximumIntegerDigits="309" minimumFractionDigits="0" maximumFractionDigits="3" id="566">
@@ -365,7 +371,7 @@
                                             </connections>
                                         </textField>
                                         <textField verticalHuggingPriority="750" id="563">
-                                            <rect key="frame" x="13" y="137" width="267" height="17"/>
+                                            <rect key="frame" x="272" y="41" width="267" height="17"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Back surface point overlay circle diameter" id="564">
                                                 <font key="font" metaFont="system"/>
@@ -374,7 +380,7 @@
                                             </textFieldCell>
                                         </textField>
                                         <button id="622">
-                                            <rect key="frame" x="14" y="113" width="319" height="18"/>
+                                            <rect key="frame" x="15" y="184" width="319" height="18"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <buttonCell key="cell" type="check" title="Show world coordinates next to quadrat points" bezelStyle="regularSquare" imagePosition="left" alignment="left" state="on" inset="2" id="623">
                                                 <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -676,7 +682,7 @@
                                             </connections>
                                         </button>
                                         <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" id="kfg-pb-Dat">
-                                            <rect key="frame" x="45" y="7" width="159" height="17"/>
+                                            <rect key="frame" x="14" y="3" width="159" height="20"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Drop shadow blur radius" id="PC9-zS-AVm">
                                                 <font key="font" metaFont="system"/>
@@ -685,9 +691,9 @@
                                             </textFieldCell>
                                         </textField>
                                         <textField verticalHuggingPriority="750" id="bsy-0X-ksA">
-                                            <rect key="frame" x="217" y="4" width="49" height="22"/>
+                                            <rect key="frame" x="179" y="3" width="49" height="22"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                            <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="roi-na-1tm">
+                                            <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" continuous="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="roi-na-1tm">
                                                 <numberFormatter key="formatter" formatterBehavior="custom10_4" positiveFormat="#,##0.00" negativeFormat="#,##0.00" numberStyle="decimal" minimumIntegerDigits="1" maximumIntegerDigits="309" minimumFractionDigits="2" maximumFractionDigits="2" id="mRm-4G-7pl">
                                                     <real key="roundingIncrement" value="0.0"/>
                                                     <real key="minimum" value="0.0"/>
@@ -704,6 +710,14 @@
                                                 <binding destination="567" name="value" keyPath="values.screenItemDropShadowBlurRadius" id="dyE-2f-8i2"/>
                                             </connections>
                                         </textField>
+                                        <slider verticalHuggingPriority="750" id="18T-4f-xiz">
+                                            <rect key="frame" x="236" y="5" width="72" height="15"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                            <sliderCell key="cell" controlSize="mini" continuous="YES" state="on" alignment="left" minValue="0.050000000000000003" maxValue="4" doubleValue="4" tickMarkPosition="above" sliderType="linear" id="R3e-PB-wcQ"/>
+                                            <connections>
+                                                <binding destination="567" name="value" keyPath="values.screenItemDropShadowBlurRadius" id="418-lF-pZ4"/>
+                                            </connections>
+                                        </slider>
                                     </subviews>
                                 </view>
                             </tabViewItem>
