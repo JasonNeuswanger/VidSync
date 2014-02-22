@@ -197,8 +197,6 @@
 - (void) movieRateDidChange;
 - (void) reSync;
 
-- (void)imageBrowser:(IKImageBrowserView *)aBrowser cellWasDoubleClickedAtIndex:(NSUInteger)index;
-
 @end // VidSyncDocument (SimultaneousPlayback)
 
 @interface VidSyncDocument (Capture)

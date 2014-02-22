@@ -8,7 +8,7 @@
 
 #import <Cocoa/Cocoa.h>
 
-@interface SyncedPlaybackPanel : NSPanel {
+@interface SyncedPlaybackPanel : NSWindow {
 
     NSPoint initialLocation;
     

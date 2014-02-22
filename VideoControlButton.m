@@ -33,7 +33,6 @@
 - (void) mouseUp:(NSEvent *)theEvent
 {
     if (enabled) {
-        NSLog(@"button is enabled, changing color");
         [self setCustomTitle:[self title] withColor:[NSColor whiteColor] fontSize:fontSizeSet];
         [super mouseUp:theEvent];
     }
