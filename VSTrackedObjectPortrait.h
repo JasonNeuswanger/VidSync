@@ -17,6 +17,7 @@
 
 @property (strong) NSString *timecode;
 @property (strong) NSData *imageData;
+@property (strong) NSString *frameString;
 @property (strong) VSTrackedObject *trackedObject;
 @property (strong) VSVideoClip *sourceVideoClip;
 

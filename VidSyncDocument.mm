@@ -547,6 +547,7 @@ static void *AVSPPlayerCurrentTimeContext = &AVSPPlayerCurrentTimeContext;
 {
     VSTrackedObjectPortrait *portrait = (VSTrackedObjectPortrait *) [[[aBrowser dataSource] arrangedObjects] objectAtIndex:index];
     [self goToMasterTime:[UtilityFunctions CMTimeFromString:portrait.timecode]];
+    portrait.sourceVideoClip.windowController.shouldShowPortraitFrame = portrait.frameString;
     [[portrait.sourceVideoClip.windowController window] makeKeyAndOrderFront:self];
 }
 

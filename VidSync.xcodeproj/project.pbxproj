@@ -216,6 +216,7 @@
 		9612EC2A18B9426700BBED62 /* MainProjectWindow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MainProjectWindow.m; sourceTree = "<group>"; };
 		9612EC2C18B9744700BBED62 /* CalibDistortionPtArrayController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CalibDistortionPtArrayController.h; sourceTree = "<group>"; };
 		9612EC2D18B9744700BBED62 /* CalibDistortionPtArrayController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CalibDistortionPtArrayController.m; sourceTree = "<group>"; };
+		9612EC2F18B9A51800BBED62 /* VidSyncProject 1.13.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = file; path = "VidSyncProject 1.13.xcdatamodel"; sourceTree = "<group>"; };
 		961A2F4418B40AB2009EA198 /* SyncedPlaybackPanel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SyncedPlaybackPanel.h; sourceTree = "<group>"; };
 		961A2F4518B40AB2009EA198 /* SyncedPlaybackPanel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SyncedPlaybackPanel.m; sourceTree = "<group>"; };
 		961A2F4718B40D05009EA198 /* SyncedPlaybackView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SyncedPlaybackView.h; sourceTree = "<group>"; };
@@ -1770,6 +1771,7 @@
 		96AE98861165348400118398 /* VidSyncProject.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
+				9612EC2F18B9A51800BBED62 /* VidSyncProject 1.13.xcdatamodel */,
 				9612EC0818B57A1300BBED62 /* VidSyncProject 1.12.xcdatamodel */,
 				96070353152A7F9800905BCC /* VidSyncProject 1.09.xcdatamodel */,
 				96A3718E15202B3C008DCB6C /* VidSyncProject 1.08.xcdatamodel */,

@@ -26,6 +26,7 @@
 @synthesize videoAsset;
 @synthesize portraitDragStartCoords;
 @synthesize portraitDragCurrentCoords;
+@synthesize shouldShowPortraitFrame;
 
 - (VideoWindowController *)initWithVideoClip:(VSVideoClip *)inVideoClip inManagedObjectContext:(NSManagedObjectContext *)moc
 {
@@ -230,6 +231,12 @@
 {
 	float scaleFactor = movieSize.width / overlayWidth; 
 	return NSMakePoint(videoCoords.x/scaleFactor,videoCoords.y/scaleFactor);
+}
+
+- (NSRect) convertVideoToOverlayRect:(NSRect)videoRect
+{
+	float scaleFactor = movieSize.width / overlayWidth;
+    return NSMakeRect(videoRect.origin.x/scaleFactor,videoRect.origin.y/scaleFactor,videoRect.size.width/scaleFactor,videoRect.size.height/scaleFactor);
 }
 
 - (NSPoint) convertOverlayToVideoCoords:(NSPoint)overlayCoords 
@@ -444,13 +451,13 @@
 }
 
 #pragma mark
-#pragma mark Drag Events (for portraits)
+#pragma mark Drag and Mouseup Events (for portraits)
 
 - (void) handleOverlayMouseUp:(NSPoint)coords fromEvent:(NSEvent *)theEvent
 {
     if (self.videoClip.project.document.portraitSubject != nil && [[[[self.document mainTabView] selectedTabViewItem] label] isEqualToString:@"Measurement"]) {
         portraitDragCurrentCoords = [self convertOverlayToVideoCoords:coords];
-        NSImage *__strong returnImage = [NSImage alloc];
+        //NSImage *returnImage = [NSImage alloc];
         NSPoint startPoint = NSMakePoint(portraitDragStartCoords.x,portraitDragStartCoords.y);
         NSPoint endPoint = portraitDragCurrentCoords;
         if (startPoint.x != endPoint.x && startPoint.y != endPoint.y) {
@@ -463,13 +470,14 @@
             CMTime actualCopiedTime;
             NSError *err;
             CGImageRef fullScreenImage = [assetImageGenerator copyCGImageAtTime:movieTime actualTime:&actualCopiedTime error:&err];
+            NSLog(@"Portrait rect is %@",[NSValue valueWithRect:imageRect]);
             CGImageRef portraitImage = CGImageCreateWithImageInRect(fullScreenImage,imageRect);
             if (err != nil) [NSApp presentError:err];
-            returnImage = [returnImage initWithCGImage:portraitImage size:NSZeroSize];
             
-            VSTrackedObject *currentObject = [[[[self document] trackedObjectsController] selectedObjects] firstObject];
+            NSImage *__strong returnImage = [[NSImage alloc] initWithCGImage:portraitImage size:NSZeroSize];
+            VSTrackedObject *__weak currentObject = [[[[self document] trackedObjectsController] selectedObjects] firstObject];
             
-            [[[self document] objectsPortraitsArrayController] addImage:returnImage ofObject:currentObject fromSourceClip:self.videoClip withTimecode:[[self document] currentMasterTimeString]];
+            [[[self document] objectsPortraitsArrayController] addImage:returnImage ofObject:currentObject fromSourceClip:self.videoClip inRect:imageRect withTimecode:[[self document] currentMasterTimeString]];
         }
         self.videoClip.project.document.portraitSubject = nil;
         [self refreshOverlay];

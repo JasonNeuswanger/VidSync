@@ -14,6 +14,7 @@
 @dynamic imageData;
 @dynamic trackedObject;
 @dynamic sourceVideoClip;
+@dynamic frameString;
 
 - (void) setImage:(NSImage *)imageSource
 {
@@ -26,7 +27,7 @@
 
 - (NSString *) imageUID
 {
-    return [NSString stringWithFormat:@"Object %@ portrait from %@ at %@",self.trackedObject.index,self.sourceVideoClip.clipName,self.timecode];
+    return [NSString stringWithFormat:@"Object %@ portrait from %@ in %@ at %@",self.trackedObject.index,self.sourceVideoClip.clipName,self.frameString,self.timecode];
 }
 
 - (NSString *) imageTitle

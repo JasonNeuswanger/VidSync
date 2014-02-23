@@ -17,11 +17,12 @@
     
 }
 
-- (void) addImage:(NSImage *)image ofObject:(VSTrackedObject *)object fromSourceClip:(VSVideoClip *)sourceVideoClip withTimecode:(NSString *)timecode {
+- (void) addImage:(NSImage *)image ofObject:(VSTrackedObject *)object fromSourceClip:(VSVideoClip *)sourceVideoClip inRect:(NSRect)rect withTimecode:(NSString *)timecode {
     VSTrackedObjectPortrait *newPortrait = [NSEntityDescription insertNewObjectForEntityForName:@"VSTrackedObjectPortrait" inManagedObjectContext:[self managedObjectContext]];
     newPortrait.timecode = timecode;
     newPortrait.sourceVideoClip = sourceVideoClip;
     newPortrait.trackedObject = object;
+    newPortrait.frameString = NSStringFromRect(rect);
     [newPortrait setImage:image];
     [self addObject:newPortrait];
     [[self managedObjectContext] processPendingChanges];

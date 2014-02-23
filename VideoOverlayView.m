@@ -131,6 +131,26 @@
 
 - (void) drawPortraitSelectionBox {
     VideoWindowController *vwc = _delegate;
+    // If the user just double-clicked on a portrait to view it in the video window, draw the frame but then set it to disappear on the next screen draw.
+    if (vwc.shouldShowPortraitFrame != nil && ![vwc.shouldShowPortraitFrame isEqualToString:@""]) {
+        NSColor *selectionColor = [NSUnarchiver unarchiveObjectWithData:[[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"pointSelectionIndicatorColor"]];
+        NSRect rawRect = NSRectFromString(vwc.shouldShowPortraitFrame);
+        rawRect.origin.y = vwc.movieSize.height - rawRect.origin.y - rawRect.size.height;    // Flips the rect around to account for difference between top-left and bottom-left zeroed coordinate systems
+        NSRect selectionRect = [vwc convertVideoToOverlayRect:rawRect];
+        NSBezierPath *selectedOutline = [NSBezierPath bezierPathWithRect:selectionRect];
+        double dashes[2];
+        dashes[0] = 5.0;
+        dashes[1] = 3.0;
+        [selectedOutline setLineDash:dashes count:2 phase:0.0];
+		[[NSColor blackColor] set];
+		[selectedOutline setLineWidth:2.6];
+		[selectedOutline stroke];
+        [selectionColor set];
+		[selectedOutline setLineWidth:2.0];
+		[selectedOutline stroke];
+        vwc.shouldShowPortraitFrame = nil;
+    }
+    // If the user is drawing a new portrait, show the frame as they draw.
     if (vwc.videoClip.project.document.portraitSubject != nil) {
         NSPoint startPoint = [vwc convertVideoToOverlayCoords:vwc.portraitDragStartCoords];
         NSPoint endPoint = [vwc convertVideoToOverlayCoords:vwc.portraitDragCurrentCoords];
