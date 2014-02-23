@@ -20,6 +20,14 @@
 	[self addObject:newLine];
 }
 
+- (void) remove:(id)sender
+{
+    VSDistortionLine *lineToRemove = [[self selectedObjects] objectAtIndex:0];
+    VideoWindowController *vwc = lineToRemove.calibration.videoClip.windowController;
+    [super remove:lineToRemove];
+    [vwc refreshOverlay];
+}
+
 - (IBAction) goToLine:(id)sender
 {
 	NSString *timecodeString = [[[self selectedObjects] objectAtIndex:0] timecode];
@@ -46,8 +54,8 @@
 
 - (void) appendPointToSelectedLineAt:(NSPoint)coords
 {
-	VSDistortionLine *selectedLine = [[self selectedObjects] objectAtIndex:0];
-	if (selectedLine != nil) {
+	if ([[self selectedObjects] count] > 0) {
+        VSDistortionLine *selectedLine = [[self selectedObjects] objectAtIndex:0];
 		int highestIndex = 0;
 		for (VSDistortionPoint *existingPoint in selectedLine.distortionPoints) if ([existingPoint.index intValue] > highestIndex) highestIndex = [existingPoint.index intValue];
 		VSDistortionPoint *newDistortionPoint = [NSEntityDescription insertNewObjectForEntityForName:@"VSDistortionPoint" inManagedObjectContext:[self managedObjectContext]]; 
@@ -58,7 +66,7 @@
 		[document.distortionPointsController setSelectedObjects:[NSArray arrayWithObject:newDistortionPoint]];
 		[document.distortionLinesController.mainTableView display];	// refresh the line table's # Points column
 	} else {
-		NSRunAlertPanel(@"No line selected.",@"You must select a distortion line before you can add points to it by clicking the video.",@"Ok",nil,nil);
+		NSRunAlertPanel(@"No line selected.",@"You must create a distortion line before you can add points to it by clicking the video.",@"Ok",nil,nil);
 	}	
 }
 

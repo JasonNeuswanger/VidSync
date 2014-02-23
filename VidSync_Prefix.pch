@@ -48,6 +48,7 @@
 #import "VSVisibleItemArrayController.h"
 #import "CalibScreenPtArrayController.h"
 #import "CalibDistortionLineArrayController.h"
+#import "CalibDistortionPtArrayController.h"
 #import "TypesArrayController.h"
 #import "TypeIndexNameSortedArrayController.h"
 #import "TrackedObjectArrayController.h"

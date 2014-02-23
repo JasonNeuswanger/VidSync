@@ -405,6 +405,12 @@
                                                                                         <color key="backgroundColor" name="headerColor" catalog="System" colorSpace="catalog"/>
                                                                                     </tableHeaderCell>
                                                                                     <textFieldCell key="dataCell" controlSize="small" lineBreakMode="truncatingTail" selectable="YES" editable="YES" alignment="left" title="Text Cell" id="103643">
+                                                                                        <numberFormatter key="formatter" formatterBehavior="custom10_4" positiveFormat="#" negativeFormat="#" allowsFloats="NO" usesGroupingSeparator="NO" groupingSize="0" minimumIntegerDigits="0" maximumIntegerDigits="42" minimumFractionDigits="0" maximumFractionDigits="0" id="Mv4-30-9iy">
+                                                                                            <real key="roundingIncrement" value="0.0"/>
+                                                                                            <metadata>
+                                                                                                <bool key="localizesFormat" value="YES"/>
+                                                                                            </metadata>
+                                                                                        </numberFormatter>
                                                                                         <font key="font" metaFont="smallSystem"/>
                                                                                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                                                                         <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
@@ -7122,7 +7128,7 @@ IA
                 <outlet property="mainTableView" destination="103636" id="103753"/>
             </connections>
         </arrayController>
-        <arrayController mode="entity" entityName="VSDistortionPoint" automaticallyPreparesContent="YES" id="103704" userLabel="Distortion Points Controller" customClass="VSVisibleItemArrayController">
+        <arrayController mode="entity" entityName="VSDistortionPoint" automaticallyPreparesContent="YES" id="103704" userLabel="Distortion Points Controller" customClass="CalibDistortionPtArrayController">
             <declaredKeys>
                 <string>index</string>
                 <string>screenX</string>
@@ -7135,6 +7141,7 @@ IA
                         <bool key="NSDeletesObjectsOnRemove" value="YES"/>
                     </dictionary>
                 </binding>
+                <outlet property="distortionLinesController" destination="103703" id="IKc-3y-5Jw"/>
                 <outlet property="mainTableView" destination="103689" id="103754"/>
             </connections>
         </arrayController>

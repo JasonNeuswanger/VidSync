@@ -162,7 +162,10 @@
 	const float selectionPadding = 5.0;
 	VideoWindowController *vwc = _delegate;
     
-	NSFont *font = [NSFont fontWithName:annotation.shape size:[annotation.size floatValue]];
+    float sizeFactor = vwc.overlayHeight / vwc.movieSize.height;
+
+    
+	NSFont *font = [NSFont fontWithName:annotation.shape size:sizeFactor*[annotation.size floatValue]];
 	NSMutableDictionary *attrs = [NSMutableDictionary new];
 	[attrs setObject:font forKey:NSFontAttributeName];
 	[attrs setObject:[annotation.color colorWithAlphaComponent:annotation.tempOpacity] forKey:NSForegroundColorAttributeName];
@@ -181,7 +184,7 @@
     
 	NSPoint scaledPoint = [vwc convertVideoToOverlayCoords:NSMakePoint([annotation.screenX floatValue],[annotation.screenY floatValue])];
 	
-	NSRect bounds = [annotationString boundingRectWithSize:NSMakeSize([annotation.width floatValue],vwc.overlayHeight-2*selectionPadding) options:NSStringDrawingTruncatesLastVisibleLine|NSStringDrawingUsesLineFragmentOrigin];
+	NSRect bounds = [annotationString boundingRectWithSize:NSMakeSize(sizeFactor*[annotation.width floatValue],sizeFactor*(vwc.overlayHeight-2.0*selectionPadding)) options:NSStringDrawingTruncatesLastVisibleLine|NSStringDrawingUsesLineFragmentOrigin];
 	float newHeight;
 	if (bounds.size.height < 2.0*scaledPoint.y) {
 		newHeight = bounds.size.height;
@@ -196,7 +199,7 @@
 	
 	if ([[vwc.videoClip.project.document.annotationsController selectedObjects] count] > 0 && [[[vwc.videoClip.project.document.annotationsController selectedObjects] objectAtIndex:0] isEqualTo:annotation]) {
 		NSColor *selectionColor = [NSUnarchiver unarchiveObjectWithData:[[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"pointSelectionIndicatorColor"]];
-		[selectionColor set];
+        [[NSColor colorWithDeviceRed:[selectionColor redComponent] green:[selectionColor greenComponent] blue:[selectionColor blueComponent] alpha:annotation.tempOpacity] set];
 		NSRect selectionRect = NSMakeRect(drawingRect.origin.x - selectionPadding,drawingRect.origin.y - selectionPadding,drawingRect.size.width + 2*selectionPadding,drawingRect.size.height + 2*selectionPadding);
 		NSBezierPath *selectedOutline = [NSBezierPath bezierPathWithRect:selectionRect];
 		[selectedOutline setLineWidth:3.0];
@@ -366,7 +369,7 @@
 		VSDistortionPoint *selectedDistortionPoint = [[vwc.videoClip.project.document.distortionPointsController selectedObjects] objectAtIndex:0];	
 		if ([selectedDistortionPoint.distortionLine.calibration.videoClip isEqualTo:vwc.videoClip]) {
 			NSPoint selectedPoint = [vwc convertVideoToOverlayCoords:NSMakePoint([selectedDistortionPoint.screenX floatValue],[selectedDistortionPoint.screenY floatValue])];
-			[self drawSelectionIndicatorAtPoint:selectedPoint forShapeOfSize:shapeSize*2.0];
+			[self drawSelectionIndicatorAtPoint:selectedPoint forShapeOfSize:shapeSize*2.0 opacity:1.0];
 		}
 		
 	}
@@ -423,36 +426,46 @@
 	VideoWindowController *vwc = _delegate;
 	NSPoint line[2];
 	VSEventScreenPoint *currentScreenPoint,*previousScreenPoint;
-	NSArray *sortedPoints = [trackedEvent.points sortedArrayUsingDescriptors:[NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"index" ascending:YES]]];	
-	VSPoint *previousPoint = [sortedPoints objectAtIndex:0];
-	for (int i = 1; i < [sortedPoints count]; i++) {
-		VSPoint *point = [sortedPoints objectAtIndex:i];
-		if ([point has3Dcoords] && [previousPoint has3Dcoords]) {
-			currentScreenPoint = [point screenPointForVideoClip:vwc.videoClip];
-			previousScreenPoint = [previousPoint screenPointForVideoClip:vwc.videoClip];
-			if (currentScreenPoint != nil && previousScreenPoint != nil) {
-				VSTrackedObject *objectForColor = [trackedEvent.trackedObjects anyObject];	// not wasting time doing multiple colors for multiple objects here
-				NSColor *lineColor = [objectForColor.color colorWithAlphaComponent:trackedEvent.tempOpacity];
-				line[0] = [vwc convertVideoToOverlayCoords:NSMakePoint([previousScreenPoint.screenX floatValue],[previousScreenPoint.screenY floatValue])];
-				line[1] = [vwc convertVideoToOverlayCoords:NSMakePoint([currentScreenPoint.screenX floatValue],[currentScreenPoint.screenY floatValue])];
-				[lineColor setStroke];
-				NSBezierPath *path = [NSBezierPath bezierPath];	
-				[path appendBezierPathWithPoints:line count:2];
-				[path setLineWidth:[trackedEvent.type.connectingLineThickness floatValue]];
-				if ([trackedEvent.type.connectingLineType isEqualToString:@"Dotted"]) {
-					CGFloat lineDash[2] = {3.0,3.0};
-					[path setLineDash:lineDash count:2 phase:0.0];
-				}
-				[path stroke];
-				if ([trackedEvent.type.connectingLineLengthLabeled intValue] > 0) { // if "Show connecting line length" is not "No"
-					if ([trackedEvent.type.connectingLineLengthLabeled intValue] == 1 || (currentScreenPoint.videoClip.isMasterClipOf != nil)) {	// Show line if it's "On All Clips"
-						[self drawConnectingLinesLengthLabelFromVSPoint:point toVSPoint:previousPoint onLine:line inColor:lineColor];	// or if it's "On Master Clip" and this is one.
-					}
-				}
-			}
-		}
-		previousPoint = point;
-	}
+	NSArray *allSortedPoints = [NSMutableArray arrayWithArray:[trackedEvent.points sortedArrayUsingDescriptors:[NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"index" ascending:YES]]]];
+    NSMutableArray *sortedPoints = [NSMutableArray new];
+    for (VSPoint *point in allSortedPoints) {   // This filtering prevents showing connecting lines to points in the future
+        CMTime pointTime = [UtilityFunctions CMTimeFromString:point.timecode];
+        CMTime currentTime = [vwc.document currentMasterTime];
+        if (CMTimeCompare(pointTime,currentTime) == NSOrderedAscending) {
+            [sortedPoints addObject:point];
+        }
+    }
+    if ([sortedPoints count] > 1) {
+        VSPoint *previousPoint = [sortedPoints objectAtIndex:0];
+        for (int i = 1; i < [sortedPoints count]; i++) {
+            VSPoint *point = [sortedPoints objectAtIndex:i];
+            if ([point has3Dcoords] && [previousPoint has3Dcoords]) {
+                currentScreenPoint = [point screenPointForVideoClip:vwc.videoClip];
+                previousScreenPoint = [previousPoint screenPointForVideoClip:vwc.videoClip];
+                if (currentScreenPoint != nil && previousScreenPoint != nil) {
+                    VSTrackedObject *objectForColor = [trackedEvent.trackedObjects anyObject];	// not wasting time doing multiple colors for multiple objects here
+                    NSColor *lineColor = [objectForColor.color colorWithAlphaComponent:trackedEvent.tempOpacity];
+                    line[0] = [vwc convertVideoToOverlayCoords:NSMakePoint([previousScreenPoint.screenX floatValue],[previousScreenPoint.screenY floatValue])];
+                    line[1] = [vwc convertVideoToOverlayCoords:NSMakePoint([currentScreenPoint.screenX floatValue],[currentScreenPoint.screenY floatValue])];
+                    [lineColor setStroke];
+                    NSBezierPath *path = [NSBezierPath bezierPath];
+                    [path appendBezierPathWithPoints:line count:2];
+                    [path setLineWidth:[trackedEvent.type.connectingLineThickness floatValue]];
+                    if ([trackedEvent.type.connectingLineType isEqualToString:@"Dotted"]) {
+                        CGFloat lineDash[2] = {3.0,3.0};
+                        [path setLineDash:lineDash count:2 phase:0.0];
+                    }
+                    [path stroke];
+                    if ([trackedEvent.type.connectingLineLengthLabeled intValue] > 0) { // if "Show connecting line length" is not "No"
+                        if ([trackedEvent.type.connectingLineLengthLabeled intValue] == 1 || (currentScreenPoint.videoClip.isMasterClipOf != nil)) {	// Show line if it's "On All Clips"
+                            [self drawConnectingLinesLengthLabelFromVSPoint:point toVSPoint:previousPoint onLine:line inColor:lineColor];	// or if it's "On Master Clip" and this is one.
+                        }
+                    }
+                }
+            }
+            previousPoint = point;
+        }
+    }
 	
 }
 
@@ -706,15 +719,15 @@
 		[line2path stroke];
 	}	
 	BOOL pointIsSelected = ([[screenPoint.videoClip.project.document.eventsPointsController selectedObjects] count] > 0 && [[screenPoint.videoClip.project.document.eventsPointsController selectedObjects] containsObject:screenPoint.point]);
-	if (pointIsSelected) [self drawSelectionIndicatorAtPoint:point forShapeOfSize:shapeSize];
+	if (pointIsSelected) [self drawSelectionIndicatorAtPoint:point forShapeOfSize:shapeSize opacity:opacity];
 }
 
-- (void) drawSelectionIndicatorAtPoint:(NSPoint)point forShapeOfSize:(float)shapeSize
+- (void) drawSelectionIndicatorAtPoint:(NSPoint)point forShapeOfSize:(float)shapeSize opacity:(float)opacity
 {
 	float selectionLineLength = [[[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"pointSelectionIndicatorLineLength"] floatValue];
 	float selectionLineWidth = [[[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"pointSelectionIndicatorLineWidth"] floatValue];
 	float selectionLineSizeFactor = [[[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"pointSelectionIndicatorSizeFactor"] floatValue];
-	NSColor *selectionLineColor = [NSUnarchiver unarchiveObjectWithData:[[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"pointSelectionIndicatorColor"]];
+	NSColor *selectionColor = [NSUnarchiver unarchiveObjectWithData:[[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"pointSelectionIndicatorColor"]];
 	
 	NSBezierPath *mainPath = [NSBezierPath bezierPath];
 	NSBezierPath *outlinePath = [NSBezierPath bezierPath];
@@ -740,9 +753,9 @@
 
 	[mainPath setLineWidth:selectionLineWidth];
 	[outlinePath setLineWidth:selectionLineWidth+2*outlineWidth];
-	[[NSColor blackColor] set];
+	[[NSColor colorWithWhite:0.0f alpha:opacity] set];
 	[outlinePath stroke];
-	[selectionLineColor set];
+    [[NSColor colorWithDeviceRed:[selectionColor redComponent] green:[selectionColor greenComponent] blue:[selectionColor blueComponent] alpha:opacity] set];
 	[mainPath stroke];
 }
 
@@ -859,7 +872,7 @@
 	// draw the selection indicator, if the point is selected
 	
 	BOOL pointIsSelected = ([[pointsArrayController selectedObjects] count] > 0 && [[pointsArrayController selectedObjects] containsObject:calibrationPoint]);
-	if (pointIsSelected) [self drawSelectionIndicatorAtPoint:point forShapeOfSize:radius];
+	if (pointIsSelected) [self drawSelectionIndicatorAtPoint:point forShapeOfSize:radius opacity:1.0];
 	
 	// draw the text label
 	

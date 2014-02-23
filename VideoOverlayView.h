@@ -37,7 +37,7 @@
 - (void) drawScreenPointToIdealScreenPointComparison;
 - (void) drawMeasurementScreenPoints;
 - (void) drawMeasurementScreenPoint:(VSEventScreenPoint *)screenPoint fromTrackedObject:(VSTrackedObject *)pointsObject withOpacity:(float)opacity magnification:(float)magnification;
-- (void) drawSelectionIndicatorAtPoint:(NSPoint)point forShapeOfSize:(float)shapeSize;
+- (void) drawSelectionIndicatorAtPoint:(NSPoint)point forShapeOfSize:(float)shapeSize opacity:(float)opacity;
 - (void) drawConnectingLinesForTrackedEvent:(VSTrackedEvent *)trackedEvent;
 - (void) drawConnectingLinesLengthLabelFromVSPoint:(VSPoint *)point toVSPoint:(VSPoint *)otherPoint onLine:(NSPoint[2])line inColor:(NSColor *)color;
 - (void) drawDistortionCorrections;

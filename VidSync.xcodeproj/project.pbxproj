@@ -41,6 +41,7 @@
 		9612EC2318B741F500BBED62 /* SyncedPlaybackPanelControlBox.m in Sources */ = {isa = PBXBuildFile; fileRef = 9612EC2218B741F500BBED62 /* SyncedPlaybackPanelControlBox.m */; };
 		9612EC2518B74A6F00BBED62 /* TallVideoScrubberBackground.png in Resources */ = {isa = PBXBuildFile; fileRef = 9612EC2418B74A6F00BBED62 /* TallVideoScrubberBackground.png */; };
 		9612EC2B18B9426700BBED62 /* MainProjectWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = 9612EC2A18B9426700BBED62 /* MainProjectWindow.m */; };
+		9612EC2E18B9744700BBED62 /* CalibDistortionPtArrayController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9612EC2D18B9744700BBED62 /* CalibDistortionPtArrayController.m */; };
 		961A2F4618B40AB2009EA198 /* SyncedPlaybackPanel.m in Sources */ = {isa = PBXBuildFile; fileRef = 961A2F4518B40AB2009EA198 /* SyncedPlaybackPanel.m */; };
 		961A2F4918B40D05009EA198 /* SyncedPlaybackView.m in Sources */ = {isa = PBXBuildFile; fileRef = 961A2F4818B40D05009EA198 /* SyncedPlaybackView.m */; };
 		961A2F4B18B42506009EA198 /* Fonts in Resources */ = {isa = PBXBuildFile; fileRef = 961A2F4A18B42506009EA198 /* Fonts */; };
@@ -213,6 +214,8 @@
 		9612EC2418B74A6F00BBED62 /* TallVideoScrubberBackground.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = TallVideoScrubberBackground.png; sourceTree = "<group>"; };
 		9612EC2918B9426700BBED62 /* MainProjectWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MainProjectWindow.h; sourceTree = "<group>"; };
 		9612EC2A18B9426700BBED62 /* MainProjectWindow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MainProjectWindow.m; sourceTree = "<group>"; };
+		9612EC2C18B9744700BBED62 /* CalibDistortionPtArrayController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CalibDistortionPtArrayController.h; sourceTree = "<group>"; };
+		9612EC2D18B9744700BBED62 /* CalibDistortionPtArrayController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CalibDistortionPtArrayController.m; sourceTree = "<group>"; };
 		961A2F4418B40AB2009EA198 /* SyncedPlaybackPanel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SyncedPlaybackPanel.h; sourceTree = "<group>"; };
 		961A2F4518B40AB2009EA198 /* SyncedPlaybackPanel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SyncedPlaybackPanel.m; sourceTree = "<group>"; };
 		961A2F4718B40D05009EA198 /* SyncedPlaybackView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SyncedPlaybackView.h; sourceTree = "<group>"; };
@@ -1369,6 +1372,8 @@
 				9690663C116AFB08002B3F20 /* TypeIndexNameSortedArrayController.m */,
 				96AE94411162B65A00118398 /* CalibScreenPtArrayController.h */,
 				96AE94421162B65A00118398 /* CalibScreenPtArrayController.m */,
+				9612EC2C18B9744700BBED62 /* CalibDistortionPtArrayController.h */,
+				9612EC2D18B9744700BBED62 /* CalibDistortionPtArrayController.m */,
 				96BDA41F117B84D900C39399 /* CalibDistortionLineArrayController.h */,
 				96BDA420117B84D900C39399 /* CalibDistortionLineArrayController.mm */,
 				969DB351116FF3AF00DBA9F4 /* TypesArrayController.h */,
@@ -1562,6 +1567,7 @@
 				96897AE7115992EA00B3C3C3 /* UtilityFunctions.mm in Sources */,
 				969D6CE8115C079700A6D5A3 /* VSHintLine.m in Sources */,
 				96A5DD3B1161AC7900D58616 /* MyApplicationDelegate.m in Sources */,
+				9612EC2E18B9744700BBED62 /* CalibDistortionPtArrayController.m in Sources */,
 				96A5DEBD1162501500D58616 /* VideoOverlayWindow.m in Sources */,
 				96AE94431162B65A00118398 /* CalibScreenPtArrayController.m in Sources */,
 				96AE95811162ED6600118398 /* EventAwareTableView.m in Sources */,
