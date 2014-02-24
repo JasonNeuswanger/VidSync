@@ -192,7 +192,7 @@
 		96070354152A842000905BCC /* VidSyncProject 1.10.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "VidSyncProject 1.10.xcdatamodel"; sourceTree = "<group>"; };
 		96070355153350A700905BCC /* VidSyncProject 1.11.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "VidSyncProject 1.11.xcdatamodel"; sourceTree = "<group>"; };
 		96070356153365BF00905BCC /* DistortionIcon.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = DistortionIcon.icns; sourceTree = "<group>"; };
-		9612EC0818B57A1300BBED62 /* VidSyncProject 1.12.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = file; path = "VidSyncProject 1.12.xcdatamodel"; sourceTree = "<group>"; };
+		9612EC0818B57A1300BBED62 /* VidSyncProject 1.12.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "VidSyncProject 1.12.xcdatamodel"; sourceTree = "<group>"; };
 		9612EC0918B5825300BBED62 /* VSTrackedObjectPortrait.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VSTrackedObjectPortrait.h; sourceTree = "<group>"; };
 		9612EC0A18B5825300BBED62 /* VSTrackedObjectPortrait.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VSTrackedObjectPortrait.m; sourceTree = "<group>"; };
 		9612EC0C18B597F700BBED62 /* PortraitsArrayController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PortraitsArrayController.h; sourceTree = "<group>"; };
@@ -216,7 +216,7 @@
 		9612EC2A18B9426700BBED62 /* MainProjectWindow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MainProjectWindow.m; sourceTree = "<group>"; };
 		9612EC2C18B9744700BBED62 /* CalibDistortionPtArrayController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CalibDistortionPtArrayController.h; sourceTree = "<group>"; };
 		9612EC2D18B9744700BBED62 /* CalibDistortionPtArrayController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CalibDistortionPtArrayController.m; sourceTree = "<group>"; };
-		9612EC2F18B9A51800BBED62 /* VidSyncProject 1.13.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = file; path = "VidSyncProject 1.13.xcdatamodel"; sourceTree = "<group>"; };
+		9612EC2F18B9A51800BBED62 /* VidSyncProject 1.13.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "VidSyncProject 1.13.xcdatamodel"; sourceTree = "<group>"; };
 		961A2F4418B40AB2009EA198 /* SyncedPlaybackPanel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SyncedPlaybackPanel.h; sourceTree = "<group>"; };
 		961A2F4518B40AB2009EA198 /* SyncedPlaybackPanel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SyncedPlaybackPanel.m; sourceTree = "<group>"; };
 		961A2F4718B40D05009EA198 /* SyncedPlaybackView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SyncedPlaybackView.h; sourceTree = "<group>"; };
@@ -612,7 +612,7 @@
 		96868C03137B4D070036906A /* VidSyncProject 1.02.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "VidSyncProject 1.02.xcdatamodel"; sourceTree = "<group>"; };
 		96868C0513860A9D0036906A /* VidSyncProject 1.03.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "VidSyncProject 1.03.xcdatamodel"; sourceTree = "<group>"; };
 		96897AE5115992EA00B3C3C3 /* UtilityFunctions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UtilityFunctions.h; sourceTree = "<group>"; };
-		96897AE6115992EA00B3C3C3 /* UtilityFunctions.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = UtilityFunctions.mm; sourceTree = "<group>"; };
+		96897AE6115992EA00B3C3C3 /* UtilityFunctions.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; lineEnding = 0; path = UtilityFunctions.mm; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		969065B3116AEA0B002B3F20 /* ObjectSynonymizeArrayController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ObjectSynonymizeArrayController.h; sourceTree = "<group>"; };
 		969065B4116AEA0B002B3F20 /* ObjectSynonymizeArrayController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObjectSynonymizeArrayController.m; sourceTree = "<group>"; };
 		9690663B116AFB08002B3F20 /* TypeIndexNameSortedArrayController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TypeIndexNameSortedArrayController.h; sourceTree = "<group>"; };
@@ -633,7 +633,7 @@
 		96A0CB5A1165D22200845DCD /* VSAnnotationArrayController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VSAnnotationArrayController.m; sourceTree = "<group>"; };
 		96A0CE6C1166CBA600845DCD /* Capture.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Capture.m; sourceTree = "<group>"; };
 		96A3718E15202B3C008DCB6C /* VidSyncProject 1.08.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "VidSyncProject 1.08.xcdatamodel"; sourceTree = "<group>"; };
-		96A5DD3A1161AC7900D58616 /* MyApplicationDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MyApplicationDelegate.m; sourceTree = "<group>"; };
+		96A5DD3A1161AC7900D58616 /* MyApplicationDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = MyApplicationDelegate.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		96A5DEBB1162501500D58616 /* VideoOverlayWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VideoOverlayWindow.h; sourceTree = "<group>"; };
 		96A5DEBC1162501500D58616 /* VideoOverlayWindow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VideoOverlayWindow.m; sourceTree = "<group>"; };
 		96AD259D10AA0B8F00FA1217 /* VSCalibration.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VSCalibration.h; sourceTree = "<group>"; };
@@ -642,7 +642,7 @@
 		96AD296610ACEDBD00FA1217 /* VSCalibrationPoint.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VSCalibrationPoint.m; sourceTree = "<group>"; };
 		96AD2FAE10B37D4400FA1217 /* VS2DMatrixToStringTransformer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VS2DMatrixToStringTransformer.h; sourceTree = "<group>"; };
 		96AD2FAF10B37D4400FA1217 /* VS2DMatrixToStringTransformer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VS2DMatrixToStringTransformer.m; sourceTree = "<group>"; };
-		96AD2FCF10B3866300FA1217 /* UnusedCode.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = UnusedCode.c; sourceTree = "<group>"; };
+		96AD2FCF10B3866300FA1217 /* UnusedCode.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; lineEnding = 0; path = UnusedCode.c; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.c; };
 		96AD316110B78C2100FA1217 /* VSVisibleItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VSVisibleItem.h; sourceTree = "<group>"; };
 		96AD316210B78C2100FA1217 /* VSVisibleItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VSVisibleItem.m; sourceTree = "<group>"; };
 		96AD316810B78DBB00FA1217 /* VSTrackedObjectType.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VSTrackedObjectType.h; sourceTree = "<group>"; };
@@ -699,14 +699,14 @@
 		96EF21A21095432A001DEF3A /* VSProject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VSProject.m; sourceTree = "<group>"; };
 		96EF227510956DE9001DEF3A /* VideoClipWindow.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = VideoClipWindow.xib; sourceTree = "<group>"; };
 		96EF23001096305B001DEF3A /* VideoWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VideoWindowController.h; sourceTree = "<group>"; };
-		96EF23011096305B001DEF3A /* VideoWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VideoWindowController.m; sourceTree = "<group>"; };
+		96EF23011096305B001DEF3A /* VideoWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = VideoWindowController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		96EF247D10966F60001DEF3A /* VideoClipArrayController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VideoClipArrayController.h; sourceTree = "<group>"; };
 		96EF247E10966F60001DEF3A /* VideoClipArrayController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VideoClipArrayController.m; sourceTree = "<group>"; };
 		96EF24E610967B62001DEF3A /* VideoOverlayView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VideoOverlayView.h; sourceTree = "<group>"; };
-		96EF24E710967B62001DEF3A /* VideoOverlayView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VideoOverlayView.m; sourceTree = "<group>"; };
+		96EF24E710967B62001DEF3A /* VideoOverlayView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = VideoOverlayView.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		96EF25731096A113001DEF3A /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = /System/Library/Frameworks/QuartzCore.framework; sourceTree = "<absolute>"; };
 		96EF264F10976B7B001DEF3A /* MagnifiedPreviewView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MagnifiedPreviewView.h; sourceTree = "<group>"; };
-		96EF265010976B7B001DEF3A /* MagnifiedPreviewView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MagnifiedPreviewView.m; sourceTree = "<group>"; };
+		96EF265010976B7B001DEF3A /* MagnifiedPreviewView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = MagnifiedPreviewView.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		96F1E26C152559B800F246F6 /* VidSync Help Draft */ = {isa = PBXFileReference; lastKnownFileType = folder; path = "VidSync Help Draft"; sourceTree = "<group>"; };
 		96FA1CEF1155ACCA0065DF96 /* EventsPointsController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EventsPointsController.h; sourceTree = "<group>"; };
 		96FA1CF01155ACCA0065DF96 /* EventsPointsController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EventsPointsController.m; sourceTree = "<group>"; };

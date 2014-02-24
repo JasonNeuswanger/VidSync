@@ -134,8 +134,16 @@
                                                 <font key="font" metaFont="system"/>
                                             </buttonCell>
                                             <connections>
-                                                <action selector="remove:" target="100325" id="aKr-4F-2i7"/>
-                                                <binding destination="100325" name="enabled" keyPath="canRemove" id="mzx-gQ-42E"/>
+                                                <binding destination="100325" name="enabled" keyPath="selection.clipName" id="EZP-bd-noy">
+                                                    <dictionary key="options">
+                                                        <string key="NSValueTransformerName">NSIsNotNil</string>
+                                                    </dictionary>
+                                                </binding>
+                                                <binding destination="100325" name="target" keyPath="selection" id="FKb-rV-ZH4">
+                                                    <dictionary key="options">
+                                                        <string key="NSSelectorName">relocateClip</string>
+                                                    </dictionary>
+                                                </binding>
                                             </connections>
                                         </button>
                                         <scrollView horizontalLineScroll="19" horizontalPageScroll="10" verticalLineScroll="19" verticalPageScroll="10" usesPredominantAxisScrolling="NO" id="100371">
@@ -992,18 +1000,18 @@
                                                                 <tabViewItems>
                                                                     <tabViewItem label="Front Frame Surface" identifier="1" id="100697">
                                                                         <view key="view" id="100700">
-                                                                            <rect key="frame" x="10" y="25" width="246" height="382"/>
+                                                                            <rect key="frame" x="10" y="29" width="246" height="378"/>
                                                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                             <subviews>
                                                                                 <scrollView horizontalLineScroll="16" horizontalPageScroll="10" verticalLineScroll="16" verticalPageScroll="10" hasHorizontalScroller="NO" usesPredominantAxisScrolling="NO" id="100741">
-                                                                                    <rect key="frame" x="7" y="23" width="234" height="354"/>
+                                                                                    <rect key="frame" x="7" y="23" width="234" height="350"/>
                                                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                                     <clipView key="contentView" id="zSj-hg-g4T">
-                                                                                        <rect key="frame" x="1" y="17" width="217" height="336"/>
+                                                                                        <rect key="frame" x="1" y="17" width="217" height="332"/>
                                                                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                                         <subviews>
                                                                                             <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnReordering="NO" multipleSelection="NO" autosaveColumns="NO" rowHeight="14" headerView="100745" id="100744" customClass="EventAwareTableView">
-                                                                                                <rect key="frame" x="0.0" y="0.0" width="217" height="336"/>
+                                                                                                <rect key="frame" x="0.0" y="0.0" width="217" height="332"/>
                                                                                                 <autoresizingMask key="autoresizingMask"/>
                                                                                                 <size key="intercellSpacing" width="3" height="2"/>
                                                                                                 <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
@@ -1088,7 +1096,7 @@
                                                                                         <autoresizingMask key="autoresizingMask"/>
                                                                                     </scroller>
                                                                                     <scroller key="verticalScroller" verticalHuggingPriority="750" horizontal="NO" id="100742">
-                                                                                        <rect key="frame" x="218" y="17" width="15" height="336"/>
+                                                                                        <rect key="frame" x="218" y="17" width="15" height="332"/>
                                                                                         <autoresizingMask key="autoresizingMask"/>
                                                                                     </scroller>
                                                                                     <tableHeaderView key="headerView" id="100745">
@@ -1407,7 +1415,7 @@
                                                                             </connections>
                                                                         </textField>
                                                                         <box autoresizesSubviews="NO" horizontalHuggingPriority="750" title="Box" boxType="separator" titlePosition="noTitle" id="102374">
-                                                                            <rect key="frame" x="125" y="43.999999572775948" width="5" height="173"/>
+                                                                            <rect key="frame" x="125" y="44" width="5" height="173"/>
                                                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES" heightSizable="YES"/>
                                                                             <color key="borderColor" white="0.0" alpha="0.41999999999999998" colorSpace="calibratedWhite"/>
                                                                             <color key="fillColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
@@ -3969,11 +3977,11 @@ IA
                                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES" heightSizable="YES"/>
                                                                 <textFieldCell key="cell" sendsActionOnEndEditing="YES" id="lgm-WD-SgD">
                                                                     <font key="font" metaFont="system"/>
-                                                                    <mutableString key="title">CSV files are easier to work with, but XML files contain more details.
+                                                                    <string key="title">CSV files are easier to work with, but XML files contain more details.
 
 An exported CSV is a spreadsheet with one row for each measured point, including its 3-D coordinates (if applicable) and information about the event and object it belongs to. If you are making simple position or distance measurements, you should probably export in CSV.
 
-An XML file stores information using custom markup tags. It more thoroughly reflects the information in VidSync, especially the Object → Event → Point hierarchy. It also includes information about the project and calibration. Unlike CSV output, the XML file can represent many-to-many relationships (such as a "conflict" event between multiple "fish" objects, each of which may be involved in multiple conflicts). To analyze a VidSync XML file, you need to import it using a program with XML import capabilities (such as Mathematica, Matlab, or R) and write your own code to extract and organize the exact information you want. This is recommended for very complex analyses.</mutableString>
+An XML file stores information using custom markup tags. It more thoroughly reflects the information in VidSync, especially the Object → Event → Point hierarchy. It also includes information about the project and calibration. Unlike CSV output, the XML file can represent many-to-many relationships (such as a "conflict" event between multiple "fish" objects, each of which may be involved in multiple conflicts). To analyze a VidSync XML file, you need to import it using a program with XML import capabilities (such as Mathematica, Matlab, or R) and write your own code to extract and organize the exact information you want. This is recommended for very complex analyses.</string>
                                                                     <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                                                     <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                                                 </textFieldCell>
@@ -6030,12 +6038,12 @@ To delete a portrait, select it and hit the delete key.</string>
                                                 <font key="font" metaFont="smallSystem"/>
                                             </buttonCell>
                                             <connections>
+                                                <binding destination="101506" name="enabled" keyPath="selection.index" id="X9Y-N7-0At"/>
                                                 <binding destination="101506" name="argument" keyPath="selection.self" id="Uxm-J8-B30">
                                                     <dictionary key="options">
                                                         <string key="NSSelectorName">setPortraitSubject:</string>
                                                     </dictionary>
                                                 </binding>
-                                                <binding destination="101506" name="enabled" keyPath="selection.index" id="X9Y-N7-0At"/>
                                                 <binding destination="-2" name="target" keyPath="self" previousBinding="Uxm-J8-B30" id="pFq-9z-5NB">
                                                     <dictionary key="options">
                                                         <string key="NSSelectorName">setPortraitSubject:</string>
@@ -8282,6 +8290,7 @@ Some useful refractive index values are:  1.000 for air, 1.335 for fresh water, 
         </customView>
         <arrayController objectClassName="VSTrackedObjectPortrait" avoidsEmptySelection="NO" id="ik8-He-CGb" userLabel="Objects Portraits Controller" customClass="ObjectsPortraitsArrayController">
             <connections>
+                <binding destination="-2" name="managedObjectContext" keyPath="managedObjectContext" id="A4i-qP-68X"/>
                 <binding destination="101506" name="contentArray" keyPath="selection.portraits" id="Jhg-H1-FIy">
                     <dictionary key="options">
                         <bool key="NSHandlesContentAsCompoundValue" value="YES"/>
@@ -8289,7 +8298,6 @@ Some useful refractive index values are:  1.000 for air, 1.335 for fresh water, 
                         <string key="NSValueTransformerName">OrderedSetArrayValueTransformer</string>
                     </dictionary>
                 </binding>
-                <binding destination="-2" name="managedObjectContext" keyPath="managedObjectContext" id="A4i-qP-68X"/>
                 <outlet property="otherPortraitBrowserView" destination="L8b-Kn-Awl" id="53I-FZ-kc4"/>
                 <outlet property="portraitBrowserView" destination="kTa-fp-bSt" id="G0n-S0-TCt"/>
             </connections>

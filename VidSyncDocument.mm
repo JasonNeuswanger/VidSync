@@ -28,6 +28,8 @@
 @synthesize distortionPointsController;
 @synthesize distortionLinesController;	
 
+@synthesize syncedPlaybackScrubber;
+
 @synthesize playForwardAtRate1WhilePressedButton;
 @synthesize playBackwardAtRate1WhilePressedButton;
 @synthesize playForwardAtRate2WhilePressedButton;
@@ -54,6 +56,9 @@
 static void *AVSPPlayerRateContext = &AVSPPlayerRateContext;
 static void *AVSPPlayerCurrentTimeContext = &AVSPPlayerCurrentTimeContext;
 
+#pragma mark
+#pragma mark Initialization
+
 - (id)init 
 {
     self = [super init];
@@ -76,16 +81,6 @@ static void *AVSPPlayerCurrentTimeContext = &AVSPPlayerCurrentTimeContext;
     return self;
 }
 
-- (NSError*) application:(NSApplication*)application willPresentError:(NSError*)error
-{
-    if (error)
-    {
-        NSDictionary* userInfo = [error userInfo];
-        NSLog (@"User encountered the following error: %@", userInfo);
-    }
-    return error;
-}
-
 - (void)makeWindowControllers
 {
 	mainWindowController = [[NSWindowController alloc] initWithWindowNibName:@"VidSyncProject" owner:self];
@@ -97,7 +92,8 @@ static void *AVSPPlayerCurrentTimeContext = &AVSPPlayerCurrentTimeContext;
     [self addWindowController:advancedPlaybackWindowController];
     
     for (VSVideoClip *clip in [self.project.videoClips allObjects]) {
-		[self addWindowController:[[VideoWindowController alloc] initWithVideoClip:clip inManagedObjectContext:[self managedObjectContext]]];
+        VideoWindowController __strong *vwc = [[VideoWindowController alloc] initWithVideoClip:clip inManagedObjectContext:[self managedObjectContext]];
+        if (vwc != nil) [self addWindowController:vwc];
 	}
 
     [self addObserver:self forKeyPath:@"project.masterClip.windowController.playerView.player.rate" options:NSKeyValueObservingOptionNew context:AVSPPlayerRateContext];
@@ -163,14 +159,6 @@ static void *AVSPPlayerCurrentTimeContext = &AVSPPlayerCurrentTimeContext;
         [self addObserver:syncedPlaybackView forKeyPath:@"bookmarkIsSet2" options:NSKeyValueObservingOptionNew context:NULL];
 
 	}
-}
-
-- (void) setSyncedPlaybackScrubberTickCount
-{
-    
-    CMTimeRange masterTimeRange = [[[self.project.masterClip.windowController.videoAsset tracksWithMediaType:AVMediaTypeVideo] firstObject] timeRange];
-    NSInteger masterTimeDurationMinutes = round(CMTimeGetSeconds(masterTimeRange.duration)/60.0f);
-    [syncedPlaybackScrubber setNumberOfTickMarks:masterTimeDurationMinutes+1];  // adds 1 extra tickmark because there's a tick at 0. will be close but not exactly 1 tick/minute now
 }
 
 - (id)initWithType:(NSString *)type error:(NSError **)error {	// This method is called only when a new document is created.
@@ -253,6 +241,9 @@ static void *AVSPPlayerCurrentTimeContext = &AVSPPlayerCurrentTimeContext;
     }
     return nil;
 }
+
+#pragma mark
+#pragma mark Event observing
 
 - (void) anyTableViewSelectionIsChanging:(NSNotification *)notification		// Controls what to do when a table view's selection is ABOUT to change but hasn't yet.
 {
@@ -404,6 +395,9 @@ static void *AVSPPlayerCurrentTimeContext = &AVSPPlayerCurrentTimeContext;
     }
 }
 
+#pragma mark
+#pragma mark Object/event type files
+
 - (IBAction) saveObjectAndEventTypesToFile:(id)sender
 {
 	NSMutableArray *objectTypesArray = [[NSMutableArray alloc] init];
@@ -456,6 +450,9 @@ static void *AVSPPlayerCurrentTimeContext = &AVSPPlayerCurrentTimeContext;
 	}	
 }
 
+#pragma mark
+#pragma mark Magnified preview control
+
 - (void) updatePreviewImageWithPlayerLayer:(AVPlayerLayer *)playerLayer atPoint:(NSPoint)point;
 {
 	if ([[[mainTabView selectedTabViewItem] label] isEqualToString:@"Measurement"]) {
@@ -482,6 +479,8 @@ static void *AVSPPlayerCurrentTimeContext = &AVSPPlayerCurrentTimeContext;
 	[MagnifiedPreviewView setFiltersToDefaults];
 }
 
+#pragma mark
+#pragma mark Calibration time
 
 - (IBAction) setCalibrationTime:(id)sender
 {
@@ -492,6 +491,9 @@ static void *AVSPPlayerCurrentTimeContext = &AVSPPlayerCurrentTimeContext;
 {
 	if (self.project.calibrationTimecode != nil) [self goToMasterTime:[UtilityFunctions CMTimeFromString:self.project.calibrationTimecode]];
 }
+
+#pragma mark
+#pragma mark Refresh/recalculate
 
 - (IBAction) refreshOverlaysOfAllClips:(id)sender
 {
@@ -528,6 +530,9 @@ static void *AVSPPlayerCurrentTimeContext = &AVSPPlayerCurrentTimeContext;
     if (fetchError != nil) [self presentError:fetchError];
 }
 
+#pragma mark
+#pragma mark Portraits of objects
+
 - (void) setPortraitSubject:(VSTrackedObject *)subject
 {
     portraitSubject = subject;
@@ -538,8 +543,7 @@ static void *AVSPPlayerCurrentTimeContext = &AVSPPlayerCurrentTimeContext;
     return portraitSubject;
 }
 
-#pragma mark
-#pragma mark Delegate method for PortraitBrowserView, following IKImageBrowserDelegate informal protocol)
+// Delegate method for PortraitBrowserView, following IKImageBrowserDelegate informal protocol)
 
 // Double-clicking on a portrait takes the video to the time at which the portrait was created, and brings that window to the front
 

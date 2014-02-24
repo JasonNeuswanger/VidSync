@@ -32,6 +32,8 @@
 @property (strong) VideoWindowController *windowController;
 @property (strong) NSString *masterButtonText;
 
+- (void) relocateClip;
+
 - (void) setMasterControls;
 
 - (NSNumber *) timeScale;

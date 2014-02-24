@@ -115,6 +115,8 @@
 @property (readonly, weak) IBOutlet CalibDistortionLineArrayController *distortionLinesController;	
 @property (readonly, weak) IBOutlet NSWindow *mainWindow;
 
+@property (weak) IBOutlet NSSlider *syncedPlaybackScrubber;
+
 @property (readonly, weak) IBOutlet PlayWhilePressedButton *playForwardAtRate1WhilePressedButton;
 @property (readonly, weak) IBOutlet PlayWhilePressedButton *playBackwardAtRate1WhilePressedButton;
 @property (readonly, weak) IBOutlet PlayWhilePressedButton *playForwardAtRate2WhilePressedButton;
@@ -140,7 +142,6 @@
 
 - (id) initWithType:(NSString *)type error:(NSError **)error;
 - (void) windowControllerDidLoadNib:(NSWindowController *)windowController;
-- (void) setSyncedPlaybackScrubberTickCount;
 - (VSProject *) project;
 
 - (void) anyTableViewSelectionDidChange:(NSNotification *)notification;
@@ -240,6 +241,9 @@
 @interface VidSyncDocument (NSApplicationDelegate) // spot to write out the delegate methods for NSApplication so I don't get lots of "not found" warnings
 
 + (void)initialize;
++ (NSMutableDictionary *) userDefaultsInitialValues;
 + (void) setUserDefaultsInitialValues;
+
+- (NSError*) application:(NSApplication*)application willPresentError:(NSError*)error;
 
 @end

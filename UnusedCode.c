@@ -16,8 +16,8 @@
 {
 	BOOL shouldDrawFront = [[[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"quadratShowSurfaceGridOverlayFront"] boolValue];
 	BOOL shouldDrawBack = [[[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"quadratShowSurfaceGridOverlayBack"] boolValue];
-	NSColor *frontColor = [NSUnarchiver unarchiveObjectWithData:[[NSUserDefaults standardUserDefaults] dataForKey:@"quadratOverlayColorFront"]];
-	NSColor *backColor = [NSUnarchiver unarchiveObjectWithData:[[NSUserDefaults standardUserDefaults] dataForKey:@"quadratOverlayColorBack"]];
+	NSColor *frontColor = [UtilityFunctions unarchiveColorFromData:[[NSUserDefaults standardUserDefaults] dataForKey:@"quadratOverlayColorFront"]];
+	NSColor *backColor = [UtilityFunctions unarchiveColorFromData:[[NSUserDefaults standardUserDefaults] dataForKey:@"quadratOverlayColorBack"]];
 	if ((shouldDrawFront || shouldDrawBack) && quadratCoordinateGrids == nil) {	// quadratCoordinateGrids holds a multidimensional array of NSBezierPaths representing all the grid lines
 		[self calculateQuadratCoordinateGrids];
 	}

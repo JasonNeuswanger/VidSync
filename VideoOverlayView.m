@@ -133,7 +133,7 @@
     VideoWindowController *vwc = _delegate;
     // If the user just double-clicked on a portrait to view it in the video window, draw the frame but then set it to disappear on the next screen draw.
     if (vwc.shouldShowPortraitFrame != nil && ![vwc.shouldShowPortraitFrame isEqualToString:@""]) {
-        NSColor *selectionColor = [NSUnarchiver unarchiveObjectWithData:[[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"pointSelectionIndicatorColor"]];
+        NSColor *selectionColor = [UtilityFunctions userDefaultColorForKey:@"pointSelectionIndicatorColor"];
         NSRect rawRect = NSRectFromString(vwc.shouldShowPortraitFrame);
         rawRect.origin.y = vwc.movieSize.height - rawRect.origin.y - rawRect.size.height;    // Flips the rect around to account for difference between top-left and bottom-left zeroed coordinate systems
         NSRect selectionRect = [vwc convertVideoToOverlayRect:rawRect];
@@ -156,7 +156,7 @@
         NSPoint endPoint = [vwc convertVideoToOverlayCoords:vwc.portraitDragCurrentCoords];
         float width = fabs(startPoint.x - endPoint.x);
         float height = fabs(startPoint.y - endPoint.y);
-        NSColor *selectionColor = [NSUnarchiver unarchiveObjectWithData:[[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"pointSelectionIndicatorColor"]];
+        NSColor *selectionColor = [UtilityFunctions userDefaultColorForKey:@"pointSelectionIndicatorColor"];
 		NSRect selectionRect = NSMakeRect(MIN(startPoint.x,endPoint.x),MIN(startPoint.y,endPoint.y),width,height);
 		NSBezierPath *selectedOutline = [NSBezierPath bezierPathWithRect:selectionRect];
         double dashes[2];
@@ -218,7 +218,7 @@
 	[annotation.notes drawWithRect:drawingRect options:NSStringDrawingTruncatesLastVisibleLine|NSStringDrawingUsesLineFragmentOrigin attributes:attrs];
 	
 	if ([[vwc.videoClip.project.document.annotationsController selectedObjects] count] > 0 && [[[vwc.videoClip.project.document.annotationsController selectedObjects] objectAtIndex:0] isEqualTo:annotation]) {
-		NSColor *selectionColor = [NSUnarchiver unarchiveObjectWithData:[[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"pointSelectionIndicatorColor"]];
+		NSColor *selectionColor = [UtilityFunctions userDefaultColorForKey:@"pointSelectionIndicatorColor"];
         [[NSColor colorWithDeviceRed:[selectionColor redComponent] green:[selectionColor greenComponent] blue:[selectionColor blueComponent] alpha:annotation.tempOpacity] set];
 		NSRect selectionRect = NSMakeRect(drawingRect.origin.x - selectionPadding,drawingRect.origin.y - selectionPadding,drawingRect.size.width + 2*selectionPadding,drawingRect.size.height + 2*selectionPadding);
 		NSBezierPath *selectedOutline = [NSBezierPath bezierPathWithRect:selectionRect];
@@ -231,8 +231,8 @@
 
 - (void) drawScreenPointToIdealScreenPointComparison		// draws dots at all screenPoint clicked locations throughout the entire image, and draws lines from them to their ideal positions
 {
-	NSColor *pixelErrorPointColor = [NSUnarchiver unarchiveObjectWithData:[[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"pixelErrorPointColor"]];
-	NSColor *pixelErrorLineColor = [NSUnarchiver unarchiveObjectWithData:[[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"pixelErrorLineColor"]];		
+	NSColor *pixelErrorPointColor = [UtilityFunctions userDefaultColorForKey:@"pixelErrorPointColor"];
+	NSColor *pixelErrorLineColor = [UtilityFunctions userDefaultColorForKey:@"pixelErrorLineColor"];
 	float shapeSize = [[[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"pixelErrorDotSize"] floatValue];
 	float lineWidth = [[[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"pixelErrorLineWidth"] floatValue];
 	VideoWindowController *vwc = _delegate;
@@ -269,12 +269,12 @@
 
 - (void) drawDistortionCorrections
 {		
-	NSColor *distortedPointColor = [NSUnarchiver unarchiveObjectWithData:[[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"distortionPointsColor"]];
-	NSColor *connectingLineColor = [NSUnarchiver unarchiveObjectWithData:[[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"distortionConnectingLinesColor"]];
-	NSColor *tipToTipLineColor = [NSUnarchiver unarchiveObjectWithData:[[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"distortionTipToTipLinesColor"]];
-	NSColor *correctedPointColor = [NSUnarchiver unarchiveObjectWithData:[[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"distortionCorrectedPointsColor"]];
-	NSColor *correctedLineColor = [NSUnarchiver unarchiveObjectWithData:[[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"distortionCorrectedLinesColor"]];
-	NSColor *crosshairsColor = [NSUnarchiver unarchiveObjectWithData:[[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"distortionCenterColor"]];
+	NSColor *distortedPointColor = [UtilityFunctions userDefaultColorForKey:@"distortionPointsColor"];
+	NSColor *connectingLineColor = [UtilityFunctions userDefaultColorForKey:@"distortionConnectingLinesColor"];
+	NSColor *tipToTipLineColor = [UtilityFunctions userDefaultColorForKey:@"distortionTipToTipLinesColor"];
+	NSColor *correctedPointColor = [UtilityFunctions userDefaultColorForKey:@"distortionCorrectedPointsColor"];
+	NSColor *correctedLineColor = [UtilityFunctions userDefaultColorForKey:@"distortionCorrectedLinesColor"];
+	NSColor *crosshairsColor = [UtilityFunctions userDefaultColorForKey:@"distortionCenterColor"];
 	float shapeSize = [[[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"distortionPointSize"] floatValue];
 	float lineWidth = [[[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"distortionLineThickness"] floatValue];
 	BOOL showConnectingLines = [[[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"showDistortionConnectingLines"] boolValue];
@@ -747,7 +747,7 @@
 	float selectionLineLength = [[[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"pointSelectionIndicatorLineLength"] floatValue];
 	float selectionLineWidth = [[[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"pointSelectionIndicatorLineWidth"] floatValue];
 	float selectionLineSizeFactor = [[[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"pointSelectionIndicatorSizeFactor"] floatValue];
-	NSColor *selectionColor = [NSUnarchiver unarchiveObjectWithData:[[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"pointSelectionIndicatorColor"]];
+	NSColor *selectionColor = [UtilityFunctions userDefaultColorForKey:@"pointSelectionIndicatorColor"];
 	
 	NSBezierPath *mainPath = [NSBezierPath bezierPath];
 	NSBezierPath *outlinePath = [NSBezierPath bezierPath];
@@ -861,12 +861,12 @@
 	NSColor *pointColor;
 	CalibScreenPtArrayController *pointsArrayController;
 	if ([whichSurface isEqual: @"Front"]) {
-		pointColor = [NSUnarchiver unarchiveObjectWithData:[[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"quadratOverlayColorFront"]];
+		pointColor = [UtilityFunctions userDefaultColorForKey:@"quadratOverlayColorFront"];
 		radius = [[[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"quadratPointOverlayCircleDiameterFront"] floatValue];
 		textOffset = NSMakePoint(1.2*radius,-1.1*radius);
 		pointsArrayController = calibrationPoint.calibration.videoClip.project.document.calibScreenPtFrontArrayController;
 	} else {
-		pointColor = [NSUnarchiver unarchiveObjectWithData:[[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"quadratOverlayColorBack"]];
+		pointColor = [UtilityFunctions userDefaultColorForKey:@"quadratOverlayColorBack"];
 		radius = [[[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"quadratPointOverlayCircleDiameterBack"] floatValue];
 		textOffset = NSMakePoint(1.2*radius,-1.63*radius);
 		pointsArrayController = calibrationPoint.calibration.videoClip.project.document.calibScreenPtBackArrayController;
@@ -974,9 +974,10 @@
 {
 	BOOL shouldDrawFront = [[[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"quadratShowSurfaceGridOverlayFront"] boolValue];
 	BOOL shouldDrawBack = [[[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"quadratShowSurfaceGridOverlayBack"] boolValue];
-	NSColor *frontColor = [NSUnarchiver unarchiveObjectWithData:[[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"quadratOverlayColorFront"]];
-	NSColor *backColor = [NSUnarchiver unarchiveObjectWithData:[[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"quadratOverlayColorBack"]];
-	
+    
+    NSColor *frontColor = [UtilityFunctions userDefaultColorForKey:@"quadratOverlayColorFront"];
+    NSColor *backColor = [UtilityFunctions userDefaultColorForKey:@"quadratOverlayColorBack"];
+    
 	if (shouldDrawFront || shouldDrawBack) {	// quadratCoordinateGrids holds a multidimensional array of NSBezierPaths representing all the grid lines
 		if (quadratCoordinateGrids == nil) [self calculateQuadratCoordinateGrids];
         if ([[[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"showScreenItemDropShadows"] boolValue] == YES) {

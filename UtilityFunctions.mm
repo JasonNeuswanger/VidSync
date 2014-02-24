@@ -12,6 +12,20 @@
 
 @implementation UtilityFunctions
 
++ (NSColor *) userDefaultColorForKey:(NSString *)key
+{
+    // I sometimes get strange exceptions unpacking colors ([NSUnarchiver initForReadingWithData:] complains about a nil argument with NSInvalidArgumentException) so I'm handling them here
+    NSColor *color;
+    @try {
+        color = [NSUnarchiver unarchiveObjectWithData:[[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:key]];
+    } @catch (NSException *e) {
+        NSLog(@"Error unarchiving user defaults color value for key %@. Using red instead. Exception was: %@",key,e);
+        color = [NSColor redColor];
+    } @finally {
+        return color;
+    }
+}
+
 + (NSString *) CMStringFromTime:(CMTime)time // I have to use QTTime functions for now to encode/decode times as strings for backward compatibility with files that stored times as strings in Core Data.
                                             // The modern way to do it would be to store the times as dictonaries using CMTimeMakeFromDictiory and CMTimeCopyAsDictionary, but backward compatability would be annoying.
                                             // This time thing should be the only reason I still have QTKit included in this project, eventually. I'll have to code the string conversions from scratch to eliminate QTKit.

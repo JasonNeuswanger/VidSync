@@ -144,7 +144,7 @@
 
 - (void) setPreviewReticle
 {
-	NSColor *previewDotColor = [NSUnarchiver unarchiveObjectWithData:[[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"previewDotColor"]];
+	NSColor *previewDotColor = [UtilityFunctions userDefaultColorForKey:@"previewDotColor"];
 	CGColorRef reticleColor = CGColorCreateGenericRGB([previewDotColor redComponent], [previewDotColor greenComponent], [previewDotColor blueComponent], [previewDotColor alphaComponent]);
 
     // c is the width & height of CALayer, which is by default centered on its anchor position (the one it's pointing to) already
@@ -220,7 +220,7 @@
 - (void) setPreviewDot
 {
 	float previewDotSize = [[[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"previewDotSize"] floatValue];
-	NSColor *previewDotColor = [NSUnarchiver unarchiveObjectWithData:[[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"previewDotColor"]];
+	NSColor *previewDotColor = [UtilityFunctions userDefaultColorForKey:@"previewDotColor"];
 	CGColorRef crosshairsColor = CGColorCreateGenericRGB([previewDotColor redComponent], [previewDotColor greenComponent], [previewDotColor blueComponent], [previewDotColor alphaComponent]);
 	previewDot.backgroundColor = crosshairsColor;
 	CGColorRelease(crosshairsColor);

@@ -16,9 +16,22 @@
 	// I can't put the user defaults initial values here, because it happens after the main nib is loaded
 }
 
+- (NSError*) application:(NSApplication*)application willPresentError:(NSError*)error
+{
+    if (error)
+    {
+        NSDictionary* userInfo = [error userInfo];
+        NSLog (@"User encountered the following error: %@", userInfo);
+    }
+    return error;
+}
 
 
 + (void) setUserDefaultsInitialValues {
+    [[NSUserDefaultsController sharedUserDefaultsController] setInitialValues:[VidSyncDocument userDefaultsInitialValues]];
+}
+
++ (NSMutableDictionary *) userDefaultsInitialValues {
 	NSMutableDictionary *initialValueDict = [NSMutableDictionary new];
     	
 	// miscellaneous initial values
@@ -138,10 +151,7 @@
     [initialValueDict setObject:[NSNumber numberWithFloat:1.0] forKey:@"allPortraitsBrowserZoom"];
     [initialValueDict setObject:[NSNumber numberWithFloat:1.0] forKey:@"objectsPortraitsBrowserZoom"];
 	
-	[[NSUserDefaultsController sharedUserDefaultsController] setInitialValues:initialValueDict];
-
-	// The line below is an example of how to correctly access one of the colors from the sharedUserDefaultsController.  It's picky about this.
-	// NSColor *theColor = [NSUnarchiver unarchiveObjectWithData:[[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"newAnnotationColor"]];
+    return initialValueDict;
 
 }
 

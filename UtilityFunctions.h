@@ -33,6 +33,8 @@ typedef struct {		// Creates a pair of 2D points, which can be used to represent
 	
 }
 
++ (NSColor *) userDefaultColorForKey:(NSString *)key;
+
 + (NSString *) CMStringFromTime:(CMTime)time;
 + (CMTime) CMTimeFromString:(NSString *)timeString;
 + (QTTime) FixedQTMakeTimeScaled:(QTTime)inTime scale:(long)timeScale;

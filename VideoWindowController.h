@@ -60,7 +60,7 @@
 
 - (VideoWindowController *)initWithVideoClip:(VSVideoClip *)inVideoClip inManagedObjectContext:(NSManagedObjectContext *)moc;
 - (void)setUpPlaybackOfAsset:(AVAsset *)asset withKeys:(NSArray *)keys;
-- (NSString *) locateMovieFileForClipName:(NSString *)clipName;
+- (AVAsset *) playableAssetForClipName:(NSString *)clipName atPath:(NSString *)filePath;
 
 - (NSString *)windowTitleForDocumentDisplayName:(NSString *)displayName;
 

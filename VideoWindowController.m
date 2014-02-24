@@ -28,105 +28,112 @@
 @synthesize portraitDragCurrentCoords;
 @synthesize shouldShowPortraitFrame;
 
+#pragma mark
+#pragma mark Initialization
+
 - (VideoWindowController *)initWithVideoClip:(VSVideoClip *)inVideoClip inManagedObjectContext:(NSManagedObjectContext *)moc
 {
-    AVAsset *movieAsset = [AVAsset assetWithURL:[NSURL fileURLWithPath:inVideoClip.fileName isDirectory:NO]];
-    
-    NSArray *assetKeysToLoadAndTest = [NSArray arrayWithObjects:@"playable", @"tracks", @"duration", nil];
-    [movieAsset loadValuesAsynchronouslyForKeys:assetKeysToLoadAndTest completionHandler:^(void) {
-        // The asset invokes its completion handler on an arbitrary queue when loading is complete.
-        // Because we want to access our AVPlayer in our ensuing set-up, we must dispatch our handler to the main queue.
-        dispatch_async(dispatch_get_main_queue(), ^(void) {
-            [self setUpPlaybackOfAsset:movieAsset withKeys:assetKeysToLoadAndTest];
-        });
+    AVAsset *movieAsset = [self playableAssetForClipName:inVideoClip.clipName atPath:inVideoClip.fileName];
+    if (movieAsset != nil) {
         
-    }];
+        
+        NSArray *assetKeysToLoadAndTest = [NSArray arrayWithObjects:@"playable", @"tracks", @"duration", nil];
+        [movieAsset loadValuesAsynchronouslyForKeys:assetKeysToLoadAndTest completionHandler:^(void) {
+            // The asset invokes its completion handler on an arbitrary queue when loading is complete.
+            // Because we want to access our AVPlayer in our ensuing set-up, we must dispatch our handler to the main queue.
+            dispatch_async(dispatch_get_main_queue(), ^(void) {
+                [self setUpPlaybackOfAsset:movieAsset withKeys:assetKeysToLoadAndTest];
+            });
+        }];
+        
+        // maybe I need to put this stuff in the
+        
+        self = [super initWithWindowNibName:@"VideoClipWindow"];
+        [self setShouldCascadeWindows:NO];
+        self.videoClip = inVideoClip;
+        self.videoClip.windowController = self;
+        managedObjectContext = moc;
+        if (self.videoClip.windowFrame != nil) [[self window] setFrameFromString:self.videoClip.windowFrame];
+        [self window]; // calling [self window] here used to be required to trigger windowDidLoad, and prevent odd video loading bugs in the release but not debug build... I don't know why
+        return self;
+        
+        
+        
+    } else {
+        return nil;
+    }
+}
+
+- (AVAsset *) playableAssetForClipName:(NSString *)clipName atPath:(NSString *)filePath
+{
+    // All validation of the file as a playable video asset occurs in this function, and the user is prompted to find a valid file if this one isn't playable.
+    NSMutableString *invalidFileMessage = [NSMutableString new];
+    NSURL *movieURL = [NSURL fileURLWithPath:filePath isDirectory:NO];
+    NSError *urlFoundError;
+    BOOL foundFileAtURL = [movieURL checkResourceIsReachableAndReturnError:&urlFoundError];
+    NSString *mavericksFormatExplanation = @"\n\nGenerally, VidSync can play any file Quicktime can play on the same computer. However, Quicktime in OS X 10.9 (Mavericks) invalidated many older codecs, so some files that used to work with VidSync might now require a conversion to a more modern codec such as H.264. Quicktime Player can do this for free, and some third-party applications can do batches of videos more quickly.";
+    if (foundFileAtURL) {
+        AVAsset *movieAsset = [AVAsset assetWithURL:movieURL];
+        if ([[movieAsset tracksWithMediaType:AVMediaTypeVideo] count] > 0) {
+            AVAssetTrack *movieTrack = [[movieAsset tracksWithMediaType:AVMediaTypeVideo] objectAtIndex:0];
+            if ([movieTrack isPlayable]) {
+                return movieAsset;              // Here's where the function returns if it actually finds a playable movie asset
+            } else {
+                [invalidFileMessage setString:[NSString stringWithFormat:@"A video file was found for clip '%@' at location %@, but it is not playable.%@",clipName,filePath,mavericksFormatExplanation]];
+            }
+        } else {
+            [movieAsset cancelLoading];
+            [invalidFileMessage setString:[NSString stringWithFormat:@"A file was found for clip '%@' at location %@, but it is not recognized as a playable video.%@",clipName,filePath,mavericksFormatExplanation]];
+        }
+    } else {
+        [invalidFileMessage setString:[NSString stringWithFormat:@"No file was found for clip '%@' at location %@.",clipName,filePath]];
+    }
     
-	if (YES) {  // THIS SHOULD CHECK THAT THE MOVIE LOADED, EVENTUALLY
-		self = [super initWithWindowNibName:@"VideoClipWindow"];
-		[self setShouldCascadeWindows:NO];
-		self.videoClip = inVideoClip;
-		self.videoClip.windowController = self;
-		managedObjectContext = moc;
-		if (self.videoClip.windowFrame != nil) [[self window] setFrameFromString:self.videoClip.windowFrame];
-		[self window]; // calling [self window] here used to be required to trigger windowDidLoad, and prevent odd video loading bugs in the release but not debug build... I don't know why
-		return self;
-	} else {			// error loading movie -- most common when the path to the movie has changed
-		NSString *newMovieFileName = [self locateMovieFileForClipName:inVideoClip.clipName];
-		if (newMovieFileName != nil) {
-            inVideoClip.windowFrame = nil;
-			inVideoClip.fileName = newMovieFileName;
-			return [self initWithVideoClip:inVideoClip inManagedObjectContext:moc];
-		} else {
-			NSRunAlertPanel(@"Need a movie!",@"You need to provide a valid movie file for each videoClip, but the movie for this one wasn't found.  The program is going to crash now.",@"Uh oh.",nil,nil);
-			return nil;
-		}
-	}
+    NSAlert *invalidFileAlert = [NSAlert new];
+    [invalidFileAlert setMessageText:@"Video file missing or not in a recognized/playable format"];
+    [invalidFileAlert setInformativeText:[invalidFileMessage stringByAppendingString:@"\n\nTo load a video for this clip, select a valid video file location using the 'Relocate Selected Clip' button under the 'Project' tab."]];
+    [invalidFileAlert addButtonWithTitle:@"Ok"];
+    [invalidFileAlert setAlertStyle:NSCriticalAlertStyle];
+    [invalidFileAlert runModal];
+    return nil;
 }
 
 - (void)setUpPlaybackOfAsset:(AVAsset *)asset withKeys:(NSArray *)keys // modified from Apple's AVSimplePlayer example
 {
     // This method is called when the AVAsset for our URL has completing the loading of the values of the specified array of keys.
-    // We set up playback of the asset here.
     
-    // First test whether the values of each of the keys we need have been successfully loaded.
-    for (NSString *key in keys) {
-        NSError *error = nil;
-        if ([asset statusOfValueForKey:key error:&error] == AVKeyValueStatusFailed)
-        {
-            [self presentError:error modalForWindow:[self window] delegate:nil didPresentSelector:NULL contextInfo:nil];
-        }
-    }
-    
-    if (![asset isPlayable]) {
-        // do something because we can't play the asset
-    }
-    
-    // We can play this asset.
     // Set up an AVPlayerLayer according to whether the asset contains video.
-    if ([[asset tracksWithMediaType:AVMediaTypeVideo] count] != 0) { // If there's a track, initialize the player
-        assetImageGenerator = [AVAssetImageGenerator assetImageGeneratorWithAsset:asset];  // first, initializing the asset image generator quickly for screenshots etc later
-        assetImageGenerator.requestedTimeToleranceBefore = kCMTimeZero;
-        assetImageGenerator.requestedTimeToleranceAfter = kCMTimeZero;
-        videoTrack = [[asset tracksWithMediaType:AVMediaTypeVideo] firstObject];
-        videoAsset = asset;
-        // Create a new AVPlayerItem.
-        AVPlayerItem *thePlayerItem = [AVPlayerItem playerItemWithAsset:asset];
-        AVPlayer *thePlayer = [AVPlayer playerWithPlayerItem:thePlayerItem];
-        playerView.player = thePlayer;
-        self.playerItem = thePlayerItem; // don't know why I can't just initialize it normally
-        playerLayer = [AVPlayerLayer playerLayerWithPlayer:thePlayer];
+    assetImageGenerator = [AVAssetImageGenerator assetImageGeneratorWithAsset:asset];  // first, initializing the asset image generator quickly for screenshots etc later
+    assetImageGenerator.requestedTimeToleranceBefore = kCMTimeZero;
+    assetImageGenerator.requestedTimeToleranceAfter = kCMTimeZero;
+    videoTrack = [[asset tracksWithMediaType:AVMediaTypeVideo] firstObject];
+    videoAsset = asset;
+    // Create a new AVPlayerItem.
+    AVPlayerItem *thePlayerItem = [AVPlayerItem playerItemWithAsset:asset];
+    AVPlayer *thePlayer = [AVPlayer playerWithPlayerItem:thePlayerItem];
+    playerView.player = thePlayer;
+    self.playerItem = thePlayerItem; // don't know why I can't just initialize it normally
+    playerLayer = [AVPlayerLayer playerLayerWithPlayer:thePlayer];
 
-		movieSize = videoTrack.naturalSize;
-        
-        [self.videoClip setMasterControls];
-        [self fitVideoOverlay];
-        
-        if (self.videoClip.isMasterClipOf == self.videoClip.project && self.videoClip.project.currentTimecode) {	// If the master clip is loaded and there's a saved current time, go to it
-            [self.videoClip.project.document setSyncedPlaybackScrubberTickCount];
-            [self.videoClip.windowController.playerView.player seekToTime:[UtilityFunctions CMTimeFromString:self.videoClip.project.currentTimecode] toleranceBefore:kCMTimeZero toleranceAfter:kCMTimeZero];
-            [self.videoClip.project.document reSync];
-        }
-        
-        if (self.videoClip.syncIsLocked) [self.videoClip.project.document.syncedPlaybackPanel orderFront:self]; // this will make the synced playback panel visible if any videos are synced
-        
-        } else {
-        // This asset has no video tracks. Ask to locate a new file or something
-        }
-}
-
-- (NSString *) locateMovieFileForClipName:(NSString *)clipName
-{
-	NSOpenPanel *movieOpenPanel = [NSOpenPanel openPanel];
-	[movieOpenPanel setMessage:[NSString stringWithFormat:@"The movie file for clip '%@' was not found, or was not a valid movie.  Please locate it.",clipName]];
-	[movieOpenPanel setCanChooseFiles:YES];
-	[movieOpenPanel setCanChooseDirectories:NO];
-	[movieOpenPanel setAllowsMultipleSelection:NO];
-	if ([movieOpenPanel runModal]) {
-		return [[[movieOpenPanel URLs] objectAtIndex:0] path];
-	} else {
-		return nil;
-	}
+    movieSize = videoTrack.naturalSize;
+    
+    [self.videoClip setMasterControls];
+    [self fitVideoOverlay];
+    
+    if (self.videoClip.isMasterClipOf == self.videoClip.project && self.videoClip.project.currentTimecode) {	// If the master clip is loaded and there's a saved current time, go to it
+        // The next three lines set the number of ticks in the synced playback scrubber to approximately 1 per minute
+        CMTimeRange masterTimeRange = [[[self.videoClip.project.masterClip.windowController.videoAsset tracksWithMediaType:AVMediaTypeVideo] firstObject] timeRange];
+        NSInteger masterTimeDurationMinutes = round(CMTimeGetSeconds(masterTimeRange.duration)/60.0f);
+        [self.videoClip.project.document.syncedPlaybackScrubber setNumberOfTickMarks:masterTimeDurationMinutes+1];  // adds 1 extra tickmark because there's a tick at 0. will be close but not exactly 1 tick/minute now
+        [self.videoClip.windowController.playerView.player seekToTime:[UtilityFunctions CMTimeFromString:self.videoClip.project.currentTimecode] toleranceBefore:kCMTimeZero toleranceAfter:kCMTimeZero];
+        [self.videoClip.project.document reSync];
+    }
+    if (self.videoClip.syncIsLocked) {
+        [self.videoClip.project.document.syncedPlaybackPanel orderFront:self]; // this will make the synced playback panel visible if any videos are synced
+        [self.videoClip.project.document reSync];                               // synchronizes the document once the new clip is loaded
+    }
+    
+    [[self window] orderFrontRegardless];
 }
 
 - (void) windowDidLoad
@@ -157,6 +164,7 @@
 
 - (void)windowDidResize:(NSNotification *)notification // delegate method for the NSWindow being controlled
 {
+    NSLog(@"Window %@ resized by controller %@ for clip %@",[self window],self,self.videoClip.clipName);
 	if (self.playerItem != nil) { // ignores the resize event when the windows first pop up, before the media is loaded
         [self fitVideoOverlay];
         self.videoClip.windowFrame = [[self window] stringWithSavedFrame];
@@ -470,7 +478,6 @@
             CMTime actualCopiedTime;
             NSError *err;
             CGImageRef fullScreenImage = [assetImageGenerator copyCGImageAtTime:movieTime actualTime:&actualCopiedTime error:&err];
-            NSLog(@"Portrait rect is %@",[NSValue valueWithRect:imageRect]);
             CGImageRef portraitImage = CGImageCreateWithImageInRect(fullScreenImage,imageRect);
             if (err != nil) [NSApp presentError:err];
             
@@ -563,7 +570,7 @@
 		newAnnotation.screenX = [NSNumber numberWithFloat:newAnnotationCoords.x];
 		newAnnotation.screenY = [NSNumber numberWithFloat:newAnnotationCoords.y];		
 		newAnnotation.startTimecode = newAnnotationStartTimecode;
-		newAnnotation.color = [NSUnarchiver unarchiveObjectWithData:[[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"newAnnotationColor"]];
+		newAnnotation.color = [UtilityFunctions userDefaultColorForKey:@"newAnnotationColor"];
 		newAnnotation.notes = [newAnnotationContents stringValue];
 		newAnnotation.shape = [[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"newAnnotationFontFace"];
 		newAnnotation.duration = [[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"newAnnotationDuration"];
