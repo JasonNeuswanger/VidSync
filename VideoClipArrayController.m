@@ -25,9 +25,11 @@
 			newClip.fileName = [[[movieOpenPanel URLs] objectAtIndex:0] path];
 			[self addObject:newClip];
 			VideoWindowController *newVideoWindowController = [[VideoWindowController alloc] initWithVideoClip:newClip inManagedObjectContext:[self managedObjectContext]];
-			[document addWindowController:newVideoWindowController];
-			[newVideoWindowController resizeVideoToFactor:1.0];
-			if (!newClip.project.masterClip) [newClip setAsMaster];
+			if (newVideoWindowController != nil) {
+                [document addWindowController:newVideoWindowController];
+                [newVideoWindowController resizeVideoToFactor:1.0];
+            }
+            if (!newClip.project.masterClip) [newClip setAsMaster];
 			[newClip setMasterControls];
 			[newClipName setStringValue:@""];
 			[newClipNamePanel performClose:self];
@@ -40,7 +42,7 @@
 - (void) keyWindowDidChange:(NSNotification *)notification
 {
 	if ([[[notification object] windowController] isKindOfClass:[VideoWindowController class]]) {	// ignore the main document window
-		VideoWindowController *vwc = [[notification object] windowController];
+		VideoWindowController *__weak vwc = [[notification object] windowController];
 		[self setSelectedObjects:[NSArray arrayWithObjects:vwc.videoClip,nil]];
 	}
 }
@@ -48,7 +50,7 @@
 - (void)remove:(id)sender
 {
 	// Close the window before deleting it
-	VideoWindowController *vwc = [[[self selectedObjects] objectAtIndex:0] windowController];
+	VideoWindowController *__weak vwc = [[[self selectedObjects] objectAtIndex:0] windowController];
 	[vwc close];
 	[super remove:sender];
 	

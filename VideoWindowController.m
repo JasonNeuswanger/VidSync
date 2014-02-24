@@ -38,6 +38,9 @@
         
         
         NSArray *assetKeysToLoadAndTest = [NSArray arrayWithObjects:@"playable", @"tracks", @"duration", nil];
+        
+        
+        
         [movieAsset loadValuesAsynchronouslyForKeys:assetKeysToLoadAndTest completionHandler:^(void) {
             // The asset invokes its completion handler on an arbitrary queue when loading is complete.
             // Because we want to access our AVPlayer in our ensuing set-up, we must dispatch our handler to the main queue.
@@ -164,7 +167,6 @@
 
 - (void)windowDidResize:(NSNotification *)notification // delegate method for the NSWindow being controlled
 {
-    NSLog(@"Window %@ resized by controller %@ for clip %@",[self window],self,self.videoClip.clipName);
 	if (self.playerItem != nil) { // ignores the resize event when the windows first pop up, before the media is loaded
         [self fitVideoOverlay];
         self.videoClip.windowFrame = [[self window] stringWithSavedFrame];

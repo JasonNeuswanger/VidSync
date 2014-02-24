@@ -23,7 +23,7 @@
 - (void) remove:(id)sender
 {
     VSDistortionLine *lineToRemove = [[self selectedObjects] objectAtIndex:0];
-    VideoWindowController *vwc = lineToRemove.calibration.videoClip.windowController;
+    VideoWindowController *__weak vwc = lineToRemove.calibration.videoClip.windowController;
     [super remove:lineToRemove];
     [vwc refreshOverlay];
 }

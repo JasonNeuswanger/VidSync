@@ -36,17 +36,12 @@
         if (returnCode == NSFileHandlingPanelOKButton) {
             NSString *oldFileName = self.fileName;  // save the old value in case the new one is invalid
             self.fileName = [[[movieOpenPanel URLs] objectAtIndex:0] path];
-            VideoWindowController *newWindowController = [[VideoWindowController alloc] initWithVideoClip:self inManagedObjectContext:self.managedObjectContext];
+            VideoWindowController *__weak oldWindowController = self.windowController;
+            VideoWindowController *__strong newWindowController = [[VideoWindowController alloc] initWithVideoClip:self inManagedObjectContext:self.managedObjectContext]; // is self.windowcontroller
             if (newWindowController != nil) {
-                NSWindowController *oldWindowController = self.windowController;
-                self.windowController = newWindowController;
-                if (self.windowController != nil) {     // If there's already a valid file with a window and we're replacing it, remove the old one first
-                    NSLog(@"Should be removing the old window controller %@ and closing its window %@",oldWindowController,[self.windowController window]);
-                    [[oldWindowController window] setReleasedWhenClosed:YES];
-                    [self.project.document removeWindowController:oldWindowController];
-                    [oldWindowController close];
-                }
-            [self.project.document addWindowController:newWindowController];
+                [self.project.document removeWindowController:oldWindowController];
+                [oldWindowController close];
+                [self.project.document addWindowController:newWindowController];
             } else {
                 self.fileName = oldFileName;    // restore the old fine name if the new one was invalid
             }

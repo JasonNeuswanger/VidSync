@@ -35,12 +35,12 @@
                         </buttonCell>
                         <connections>
                             <action selector="lockSyncOffset:" target="-2" id="75"/>
-                            <binding destination="36" name="enabled" keyPath="selection.isMasterClipOf" id="70">
+                            <binding destination="-2" name="enabled" keyPath="videoClip.isMasterClipOf" id="c7S-ar-TZt">
                                 <dictionary key="options">
                                     <string key="NSValueTransformerName">NSIsNil</string>
                                 </dictionary>
                             </binding>
-                            <binding destination="36" name="value" keyPath="selection.syncIsLocked" id="43"/>
+                            <binding destination="-2" name="value" keyPath="videoClip.syncIsLocked" id="c7r-Nh-6LM"/>
                         </connections>
                     </button>
                     <button verticalHuggingPriority="750" id="17">
@@ -53,12 +53,12 @@
                         </buttonCell>
                         <connections>
                             <action selector="setAsMaster:" target="-2" id="44"/>
-                            <binding destination="36" name="enabled" keyPath="selection.isMasterClipOf" id="72">
+                            <binding destination="-2" name="enabled" keyPath="videoClip.isMasterClipOf" id="taF-hj-rUZ">
                                 <dictionary key="options">
                                     <string key="NSValueTransformerName">NSIsNil</string>
                                 </dictionary>
                             </binding>
-                            <binding destination="36" name="title" keyPath="selection.masterButtonText" id="62"/>
+                            <binding destination="-2" name="title" keyPath="videoClip.masterButtonText" id="WOe-eL-0a2"/>
                         </connections>
                     </button>
                     <textField focusRingType="none" verticalHuggingPriority="750" id="31">
@@ -70,12 +70,12 @@
                             <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                         <connections>
-                            <binding destination="36" name="enabled" keyPath="selection.isMasterClipOf" id="74">
+                            <binding destination="-2" name="enabled" keyPath="videoClip.isMasterClipOf" id="CdQ-bQ-6cq">
                                 <dictionary key="options">
                                     <string key="NSValueTransformerName">NSIsNil</string>
                                 </dictionary>
                             </binding>
-                            <binding destination="36" name="value" keyPath="selection.syncOffset" id="48"/>
+                            <binding destination="-2" name="value" keyPath="videoClip.syncOffset" id="wh9-Sw-Bi9"/>
                         </connections>
                     </textField>
                     <textField verticalHuggingPriority="750" id="33">
@@ -127,22 +127,8 @@
                 <outlet property="delegate" destination="-2" id="14"/>
             </connections>
         </window>
-        <objectController mode="entity" entityName="VSVideoClip" automaticallyPreparesContent="YES" id="36" userLabel="VSVideoClip Controller">
-            <declaredKeys>
-                <string>syncOffset</string>
-                <string>syncIsLocked</string>
-                <string>masterButtonEnabled</string>
-                <string>isMasterClip</string>
-                <string>masterButtonText</string>
-                <string>isMasterClipOf</string>
-            </declaredKeys>
-            <connections>
-                <binding destination="-2" name="managedObjectContext" keyPath="managedObjectContext" id="39"/>
-                <binding destination="-2" name="contentObject" keyPath="videoClip" id="38"/>
-            </connections>
-        </objectController>
         <window title="New Annotation" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" hidesOnDeactivate="YES" oneShot="NO" visibleAtLaunch="NO" animationBehavior="default" id="85" userLabel="Annotation Add Panel" customClass="NSPanel">
-            <windowStyleMask key="styleMask" titled="YES" closable="YES" resizable="YES" utility="YES" documentModal="YES"/>
+            <windowStyleMask key="styleMask" titled="YES" closable="YES" resizable="YES" utility="YES" documentModal="YES" texturedBackground="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="230" y="202" width="312" height="339"/>
             <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1578"/>

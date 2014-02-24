@@ -14,7 +14,7 @@
 {
 	if ([[self selectedObjects] count] > 0) {
 		VSDistortionPoint *pointToRemove = [[self selectedObjects] objectAtIndex:0];
-        VideoWindowController *vwc = pointToRemove.distortionLine.calibration.videoClip.windowController;
+        VideoWindowController *__weak vwc = pointToRemove.distortionLine.calibration.videoClip.windowController;
 		[super remove:sender];
 		[vwc refreshOverlay];
         

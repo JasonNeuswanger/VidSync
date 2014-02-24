@@ -94,7 +94,7 @@ static void *AVSPPlayerCurrentTimeContext = &AVSPPlayerCurrentTimeContext;
     for (VSVideoClip *clip in [self.project.videoClips allObjects]) {
         VideoWindowController __strong *vwc = [[VideoWindowController alloc] initWithVideoClip:clip inManagedObjectContext:[self managedObjectContext]];
         if (vwc != nil) [self addWindowController:vwc];
-	}
+    }
 
     [self addObserver:self forKeyPath:@"project.masterClip.windowController.playerView.player.rate" options:NSKeyValueObservingOptionNew context:AVSPPlayerRateContext];
     [self addObserver:self forKeyPath:@"portraitSubject" options:NSKeyValueObservingOptionNew context:NULL];

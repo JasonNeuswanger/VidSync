@@ -89,7 +89,7 @@
 
 - (void) calculateVisibleScreenPoints;
 {
-	VideoWindowController *vwc = _delegate;
+	VideoWindowController *__weak vwc = _delegate;
 	NSMutableSet *tempVisibleScreenPoints = [NSMutableSet set];
     CMTime now = [vwc.document currentMasterTime];
 	for (VSEventScreenPoint *screenPoint in vwc.videoClip.eventScreenPoints) {
@@ -105,7 +105,7 @@
 
 - (void) calculateVisibleAnnotations;
 {
-	VideoWindowController *vwc = _delegate;
+	VideoWindowController *__weak vwc = _delegate;
 	NSMutableSet *tempVisibleAnnotations = [NSMutableSet new];
     CMTime now = [vwc.document currentMasterTime];
 	for (VSAnnotation *annotation in vwc.videoClip.annotations) {
@@ -130,7 +130,7 @@
 }
 
 - (void) drawPortraitSelectionBox {
-    VideoWindowController *vwc = _delegate;
+    VideoWindowController *__weak vwc = _delegate;
     // If the user just double-clicked on a portrait to view it in the video window, draw the frame but then set it to disappear on the next screen draw.
     if (vwc.shouldShowPortraitFrame != nil && ![vwc.shouldShowPortraitFrame isEqualToString:@""]) {
         NSColor *selectionColor = [UtilityFunctions userDefaultColorForKey:@"pointSelectionIndicatorColor"];
@@ -180,7 +180,7 @@
 - (void) drawAnnotation:(VSAnnotation *)annotation
 {
 	const float selectionPadding = 5.0;
-	VideoWindowController *vwc = _delegate;
+	VideoWindowController *__weak vwc = _delegate;
     
     float sizeFactor = vwc.overlayHeight / vwc.movieSize.height;
 
@@ -235,7 +235,7 @@
 	NSColor *pixelErrorLineColor = [UtilityFunctions userDefaultColorForKey:@"pixelErrorLineColor"];
 	float shapeSize = [[[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"pixelErrorDotSize"] floatValue];
 	float lineWidth = [[[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"pixelErrorLineWidth"] floatValue];
-	VideoWindowController *vwc = _delegate;
+	VideoWindowController *__weak vwc = _delegate;
 	NSRect shapeRect;
 	NSPoint point;
 	NSPoint idealPoint;
@@ -282,7 +282,7 @@
 	BOOL showUncorrectedOverlay = [[[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"showDistortionOverlay"] boolValue];
 	BOOL showCorrectedOverlay = [[[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"showDistortionCorrectedPoints"] boolValue];
 	
-	VideoWindowController *vwc = _delegate;
+	VideoWindowController *__weak vwc = _delegate;
 	NSSet *distortionLines = vwc.videoClip.calibration.distortionLines;
 	NSSortDescriptor *indexDescriptor = [[NSSortDescriptor alloc] initWithKey:@"index" ascending:YES];
 	NSRect shapeRect;
@@ -398,7 +398,7 @@
 
 - (void) drawMeasurementScreenPoints
 {
-	VideoWindowController *vwc = _delegate;
+	VideoWindowController *__weak vwc = _delegate;
 	CMTime now = [vwc.document currentMasterTime];
 	NSSet *trackedEventsNeedingConnectingLinesDrawn = [NSSet set];
 	for (VSEventScreenPoint *screenPoint in vwc.videoClip.eventScreenPoints) {
@@ -443,7 +443,7 @@
 - (void) drawConnectingLinesForTrackedEvent:(VSTrackedEvent *)trackedEvent
 {	
 	// get all of the VSTrackedEvent's VSPoints that have VSEventScreenPoints for the current VSVideoClip, in ascending order of VSPoint.index
-	VideoWindowController *vwc = _delegate;
+	VideoWindowController *__weak vwc = _delegate;
 	NSPoint line[2];
 	VSEventScreenPoint *currentScreenPoint,*previousScreenPoint;
 	NSArray *allSortedPoints = [NSMutableArray arrayWithArray:[trackedEvent.points sortedArrayUsingDescriptors:[NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"index" ascending:YES]]]];
@@ -556,7 +556,7 @@
 
 - (void) drawMeasurementScreenPoint:(VSEventScreenPoint *)screenPoint fromTrackedObject:(VSTrackedObject *)pointsObject withOpacity:(float)opacity magnification:(float)magnification
 {
-	VideoWindowController *vwc = _delegate;
+	VideoWindowController *__weak vwc = _delegate;
 	NSPoint videoPoint = NSMakePoint([screenPoint.screenX floatValue],[screenPoint.screenY floatValue]);
 	if (videoPoint.x == 0.0 && videoPoint.y == 0.0) return;
 	NSPoint point = [vwc convertVideoToOverlayCoords:videoPoint];
@@ -781,7 +781,7 @@
 
 - (void) drawHintLines
 {
-	VideoWindowController *vwc = _delegate;
+	VideoWindowController *__weak vwc = _delegate;
 	CMTime now = [vwc.videoClip.project.document currentMasterTime];
 	NSString *hintLinesSetting = [[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"hintLinesSetting"];
 	if (![hintLinesSetting isEqualToString:@"None"]) {	
@@ -839,7 +839,7 @@
 
 - (void) drawCalibrationScreenPoints
 {
-	VideoWindowController *vwc = _delegate;
+	VideoWindowController *__weak vwc = _delegate;
 	if ([vwc.videoClip isAtCalibrationTime]) {
 		for (VSCalibrationPoint *backPoint in vwc.videoClip.calibration.pointsBack) {
 			[self drawCalibrationScreenPoint:backPoint forSurface:@"Back"];
@@ -854,7 +854,7 @@
 {
 	NSPoint videoPoint = NSMakePoint([calibrationPoint.screenX floatValue],[calibrationPoint.screenY floatValue]);
 	if (videoPoint.x == 0.0 && videoPoint.y == 0.0) return;
-	VideoWindowController *vwc = _delegate;
+	VideoWindowController *__weak vwc = _delegate;
 	NSPoint point = [vwc convertVideoToOverlayCoords:videoPoint];
 	NSPoint textOffset;
 	float radius;
@@ -1021,7 +1021,7 @@
 - (NSArray *) quadratCoordinateGridForSurface:(NSString *)surface
 {
 	// Returns an NSArray of NSBezierPaths, one representing all the grid lines, and one (thicker) representing the two x=0, y=0 axes.    
-    VideoWindowController *vwc = _delegate;
+    VideoWindowController *__weak vwc = _delegate;
 	NSMutableArray *outPathsArray = [NSMutableArray new];
 	
     // Here we configure the spacing for the overlay grid automatically based on the distance between the first two points in world coordinates.
@@ -1101,7 +1101,7 @@
 #pragma mark Event Handling
 
 - (void)mouseMoved:(NSEvent *)theEvent {
-	VideoWindowController *vwc = _delegate;
+	VideoWindowController *__weak vwc = _delegate;
 	NSPoint mousePosition = [self convertPoint:[theEvent locationInWindow] fromView:nil];
     mousePosition.x = floor(mousePosition.x);   // Here, I'm accounting for a weird behavior in Lion in which mouseMoved events deliver apparently "subpixel" coordinates but
     mousePosition.y = ceil(mousePosition.y);    // mouseDown doesn't, so the position of a click doesn't match where the mouse had moved to.  The subpixel coordinates weren't real anyway.
@@ -1144,17 +1144,17 @@
 }
  
 - (void)keyUp:(NSEvent *)theEvent {
-	VideoWindowController *vwc = _delegate;
+	VideoWindowController *__weak vwc = _delegate;
 	[vwc handleOverlayKeyUp:theEvent];
 }
 
 - (void)keyDown:(NSEvent *)theEvent {
-	VideoWindowController *vwc = _delegate;
+	VideoWindowController *__weak vwc = _delegate;
 	[vwc handleOverlayKeyDown:theEvent];	
 }
 
 - (void)scrollWheel:(NSEvent *)theEvent {
-	VideoWindowController *vwc = _delegate;
+	VideoWindowController *__weak vwc = _delegate;
     if ([theEvent deltaY] > 0.0) {
         [vwc.document stepBackwardAll:self];
     } else if ([theEvent deltaY] < 0.0) {
