@@ -117,9 +117,12 @@
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                     </textField>
-                    <avPlayerView controlsStyle="inline" id="yEs-4B-UZT">
+                    <avPlayerView controlsStyle="inline" id="yEs-4B-UZT" customClass="VSAVPlayerView">
                         <rect key="frame" x="0.0" y="0.0" width="720" height="469"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <connections>
+                            <outlet property="videoWindowController" destination="-2" id="bxa-QJ-e51"/>
+                        </connections>
                     </avPlayerView>
                 </subviews>
             </view>

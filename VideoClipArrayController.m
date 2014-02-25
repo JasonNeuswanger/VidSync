@@ -27,7 +27,7 @@
 			VideoWindowController *newVideoWindowController = [[VideoWindowController alloc] initWithVideoClip:newClip inManagedObjectContext:[self managedObjectContext]];
 			if (newVideoWindowController != nil) {
                 [document addWindowController:newVideoWindowController];
-                [newVideoWindowController resizeVideoToFactor:1.0];
+                // [newVideoWindowController resizeVideoToFactor:1.0];         // FIGURE OUT WHY THIS IS NEEDED
             }
             if (!newClip.project.masterClip) newClip.project.masterClip = newClip;
 			[newClipName setStringValue:@""];

@@ -1160,7 +1160,6 @@
     } else if ([theEvent deltaY] < 0.0) {
         [vwc.document stepForwardAll:self];
     }
-    
 }
 
 @end

@@ -2279,14 +2279,14 @@ IA
                                             </textFieldCell>
                                         </textField>
                                         <scrollView autohidesScrollers="YES" horizontalLineScroll="16" horizontalPageScroll="10" verticalLineScroll="16" verticalPageScroll="10" usesPredominantAxisScrolling="NO" id="101098">
-                                            <rect key="frame" x="2" y="171" width="557" height="85"/>
+                                            <rect key="frame" x="2" y="142" width="557" height="114"/>
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                             <clipView key="contentView" id="qIV-QB-8ub">
-                                                <rect key="frame" x="1" y="17" width="555" height="52"/>
+                                                <rect key="frame" x="1" y="17" width="555" height="81"/>
                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                 <subviews>
                                                     <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnSelection="YES" multipleSelection="NO" autosaveColumns="NO" rowHeight="14" headerView="101109" id="101110" customClass="EventAwareTableView">
-                                                        <rect key="frame" x="0.0" y="0.0" width="988" height="52"/>
+                                                        <rect key="frame" x="0.0" y="0.0" width="988" height="81"/>
                                                         <autoresizingMask key="autoresizingMask"/>
                                                         <size key="intercellSpacing" width="3" height="2"/>
                                                         <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
@@ -2402,7 +2402,7 @@ IA
                                                 <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                                             </clipView>
                                             <scroller key="horizontalScroller" verticalHuggingPriority="750" horizontal="YES" id="101111">
-                                                <rect key="frame" x="1" y="69" width="555" height="15"/>
+                                                <rect key="frame" x="1" y="98" width="555" height="15"/>
                                                 <autoresizingMask key="autoresizingMask"/>
                                             </scroller>
                                             <scroller key="verticalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="NO" id="101112">
@@ -2472,14 +2472,14 @@ IA
                                             </textFieldCell>
                                         </textField>
                                         <scrollView autohidesScrollers="YES" horizontalLineScroll="16" horizontalPageScroll="10" verticalLineScroll="16" verticalPageScroll="10" usesPredominantAxisScrolling="NO" id="101117">
-                                            <rect key="frame" x="3" y="11" width="557" height="114"/>
+                                            <rect key="frame" x="3" y="11" width="557" height="82"/>
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
                                             <clipView key="contentView" id="HbR-iC-8zz">
-                                                <rect key="frame" x="1" y="17" width="555" height="81"/>
+                                                <rect key="frame" x="1" y="17" width="555" height="49"/>
                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                 <subviews>
                                                     <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnSelection="YES" multipleSelection="NO" autosaveColumns="NO" rowHeight="14" headerView="101123" id="101122" customClass="EventAwareTableView">
-                                                        <rect key="frame" x="0.0" y="0.0" width="894" height="81"/>
+                                                        <rect key="frame" x="0.0" y="0.0" width="894" height="49"/>
                                                         <autoresizingMask key="autoresizingMask"/>
                                                         <size key="intercellSpacing" width="3" height="2"/>
                                                         <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
@@ -2641,7 +2641,7 @@ IA
                                                 <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                                             </clipView>
                                             <scroller key="horizontalScroller" verticalHuggingPriority="750" horizontal="YES" id="101121">
-                                                <rect key="frame" x="1" y="98" width="555" height="15"/>
+                                                <rect key="frame" x="1" y="66" width="555" height="15"/>
                                                 <autoresizingMask key="autoresizingMask"/>
                                             </scroller>
                                             <scroller key="verticalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="NO" id="101120">
@@ -2654,7 +2654,7 @@ IA
                                             </tableHeaderView>
                                         </scrollView>
                                         <textField verticalHuggingPriority="750" id="101118">
-                                            <rect key="frame" x="0.0" y="135" width="125" height="14"/>
+                                            <rect key="frame" x="0.0" y="103" width="125" height="14"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                             <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Selected Event's Points" id="101119">
                                                 <font key="font" metaFont="smallSystem"/>
@@ -2824,7 +2824,7 @@ IA
                                             </tableHeaderView>
                                         </scrollView>
                                         <popUpButton verticalHuggingPriority="750" id="101147">
-                                            <rect key="frame" x="127" y="130" width="142" height="22"/>
+                                            <rect key="frame" x="127" y="98" width="142" height="22"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                             <popUpButtonCell key="cell" type="push" title="All Frames" bezelStyle="rounded" alignment="left" controlSize="small" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" selectedItem="101150" id="101148">
                                                 <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
@@ -2850,7 +2850,7 @@ IA
                                             </connections>
                                         </popUpButton>
                                         <button verticalHuggingPriority="750" id="101153">
-                                            <rect key="frame" x="434" y="134" width="75" height="18"/>
+                                            <rect key="frame" x="434" y="102" width="75" height="18"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
                                             <buttonCell key="cell" type="roundTextured" title="Go To Point" bezelStyle="texturedRounded" alignment="center" controlSize="small" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="101154">
                                                 <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
@@ -2882,7 +2882,7 @@ IA
                                             </connections>
                                         </segmentedControl>
                                         <button verticalHuggingPriority="750" id="102130">
-                                            <rect key="frame" x="514" y="134" width="46" height="18"/>
+                                            <rect key="frame" x="514" y="102" width="46" height="18"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
                                             <buttonCell key="cell" type="roundTextured" title="Delete" bezelStyle="texturedRounded" alignment="center" controlSize="small" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="102131">
                                                 <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
@@ -2950,7 +2950,7 @@ IA
                                             <font key="titleFont" metaFont="system"/>
                                         </box>
                                         <box autoresizesSubviews="NO" verticalHuggingPriority="750" title="Box" boxType="separator" titlePosition="noTitle" id="zWM-zv-swP">
-                                            <rect key="frame" x="14" y="158" width="532" height="5"/>
+                                            <rect key="frame" x="14" y="126" width="532" height="5"/>
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
                                             <color key="borderColor" white="0.0" alpha="0.41999999999999998" colorSpace="calibratedWhite"/>
                                             <color key="fillColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>

@@ -17,7 +17,7 @@
 
 	NSManagedObjectContext *__weak managedObjectContext;
 	
-    IBOutlet AVPlayerView *__weak playerView;
+    IBOutlet AVPlayerView *__strong playerView;
 	
 	IBOutlet NSPanel *newAnnotationPanel;
 	IBOutlet NSTextField *newAnnotationContents;
@@ -25,9 +25,9 @@
 	NSString *newAnnotationStartTimecode;
 	
 	VSVideoClip *__weak videoClip;
-	AVPlayerItem *__weak playerItem;
-    AVAssetTrack *__weak videoTrack;
-    AVAsset *__weak videoAsset;
+	AVPlayerItem *__strong playerItem;
+    AVAssetTrack *__strong videoTrack;
+    AVAsset *__strong videoAsset;
     AVPlayerLayer *__strong playerLayer;
     AVAssetImageGenerator *__strong assetImageGenerator;
 	CGSize movieSize;
@@ -41,14 +41,13 @@
 		
 }
 
-@property (weak) QTMovie *movie;
 @property (weak) VSVideoClip *videoClip;
-@property (weak) AVAssetTrack *videoTrack;
-@property (weak) AVPlayerItem *playerItem;
-@property (weak) AVAsset *videoAsset;
+@property (strong) AVAssetTrack *videoTrack;
+@property (strong) AVPlayerItem *playerItem;
+@property (strong) AVAsset *videoAsset;
 @property (strong) AVPlayerLayer *playerLayer;
 @property (strong) AVAssetImageGenerator *assetImageGenerator;
-@property (weak) IBOutlet AVPlayerView *playerView;
+@property (strong) IBOutlet AVPlayerView *playerView;
 @property (assign) CGSize movieSize;
 @property (weak) NSManagedObjectContext *managedObjectContext;
 @property  VideoOverlayView *overlayView;

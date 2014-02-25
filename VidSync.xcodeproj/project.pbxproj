@@ -99,6 +99,7 @@
 		96897AE7115992EA00B3C3C3 /* UtilityFunctions.mm in Sources */ = {isa = PBXBuildFile; fileRef = 96897AE6115992EA00B3C3C3 /* UtilityFunctions.mm */; };
 		969065B5116AEA0B002B3F20 /* ObjectSynonymizeArrayController.m in Sources */ = {isa = PBXBuildFile; fileRef = 969065B4116AEA0B002B3F20 /* ObjectSynonymizeArrayController.m */; };
 		9690663D116AFB08002B3F20 /* TypeIndexNameSortedArrayController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9690663C116AFB08002B3F20 /* TypeIndexNameSortedArrayController.m */; };
+		9695B87918BC4F4100D15C38 /* VSAVPlayerView.m in Sources */ = {isa = PBXBuildFile; fileRef = 9695B87818BC4F4100D15C38 /* VSAVPlayerView.m */; };
 		9697F59D116D165E00BA3BB1 /* DataExport.m in Sources */ = {isa = PBXBuildFile; fileRef = 9697F59C116D165E00BA3BB1 /* DataExport.m */; };
 		9697F69E116D31D900BA3BB1 /* CamerasIcon.icns in Resources */ = {isa = PBXBuildFile; fileRef = 9697F69B116D31D900BA3BB1 /* CamerasIcon.icns */; };
 		9697F69F116D31D900BA3BB1 /* Fish3DIcon.icns in Resources */ = {isa = PBXBuildFile; fileRef = 9697F69C116D31D900BA3BB1 /* Fish3DIcon.icns */; };
@@ -617,6 +618,8 @@
 		969065B4116AEA0B002B3F20 /* ObjectSynonymizeArrayController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObjectSynonymizeArrayController.m; sourceTree = "<group>"; };
 		9690663B116AFB08002B3F20 /* TypeIndexNameSortedArrayController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TypeIndexNameSortedArrayController.h; sourceTree = "<group>"; };
 		9690663C116AFB08002B3F20 /* TypeIndexNameSortedArrayController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TypeIndexNameSortedArrayController.m; sourceTree = "<group>"; };
+		9695B87718BC4F4100D15C38 /* VSAVPlayerView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VSAVPlayerView.h; sourceTree = "<group>"; };
+		9695B87818BC4F4100D15C38 /* VSAVPlayerView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VSAVPlayerView.m; sourceTree = "<group>"; };
 		9697F460116C53D800BA3BB1 /* VidSyncProject 1.00.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "VidSyncProject 1.00.xcdatamodel"; sourceTree = "<group>"; };
 		9697F59C116D165E00BA3BB1 /* DataExport.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DataExport.m; sourceTree = "<group>"; };
 		9697F69B116D31D900BA3BB1 /* CamerasIcon.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = CamerasIcon.icns; sourceTree = "<group>"; };
@@ -1410,6 +1413,8 @@
 				9612EC2A18B9426700BBED62 /* MainProjectWindow.m */,
 				96EF24E610967B62001DEF3A /* VideoOverlayView.h */,
 				96EF24E710967B62001DEF3A /* VideoOverlayView.m */,
+				9695B87718BC4F4100D15C38 /* VSAVPlayerView.h */,
+				9695B87818BC4F4100D15C38 /* VSAVPlayerView.m */,
 				96A5DEBB1162501500D58616 /* VideoOverlayWindow.h */,
 				96A5DEBC1162501500D58616 /* VideoOverlayWindow.m */,
 				96EF264F10976B7B001DEF3A /* MagnifiedPreviewView.h */,
@@ -1588,6 +1593,7 @@
 				9612EC2018B6FFE300BBED62 /* PlaybackRateDescriptionTransformer.m in Sources */,
 				96BDA421117B84D900C39399 /* CalibDistortionLineArrayController.mm in Sources */,
 				9612EC1A18B5EE0100BBED62 /* PortraitBrowserCell.m in Sources */,
+				9695B87918BC4F4100D15C38 /* VSAVPlayerView.m in Sources */,
 				9612EC0B18B5825300BBED62 /* VSTrackedObjectPortrait.m in Sources */,
 				96BDA48A117B925300C39399 /* VSDistortionPoint.m in Sources */,
 				96D559601182501300032E44 /* PlayWhilePressedButton.m in Sources */,

@@ -172,7 +172,6 @@
 - (void) reSync
 {	
 	CMTime currentMasterTime = [self currentMasterTime];
-	self.project.currentTimecode = [UtilityFunctions CMStringFromTime:currentMasterTime];
 	for (VSVideoClip *clip in [self.project.videoClips allObjects]) {
 		if (!clip.isMasterClipOf && [clip.syncIsLocked boolValue]) {	// if the clip is sync-locked, and isn't the master clip, then sync it
 			CMTime offset = [UtilityFunctions CMTimeFromString:clip.syncOffset];
@@ -252,6 +251,7 @@
 	// Only process these time change notifications for the masterClip.  Otherwise, reSync forces another movieTimeDidChange and there's an infinite loop that slows the program to a crawl.
 	if (self.project.masterClip != nil) {
 		if ([[notification object] isEqualTo:self.project.masterClip.windowController.playerView.player.currentItem]) {
+            self.project.currentTimecode = [UtilityFunctions CMStringFromTime:[self currentMasterTime]];
 			[self reSync];
 			[eventsPointsController rearrangeObjects];
             [self updateMasterTimeDisplay];

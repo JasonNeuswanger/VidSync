@@ -11,7 +11,6 @@
 
 @implementation VideoWindowController
 
-@synthesize movie;
 @synthesize videoClip;
 @synthesize videoTrack;
 @synthesize movieSize;
@@ -44,6 +43,7 @@
             });
         }];
         self = [super initWithWindowNibName:@"VideoClipWindow"];
+        [self window];  // This forces a call to loadWindow, which invokes windowDidLoad and windowWillLoad, and allows video to load properly
         [self setShouldCascadeWindows:NO];
         self.videoClip = inVideoClip;
         self.videoClip.windowController = self;
@@ -54,7 +54,6 @@
         [self.videoClip addObserver:self forKeyPath:@"syncOffset" options:NSKeyValueObservingOptionNew context:NULL];
         [self.videoClip addObserver:self forKeyPath:@"isMasterClipOf" options:NSKeyValueObservingOptionNew context:NULL];
         
-        //[self window]; // calling [self window] here used to be required to trigger windowDidLoad, and prevent odd video loading bugs in the release but not debug build... I don't know why
         return self;
     } else {
         return nil;
@@ -105,18 +104,15 @@
     assetImageGenerator.requestedTimeToleranceAfter = kCMTimeZero;
     videoTrack = [[asset tracksWithMediaType:AVMediaTypeVideo] firstObject];
     videoAsset = asset;
-    // Create a new AVPlayerItem.
-    AVPlayerItem *thePlayerItem = [AVPlayerItem playerItemWithAsset:asset];
-    AVPlayer *thePlayer = [AVPlayer playerWithPlayerItem:thePlayerItem];
-    playerView.player = thePlayer;
-    self.playerItem = thePlayerItem; // don't know why I can't just initialize it normally
-    playerLayer = [AVPlayerLayer playerLayerWithPlayer:thePlayer];
-
+    playerItem = [AVPlayerItem playerItemWithAsset:asset];
+    playerView.player = [AVPlayer playerWithPlayerItem:playerItem];
+    playerLayer = [AVPlayerLayer playerLayerWithPlayer:playerView.player];
+    
     movieSize = videoTrack.naturalSize;
+    if (self.videoClip.windowFrame == nil) [self resizeVideoToFactor:1.0];  // Load new videos at full size
     
     [self fitVideoOverlay];
     [self processSynchronizationStatus];    // Must be run after the overlay is created, so it can be set not to receive mouse events if the clip is not synced
-    
     
     if (self.videoClip.isMasterClipOf == self.videoClip.project && self.videoClip.project.currentTimecode) {	// If the master clip is loaded and there's a saved current time, go to it
         // The next three lines set the number of ticks in the synced playback scrubber to approximately 1 per minute
@@ -188,7 +184,6 @@
 														defer:YES];
 		[overlayWindow setOpaque:NO];
 		[overlayWindow setHasShadow:NO];
-		[overlayWindow setIgnoresMouseEvents:NO];
 		[overlayWindow setAlphaValue:1.0];
 		[overlayWindow useOptimizedDrawing:YES];
 	} else {
@@ -822,10 +817,10 @@
     if (setting) {
 		playerView.controlsStyle = AVPlayerViewControlsStyleFloating;
         playerView.showsFrameSteppingButtons = YES;
-        [overlayWindow setIgnoresMouseEvents:TRUE];
+        [overlayWindow setIgnoresMouseEvents:YES];
     } else {
 		playerView.controlsStyle = AVPlayerViewControlsStyleNone;
-        [overlayWindow setIgnoresMouseEvents:FALSE];
+        [overlayWindow setIgnoresMouseEvents:NO];
     }
 }
 

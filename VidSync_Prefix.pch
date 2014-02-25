@@ -35,6 +35,7 @@
 #import "SyncedPlaybackPanel.h"
 #import "VidSyncDocument.h"
 #import "VideoOverlayView.h"
+#import "VSAVPlayerView.h"
 #import "VideoOverlayWindow.h"
 #import "MagnifiedPreviewView.h"
 #import "VS2DMatrixToStringTransformer.h"
