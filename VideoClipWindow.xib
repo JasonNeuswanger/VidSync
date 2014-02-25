@@ -61,31 +61,42 @@
                             <binding destination="-2" name="title" keyPath="videoClip.masterButtonText" id="WOe-eL-0a2"/>
                         </connections>
                     </button>
-                    <textField focusRingType="none" verticalHuggingPriority="750" id="31">
-                        <rect key="frame" x="398" y="477" width="142" height="19"/>
-                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
-                        <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" focusRingType="none" drawsBackground="YES" id="32">
-                            <font key="font" metaFont="smallSystem"/>
-                            <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
-                            <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
-                        </textFieldCell>
-                        <connections>
-                            <binding destination="-2" name="enabled" keyPath="videoClip.isMasterClipOf" id="CdQ-bQ-6cq">
-                                <dictionary key="options">
-                                    <string key="NSValueTransformerName">NSIsNil</string>
-                                </dictionary>
-                            </binding>
-                            <binding destination="-2" name="value" keyPath="videoClip.syncOffset" id="wh9-Sw-Bi9"/>
-                        </connections>
-                    </textField>
                     <textField verticalHuggingPriority="750" id="33">
-                        <rect key="frame" x="328" y="479" width="64" height="14"/>
+                        <rect key="frame" x="253" y="478" width="67" height="14"/>
                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
-                        <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Sync Offset" id="34">
+                        <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Sync Offset:" id="34">
                             <font key="font" metaFont="smallSystem"/>
                             <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
+                        <connections>
+                            <binding destination="-2" name="hidden" keyPath="videoClip.isMasterClipOf" id="6gx-tB-LgC">
+                                <dictionary key="options">
+                                    <string key="NSValueTransformerName">NSIsNotNil</string>
+                                </dictionary>
+                            </binding>
+                        </connections>
+                    </textField>
+                    <textField verticalHuggingPriority="750" id="hX2-gK-7S6">
+                        <rect key="frame" x="324" y="478" width="218" height="14"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
+                        <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Sync Offset" id="6v0-NF-cnE">
+                            <font key="font" metaFont="smallSystem"/>
+                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                        </textFieldCell>
+                        <connections>
+                            <binding destination="-2" name="hidden" keyPath="videoClip.isMasterClipOf" id="Tup-lm-j5Y">
+                                <dictionary key="options">
+                                    <string key="NSValueTransformerName">NSIsNotNil</string>
+                                </dictionary>
+                            </binding>
+                            <binding destination="-2" name="value" keyPath="videoClip.syncOffset" id="7h8-zH-9ps">
+                                <dictionary key="options">
+                                    <bool key="NSAllowsEditingMultipleValuesSelection" value="NO"/>
+                                </dictionary>
+                            </binding>
+                        </connections>
                     </textField>
                     <popUpButton verticalHuggingPriority="750" id="76">
                         <rect key="frame" x="58" y="474" width="100" height="22"/>
