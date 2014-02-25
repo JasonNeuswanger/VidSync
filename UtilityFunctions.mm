@@ -26,6 +26,15 @@
     }
 }
 
+
++ (NSString *) CMStringFromTime:(CMTime)time onScale:(int32_t)timeScale
+{
+    CMTime scaledTime = CMTimeConvertScale(time,timeScale,kCMTimeRoundingMethod_RoundHalfAwayFromZero);
+    int64_t scaledTimeValue = scaledTime.value;
+    QTTime qtTime = QTMakeTime(scaledTimeValue,timeScale);
+    return QTStringFromTime(qtTime);
+}
+
 + (NSString *) CMStringFromTime:(CMTime)time // I have to use QTTime functions for now to encode/decode times as strings for backward compatibility with files that stored times as strings in Core Data.
                                             // The modern way to do it would be to store the times as dictonaries using CMTimeMakeFromDictiory and CMTimeCopyAsDictionary, but backward compatability would be annoying.
                                             // This time thing should be the only reason I still have QTKit included in this project, eventually. I'll have to code the string conversions from scratch to eliminate QTKit.

@@ -783,7 +783,7 @@
 	if ([button state] == NSOnState) {
         CMTime currentMasterTime = [self.videoClip.project.document currentMasterTime];
         CMTime currentClipTime = [self.playerView.player currentTime];
-        self.videoClip.syncOffset = [UtilityFunctions CMStringFromTime:CMTimeSubtract(currentMasterTime,currentClipTime)];
+        self.videoClip.syncOffset = [UtilityFunctions CMStringFromTime:CMTimeSubtract(currentMasterTime,currentClipTime) onScale:[[self.videoClip.project.masterClip timeScale] longValue]];
         self.videoClip.syncIsLocked = [NSNumber numberWithBool:YES];
 	} else {
         self.videoClip.syncIsLocked = [NSNumber numberWithBool:FALSE];
