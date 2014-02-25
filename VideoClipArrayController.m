@@ -32,7 +32,6 @@
             if (!newClip.project.masterClip) newClip.project.masterClip = newClip;
 			nameOfNewClip = nil;
 			[newClipNamePanel performClose:self];
-            [self.mainTableView setNeedsDisplay:YES];
 		}
 	} else {	// if the clip doesn't have a name, tell the user to add one
 		NSRunAlertPanel(@"New Clip Needs a Name",@"You can't add the clip without first giving it a name.",@"Ok",nil,nil);
@@ -54,6 +53,15 @@
 	[vwc close];
 	[super remove:sender];
 	
+}
+
+#pragma mark
+#pragma mark Delegate method for the name box
+
+- (void) controlTextDidChange:(NSNotification *)note    // Updating the name makes the binding on the "Choose file" button enable it as soon as the user has typed something in the name
+{
+    NSTextField *changedField = [note object];
+    self.nameOfNewClip = [changedField stringValue];
 }
 
 @end

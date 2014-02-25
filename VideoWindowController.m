@@ -120,7 +120,9 @@
         [self.videoClip.windowController.playerView.player seekToTime:[UtilityFunctions CMTimeFromString:self.videoClip.project.currentTimecode] toleranceBefore:kCMTimeZero toleranceAfter:kCMTimeZero];
         [self.videoClip.project.document reSync];
     }
-
+    
+    [self.videoClip.project.document.videoClipArrayController.mainTableView setNeedsDisplay:YES];
+    
     if (self.videoClip.syncIsLocked) [self.videoClip.project.document reSync];                               // synchronizes the document once the new clip is loaded
 
     [[self window] orderFrontRegardless];
