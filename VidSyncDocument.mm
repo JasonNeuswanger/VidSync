@@ -561,7 +561,11 @@ static void *AVSPPlayerCurrentTimeContext = &AVSPPlayerCurrentTimeContext;
 - (void) canCloseDocumentWithDelegate:(id)delegate shouldCloseSelector:(SEL)shouldCloseSelector contextInfo:(void *)contextInfo
 {
     // Have to unregister as an observer of the master playback rate in its windowcontroller, otherwise there's an error about deallocing a VideoWindowController while it's being observed
-    [self removeObserver:self forKeyPath:@"project.masterClip.windowController.playerView.player.rate"];
+    @try {
+        [self removeObserver:self forKeyPath:@"project.masterClip.windowController.playerView.player.rate"];
+    } @catch (id exception) {
+        NSLog(@"Exception closing document, observer did not exist to be removed: %@",exception);
+    }
     [super canCloseDocumentWithDelegate:delegate shouldCloseSelector:shouldCloseSelector contextInfo:contextInfo];
 }
 

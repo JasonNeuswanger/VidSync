@@ -4048,14 +4048,14 @@ An XML file stores information using custom markup tags. It more thoroughly refl
         <window title="Choose Name for New Clip" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" hidesOnDeactivate="YES" oneShot="NO" visibleAtLaunch="NO" animationBehavior="default" id="100929" userLabel="New Clip Name Panel" customClass="NSPanel">
             <windowStyleMask key="styleMask" titled="YES" closable="YES" utility="YES" documentModal="YES" texturedBackground="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
-            <rect key="contentRect" x="301" y="996" width="501" height="132"/>
+            <rect key="contentRect" x="301" y="996" width="501" height="73"/>
             <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1578"/>
             <view key="contentView" appearanceType="aqua" id="100930">
-                <rect key="frame" x="0.0" y="0.0" width="501" height="132"/>
+                <rect key="frame" x="0.0" y="0.0" width="501" height="73"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <textField verticalHuggingPriority="750" id="100348">
-                        <rect key="frame" x="119" y="70" width="107" height="17"/>
+                        <rect key="frame" x="10" y="15" width="107" height="17"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <textFieldCell key="cell" alignment="right" title="New clip name:" id="100349">
                             <font key="font" metaFont="system"/>
@@ -4064,16 +4064,19 @@ An XML file stores information using custom markup tags. It more thoroughly refl
                         </textFieldCell>
                     </textField>
                     <textField verticalHuggingPriority="750" id="100350">
-                        <rect key="frame" x="228" y="67" width="167" height="22"/>
+                        <rect key="frame" x="119" y="12" width="167" height="22"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                         <textFieldCell key="cell" selectable="YES" editable="YES" borderStyle="bezel" alignment="left" drawsBackground="YES" id="100351">
                             <font key="font" metaFont="system"/>
                             <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                             <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
+                        <connections>
+                            <binding destination="100325" name="value" keyPath="nameOfNewClip" id="bdO-cB-qze"/>
+                        </connections>
                     </textField>
                     <button verticalHuggingPriority="750" tag="-1" id="100367">
-                        <rect key="frame" x="320" y="13" width="113" height="32"/>
+                        <rect key="frame" x="292" y="6" width="113" height="32"/>
                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
                         <buttonCell key="cell" type="push" title="Choose File" bezelStyle="rounded" alignment="center" borderStyle="border" inset="2" id="100368">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
@@ -4081,10 +4084,15 @@ An XML file stores information using custom markup tags. It more thoroughly refl
                         </buttonCell>
                         <connections>
                             <action selector="add:" target="100325" id="100481"/>
+                            <binding destination="100325" name="enabled" keyPath="nameOfNewClip" id="cHk-CR-pUP">
+                                <dictionary key="options">
+                                    <string key="NSValueTransformerName">NSIsNotNil</string>
+                                </dictionary>
+                            </binding>
                         </connections>
                     </button>
                     <button verticalHuggingPriority="750" id="100935">
-                        <rect key="frame" x="67" y="13" width="82" height="32"/>
+                        <rect key="frame" x="405" y="6" width="82" height="32"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <buttonCell key="cell" type="push" title="Cancel" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="100936">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
@@ -4098,7 +4106,7 @@ Gw
                         </connections>
                     </button>
                     <textField verticalHuggingPriority="750" id="100938">
-                        <rect key="frame" x="10" y="97" width="473" height="26"/>
+                        <rect key="frame" x="10" y="38" width="473" height="26"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <textFieldCell key="cell" sendsActionOnEndEditing="YES" title="Choose a name for the new clip.  For example, &quot;Left Camera,&quot; &quot;Right,&quot; etc." id="100939">
                             <font key="font" metaFont="system"/>
@@ -7005,7 +7013,6 @@ IA
                 </binding>
                 <outlet property="document" destination="-2" id="100483"/>
                 <outlet property="mainTableView" destination="100374" id="103169"/>
-                <outlet property="newClipName" destination="100350" id="100482"/>
                 <outlet property="newClipNamePanel" destination="100929" id="100934"/>
             </connections>
         </arrayController>

@@ -14,13 +14,15 @@
 
 @interface VideoClipArrayController : NSArrayController {
 
-	IBOutlet NSTextField *newClipName;
-	IBOutlet VidSyncDocument *document;
-	IBOutlet NSPanel *newClipNamePanel;
+	NSString *__strong nameOfNewClip;
+	IBOutlet VidSyncDocument *__weak document;
+	IBOutlet NSPanel *__weak newClipNamePanel;
+    IBOutlet NSTableView *__weak mainTableView;
 
 }
 
-@property (strong) IBOutlet NSTableView *mainTableView;
+@property (weak) IBOutlet NSTableView *mainTableView;
+@property (strong) NSString *nameOfNewClip;
 
 - (IBAction) add:(id)sender;
 - (void) keyWindowDidChange:(NSNotification *)notification;

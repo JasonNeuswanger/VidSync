@@ -10,9 +10,12 @@
 
 @implementation VideoClipArrayController
 
+@synthesize mainTableView;
+@synthesize nameOfNewClip;
+
 - (IBAction) add:(id)sender  // need to make a comparable custom method for fetch, and for just listing, or for when the whole thing is opened...
 {
-	if (![[newClipName stringValue] isEqualToString:@""]) {	// if there's a name for the new clip, process it
+	if (![nameOfNewClip isEqualToString:@""]) {	// if there's a name for the new clip, process it
 		NSOpenPanel *movieOpenPanel = [NSOpenPanel openPanel];
 		[movieOpenPanel setCanChooseFiles:YES];
 		[movieOpenPanel setCanChooseDirectories:NO];
@@ -21,14 +24,15 @@
 			VSVideoClip *newClip = [NSEntityDescription insertNewObjectForEntityForName:@"VSVideoClip" inManagedObjectContext:[self managedObjectContext]];	
 			NSEntityDescription *newCalibrationEntity = [NSEntityDescription entityForName:@"VSCalibration" inManagedObjectContext:[self managedObjectContext]];
 			newClip.calibration = [[VSCalibration alloc] initWithEntity:newCalibrationEntity insertIntoManagedObjectContext:[self managedObjectContext]];
-			newClip.clipName = [newClipName stringValue];
+			newClip.clipName = nameOfNewClip;
 			newClip.fileName = [[[movieOpenPanel URLs] objectAtIndex:0] path];
 			[self addObject:newClip];
 			VideoWindowController *newVideoWindowController = [[VideoWindowController alloc] initWithVideoClip:newClip inManagedObjectContext:[self managedObjectContext]];
 			if (newVideoWindowController != nil) [document addWindowController:newVideoWindowController];
             if (!newClip.project.masterClip) newClip.project.masterClip = newClip;
-			[newClipName setStringValue:@""];
+			nameOfNewClip = nil;
 			[newClipNamePanel performClose:self];
+            [self.mainTableView setNeedsDisplay:YES];
 		}
 	} else {	// if the clip doesn't have a name, tell the user to add one
 		NSRunAlertPanel(@"New Clip Needs a Name",@"You can't add the clip without first giving it a name.",@"Ok",nil,nil);
