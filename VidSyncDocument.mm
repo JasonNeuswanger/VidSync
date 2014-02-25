@@ -554,4 +554,19 @@ static void *AVSPPlayerCurrentTimeContext = &AVSPPlayerCurrentTimeContext;
     [[portrait.sourceVideoClip.windowController window] makeKeyAndOrderFront:self];
 }
 
+#pragma mark
+#pragma mark Document-closing cleanup behavior
+
+- (void) canCloseDocumentWithDelegate:(id)delegate shouldCloseSelector:(SEL)shouldCloseSelector contextInfo:(void *)contextInfo
+{
+    // Have to unregister as an observer of the master playback rate in its windowcontroller, otherwise there's an error about deallocing a VideoWindowController while it's being observed
+    [self removeObserver:self forKeyPath:@"project.masterClip.windowController.playerView.player.rate"];
+    [super canCloseDocumentWithDelegate:delegate shouldCloseSelector:shouldCloseSelector contextInfo:contextInfo];
+}
+
 @end
+
+
+
+
+

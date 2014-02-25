@@ -451,7 +451,7 @@
     for (VSPoint *point in allSortedPoints) {   // This filtering prevents showing connecting lines to points in the future
         CMTime pointTime = [UtilityFunctions CMTimeFromString:point.timecode];
         CMTime currentTime = [vwc.document currentMasterTime];
-        if (CMTimeCompare(pointTime,currentTime) == NSOrderedAscending) {
+        if (CMTimeCompare(pointTime,currentTime) <= 0) {
             [sortedPoints addObject:point];
         }
     }

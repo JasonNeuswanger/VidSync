@@ -29,7 +29,7 @@
 @property (strong) NSSet *hintLines;
 @property (strong) NSSet *annotations;
 
-@property (strong) VideoWindowController *windowController;
+@property (weak) VideoWindowController *windowController;
 @property (strong) NSString *masterButtonText;
 
 - (void) relocateClip;

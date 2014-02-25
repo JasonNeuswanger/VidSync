@@ -57,8 +57,8 @@
         </customObject>
         <window title="New Project" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" releasedWhenClosed="NO" showsToolbarButton="NO" wantsToBeColor="NO" visibleAtLaunch="NO" frameAutosaveName="" animationBehavior="default" id="5" userLabel="Main Project Window" customClass="MainProjectWindow">
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES" texturedBackground="YES"/>
-            <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
-            <rect key="contentRect" x="162" y="315" width="589" height="629"/>
+            <windowPositionMask key="initialPositionMask" leftStrut="YES" topStrut="YES"/>
+            <rect key="contentRect" x="146" y="773" width="589" height="629"/>
             <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1578"/>
             <value key="minSize" type="size" width="589" height="629"/>
             <view key="contentView" id="6">
