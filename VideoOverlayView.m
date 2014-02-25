@@ -784,9 +784,12 @@
 	VideoWindowController *__weak vwc = _delegate;
 	NSString *hintLinesSetting = [[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"hintLinesSetting"];
 	if (![hintLinesSetting isEqualToString:@"None"]) {	
-		NSSet *visibleHintLines = [NSSet set];	// initialize as an empty set
-		NSPredicate *currentTimePredicate = [NSPredicate predicateWithFormat:@"fromScreenPoint.point.timecode = %@",[vwc.videoClip.project.document currentMasterTimeString]];
-		NSSet *currentHintLines = [vwc.videoClip.hintLines filteredSetUsingPredicate:currentTimePredicate];	// all hintLines for the current timecode
+        NSSet *visibleHintLines = [NSSet set];
+        NSMutableSet __block *currentHintLines = [NSMutableSet set];
+        [vwc.videoClip.hintLines enumerateObjectsUsingBlock:^(id obj, BOOL *stop) {
+            VSHintLine *hintLine = obj;
+            if ([UtilityFunctions timeString:hintLine.fromScreenPoint.point.timecode isEqualToTimeString:[vwc.videoClip.project.document currentMasterTimeString]]) [currentHintLines addObject:obj];
+        }];
 		if ([hintLinesSetting isEqualToString:@"All"]) {
 			visibleHintLines = currentHintLines;
 		} else {	// setting is "Unpaired"; show only unpaired hintLines
