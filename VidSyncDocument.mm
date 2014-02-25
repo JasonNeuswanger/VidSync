@@ -12,6 +12,7 @@
 @implementation VidSyncDocument
 
 @synthesize project;
+
 @synthesize mainTabView;
 @synthesize calibrationSurfaceTabView;
 @synthesize calibrationInputTabView;

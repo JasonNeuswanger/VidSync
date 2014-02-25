@@ -97,6 +97,7 @@
 - (void) resizeVideoToFactor:(float)sizeFactor;
 - (void) setMovieViewControllerVisible:(BOOL)setting;
 - (void) processSynchronizationStatus;
+- (void) updateMasterTimeScrubberTicks;
 - (void) refreshOverlay;
 
 @end

@@ -30,12 +30,11 @@
 	
 	NSManagedObjectModel *managedObjectModel;
 	
-	VSProject *__strong project;
-	NSWindowController *mainWindowController;
+	VSProject *__weak project;
+	NSWindowController *__strong mainWindowController;
+    NSWindowController *__strong advancedPlaybackWindowController;
     
-    NSWindowController *advancedPlaybackWindowController;
-    
-	NSTimer *playbackTimer;
+	NSTimer *__strong playbackTimer;
 	IBOutlet MagnifiedPreviewView *magnifiedCalibrationPreview,*magnifiedMeasurementPreview,*magnifiedDistortionPreview;
 	IBOutlet VideoClipArrayController *__weak videoClipArrayController;
 	IBOutlet CalibScreenPtArrayController *__weak calibScreenPtFrontArrayController;
@@ -98,7 +97,7 @@
 	
 }
 
-@property (strong) VSProject *project;
+@property (weak, nonatomic) VSProject *project;
 @property (readonly, weak) IBOutlet NSTabView *mainTabView;
 @property (readonly, weak) IBOutlet NSTabView *calibrationSurfaceTabView;
 @property (readonly, weak) IBOutlet NSTabView *calibrationInputTabView;
@@ -137,8 +136,8 @@
 
 @property (weak) VSTrackedObject *portraitSubject;
 
-@property BOOL bookmarkIsSet1;
-@property BOOL bookmarkIsSet2;
+@property (assign) BOOL bookmarkIsSet1;
+@property (assign) BOOL bookmarkIsSet2;
 
 - (id) initWithType:(NSString *)type error:(NSError **)error;
 - (void) windowControllerDidLoadNib:(NSWindowController *)windowController;

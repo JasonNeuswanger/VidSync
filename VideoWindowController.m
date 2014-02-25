@@ -116,17 +116,13 @@
     
     if (self.videoClip.isMasterClipOf == self.videoClip.project && self.videoClip.project.currentTimecode) {	// If the master clip is loaded and there's a saved current time, go to it
         // The next three lines set the number of ticks in the synced playback scrubber to approximately 1 per minute
-        CMTimeRange masterTimeRange = [[[self.videoClip.project.masterClip.windowController.videoAsset tracksWithMediaType:AVMediaTypeVideo] firstObject] timeRange];
-        NSInteger masterTimeDurationMinutes = round(CMTimeGetSeconds(masterTimeRange.duration)/60.0f);
-        [self.videoClip.project.document.syncedPlaybackScrubber setNumberOfTickMarks:masterTimeDurationMinutes+1];  // adds 1 extra tickmark because there's a tick at 0. will be close but not exactly 1 tick/minute now
+        [self updateMasterTimeScrubberTicks];
         [self.videoClip.windowController.playerView.player seekToTime:[UtilityFunctions CMTimeFromString:self.videoClip.project.currentTimecode] toleranceBefore:kCMTimeZero toleranceAfter:kCMTimeZero];
         [self.videoClip.project.document reSync];
     }
-    if (self.videoClip.syncIsLocked) {
-        [self.videoClip.project.document.syncedPlaybackPanel orderFront:self]; // this will make the synced playback panel visible if any videos are synced
-        [self.videoClip.project.document reSync];                               // synchronizes the document once the new clip is loaded
-    }
-    
+
+    if (self.videoClip.syncIsLocked) [self.videoClip.project.document reSync];                               // synchronizes the document once the new clip is loaded
+
     [[self window] orderFrontRegardless];
 }
 
@@ -230,6 +226,10 @@
 {
     if ([keyPath isEqual:@"width"] || [keyPath isEqual:@"color"] || [keyPath isEqual:@"size"] || [keyPath isEqual:@"shape"] || [keyPath isEqual:@"notes"]) [self refreshOverlay];
     if ([object isEqualTo:self.videoClip] && ([keyPath isEqual:@"syncIsLocked"] || [keyPath isEqual:@"syncOffset"] || [keyPath isEqual:@"isMasterClipOf"])) [self processSynchronizationStatus];
+    if ([keyPath isEqual:@"isMasterClipOf"]) {
+        [self updateMasterTimeScrubberTicks];
+        for (VSVideoClip *clip in self.videoClip.project.videoClips) clip.syncIsLocked = [NSNumber numberWithBool:NO];  // When master clip changes, unlock all syncs
+    }
 }
 
 #pragma mark
@@ -810,6 +810,8 @@
     [self.videoClip.syncIsLocked boolValue] ? [self setMovieViewControllerVisible:NO] : [self setMovieViewControllerVisible:YES];
 
     noNonMasterClipsAreSynced ? [self.videoClip.project.document.syncedPlaybackPanel close] : [self.videoClip.project.document.syncedPlaybackPanel orderFront:self];
+
+    
 }
 
 - (void) setMovieViewControllerVisible:(BOOL)setting
@@ -822,6 +824,14 @@
 		playerView.controlsStyle = AVPlayerViewControlsStyleNone;
         [overlayWindow setIgnoresMouseEvents:NO];
     }
+}
+
+- (void) updateMasterTimeScrubberTicks
+{
+    // Updates the number of ticks in the synced playback scrubber to approximately 1 per minute
+    CMTimeRange masterTimeRange = [[[self.videoClip.project.masterClip.windowController.videoAsset tracksWithMediaType:AVMediaTypeVideo] firstObject] timeRange];
+    NSInteger masterTimeDurationMinutes = round(CMTimeGetSeconds(masterTimeRange.duration)/60.0f);
+    [self.videoClip.project.document.syncedPlaybackScrubber setNumberOfTickMarks:masterTimeDurationMinutes+1];  // adds 1 extra tickmark because there's a tick at 0. will be close but not exactly 1 tick/minute now
 }
 
 @end

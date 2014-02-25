@@ -70,6 +70,15 @@
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                         <connections>
+                            <binding destination="-2" name="hidden2" keyPath="videoClip.syncIsLocked" previousBinding="6gx-tB-LgC" id="zm0-7X-kls">
+                                <dictionary key="options">
+                                    <integer key="NSMultipleValuesPlaceholder" value="-1"/>
+                                    <integer key="NSNotApplicablePlaceholder" value="-1"/>
+                                    <integer key="NSNoSelectionPlaceholder" value="-1"/>
+                                    <integer key="NSNullPlaceholder" value="-1"/>
+                                    <string key="NSValueTransformerName">NSNegateBoolean</string>
+                                </dictionary>
+                            </binding>
                             <binding destination="-2" name="hidden" keyPath="videoClip.isMasterClipOf" id="6gx-tB-LgC">
                                 <dictionary key="options">
                                     <string key="NSValueTransformerName">NSIsNotNil</string>
@@ -86,6 +95,15 @@
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                         <connections>
+                            <binding destination="-2" name="hidden2" keyPath="videoClip.syncIsLocked" previousBinding="Tup-lm-j5Y" id="HTF-HV-45A">
+                                <dictionary key="options">
+                                    <integer key="NSMultipleValuesPlaceholder" value="-1"/>
+                                    <integer key="NSNotApplicablePlaceholder" value="-1"/>
+                                    <integer key="NSNoSelectionPlaceholder" value="-1"/>
+                                    <integer key="NSNullPlaceholder" value="-1"/>
+                                    <string key="NSValueTransformerName">NSNegateBoolean</string>
+                                </dictionary>
+                            </binding>
                             <binding destination="-2" name="hidden" keyPath="videoClip.isMasterClipOf" id="Tup-lm-j5Y">
                                 <dictionary key="options">
                                     <string key="NSValueTransformerName">NSIsNotNil</string>
