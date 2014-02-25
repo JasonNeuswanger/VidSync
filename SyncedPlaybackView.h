@@ -13,7 +13,7 @@
 
 @interface SyncedPlaybackView : NSView {
     
-    IBOutlet VideoControlButton *playOrPauseButton, *stepForwardButton, *stepBackwardButton, *playBackwardButton, *fastForwardButton, *fastBackwardButton, *bookmarkSetButton1, *bookmarkSetButton2, *bookmarkGoButton1, *bookmarkGoButton2;
+    IBOutlet __weak VideoControlButton *playOrPauseButton, *stepForwardButton, *stepBackwardButton, *playBackwardButton, *fastForwardButton, *fastBackwardButton, *bookmarkSetButton1, *bookmarkSetButton2, *bookmarkGoButton1, *bookmarkGoButton2;
 
 }
 

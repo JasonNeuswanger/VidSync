@@ -17,7 +17,7 @@
 
 	NSManagedObjectContext *__weak managedObjectContext;
 	
-    IBOutlet AVPlayerView *__strong playerView;
+    IBOutlet AVPlayerView *__weak playerView;
 	
 	IBOutlet NSPanel *newAnnotationPanel;
 	IBOutlet NSTextField *newAnnotationContents;
@@ -47,8 +47,8 @@
 @property (strong) AVAsset *videoAsset;
 @property (strong) AVPlayerLayer *playerLayer;
 @property (strong) AVAssetImageGenerator *assetImageGenerator;
-@property (strong) IBOutlet AVPlayerView *playerView;
-@property (assign) CGSize movieSize;
+@property (weak) IBOutlet AVPlayerView *playerView;
+@property CGSize movieSize;
 @property (weak) NSManagedObjectContext *managedObjectContext;
 @property  VideoOverlayView *overlayView;
 @property float overlayWidth;

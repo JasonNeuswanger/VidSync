@@ -12,10 +12,10 @@
 
     NSPoint initialLocation;
     
-    IBOutlet VidSyncDocument *document;
+    IBOutlet VidSyncDocument *__weak document;
     
 }
 
-@property (assign) NSPoint initialLocation;
+@property NSPoint initialLocation;
 
 @end

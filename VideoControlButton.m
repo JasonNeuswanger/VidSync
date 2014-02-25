@@ -45,7 +45,6 @@
     [colorTitle addAttribute:NSForegroundColorAttributeName value:color range:titleRange];
     [colorTitle addAttribute:NSFontAttributeName value:[NSFont fontWithName:@"FontAwesome" size:fontSize] range:titleRange];
     [self setAttributedTitle:colorTitle];
-//    NSLog(@"Set an attributed title for %@ of length %@ to %@",title,[NSNumber numberWithInt:[colorTitle length]],colorTitle);
 }
 
 @end

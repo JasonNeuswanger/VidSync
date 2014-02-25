@@ -10,11 +10,11 @@
 
 @interface VideoControlButton : NSButton {
     
-	IBOutlet VidSyncDocument *document;
+	IBOutlet VidSyncDocument *__weak document;
     
     float fontSizeSet;
     
-    NSColor *pressedHighlightColor;
+    NSColor *__strong pressedHighlightColor;
     
     BOOL enabled;
     

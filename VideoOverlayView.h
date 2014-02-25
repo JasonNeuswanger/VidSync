@@ -18,8 +18,8 @@
 
 @interface VideoOverlayView : NSView {
 
-	NSTrackingArea *trackingArea;
-	NSArray *quadratCoordinateGrids;
+	NSTrackingArea *__strong trackingArea;
+	NSArray *__strong quadratCoordinateGrids;
     
 }
 

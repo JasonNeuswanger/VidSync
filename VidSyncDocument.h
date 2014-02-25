@@ -30,7 +30,7 @@
 	
 	NSManagedObjectModel *managedObjectModel;
 	
-	VSProject *__weak project;
+	VSProject *__strong project;
 	NSWindowController *mainWindowController;
     
     NSWindowController *advancedPlaybackWindowController;
@@ -98,7 +98,7 @@
 	
 }
 
-@property (weak, nonatomic) VSProject *project;
+@property (strong) VSProject *project;
 @property (readonly, weak) IBOutlet NSTabView *mainTabView;
 @property (readonly, weak) IBOutlet NSTabView *calibrationSurfaceTabView;
 @property (readonly, weak) IBOutlet NSTabView *calibrationInputTabView;

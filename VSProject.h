@@ -11,7 +11,7 @@
 
 @interface VSProject : NSManagedObject {
     
-	VidSyncDocument *__strong document;
+	VidSyncDocument *__weak document;
 
 }
 
@@ -32,7 +32,7 @@
 @property (strong) NSString *movieCaptureStartTime;
 @property (strong) NSString *movieCaptureEndTime;
 
-@property (strong) VidSyncDocument *document;
+@property (weak) VidSyncDocument *document;
 @property (strong) NSMutableSet *trackedObjectTypes;
 @property (strong) NSMutableSet *trackedEventTypes;
 @property (strong) NSMutableSet *trackedObjects;

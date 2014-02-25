@@ -16,8 +16,8 @@
 	
 }
 
-@property (assign) float direction;
-@property (assign) int advancedRateToUse;
+@property float direction;
+@property int advancedRateToUse;
 
 - (void) startPlaying;
 - (void) stopPlaying;
