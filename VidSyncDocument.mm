@@ -483,7 +483,7 @@ static void *AVSPPlayerCurrentTimeContext = &AVSPPlayerCurrentTimeContext;
 
 - (IBAction) setCalibrationTime:(id)sender
 {
-	self.project.calibrationTimecode = [UtilityFunctions CMStringFromTime:[self currentMasterTime]];
+	self.project.calibrationTimecode = [self currentMasterTimeString];
 }
 
 - (IBAction) goToCalibrationTime:(id)sender

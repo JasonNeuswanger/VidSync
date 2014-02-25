@@ -544,7 +544,7 @@
         } else if ([[[doc.mainTabView selectedTabViewItem] label] isEqualToString:@"Annotation"]) {
             // The work of creating an annotation is handled by the createNewAnnotation action.
             // However, I have to lock in the timecode and coordinate values from the click immediately, since they may change after the panel button is submitted.
-            newAnnotationStartTimecode = [UtilityFunctions CMStringFromTime:[videoClip.project.document currentMasterTime]];
+            newAnnotationStartTimecode = [videoClip.project.document currentMasterTimeString];
             newAnnotationCoords = videoCoords;
             NSRect currentWindowFrame = [[self window] frame];
             [newAnnotationContents setStringValue:@""];
@@ -774,7 +774,7 @@
 - (IBAction) setAsMaster:(id)sender     // This IBAction should be called only by the button when the user switches the master clip, not when a new file becomes the default master clip
 {
     self.videoClip.project.masterClip = self.videoClip;
-	self.videoClip.syncOffset = [UtilityFunctions CMStringFromTime:CMTimeMake(0,[[self.videoClip timeScale] floatValue])];
+	self.videoClip.syncOffset = [UtilityFunctions CMStringFromTime:CMTimeMake(0,[[self.videoClip timeScale] longValue])];
 }
 
 - (IBAction) lockSyncOffset:(id)sender

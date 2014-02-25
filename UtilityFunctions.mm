@@ -27,6 +27,16 @@
 }
 
 
++ (BOOL) timeString:(NSString *)timeString1 isEqualToTimeString:(NSString *)timeString2
+{
+    // This function allows comparing the "equality" of times on different time scales, when the times are effectively the same but not actually equal because of rounding differences in the timescales
+    // This is mainly useful for supporting compatibility with older files in which some points were recorded on strange timescales, not the master clip's native time scale
+    Float64 cmTime1seconds = CMTimeGetSeconds([UtilityFunctions CMTimeFromString:timeString1]);
+    Float64 cmTime2seconds = CMTimeGetSeconds([UtilityFunctions CMTimeFromString:timeString2]);
+    Float64 timeDifference = fabs(cmTime1seconds - cmTime2seconds);
+    return timeDifference < 0.004f;    // a realistic difference for me was 0.0016; the value of 0.004 should support detecting real differences at 240 fps or less and ignoring smaller rounding errors
+}
+
 + (NSString *) CMStringFromTime:(CMTime)time onScale:(int32_t)timeScale
 {
     CMTime scaledTime = CMTimeConvertScale(time,timeScale,kCMTimeRoundingMethod_RoundHalfAwayFromZero);

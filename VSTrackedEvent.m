@@ -57,8 +57,19 @@
 {
 	VSPoint *returnPoint = nil;
 	// Look for points at currentTime (master clip timecode) that still need a VSScreenPoint for videoClip.  If there are any, find the one with the lowest index and return it.
-	NSPredicate *atCurrentTime = [NSPredicate predicateWithFormat:@"timecode == %@",[UtilityFunctions CMStringFromTime:currentTime]];
-	NSSet *pointsAtCurrentTime = [self.points filteredSetUsingPredicate:atCurrentTime];
+
+    NSString *currentTimeString = [UtilityFunctions CMStringFromTime:currentTime onScale:[[[[[self.trackedObjects anyObject] project] masterClip] timeScale] longValue]];
+    
+    NSMutableSet __block *pointsAtCurrentTime = [NSMutableSet new];
+    [self.points enumerateObjectsUsingBlock:^(id obj, BOOL *stop) {
+        if ([UtilityFunctions timeString:[obj timecode] isEqualToTimeString:currentTimeString]) [pointsAtCurrentTime addObject:obj];
+    }];
+    
+//  I'm commenting out a method of doing the above with a predicate, which would work fine for new files and more quickly. Instead, I'm using the above code for compatibility
+//  with files that were created when VidSync sometimes recorded timecodes on funny Quicktime/AVKit timescales like 1,000,000,000 instead of the native video scale, and times have to be compared.
+//  NSPredicate *atCurrentTime = [NSPredicate predicateWithFormat:@"timecode == %@",currentTimeString];
+//	NSSet *pointsAtCurrentTime = [self.points filteredSetUsingPredicate:atCurrentTime];
+     
 	if ([pointsAtCurrentTime count] > 0) {
 		for (VSPoint *maybePoint in pointsAtCurrentTime) {	// Loop over all points at this timecode, looking for the one with the lowest index that doesn't have a screenPoint for videoClip
 			if ([maybePoint screenPointForVideoClip:videoClip] == nil) {	// point has no screenPoint for this videoClip
@@ -75,7 +86,7 @@
 	// First, check if the current event is at its maxNumPoints, and if it is, create a new event to put the new VSPoint into.
 	VSTrackedEvent *eventForNewPoint;
 	BOOL currentEventIsAtMaxNumPoints = ([self.points count] > 0 && [self.points count] == [self.type.maxNumPoints intValue]);
-	BOOL pointsRequireDifferentTimecode = ([self.type.requiresSameTimecode boolValue] && [self.points count] > 0 && ![[[self.points anyObject] timecode] isEqualToString:[UtilityFunctions CMStringFromTime:currentTime]]);
+    BOOL pointsRequireDifferentTimecode = ([self.type.requiresSameTimecode boolValue] && [self.points count] > 0 && ![UtilityFunctions timeString:[[self.points anyObject] timecode] isEqualToTimeString:currentTimeString]);
 	if (currentEventIsAtMaxNumPoints || pointsRequireDifferentTimecode) {
 		eventForNewPoint = [NSEntityDescription insertNewObjectForEntityForName:@"VSTrackedEvent" inManagedObjectContext:[self managedObjectContext]]; 
 		eventForNewPoint.trackedObjects = self.trackedObjects;
@@ -93,7 +104,7 @@
 	returnPoint = [NSEntityDescription insertNewObjectForEntityForName:@"VSPoint" inManagedObjectContext:[self managedObjectContext]];
 	returnPoint.index = [NSNumber numberWithInt:highestPointIndex+1];
 	returnPoint.trackedEvent = eventForNewPoint;
-	returnPoint.timecode = [UtilityFunctions CMStringFromTime:currentTime];
+	returnPoint.timecode = currentTimeString;
 	[self.type.project.document.eventsPointsController rearrangeObjects];  // Re-sort the points to put the newly inserted one in the correct spot in the list
 	return returnPoint;
 }

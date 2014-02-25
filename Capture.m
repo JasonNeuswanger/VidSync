@@ -49,9 +49,9 @@
 - (IBAction)setVideoCaptureTime:(id)sender
 {
 	if ([sender tag] == 1) {
-		self.project.movieCaptureStartTime = [UtilityFunctions CMStringFromTime:[self currentMasterTime]];
+		self.project.movieCaptureStartTime = [self currentMasterTimeString];
 	} else if ([sender tag] == 2) {
-		self.project.movieCaptureEndTime = [UtilityFunctions CMStringFromTime:[self currentMasterTime]];
+		self.project.movieCaptureEndTime = [self currentMasterTimeString];
 	}	
 }
 
@@ -248,10 +248,9 @@
             append_succeeded = FALSE;
             while (!append_succeeded && videoWriter.error == nil) {
                 if (adaptor.assetWriterInput.readyForMoreMediaData) {
-                    // NSLog(@"Exporting frame from video %@ at master time %@.",videoClip.clipName,[UtilityFunctions CMStringFromTime:[self currentMasterTime]]);
                     buffer = [self pixelBufferFromCGImage:im size:videoClip.windowController.movieSize];
                     append_succeeded = [adaptor appendPixelBuffer:buffer withPresentationTime:CMTimeSubtract([self currentMasterTime],clipStartTime)];
-                    CVPixelBufferRelease(buffer);   // I'm responsible for releasing the buffer returned by the previous function. Otherwise, it leaks 7.91mb of memory (for 1920x1080) with every loop iteration
+                    CVPixelBufferRelease(buffer);   // VidSync must release the buffer returned by the previous function. Otherwise, it leaks 7.91mb of memory (for 1920x1080) with every loop iteration
                     if(!append_succeeded && videoWriter.error != nil){
                         NSLog(@"Error in videoWriter's appendPixelBuffer:withPresentationTime: function: %@.", videoWriter.error);
                     }
@@ -555,7 +554,7 @@
 	NSString *timeString1 = nil;
 	if ([extension isEqualToString:@"jpg"]) {
 		[filePath appendString:self.project.capturePathForStills];
-		timeString1 = [UtilityFunctions CMStringFromTime:[self currentMasterTime]];
+		timeString1 = [self currentMasterTimeString];
 	} else if ([extension isEqualToString:@"mov"] || [extension isEqualToString:@"mp4"] || [extension isEqualToString:@"m4v"]) {
 		[filePath appendString:self.project.capturePathForMovies];
 		timeString1 = [NSString stringWithFormat:@"%@ to %@", self.project.movieCaptureStartTime, self.project.movieCaptureEndTime];

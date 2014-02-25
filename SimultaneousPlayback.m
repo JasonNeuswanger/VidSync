@@ -25,7 +25,7 @@
 
 - (void) updateMasterTimeDisplay // also updates the synced playback scrubber
 {
-	[masterTimeDisplay setStringValue:[UtilityFunctions CMStringFromTime:[self currentMasterTime]]];
+	[masterTimeDisplay setStringValue:[self currentMasterTimeString]];
     
     CMTimeRange masterTimeRange = [[[self.project.masterClip.windowController.videoAsset tracksWithMediaType:AVMediaTypeVideo] firstObject] timeRange];
     CMTimeRange sliderRange = CMTimeRangeMake(CMTimeMake(0,scrubberMaxTime),CMTimeMake(scrubberMaxTime,scrubberMaxTime));
@@ -188,7 +188,7 @@
 
 - (NSString *) currentMasterTimeString
 {
-    return [UtilityFunctions CMStringFromTime:[self currentMasterTime]];
+    return [UtilityFunctions CMStringFromTime:[self currentMasterTime] onScale:[[self.project.masterClip timeScale] longValue]];
 }
 
 - (void) goToMasterTime:(CMTime)time
@@ -251,7 +251,7 @@
 	// Only process these time change notifications for the masterClip.  Otherwise, reSync forces another movieTimeDidChange and there's an infinite loop that slows the program to a crawl.
 	if (self.project.masterClip != nil) {
 		if ([[notification object] isEqualTo:self.project.masterClip.windowController.playerView.player.currentItem]) {
-            self.project.currentTimecode = [UtilityFunctions CMStringFromTime:[self currentMasterTime]];
+            self.project.currentTimecode = [self currentMasterTimeString];
 			[self reSync];
 			[eventsPointsController rearrangeObjects];
             [self updateMasterTimeDisplay];

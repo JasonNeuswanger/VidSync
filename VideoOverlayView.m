@@ -782,11 +782,10 @@
 - (void) drawHintLines
 {
 	VideoWindowController *__weak vwc = _delegate;
-	CMTime now = [vwc.videoClip.project.document currentMasterTime];
 	NSString *hintLinesSetting = [[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"hintLinesSetting"];
 	if (![hintLinesSetting isEqualToString:@"None"]) {	
 		NSSet *visibleHintLines = [NSSet set];	// initialize as an empty set
-		NSPredicate *currentTimePredicate = [NSPredicate predicateWithFormat:@"fromScreenPoint.point.timecode = %@",[UtilityFunctions CMStringFromTime:now]];
+		NSPredicate *currentTimePredicate = [NSPredicate predicateWithFormat:@"fromScreenPoint.point.timecode = %@",[vwc.videoClip.project.document currentMasterTimeString]];
 		NSSet *currentHintLines = [vwc.videoClip.hintLines filteredSetUsingPredicate:currentTimePredicate];	// all hintLines for the current timecode
 		if ([hintLinesSetting isEqualToString:@"All"]) {
 			visibleHintLines = currentHintLines;

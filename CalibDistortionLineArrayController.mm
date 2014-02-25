@@ -16,7 +16,7 @@
 - (IBAction) add:(id)sender
 {	
 	VSDistortionLine *newLine = [NSEntityDescription insertNewObjectForEntityForName:@"VSDistortionLine" inManagedObjectContext:[self managedObjectContext]];
-	newLine.timecode = [UtilityFunctions CMStringFromTime:[document currentMasterTime]];
+	newLine.timecode = [document currentMasterTimeString];
 	[self addObject:newLine];
 }
 
@@ -39,7 +39,7 @@
     CvPoint2D32f *cvpoints = (CvPoint2D32f *) points;  // type casting because the input array must be void, because the OpenCV types aren't accessible from the c headers
 
 	VSDistortionLine *newLine = [NSEntityDescription insertNewObjectForEntityForName:@"VSDistortionLine" inManagedObjectContext:[self managedObjectContext]];
-	newLine.timecode = [UtilityFunctions CMStringFromTime:[document currentMasterTime]];
+	newLine.timecode = [document currentMasterTimeString];
     [self addObject:newLine];
     VSDistortionPoint *newDistortionPoint;
     for (int i=0; i<number; i++) {
