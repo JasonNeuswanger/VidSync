@@ -152,9 +152,8 @@ static void *AVSPPlayerCurrentTimeContext = &AVSPPlayerCurrentTimeContext;
         NSMutableAttributedString *portraitWindowOpenButtonTitle =[[NSMutableAttributedString alloc] initWithAttributedString:[[NSMutableAttributedString alloc] initWithString:@"\uf030"]];
         [portraitWindowOpenButtonTitle addAttribute:NSFontAttributeName value:[NSFont fontWithName:@"FontAwesome" size:12.0f] range:NSMakeRange(0,1)];
         [allPortraitBrowserOpenButton setAttributedTitle:portraitWindowOpenButtonTitle];
-        
-        
-        [advancedPlaybackWindowController setWindow:syncedPlaybackPanel];   // Need to have a separate window controller for this window or it doesn't close. Need to set it here, after nib loads the window.
+
+        [advancedPlaybackWindowController setWindow:syncedPlaybackPanel];   // Need to have a separate window controller for this window or it doesn't close. Setting it here, after nib loads the window.
         [self addObserver:syncedPlaybackView forKeyPath:@"bookmarkIsSet1" options:NSKeyValueObservingOptionNew context:NULL];
         [self addObserver:syncedPlaybackView forKeyPath:@"bookmarkIsSet2" options:NSKeyValueObservingOptionNew context:NULL];
 
@@ -208,11 +207,11 @@ static void *AVSPPlayerCurrentTimeContext = &AVSPPlayerCurrentTimeContext;
 	return result;
 }
 
-- (BOOL)saveToURL:(NSURL *)absoluteURL ofType:(NSString *)typeName forSaveOperation:(NSSaveOperationType)saveOperation error:(NSError **)outError
+- (void) saveToURL:(NSURL *)url ofType:(NSString *)typeName forSaveOperation:(NSSaveOperationType)saveOperation completionHandler:(void (^)(NSError *))completionHandler
 {
 	self.project.dateLastSaved = [[NSDate dateWithTimeIntervalSinceNow:0.0] description];	// current date as a string
 	[[self managedObjectContext] processPendingChanges];
-	return [super saveToURL:absoluteURL ofType:typeName forSaveOperation:saveOperation error:outError];	
+	[super saveToURL:url ofType:typeName forSaveOperation:saveOperation completionHandler:completionHandler];
 }
 
 // This method fetches the current document instance's video pair from the managed object contest when it's nil, 

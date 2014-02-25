@@ -60,7 +60,7 @@
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="162" y="315" width="589" height="629"/>
             <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1578"/>
-            <value key="minSize" type="size" width="589" height="691"/>
+            <value key="minSize" type="size" width="589" height="629"/>
             <view key="contentView" id="6">
                 <rect key="frame" x="0.0" y="0.0" width="589" height="629"/>
                 <autoresizingMask key="autoresizingMask"/>
@@ -8288,7 +8288,7 @@ Some useful refractive index values are:  1.000 for air, 1.335 for fresh water, 
             <rect key="frame" x="0.0" y="0.0" width="889" height="27"/>
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
         </customView>
-        <arrayController objectClassName="VSTrackedObjectPortrait" avoidsEmptySelection="NO" id="ik8-He-CGb" userLabel="Objects Portraits Controller" customClass="ObjectsPortraitsArrayController">
+        <arrayController mode="entity" entityName="VSTrackedObjectPortrait" avoidsEmptySelection="NO" id="ik8-He-CGb" userLabel="Objects Portraits Controller" customClass="ObjectsPortraitsArrayController">
             <connections>
                 <binding destination="-2" name="managedObjectContext" keyPath="managedObjectContext" id="A4i-qP-68X"/>
                 <binding destination="101506" name="contentArray" keyPath="selection.portraits" id="Jhg-H1-FIy">
@@ -8361,7 +8361,7 @@ Some useful refractive index values are:  1.000 for air, 1.335 for fresh water, 
                 </subviews>
             </view>
         </window>
-        <arrayController objectClassName="VSTrackedObjectPortrait" editable="NO" automaticallyPreparesContent="YES" preservesSelection="NO" selectsInsertedObjects="NO" avoidsEmptySelection="NO" id="aiC-hm-v6h" userLabel="All Portraits Controller" customClass="AllPortraitsArrayController">
+        <arrayController mode="entity" entityName="VSTrackedObjectPortrait" automaticallyPreparesContent="YES" preservesSelection="NO" selectsInsertedObjects="NO" avoidsEmptySelection="NO" id="aiC-hm-v6h" userLabel="All Portraits Controller" customClass="AllPortraitsArrayController">
             <connections>
                 <binding destination="-2" name="managedObjectContext" keyPath="managedObjectContext" id="Ams-di-SeU"/>
                 <outlet property="otherPortraitBrowserView" destination="kTa-fp-bSt" id="4YI-Vw-miJ"/>

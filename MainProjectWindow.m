@@ -12,6 +12,7 @@
 
 - (void) awakeFromNib
 {
+    [self makeMainWindow];
     NSTrackingArea *mouseTrackingArea = [[NSTrackingArea alloc] initWithRect:[[self contentView] frame] options:NSTrackingMouseEnteredAndExited|NSTrackingActiveInActiveApp owner:self userInfo:nil];
     [[self contentView] addTrackingArea:mouseTrackingArea];
 }
@@ -20,5 +21,11 @@
 {
     [self makeKeyAndOrderFront:self];
 }
+
+ - (BOOL) canBecomeMainWindow
+ {
+ return YES;
+ }
+ 
 
 @end

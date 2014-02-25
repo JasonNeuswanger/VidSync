@@ -97,6 +97,7 @@
 - (IBAction) resizeToVideoPercent:(id)sender;
 - (void) resizeVideoToFactor:(float)sizeFactor;
 - (void) setMovieViewControllerVisible:(BOOL)setting;
+- (void) processSynchronizationStatus;
 - (void) refreshOverlay;
 
 @end

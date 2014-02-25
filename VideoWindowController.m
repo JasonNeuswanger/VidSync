@@ -35,12 +35,7 @@
 {
     AVAsset *movieAsset = [self playableAssetForClipName:inVideoClip.clipName atPath:inVideoClip.fileName];
     if (movieAsset != nil) {
-        
-        
         NSArray *assetKeysToLoadAndTest = [NSArray arrayWithObjects:@"playable", @"tracks", @"duration", nil];
-        
-        
-        
         [movieAsset loadValuesAsynchronouslyForKeys:assetKeysToLoadAndTest completionHandler:^(void) {
             // The asset invokes its completion handler on an arbitrary queue when loading is complete.
             // Because we want to access our AVPlayer in our ensuing set-up, we must dispatch our handler to the main queue.
@@ -48,20 +43,19 @@
                 [self setUpPlaybackOfAsset:movieAsset withKeys:assetKeysToLoadAndTest];
             });
         }];
-        
-        // maybe I need to put this stuff in the
-        
         self = [super initWithWindowNibName:@"VideoClipWindow"];
         [self setShouldCascadeWindows:NO];
         self.videoClip = inVideoClip;
         self.videoClip.windowController = self;
         managedObjectContext = moc;
         if (self.videoClip.windowFrame != nil) [[self window] setFrameFromString:self.videoClip.windowFrame];
-        [self window]; // calling [self window] here used to be required to trigger windowDidLoad, and prevent odd video loading bugs in the release but not debug build... I don't know why
+        
+        [self.videoClip addObserver:self forKeyPath:@"syncIsLocked" options:NSKeyValueObservingOptionNew context:NULL];
+        [self.videoClip addObserver:self forKeyPath:@"syncOffset" options:NSKeyValueObservingOptionNew context:NULL];
+        [self.videoClip addObserver:self forKeyPath:@"isMasterClipOf" options:NSKeyValueObservingOptionNew context:NULL];
+        
+        //[self window]; // calling [self window] here used to be required to trigger windowDidLoad, and prevent odd video loading bugs in the release but not debug build... I don't know why
         return self;
-        
-        
-        
     } else {
         return nil;
     }
@@ -120,8 +114,9 @@
 
     movieSize = videoTrack.naturalSize;
     
-    [self.videoClip setMasterControls];
     [self fitVideoOverlay];
+    [self processSynchronizationStatus];    // Must be run after the overlay is created, so it can be set not to receive mouse events if the clip is not synced
+    
     
     if (self.videoClip.isMasterClipOf == self.videoClip.project && self.videoClip.project.currentTimecode) {	// If the master clip is loaded and there's a saved current time, go to it
         // The next three lines set the number of ticks in the synced playback scrubber to approximately 1 per minute
@@ -152,31 +147,9 @@
 		return displayName;
 }
 
-- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
-{
-    if ([keyPath isEqual:@"width"] || [keyPath isEqual:@"color"] || [keyPath isEqual:@"size"] || [keyPath isEqual:@"shape"] || [keyPath isEqual:@"notes"]) {
-		[self refreshOverlay];
-    }
-}
-
-
 - (void) updateMagnifiedPreviewWithCenter:(NSPoint)point // point should be in base video coords, not current overlay coords
 {
     [[self document] updatePreviewImageWithPlayerLayer:playerLayer atPoint:point];
-}
-
-- (void)windowDidResize:(NSNotification *)notification // delegate method for the NSWindow being controlled
-{
-	if (self.playerItem != nil) { // ignores the resize event when the windows first pop up, before the media is loaded
-        [self fitVideoOverlay];
-        self.videoClip.windowFrame = [[self window] stringWithSavedFrame];
-        [overlayView calculateQuadratCoordinateGrids];
-    }
-}
-
-- (void)windowDidMove:(NSNotification *)notification
-{
-	self.videoClip.windowFrame = [[self window] stringWithSavedFrame];
 }
 
 - (void) makeOverlayKeyWindow
@@ -256,7 +229,30 @@
 }
 
 #pragma mark
-#pragma mark Key Events
+#pragma mark Key-Value Observing
+
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
+{
+    if ([keyPath isEqual:@"width"] || [keyPath isEqual:@"color"] || [keyPath isEqual:@"size"] || [keyPath isEqual:@"shape"] || [keyPath isEqual:@"notes"]) [self refreshOverlay];
+    if ([object isEqualTo:self.videoClip] && ([keyPath isEqual:@"syncIsLocked"] || [keyPath isEqual:@"syncOffset"] || [keyPath isEqual:@"isMasterClipOf"])) [self processSynchronizationStatus];
+}
+
+#pragma mark
+#pragma mark Event Handling
+
+- (void)windowDidResize:(NSNotification *)notification // delegate method for the NSWindow being controlled
+{
+	if (self.playerItem != nil) { // ignores the resize event when the windows first pop up, before the media is loaded
+        [self fitVideoOverlay];
+        self.videoClip.windowFrame = [[self window] stringWithSavedFrame];
+        [overlayView calculateQuadratCoordinateGrids];
+    }
+}
+
+- (void)windowDidMove:(NSNotification *)notification
+{
+	self.videoClip.windowFrame = [[self window] stringWithSavedFrame];
+}
 
 - (void) handleOverlayKeyUp:(NSEvent *)theEvent
 {
@@ -744,7 +740,7 @@
 
 
 #pragma mark
-#pragma mark Misc
+#pragma mark Resizing
 
 - (void) refreshOverlay
 {
@@ -777,32 +773,48 @@
 	[self refreshOverlay];
 }
 
-- (IBAction) setAsMaster:(id)sender
-{	
-	[self.videoClip setAsMaster];
-	for (VSVideoClip *clip in self.videoClip.project.videoClips) {
-        clip.syncIsLocked = [NSNumber numberWithBool:NO];
-        [clip.windowController setMovieViewControllerVisible:YES];
-    }
+#pragma mark
+#pragma mark Synchronization and master clip
+
+- (IBAction) setAsMaster:(id)sender     // This IBAction should be called only by the button when the user switches the master clip, not when a new file becomes the default master clip
+{
+    self.videoClip.project.masterClip = self.videoClip;
+	self.videoClip.syncOffset = [UtilityFunctions CMStringFromTime:CMTimeMake(0,[[self.videoClip timeScale] floatValue])];
 }
 
 - (IBAction) lockSyncOffset:(id)sender
 {
     NSButton *button = (NSButton *) sender;
 	if ([button state] == NSOnState) {
+        CMTime currentMasterTime = [self.videoClip.project.document currentMasterTime];
+        CMTime currentClipTime = [self.playerView.player currentTime];
+        self.videoClip.syncOffset = [UtilityFunctions CMStringFromTime:CMTimeSubtract(currentMasterTime,currentClipTime)];
         self.videoClip.syncIsLocked = [NSNumber numberWithBool:YES];
-		[self setMovieViewControllerVisible:NO];
-        [self.videoClip.project.masterClip.windowController setMovieViewControllerVisible:NO];
-        [self.videoClip setSyncOffset];
-        [self.videoClip.project.document.syncedPlaybackPanel orderFront:self];
 	} else {
         self.videoClip.syncIsLocked = [NSNumber numberWithBool:FALSE];
-        BOOL allClipsAreUnsynced = YES;
-        for (VSVideoClip *clip in self.videoClip.project.videoClips) if ([clip.syncIsLocked boolValue]) allClipsAreUnsynced = NO;
-        if (allClipsAreUnsynced) [self.videoClip.project.masterClip.windowController setMovieViewControllerVisible:YES];
-		[self setMovieViewControllerVisible:YES];
-        [self.videoClip.project.document.syncedPlaybackPanel close];
 	}
+}
+
+- (void) processSynchronizationStatus   // Called when loading clips when the file is opened or clip is created, and by observing syncOffset, syncIsLocked, and isMasterClipOf for the video
+{
+    BOOL noNonMasterClipsAreSynced = TRUE;
+    for (VSVideoClip *clip in self.videoClip.project.videoClips) if (clip.isMasterClipOf == nil && [clip.syncIsLocked boolValue]) noNonMasterClipsAreSynced = FALSE;
+    
+    if (noNonMasterClipsAreSynced && [self.videoClip.project.masterClip.syncIsLocked boolValue]) {
+        self.videoClip.project.masterClip.syncIsLocked = [NSNumber numberWithBool:NO];  // Set master to unsynced if all clips are unsynced
+    }
+    
+    if ([self.videoClip.isMasterClipOf isEqualTo:self.videoClip.project]) {
+        self.videoClip.masterButtonText = @"Is Master Clip";
+    } else {
+        self.videoClip.masterButtonText = @"Set as Master";
+        // If this clip is not the master, but it is synchronized, and the master clip is not set as synchronized, set the master clip as synchronized
+        if ([self.videoClip.syncIsLocked boolValue] && ![self.videoClip.project.masterClip.syncIsLocked boolValue]) self.videoClip.project.masterClip.syncIsLocked = [NSNumber numberWithBool:YES];
+    }
+
+    [self.videoClip.syncIsLocked boolValue] ? [self setMovieViewControllerVisible:NO] : [self setMovieViewControllerVisible:YES];
+
+    noNonMasterClipsAreSynced ? [self.videoClip.project.document.syncedPlaybackPanel close] : [self.videoClip.project.document.syncedPlaybackPanel orderFront:self];
 }
 
 - (void) setMovieViewControllerVisible:(BOOL)setting

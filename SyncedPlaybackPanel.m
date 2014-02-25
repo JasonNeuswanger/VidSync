@@ -31,12 +31,18 @@
         [self setOpaque:NO];
         [self setHasShadow:YES];
         [self setBackgroundColor:[NSColor clearColor]];
-        
         [self setMovableByWindowBackground:YES];
         [self setStyleMask:NSResizableWindowMask];
         
     }
     return self;
+}
+
+- (IBAction)makeKeyAndOrderFront:(id)sender
+{
+    // I'm basically disabling makeKeyAndOrderFront for this window, because it was being called when creating a new document, which made playback controls visible before they were ready. I can't find any call to it (sender was VidSyncDocument), so it must be something behind the scenes, and I haven't figured out why. This little hack fixes the problem but it's not ideal. However, everything currently using this panel refers only to orderFront:, not makeKeyAndOrderFront:, so it should be fine.
+    
+    //[super makeKeyAndOrderFront:sender];
 }
 
 /*
@@ -86,11 +92,6 @@
 /*--- These key/main window settings are necessary to make text fields in this window editable ---*/
 
 - (BOOL) canBecomeKeyWindow
-{
-    return YES;
-}
-
-- (BOOL) canBecomeMainWindow
 {
     return YES;
 }

@@ -49,28 +49,6 @@
     }];
 }
 
-- (void) setMasterControls
-{
-	if (self.isMasterClipOf == self.project) {
-		self.masterButtonText = @"Is Master Clip";
-        self.syncIsLocked = [NSNumber numberWithBool:FALSE];    // In the the new Mavericks version, syncIsLocked is always false for the master clip. This adjusts legacy files accordingly when they're loaded.
-        BOOL allClipsAreUnsynced = YES;
-        for (VSVideoClip *clip in self.project.videoClips) if ([clip.syncIsLocked boolValue]) allClipsAreUnsynced = FALSE;
-        if (allClipsAreUnsynced) {
-            [self.project.masterClip.windowController setMovieViewControllerVisible:YES];
-        } else {
-            [self.project.masterClip.windowController setMovieViewControllerVisible:NO];
-        }
-	} else {
-		self.masterButtonText = @"Set as Master";
-        if ([self.syncIsLocked boolValue]) {
-            [self.windowController setMovieViewControllerVisible:NO];
-        } else {
-            [self.windowController setMovieViewControllerVisible:YES];
-        }
-	}
-}
-
 - (NSNumber *) timeScale
 {
 	return [NSNumber numberWithInt:self.windowController.videoTrack.naturalTimeScale];
@@ -103,23 +81,6 @@
 {
 	CGSize rawClipResolution = self.windowController.videoTrack.naturalSize;
 	return rawClipResolution.width;
-}
-
-- (void) setAsMaster 
-{
-	VSVideoClip *oldMasterClip = self.project.masterClip;
-	self.project.masterClip = self;
-	self.syncOffset = [UtilityFunctions CMStringFromTime:CMTimeMake(0,[[self timeScale] floatValue])];	// set syncOffset to string for 0; must use self.syncOffset rather than syncOffset for key-value observing to update interface
-//	self.syncIsLocked = [NSNumber numberWithBool:YES];
-	[self setMasterControls];
-	[oldMasterClip setMasterControls];
-}
-
-- (void) setSyncOffset
-{
-	CMTime currentMasterTime = [self.project.document currentMasterTime];
-	CMTime currentClipTime = [self.windowController.playerView.player currentTime];
-	self.syncOffset = [UtilityFunctions CMStringFromTime:CMTimeSubtract(currentMasterTime,currentClipTime)];
 }
 
 - (BOOL) isAtCalibrationTime

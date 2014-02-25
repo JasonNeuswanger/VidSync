@@ -66,12 +66,12 @@
 
 - (IBAction) stepForwardAll:(id)sender
 {
-	for (VSVideoClip *clip in [self.project.videoClips allObjects]) [clip.windowController.playerView.player.currentItem stepByCount:1];
+	for (VSVideoClip *clip in [self.project.videoClips allObjects]) if ([clip.syncIsLocked boolValue]) [clip.windowController.playerView.player.currentItem stepByCount:1];
 }
 
 - (IBAction) stepBackwardAll:(id)sender
 {
-	for (VSVideoClip *clip in [self.project.videoClips allObjects]) [clip.windowController.playerView.player.currentItem stepByCount:-1];
+	for (VSVideoClip *clip in [self.project.videoClips allObjects]) if ([clip.syncIsLocked boolValue]) [clip.windowController.playerView.player.currentItem stepByCount:-1];
 }
 
 #pragma mark
@@ -80,13 +80,13 @@
 - (IBAction) advancedStepForwardAll:(id)sender
 {
 	int numFrames = [[[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"advancedPlaybackStepFrames"] intValue];
-	for (VSVideoClip *clip in [self.project.videoClips allObjects]) [clip.windowController.playerView.player.currentItem stepByCount:numFrames];
+	for (VSVideoClip *clip in [self.project.videoClips allObjects]) if ([clip.syncIsLocked boolValue]) [clip.windowController.playerView.player.currentItem stepByCount:numFrames];
 }
 
 - (IBAction) advancedStepBackwardAll:(id)sender
 {
 	int numFrames = [[[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"advancedPlaybackStepFrames"] intValue];
-	for (VSVideoClip *clip in [self.project.videoClips allObjects]) [clip.windowController.playerView.player.currentItem stepByCount:-numFrames];
+	for (VSVideoClip *clip in [self.project.videoClips allObjects]) if ([clip.syncIsLocked boolValue]) [clip.windowController.playerView.player.currentItem stepByCount:-numFrames];
 }
 
 - (IBAction) advancedPlayAll:(id)sender
@@ -175,7 +175,7 @@
 	self.project.currentTimecode = [UtilityFunctions CMStringFromTime:currentMasterTime];
 	for (VSVideoClip *clip in [self.project.videoClips allObjects]) {
 		if (!clip.isMasterClipOf && [clip.syncIsLocked boolValue]) {	// if the clip is sync-locked, and isn't the master clip, then sync it
-			CMTime offset = [UtilityFunctions CMTimeFromString:clip.syncOffset];	// correct a QuickTime bug that converts negative offsets as strings to positiveo ones as qttime
+			CMTime offset = [UtilityFunctions CMTimeFromString:clip.syncOffset];
 			[clip.windowController.playerView.player seekToTime:CMTimeSubtract(currentMasterTime,offset) toleranceBefore:kCMTimeZero toleranceAfter:kCMTimeZero];
 		}
 		[clip.windowController refreshOverlay];	// refresh the overlay whenever the time changes
@@ -207,10 +207,12 @@
 - (void) setAllVideoRates:(float)rate
 {
 	for (VSVideoClip *clip in [self.project.videoClips allObjects]) {
-        if (fabs(rate) > 0.0f) {
-            clip.windowController.playerView.player.rate = rate;
-        } else {
-            clip.windowController.playerView.player.rate = 0.0f;
+        if ([clip.syncIsLocked boolValue]) {
+            if (fabs(rate) > 0.0f) {
+                clip.windowController.playerView.player.rate = rate;
+            } else {
+                clip.windowController.playerView.player.rate = 0.0f;
+            }
         }
         
     }

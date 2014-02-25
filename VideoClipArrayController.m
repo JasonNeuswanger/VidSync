@@ -29,8 +29,7 @@
                 [document addWindowController:newVideoWindowController];
                 [newVideoWindowController resizeVideoToFactor:1.0];
             }
-            if (!newClip.project.masterClip) [newClip setAsMaster];
-			[newClip setMasterControls];
+            if (!newClip.project.masterClip) newClip.project.masterClip = newClip;
 			[newClipName setStringValue:@""];
 			[newClipNamePanel performClose:self];
 		}

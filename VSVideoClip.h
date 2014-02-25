@@ -22,8 +22,8 @@
 @property (strong) NSString *syncOffset;
 @property (strong) NSString *windowFrame;
 @property (strong) VSCalibration *calibration;
-@property (strong) VSProject *project;
-@property (strong) VSProject *isMasterClipOf;
+@property (weak) VSProject *project;
+@property (weak) VSProject *isMasterClipOf;
 @property (strong) NSNumber *syncIsLocked;
 @property (strong) NSSet *eventScreenPoints;
 @property (strong) NSSet *hintLines;
@@ -34,8 +34,6 @@
 
 - (void) relocateClip;
 
-- (void) setMasterControls;
-
 - (NSNumber *) timeScale;
 
 - (NSString *) clipLength;
@@ -44,10 +42,6 @@
 
 - (double) clipHeight;
 - (double) clipWidth;
-
-- (void) setAsMaster;
-
-- (void) setSyncOffset;
 
 - (float)frameRate;
 
