@@ -8,7 +8,7 @@
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="VideoWindowController">
             <connections>
-                <outlet property="newAnnotationContents" destination="103" id="138"/>
+                <outlet property="newAnnotationContents" destination="YLj-TK-XBs" id="SKL-Vq-s6T"/>
                 <outlet property="newAnnotationPanel" destination="85" id="137"/>
                 <outlet property="playerView" destination="yEs-4B-UZT" id="hKp-qt-Hkf"/>
                 <outlet property="window" destination="1" id="9"/>
@@ -164,19 +164,11 @@
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="230" y="202" width="312" height="357"/>
             <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1578"/>
+            <value key="minSize" type="size" width="312" height="357"/>
             <view key="contentView" id="86">
                 <rect key="frame" x="0.0" y="0.0" width="312" height="357"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
-                    <textField verticalHuggingPriority="750" id="103">
-                        <rect key="frame" x="20" y="50" width="272" height="124"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <textFieldCell key="cell" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="104">
-                            <font key="font" metaFont="system"/>
-                            <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
-                            <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
-                        </textFieldCell>
-                    </textField>
                     <textField verticalHuggingPriority="750" id="102">
                         <rect key="frame" x="17" y="182" width="243" height="17"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
@@ -427,11 +419,40 @@
                     <slider verticalHuggingPriority="750" id="wSC-FH-haZ">
                         <rect key="frame" x="174" y="238" width="63" height="12"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                        <sliderCell key="cell" controlSize="mini" continuous="YES" state="on" alignment="left" minValue="8" maxValue="150" doubleValue="24" tickMarkPosition="above" sliderType="linear" id="k9M-9y-px6"/>
+                        <sliderCell key="cell" controlSize="mini" continuous="YES" state="on" alignment="left" minValue="30" maxValue="1920" doubleValue="400" tickMarkPosition="above" sliderType="linear" id="k9M-9y-px6"/>
                         <connections>
                             <binding destination="141" name="value" keyPath="values.newAnnotationWidth" id="fkA-CV-nT3"/>
                         </connections>
                     </slider>
+                    <scrollView horizontalLineScroll="10" horizontalPageScroll="10" verticalLineScroll="10" verticalPageScroll="10" hasHorizontalScroller="NO" usesPredominantAxisScrolling="NO" id="Y3w-Wk-Sfk">
+                        <rect key="frame" x="20" y="50" width="272" height="124"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <clipView key="contentView" id="NMX-0n-c5k">
+                            <rect key="frame" x="1" y="1" width="255" height="122"/>
+                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                            <subviews>
+                                <textView importsGraphics="NO" richText="NO" findStyle="panel" allowsUndo="YES" verticallyResizable="YES" allowsNonContiguousLayout="YES" smartInsertDelete="YES" id="YLj-TK-XBs">
+                                    <rect key="frame" x="0.0" y="0.0" width="255" height="122"/>
+                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                    <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                    <size key="minSize" width="255" height="122"/>
+                                    <size key="maxSize" width="463" height="10000000"/>
+                                    <color key="insertionPointColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
+                                    <size key="minSize" width="255" height="122"/>
+                                    <size key="maxSize" width="463" height="10000000"/>
+                                </textView>
+                            </subviews>
+                            <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        </clipView>
+                        <scroller key="horizontalScroller" hidden="YES" verticalHuggingPriority="750" doubleValue="1" horizontal="YES" id="KXD-fb-aca">
+                            <rect key="frame" x="-100" y="-100" width="87" height="18"/>
+                            <autoresizingMask key="autoresizingMask"/>
+                        </scroller>
+                        <scroller key="verticalScroller" verticalHuggingPriority="750" doubleValue="1" horizontal="NO" id="Nyb-VJ-HdB">
+                            <rect key="frame" x="256" y="1" width="15" height="122"/>
+                            <autoresizingMask key="autoresizingMask"/>
+                        </scroller>
+                    </scrollView>
                 </subviews>
             </view>
         </window>

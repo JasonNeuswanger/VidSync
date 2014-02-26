@@ -20,7 +20,7 @@
     IBOutlet AVPlayerView *__weak playerView;
 	
 	IBOutlet NSPanel *newAnnotationPanel;
-	IBOutlet NSTextField *newAnnotationContents;
+	IBOutlet NSTextView *newAnnotationContents;
 	NSPoint newAnnotationCoords;
 	NSString *newAnnotationStartTimecode;
 	

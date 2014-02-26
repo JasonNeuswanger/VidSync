@@ -549,7 +549,7 @@
             newAnnotationStartTimecode = [videoClip.project.document currentMasterTimeString];
             newAnnotationCoords = videoCoords;
             NSRect currentWindowFrame = [[self window] frame];
-            [newAnnotationContents setStringValue:@""];
+            [newAnnotationContents setString:@""];
             [newAnnotationPanel setFrameTopLeftPoint:NSMakePoint(coords.x + currentWindowFrame.origin.x,coords.y + currentWindowFrame.origin.y)];
             [newAnnotationPanel makeKeyAndOrderFront:self];
         }
@@ -560,13 +560,13 @@
 - (IBAction) createNewAnnotation:(id)sender
 {	
 	[newAnnotationPanel close];
-	if (![[newAnnotationContents stringValue] isEqualToString:@""]) {
+	if (![[newAnnotationContents string] isEqualToString:@""]) {
 		VSAnnotation *newAnnotation = [NSEntityDescription insertNewObjectForEntityForName:@"VSAnnotation" inManagedObjectContext:managedObjectContext]; 
 		newAnnotation.screenX = [NSNumber numberWithFloat:newAnnotationCoords.x];
 		newAnnotation.screenY = [NSNumber numberWithFloat:newAnnotationCoords.y];		
 		newAnnotation.startTimecode = newAnnotationStartTimecode;
 		newAnnotation.color = [UtilityFunctions userDefaultColorForKey:@"newAnnotationColor"];
-		newAnnotation.notes = [newAnnotationContents stringValue];
+		newAnnotation.notes = [newAnnotationContents string];
 		newAnnotation.shape = [[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"newAnnotationFontFace"];
 		newAnnotation.duration = [[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"newAnnotationDuration"];
 		newAnnotation.fadeTime = [[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"newAnnotationFadeTime"];
