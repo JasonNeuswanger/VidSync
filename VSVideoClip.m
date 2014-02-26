@@ -28,6 +28,11 @@
 - (void) relocateClip
 {
     __block NSOpenPanel *movieOpenPanel = [NSOpenPanel openPanel];
+    NSString *previousDirectory = [[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"movieOpenDirectory"];
+    BOOL directoryExists;
+    if ([[NSFileManager defaultManager] fileExistsAtPath:previousDirectory isDirectory:&directoryExists] && directoryExists) {
+        [movieOpenPanel setDirectoryURL:[NSURL fileURLWithPath:previousDirectory]];
+    }
     [movieOpenPanel setMessage:[NSString stringWithFormat:@"Select the location of a valid video file for clip %@ (the previous file location was %@ ",self.clipName,self.fileName]];
     [movieOpenPanel setCanChooseFiles:YES];
     [movieOpenPanel setCanChooseDirectories:NO];
@@ -36,6 +41,7 @@
         if (returnCode == NSFileHandlingPanelOKButton) {
             NSString *oldFileName = self.fileName;  // save the old value in case the new one is invalid
             self.fileName = [[[movieOpenPanel URLs] objectAtIndex:0] path];
+            [[[NSUserDefaultsController sharedUserDefaultsController] values] setValue:[[[[movieOpenPanel URLs] objectAtIndex:0] path] stringByDeletingLastPathComponent] forKey:@"movieOpenDirectory"];
             VideoWindowController *__weak oldWindowController = self.windowController;
             VideoWindowController *__strong newWindowController = [[VideoWindowController alloc] initWithVideoClip:self inManagedObjectContext:self.managedObjectContext]; // is self.windowcontroller
             if (newWindowController != nil) {

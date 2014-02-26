@@ -113,10 +113,11 @@
     
     [self fitVideoOverlay];
     [self processSynchronizationStatus];    // Must be run after the overlay is created, so it can be set not to receive mouse events if the clip is not synced
+
+    if (self.videoClip.isMasterClipOf == self.videoClip.project) [self updateMasterTimeScrubberTicks];
     
     if (self.videoClip.isMasterClipOf == self.videoClip.project && self.videoClip.project.currentTimecode) {	// If the master clip is loaded and there's a saved current time, go to it
         // The next three lines set the number of ticks in the synced playback scrubber to approximately 1 per minute
-        [self updateMasterTimeScrubberTicks];
         [self.videoClip.windowController.playerView.player seekToTime:[UtilityFunctions CMTimeFromString:self.videoClip.project.currentTimecode] toleranceBefore:kCMTimeZero toleranceAfter:kCMTimeZero];
         [self.videoClip.project.document reSync];
     }
