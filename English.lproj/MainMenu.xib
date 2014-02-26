@@ -724,7 +724,7 @@
                             <tabViewItem label="Distortion Correction" identifier="Item 2" id="626">
                                 <view key="view" id="627">
                                     <rect key="frame" x="10" y="33" width="619" height="268"/>
-                                    <autoresizingMask key="autoresizingMask"/>
+                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
                                         <textField verticalHuggingPriority="750" id="674">
                                             <rect key="frame" x="240" y="248" width="138" height="17"/>
@@ -928,6 +928,40 @@
                                             <rect key="frame" x="406" y="118" width="151" height="17"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Distortion center color:" id="745">
+                                                <font key="font" metaFont="system"/>
+                                                <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                                <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                            </textFieldCell>
+                                        </textField>
+                                    </subviews>
+                                </view>
+                            </tabViewItem>
+                            <tabViewItem label="Misc" identifier="" id="u61-W3-b3S">
+                                <view key="view" id="hTT-Eq-Lv6">
+                                    <rect key="frame" x="10" y="33" width="619" height="268"/>
+                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                    <subviews>
+                                        <popUpButton verticalHuggingPriority="750" id="7QE-ZV-nk9">
+                                            <rect key="frame" x="293" y="231" width="104" height="26"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                            <popUpButtonCell key="cell" type="push" title="Floating" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" selectedItem="QV8-gL-wkG" id="3rU-G1-q1u">
+                                                <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
+                                                <font key="font" metaFont="system"/>
+                                                <menu key="menu" title="OtherViews" id="AZ6-xr-Cv2">
+                                                    <items>
+                                                        <menuItem title="Floating" state="on" id="QV8-gL-wkG"/>
+                                                        <menuItem title="Inline" id="fjF-u5-Gro"/>
+                                                    </items>
+                                                </menu>
+                                            </popUpButtonCell>
+                                            <connections>
+                                                <binding destination="567" name="selectedValue" keyPath="values.unsyncedAVPlayerViewControlsStyle" id="wDa-uj-2Rg"/>
+                                            </connections>
+                                        </popUpButton>
+                                        <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" id="a4u-J0-JGR">
+                                            <rect key="frame" x="15" y="236" width="274" height="17"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                            <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Playback control style for unsynced videos:" id="F6k-Us-vAs">
                                                 <font key="font" metaFont="system"/>
                                                 <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                                 <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>

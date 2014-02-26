@@ -189,10 +189,13 @@ static void *AVSPPlayerCurrentTimeContext = &AVSPPlayerCurrentTimeContext;
 - (id)initWithContentsOfURL:(NSURL *)absoluteURL ofType:(NSString *)typeName error:(NSError **)outError		// This method is called only when an existing document is loaded.
 {
 	// I think this is where custom migrations are supposed to go, if/when I have to make any.
-	return [super initWithContentsOfURL:absoluteURL ofType:typeName error:outError];	
+    NSString *savedPath = [[absoluteURL path] stringByDeletingLastPathComponent];
+    [[[NSUserDefaultsController sharedUserDefaultsController] values] setValue:savedPath forKey:@"mainFileSaveDirectory"];
+	return [super initWithContentsOfURL:absoluteURL ofType:typeName error:outError];
 }
 
 // This overriden NSPersistentDocument method is called whenever an existing document is loaded, but not when a new one is created.
+// However, the settings here apply to new documents (particularly the journal mode) too, so it must be getting used somehow.
 
 - (BOOL)configurePersistentStoreCoordinatorForURL:(NSURL *)url ofType:(NSString *)fileType modelConfiguration:(NSString *)configuration storeOptions:(NSDictionary *)storeOptions error:(NSError **)error
 {    
@@ -203,16 +206,10 @@ static void *AVSPPlayerCurrentTimeContext = &AVSPPlayerCurrentTimeContext;
 		newOptions = [[NSMutableDictionary alloc] init];
 	}
 	[newOptions setObject:[NSNumber numberWithBool:YES] forKey:NSMigratePersistentStoresAutomaticallyOption];
-	[newOptions setObject:[NSNumber numberWithBool:YES] forKey:NSInferMappingModelAutomaticallyOption];	
+	[newOptions setObject:[NSNumber numberWithBool:YES] forKey:NSInferMappingModelAutomaticallyOption];
+    [newOptions setObject:@{@"journal_mode":@"DELETE"} forKey:NSSQLitePragmasOption];   // Uses "rollback" journaling mode instead default WAL, so each VidSync document is saved in 1 file, not 3
 	BOOL result = [super configurePersistentStoreCoordinatorForURL:url ofType:fileType modelConfiguration:configuration storeOptions:newOptions error:error];
 	return result;
-}
-
-- (void) saveToURL:(NSURL *)url ofType:(NSString *)typeName forSaveOperation:(NSSaveOperationType)saveOperation completionHandler:(void (^)(NSError *))completionHandler
-{
-	self.project.dateLastSaved = [[NSDate dateWithTimeIntervalSinceNow:0.0] description];	// current date as a string
-	[[self managedObjectContext] processPendingChanges];
-	[super saveToURL:url ofType:typeName forSaveOperation:saveOperation completionHandler:completionHandler];
 }
 
 // This method fetches the current document instance's video pair from the managed object contest when it's nil, 
@@ -393,6 +390,32 @@ static void *AVSPPlayerCurrentTimeContext = &AVSPPlayerCurrentTimeContext;
             [[NSCursor crosshairCursor] set];
         }
     }
+}
+
+#pragma mark
+#pragma mark Saving the main file
+
+- (void) saveToURL:(NSURL *)url ofType:(NSString *)typeName forSaveOperation:(NSSaveOperationType)saveOperation completionHandler:(void (^)(NSError *))completionHandler
+{
+	self.project.dateLastSaved = [[NSDate dateWithTimeIntervalSinceNow:0.0] description];	// current date as a string
+	[[self managedObjectContext] processPendingChanges];
+    NSString *savedPath = [[url path] stringByDeletingLastPathComponent];
+    [[[NSUserDefaultsController sharedUserDefaultsController] values] setValue:savedPath forKey:@"mainFileSaveDirectory"];
+    if ([self.project.capturePathForMovies isEqualToString:@""]) self.project.capturePathForMovies = savedPath;
+    if ([self.project.capturePathForStills isEqualToString:@""]) self.project.capturePathForStills = savedPath;
+    if ([self.project.exportPathForData isEqualToString:@""]) self.project.exportPathForData = savedPath;
+	[super saveToURL:url ofType:typeName forSaveOperation:saveOperation completionHandler:completionHandler];
+}
+
+- (BOOL) prepareSavePanel:(NSSavePanel *)savePanel
+{
+    // Set the default directory to the previous directory in which a .vsc file was saved
+    NSString *previousDirectory = [[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"mainFileSaveDirectory"];
+    BOOL directoryExists;
+    if ([[NSFileManager defaultManager] fileExistsAtPath:previousDirectory isDirectory:&directoryExists] && directoryExists) [savePanel setDirectoryURL:[NSURL fileURLWithPath:previousDirectory]];
+    // Set the default filename to the project name, if it exists
+    if (![self.project.name isEqualToString:@""]) [savePanel setNameFieldStringValue:self.project.name];
+    return YES;
 }
 
 #pragma mark

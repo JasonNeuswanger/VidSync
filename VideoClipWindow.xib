@@ -162,10 +162,10 @@
         <window title="New Annotation" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" hidesOnDeactivate="YES" oneShot="NO" visibleAtLaunch="NO" animationBehavior="default" id="85" userLabel="Annotation Add Panel" customClass="NSPanel">
             <windowStyleMask key="styleMask" titled="YES" closable="YES" resizable="YES" utility="YES" documentModal="YES" texturedBackground="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
-            <rect key="contentRect" x="230" y="202" width="312" height="339"/>
+            <rect key="contentRect" x="230" y="202" width="312" height="357"/>
             <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1578"/>
             <view key="contentView" id="86">
-                <rect key="frame" x="0.0" y="0.0" width="312" height="339"/>
+                <rect key="frame" x="0.0" y="0.0" width="312" height="357"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <textField verticalHuggingPriority="750" id="103">
@@ -209,7 +209,7 @@
                         </connections>
                     </button>
                     <textField verticalHuggingPriority="750" id="99">
-                        <rect key="frame" x="17" y="300" width="123" height="17"/>
+                        <rect key="frame" x="17" y="318" width="123" height="17"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Duration (seconds)" id="108">
                             <font key="font" metaFont="system"/>
@@ -218,7 +218,7 @@
                         </textFieldCell>
                     </textField>
                     <textField verticalHuggingPriority="750" id="89">
-                        <rect key="frame" x="245" y="297" width="47" height="22"/>
+                        <rect key="frame" x="245" y="315" width="47" height="22"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="119">
                             <numberFormatter key="formatter" formatterBehavior="custom10_4" positiveFormat="#.##" negativeFormat="#.##" usesGroupingSeparator="NO" groupingSize="0" minimumIntegerDigits="0" maximumIntegerDigits="42" minimumFractionDigits="0" maximumFractionDigits="2" id="120">
@@ -236,7 +236,7 @@
                         </connections>
                     </textField>
                     <textField verticalHuggingPriority="750" id="88">
-                        <rect key="frame" x="17" y="220" width="65" height="17"/>
+                        <rect key="frame" x="17" y="207" width="65" height="17"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Font Face" id="121">
                             <font key="font" metaFont="system"/>
@@ -245,14 +245,14 @@
                         </textFieldCell>
                     </textField>
                     <popUpButton verticalHuggingPriority="750" id="87">
-                        <rect key="frame" x="84" y="215" width="211" height="26"/>
+                        <rect key="frame" x="84" y="202" width="211" height="26"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                        <popUpButtonCell key="cell" type="push" title="Cambria" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" selectedItem="133" id="122">
+                        <popUpButtonCell key="cell" type="push" title="Lucida Console" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" selectedItem="L8y-5c-6hE" id="122">
                             <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" metaFont="menu"/>
                             <menu key="menu" title="OtherViews" id="123">
                                 <items>
-                                    <menuItem title="Cambria" state="on" id="133"/>
+                                    <menuItem title="Cambria" id="133"/>
                                     <menuItem title="Helvetica" id="134"/>
                                     <menuItem title="Times New Roman" id="124"/>
                                     <menuItem title="Arial" id="135">
@@ -282,6 +282,9 @@
                                     <menuItem title="Lucida Handwriting" id="129">
                                         <modifierMask key="keyEquivalentModifierMask"/>
                                     </menuItem>
+                                    <menuItem title="Lucida Console" state="on" id="L8y-5c-6hE">
+                                        <modifierMask key="keyEquivalentModifierMask"/>
+                                    </menuItem>
                                 </items>
                             </menu>
                         </popUpButtonCell>
@@ -290,7 +293,7 @@
                         </connections>
                     </popUpButton>
                     <slider verticalHuggingPriority="750" id="98">
-                        <rect key="frame" x="145" y="300" width="92" height="15"/>
+                        <rect key="frame" x="145" y="318" width="92" height="15"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <sliderCell key="cell" controlSize="small" continuous="YES" state="on" alignment="left" minValue="0.029999999999999999" maxValue="60" doubleValue="30.5" tickMarkPosition="above" sliderType="linear" id="109"/>
                         <connections>
@@ -298,7 +301,7 @@
                         </connections>
                     </slider>
                     <textField verticalHuggingPriority="750" id="97">
-                        <rect key="frame" x="17" y="275" width="134" height="17"/>
+                        <rect key="frame" x="17" y="293" width="134" height="17"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Fade Time (seconds)" id="110">
                             <font key="font" metaFont="system"/>
@@ -307,7 +310,7 @@
                         </textFieldCell>
                     </textField>
                     <textField verticalHuggingPriority="750" id="96">
-                        <rect key="frame" x="245" y="272" width="47" height="22"/>
+                        <rect key="frame" x="245" y="290" width="47" height="22"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="111">
                             <numberFormatter key="formatter" formatterBehavior="custom10_4" positiveFormat="#.#" negativeFormat="#.#" usesGroupingSeparator="NO" groupingSize="0" minimumIntegerDigits="0" maximumIntegerDigits="42" minimumFractionDigits="0" maximumFractionDigits="1" id="112">
@@ -325,7 +328,7 @@
                         </connections>
                     </textField>
                     <slider verticalHuggingPriority="750" id="95">
-                        <rect key="frame" x="156" y="275" width="81" height="15"/>
+                        <rect key="frame" x="156" y="293" width="81" height="15"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <sliderCell key="cell" controlSize="small" continuous="YES" state="on" alignment="left" maxValue="10" doubleValue="1" tickMarkPosition="above" sliderType="linear" id="113"/>
                         <connections>
@@ -333,7 +336,7 @@
                         </connections>
                     </slider>
                     <textField verticalHuggingPriority="750" id="94">
-                        <rect key="frame" x="123" y="247" width="68" height="17"/>
+                        <rect key="frame" x="123" y="265" width="68" height="17"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Font Size" id="114">
                             <font key="font" metaFont="system"/>
@@ -342,7 +345,7 @@
                         </textFieldCell>
                     </textField>
                     <textField verticalHuggingPriority="750" id="93">
-                        <rect key="frame" x="250" y="245" width="42" height="22"/>
+                        <rect key="frame" x="245" y="263" width="47" height="22"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="115">
                             <numberFormatter key="formatter" formatterBehavior="custom10_4" positiveFormat="#" negativeFormat="#" usesGroupingSeparator="NO" groupingSize="0" minimumIntegerDigits="0" maximumIntegerDigits="42" minimumFractionDigits="0" maximumFractionDigits="0" id="116">
@@ -363,7 +366,7 @@
                         </connections>
                     </textField>
                     <textField verticalHuggingPriority="750" id="92">
-                        <rect key="frame" x="17" y="247" width="71" height="17"/>
+                        <rect key="frame" x="17" y="265" width="71" height="17"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Font Color" id="117">
                             <font key="font" metaFont="system"/>
@@ -372,7 +375,7 @@
                         </textFieldCell>
                     </textField>
                     <colorWell id="91">
-                        <rect key="frame" x="93" y="244" width="25" height="23"/>
+                        <rect key="frame" x="93" y="262" width="25" height="23"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <color key="color" red="0.05813049898" green="0.055541899059999997" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                         <connections>
@@ -384,11 +387,49 @@
                         </connections>
                     </colorWell>
                     <slider verticalHuggingPriority="750" id="90">
-                        <rect key="frame" x="190" y="249" width="52" height="12"/>
+                        <rect key="frame" x="190" y="267" width="47" height="12"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <sliderCell key="cell" controlSize="mini" continuous="YES" state="on" alignment="left" minValue="8" maxValue="150" doubleValue="24" tickMarkPosition="above" sliderType="linear" id="118"/>
                         <connections>
                             <binding destination="141" name="value" keyPath="values.newAnnotationFontSize" id="160"/>
+                        </connections>
+                    </slider>
+                    <textField verticalHuggingPriority="750" id="mPb-LT-Hi4">
+                        <rect key="frame" x="17" y="237" width="151" height="17"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Width of text on screen" id="N0g-qw-oLP">
+                            <font key="font" metaFont="system"/>
+                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                        </textFieldCell>
+                    </textField>
+                    <textField verticalHuggingPriority="750" id="mxd-0O-7Me">
+                        <rect key="frame" x="245" y="234" width="47" height="22"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="hEq-vp-h83">
+                            <numberFormatter key="formatter" formatterBehavior="custom10_4" positiveFormat="#" negativeFormat="#" usesGroupingSeparator="NO" groupingSize="0" minimumIntegerDigits="0" maximumIntegerDigits="42" minimumFractionDigits="0" maximumFractionDigits="0" id="ZXN-hW-1c0">
+                                <real key="roundingIncrement" value="0.0"/>
+                                <nil key="nilSymbol"/>
+                                <nil key="negativeInfinitySymbol"/>
+                                <nil key="positiveInfinitySymbol"/>
+                                <metadata>
+                                    <bool key="localizesFormat" value="YES"/>
+                                </metadata>
+                            </numberFormatter>
+                            <font key="font" metaFont="system"/>
+                            <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                            <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                        </textFieldCell>
+                        <connections>
+                            <binding destination="141" name="value" keyPath="values.newAnnotationWidth" id="9ca-IH-IqF"/>
+                        </connections>
+                    </textField>
+                    <slider verticalHuggingPriority="750" id="wSC-FH-haZ">
+                        <rect key="frame" x="174" y="238" width="63" height="12"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                        <sliderCell key="cell" controlSize="mini" continuous="YES" state="on" alignment="left" minValue="8" maxValue="150" doubleValue="24" tickMarkPosition="above" sliderType="linear" id="k9M-9y-px6"/>
+                        <connections>
+                            <binding destination="141" name="value" keyPath="values.newAnnotationWidth" id="fkA-CV-nT3"/>
                         </connections>
                     </slider>
                 </subviews>

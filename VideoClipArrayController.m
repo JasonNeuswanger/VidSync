@@ -20,17 +20,25 @@
 		[movieOpenPanel setCanChooseFiles:YES];
 		[movieOpenPanel setCanChooseDirectories:NO];
 		[movieOpenPanel setAllowsMultipleSelection:NO];
+        // Set the previously used movie directory to be the default location
+        NSString *previousDirectory = [[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"movieOpenDirectory"];
+        BOOL directoryExists;
+        if ([[NSFileManager defaultManager] fileExistsAtPath:previousDirectory isDirectory:&directoryExists] && directoryExists) {
+            [movieOpenPanel setDirectoryURL:[NSURL fileURLWithPath:previousDirectory]];
+        }
+        // Run the panel
 		if ([movieOpenPanel runModal]) {
 			VSVideoClip *newClip = [NSEntityDescription insertNewObjectForEntityForName:@"VSVideoClip" inManagedObjectContext:[self managedObjectContext]];	
 			NSEntityDescription *newCalibrationEntity = [NSEntityDescription entityForName:@"VSCalibration" inManagedObjectContext:[self managedObjectContext]];
 			newClip.calibration = [[VSCalibration alloc] initWithEntity:newCalibrationEntity insertIntoManagedObjectContext:[self managedObjectContext]];
 			newClip.clipName = nameOfNewClip;
 			newClip.fileName = [[[movieOpenPanel URLs] objectAtIndex:0] path];
+            [[[NSUserDefaultsController sharedUserDefaultsController] values] setValue:[[[[movieOpenPanel URLs] objectAtIndex:0] path] stringByDeletingLastPathComponent] forKey:@"movieOpenDirectory"];
 			[self addObject:newClip];
 			VideoWindowController *newVideoWindowController = [[VideoWindowController alloc] initWithVideoClip:newClip inManagedObjectContext:[self managedObjectContext]];
 			if (newVideoWindowController != nil) [document addWindowController:newVideoWindowController];
             if (!newClip.project.masterClip) newClip.project.masterClip = newClip;
-			nameOfNewClip = nil;
+			self.nameOfNewClip = nil;
 			[newClipNamePanel performClose:self];
 		}
 	} else {	// if the clip doesn't have a name, tell the user to add one

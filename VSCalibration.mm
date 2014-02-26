@@ -485,6 +485,9 @@ int refractionRootFunc_f(const gsl_vector* x, void* params, gsl_vector* f)
 - (void) saveQuadratDescriptionToFile
 {
 	NSSavePanel *savePanel = [NSSavePanel savePanel];
+    NSString *previousDirectory = [[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"mainFileSaveDirectory"];
+    BOOL directoryExists;
+    if ([[NSFileManager defaultManager] fileExistsAtPath:previousDirectory isDirectory:&directoryExists] && directoryExists) [savePanel setDirectoryURL:[NSURL fileURLWithPath:previousDirectory]];
 	[savePanel setAllowedFileTypes:[NSArray arrayWithObjects:@"VidSyncQuadrat",nil]];
 	if ([savePanel runModal]) {
 		NSArray *quadratDescription = [NSArray arrayWithObjects:[self.quadratNodesFront string],[self.quadratNodesBack string],self.planeCoordFront,self.planeCoordBack,self.shouldCorrectRefraction, self.frontQuadratSurfaceThickness, self.frontQuadratSurfaceRefractiveIndex, self.mediumRefractiveIndex, nil];
@@ -496,6 +499,9 @@ int refractionRootFunc_f(const gsl_vector* x, void* params, gsl_vector* f)
 {
 	NSString *filePath;
 	NSOpenPanel *openPanel = [NSOpenPanel openPanel];
+    NSString *previousDirectory = [[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"mainFileSaveDirectory"];
+    BOOL directoryExists;
+    if ([[NSFileManager defaultManager] fileExistsAtPath:previousDirectory isDirectory:&directoryExists] && directoryExists) [openPanel setDirectoryURL:[NSURL fileURLWithPath:previousDirectory]];
 	[openPanel setCanChooseFiles:YES];
 	[openPanel setAllowedFileTypes:[NSArray arrayWithObjects:@"VidSyncQuadrat",nil]];
 	[openPanel setCanChooseDirectories:NO];
@@ -535,6 +541,9 @@ int refractionRootFunc_f(const gsl_vector* x, void* params, gsl_vector* f)
 - (IBAction) export3DCalibrationToFile:(id)sender 
 {
 	NSSavePanel *savePanel = [NSSavePanel savePanel];
+    NSString *previousDirectory = [[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"mainFileSaveDirectory"];
+    BOOL directoryExists;
+    if ([[NSFileManager defaultManager] fileExistsAtPath:previousDirectory isDirectory:&directoryExists] && directoryExists) [savePanel setDirectoryURL:[NSURL fileURLWithPath:previousDirectory]];
 	[savePanel setAllowedFileTypes:[NSArray arrayWithObjects:@"VidSyncCalibration",nil]];
 	if ([savePanel runModal]) {
 		NSArray *pointsFrontArray = [NSArray array];
@@ -570,6 +579,9 @@ int refractionRootFunc_f(const gsl_vector* x, void* params, gsl_vector* f)
 {
 	NSString *filePath;
 	NSOpenPanel *openPanel = [NSOpenPanel openPanel];
+    NSString *previousDirectory = [[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"mainFileSaveDirectory"];
+    BOOL directoryExists;
+    if ([[NSFileManager defaultManager] fileExistsAtPath:previousDirectory isDirectory:&directoryExists] && directoryExists) [openPanel setDirectoryURL:[NSURL fileURLWithPath:previousDirectory]];
 	[openPanel setCanChooseFiles:YES];
 	[openPanel setAllowedFileTypes:[NSArray arrayWithObjects:@"VidSyncCalibration",nil]];
 	[openPanel setCanChooseDirectories:NO];
@@ -629,6 +641,9 @@ int refractionRootFunc_f(const gsl_vector* x, void* params, gsl_vector* f)
 - (IBAction) exportDistortionToFile:(id)sender
 {
 	NSSavePanel *savePanel = [NSSavePanel savePanel];
+    NSString *previousDirectory = [[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"mainFileSaveDirectory"];
+    BOOL directoryExists;
+    if ([[NSFileManager defaultManager] fileExistsAtPath:previousDirectory isDirectory:&directoryExists] && directoryExists) [savePanel setDirectoryURL:[NSURL fileURLWithPath:previousDirectory]];
 	[savePanel setAllowedFileTypes:[NSArray arrayWithObjects:@"VidSyncDistortion",nil]];
 	if ([savePanel runModal]) {
 		NSMutableArray *distortionLinesArray = [NSMutableArray array];
@@ -659,6 +674,9 @@ int refractionRootFunc_f(const gsl_vector* x, void* params, gsl_vector* f)
 {
     NSString *filePath;
 	NSOpenPanel *openPanel = [NSOpenPanel openPanel];
+    NSString *previousDirectory = [[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"mainFileSaveDirectory"];
+    BOOL directoryExists;
+    if ([[NSFileManager defaultManager] fileExistsAtPath:previousDirectory isDirectory:&directoryExists] && directoryExists) [openPanel setDirectoryURL:[NSURL fileURLWithPath:previousDirectory]];
 	[openPanel setCanChooseFiles:YES];
 	[openPanel setAllowedFileTypes:[NSArray arrayWithObjects:@"VidSyncDistortion",nil]];
 	[openPanel setCanChooseDirectories:NO];

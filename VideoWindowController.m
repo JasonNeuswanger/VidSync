@@ -431,7 +431,7 @@
 - (void) handleOverlayKeyDownInAnnotateMode:(NSEvent *)theEvent
 {
 	unichar key = [[theEvent charactersIgnoringModifiers] characterAtIndex: 0];
-	float selectedPointNudgeDistance = [[[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"selectedPointNudgeDistance"] floatValue] * 10.0;
+	float selectedPointNudgeDistance = [[[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"selectedPointNudgeDistance"] floatValue] * 15.0;
 	if ([[self.videoClip.project.document.annotationsController selectedObjects] count] > 0) {
 		VSAnnotation *selectedAnnotation = [[self.videoClip.project.document.annotationsController selectedObjects] objectAtIndex:0];
 		if (key == NSDeleteCharacter || key == NSDeleteFunctionKey) {
@@ -571,7 +571,9 @@
 		newAnnotation.duration = [[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"newAnnotationDuration"];
 		newAnnotation.fadeTime = [[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"newAnnotationFadeTime"];
 		newAnnotation.size = [[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"newAnnotationFontSize"];
+		newAnnotation.width = [[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"newAnnotationWidth"];
 		newAnnotation.videoClip = self.videoClip;
+        [managedObjectContext processPendingChanges];
 		[self.videoClip.project.document.annotationsController setSelectedObjects:[NSArray arrayWithObject:newAnnotation]];
 	}
 	[self refreshOverlay];
@@ -818,8 +820,17 @@
 
 - (void) setMovieViewControllerVisible:(BOOL)setting
 {
+    NSString *controlsStyleDefault = [[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"unsyncedAVPlayerViewControlsStyle"];
+    AVPlayerViewControlsStyle controlsStyle;
+    if ([controlsStyleDefault isEqualToString:@"Floating"]) {
+        controlsStyle = AVPlayerViewControlsStyleFloating;
+    } else if ([controlsStyleDefault isEqualToString:@"Inline"]) {
+        controlsStyle = AVPlayerViewControlsStyleInline;
+    } else {
+        controlsStyle = AVPlayerViewControlsStyleDefault;
+    }
     if (setting) {
-		playerView.controlsStyle = AVPlayerViewControlsStyleFloating;
+		playerView.controlsStyle = controlsStyle;
         playerView.showsFrameSteppingButtons = YES;
         [overlayWindow setIgnoresMouseEvents:YES];
     } else {

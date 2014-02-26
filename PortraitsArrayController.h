@@ -15,9 +15,9 @@
 
 @interface PortraitsArrayController : NSArrayController {
 
-    IBOutlet PortraitBrowserView *portraitBrowserView;
+    IBOutlet PortraitBrowserView *__weak portraitBrowserView;
     
-    IBOutlet PortraitBrowserView *otherPortraitBrowserView; // Hooked up to reference the object's portraits from all portraits, and vice versa, for convenient updating when changes are made
+    IBOutlet PortraitBrowserView *__weak otherPortraitBrowserView; // Hooked up to reference the object's portraits from all portraits, and vice versa, for convenient updating when changes are made
     
 }
 

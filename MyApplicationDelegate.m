@@ -45,6 +45,7 @@
 	[initialValueDict setObject:[NSNumber numberWithFloat:20.0] forKey:@"hintLineDrawInterval"];
     [initialValueDict setObject:[NSNumber numberWithBool:YES] forKey:@"showScreenItemDropShadows"];
     [initialValueDict setObject:[NSNumber numberWithBool:1.0] forKey:@"screenItemDropShadowBlurRadius"];
+    [initialValueDict setObject:@"Floating" forKey:@"unsyncedAVPlayerViewControlsStyle"];
     
 	// initial values for advanced playback controls
 	
@@ -123,8 +124,9 @@
 	
 	[initialValueDict setObject:[NSNumber numberWithInt:5] forKey:@"newAnnotationDuration"];	
 	[initialValueDict setObject:[NSNumber numberWithInt:3] forKey:@"newAnnotationFadeTime"];	
-	[initialValueDict setObject:[NSNumber numberWithInt:24] forKey:@"newAnnotationFontSize"];
-	[initialValueDict setObject:@"Helvetica" forKey:@"newAnnotationFontFace"];
+	[initialValueDict setObject:[NSNumber numberWithInt:30] forKey:@"newAnnotationFontSize"];
+	[initialValueDict setObject:[NSNumber numberWithInt:400] forKey:@"newAnnotationWidth"];
+	[initialValueDict setObject:@"Arial" forKey:@"newAnnotationFontFace"];
 	[initialValueDict setObject:[NSArchiver archivedDataWithRootObject:[NSColor orangeColor]] forKey:@"newAnnotationColor"];
 	
 	// initial values for capture settings
@@ -134,7 +136,7 @@
 	[initialValueDict setObject:[NSNumber numberWithBool:YES] forKey:@"includeMasterTimecodeInCapturedFileName"];	
 	[initialValueDict setObject:[NSNumber numberWithBool:YES] forKey:@"includeClipNameInCapturedFileName"];	
 	[initialValueDict setObject:[NSNumber numberWithBool:NO] forKey:@"separateClipsByFolder"];	
-	[initialValueDict setObject:[NSNumber numberWithBool:YES] forKey:@"createFolderForProjectCaptures"];	
+	[initialValueDict setObject:[NSNumber numberWithBool:NO] forKey:@"createFolderForProjectCaptures"];
 	[initialValueDict setObject:@"" forKey:@"capturedFileNameCustomText"];	
 
 	// initial values for data export settings
@@ -150,7 +152,12 @@
     
     [initialValueDict setObject:[NSNumber numberWithFloat:1.0] forKey:@"allPortraitsBrowserZoom"];
     [initialValueDict setObject:[NSNumber numberWithFloat:1.0] forKey:@"objectsPortraitsBrowserZoom"];
-	
+    
+    // initial values for open/save directories
+    
+    [initialValueDict setObject:@"~/" forKey:@"movieOpenDirectory"];
+    [initialValueDict setObject:@"~/" forKey:@"mainFileSaveDirectory"];
+    
     return initialValueDict;
 
 }
