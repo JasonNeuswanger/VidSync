@@ -32,7 +32,8 @@
 		}
 	} else if ([[[framesSelectButton selectedItem] title] isEqualToString:@"Current Frame Only"]) {		// Show only points whose timecode is exactly the current frame
 		for (VSPoint *point in objects) {
-			if (CMTimeCompare(now,[UtilityFunctions CMTimeFromString:point.timecode]) == NSOrderedSame) filteredPoints = [filteredPoints arrayByAddingObject:point];
+            CMTime pointsTime = [UtilityFunctions CMTimeFromString:point.timecode];
+			if ([UtilityFunctions time:now isEqualToTime:pointsTime]) filteredPoints = [filteredPoints arrayByAddingObject:point];
 		}
 	} else {																							// the selection is "All Points", so show all points (for the selected event of course)
 		filteredPoints = objects;

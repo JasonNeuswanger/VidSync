@@ -14,25 +14,32 @@
 
 + (NSColor *) userDefaultColorForKey:(NSString *)key
 {
-    // I sometimes get strange exceptions unpacking colors ([NSUnarchiver initForReadingWithData:] complains about a nil argument with NSInvalidArgumentException) so I'm handling them here
     NSColor *color;
-    @try {
-        color = [NSUnarchiver unarchiveObjectWithData:[[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:key]];
-    } @catch (NSException *e) {
-        NSLog(@"Error unarchiving user defaults color value for key %@. Using red instead. Exception was: %@",key,e);
+    NSData *colorData = [[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:key];
+    if (colorData != nil) {
+        color = (NSColor *) [NSUnarchiver unarchiveObjectWithData:colorData];
+    } else {
+        NSLog(@"Color data was nil for key %@ (not found in user's defaults or in initial default values), using red instead.",key);
         color = [NSColor redColor];
-    } @finally {
-        return color;
     }
+    return color;
 }
 
 
 + (BOOL) timeString:(NSString *)timeString1 isEqualToTimeString:(NSString *)timeString2
 {
+    // This is just a string version of the function below
+    CMTime time1 = [UtilityFunctions CMTimeFromString:timeString1];
+    CMTime time2 = [UtilityFunctions CMTimeFromString:timeString2];
+    return [UtilityFunctions time:time1 isEqualToTime:time2];
+}
+
++ (BOOL) time:(CMTime)time1 isEqualToTime:(CMTime)time2
+{
     // This function allows comparing the "equality" of times on different time scales, when the times are effectively the same but not actually equal because of rounding differences in the timescales
     // This is mainly useful for supporting compatibility with older files in which some points were recorded on strange timescales, not the master clip's native time scale
-    Float64 cmTime1seconds = CMTimeGetSeconds([UtilityFunctions CMTimeFromString:timeString1]);
-    Float64 cmTime2seconds = CMTimeGetSeconds([UtilityFunctions CMTimeFromString:timeString2]);
+    Float64 cmTime1seconds = CMTimeGetSeconds(time1);
+    Float64 cmTime2seconds = CMTimeGetSeconds(time2);
     Float64 timeDifference = fabs(cmTime1seconds - cmTime2seconds);
     return timeDifference < 0.004f;    // a realistic difference for me was 0.0016; the value of 0.004 should support detecting real differences at 240 fps or less and ignoring smaller rounding errors
 }

@@ -200,7 +200,7 @@
 - (BOOL) currentMasterTimeIs:(CMTime)time		// returns YES if 'time' is equal to the current master time, NO otherwise
 {
 	CMTime masterTime = [self.project.masterClip.windowController.playerView.player currentTime];
-	return (CMTimeCompare(time,masterTime) == NSOrderedSame);
+	return [UtilityFunctions time:time isEqualToTime:masterTime];
 }
 
 - (void) setAllVideoRates:(float)rate

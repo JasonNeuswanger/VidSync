@@ -80,8 +80,8 @@
 	[initialValueDict setObject:[NSNumber numberWithFloat:12.0] forKey:@"quadratPointOverlayCircleDiameterBack"];
 	[initialValueDict setObject:[NSArchiver archivedDataWithRootObject:[NSColor cyanColor]] forKey:@"quadratOverlayColorFront"];
 	[initialValueDict setObject:[NSArchiver archivedDataWithRootObject:[NSColor orangeColor]] forKey:@"quadratOverlayColorBack"];
-	[initialValueDict setObject:[NSNumber numberWithInt:0] forKey:@"quadratShowSurfaceGridOverlayFront"];
-	[initialValueDict setObject:[NSNumber numberWithInt:0] forKey:@"quadratShowSurfaceGridOverlayBack"];
+	[initialValueDict setObject:[NSNumber numberWithBool:NO] forKey:@"quadratShowSurfaceGridOverlayFront"];
+	[initialValueDict setObject:[NSNumber numberWithBool:NO] forKey:@"quadratShowSurfaceGridOverlayBack"];
 	
 	// initial values for distortion correction overlays
 	[initialValueDict setObject:[NSNumber numberWithBool:NO] forKey:@"showDistortionOverlay"];	

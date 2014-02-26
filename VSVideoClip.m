@@ -91,17 +91,14 @@
 
 - (BOOL) isAtCalibrationTime
 {
-    // This function might not work right if the videos use different framerates.
-	CMTime currentMasterTime = [self.project.masterClip.windowController.playerView.player.currentItem currentTime];
-	if (CMTimeCompare(currentMasterTime,[UtilityFunctions CMTimeFromString:self.project.calibrationTimecode]) == NSOrderedSame) {
+    NSString *currentMasterTimeString = [self.project.document currentMasterTimeString];
+    CMTime currentMasterTime = [self.project.document currentMasterTime];
+	if ([UtilityFunctions timeString:self.project.calibrationTimecode isEqualToTimeString:currentMasterTimeString]) {   // If the master clip is at the calibration timecode
 		CMTime currentTime = [windowController.playerView.player.currentItem currentTime];
-		if (CMTimeCompare(currentMasterTime,CMTimeAdd(currentTime,[UtilityFunctions CMTimeFromString:self.syncOffset])) == NSOrderedSame) {
-			return YES;
-		} else {
-			return NO;
-		}
+        CMTime syncOffset = [UtilityFunctions CMTimeFromString:self.syncOffset];
+        return [UtilityFunctions time:currentMasterTime isEqualToTime:CMTimeAdd(currentTime,syncOffset)];   // Return whether or not this clip is also at the calibration timecode
 	} else {
-		return NO;
+		return NO;                                          // If the master clip isn't at the calibration timecode, nothing counts as being there
 	}
 }
 

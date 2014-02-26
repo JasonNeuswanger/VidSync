@@ -744,6 +744,7 @@
 
 - (void) drawSelectionIndicatorAtPoint:(NSPoint)point forShapeOfSize:(float)shapeSize opacity:(float)opacity
 {
+    // THIS FUNCTION CURRENTLY IGNORES OPACITY. The fading looked cool but made it harder to select visible points on screen and go-to them for editing. I'm keeping the commented code for now.
 	float selectionLineLength = [[[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"pointSelectionIndicatorLineLength"] floatValue];
 	float selectionLineWidth = [[[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"pointSelectionIndicatorLineWidth"] floatValue];
 	float selectionLineSizeFactor = [[[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"pointSelectionIndicatorSizeFactor"] floatValue];
@@ -773,9 +774,11 @@
 
 	[mainPath setLineWidth:selectionLineWidth];
 	[outlinePath setLineWidth:selectionLineWidth+2*outlineWidth];
-	[[NSColor colorWithWhite:0.0f alpha:opacity] set];
+//	[[NSColor colorWithWhite:0.0f alpha:opacity] set];
+    [[NSColor blackColor] set];
 	[outlinePath stroke];
-    [[NSColor colorWithDeviceRed:[selectionColor redComponent] green:[selectionColor greenComponent] blue:[selectionColor blueComponent] alpha:opacity] set];
+//    [[NSColor colorWithDeviceRed:[selectionColor redComponent] green:[selectionColor greenComponent] blue:[selectionColor blueComponent] alpha:opacity] set];
+    [selectionColor set];
 	[mainPath stroke];
 }
 
@@ -1032,9 +1035,21 @@
     if ([calibPoints count] < 2) return outPathsArray;
     NSArray *calibPointsOrdered = [[calibPoints allObjects] sortedArrayUsingDescriptors:[NSArray arrayWithObjects:[NSSortDescriptor sortDescriptorWithKey:@"worldHcoord" ascending:YES],[NSSortDescriptor sortDescriptorWithKey:@"worldVcoord" ascending:YES],nil]];
     
-    float hGridSpacing = fabs([[[calibPointsOrdered objectAtIndex:1] worldHcoord] floatValue] - [[[calibPointsOrdered objectAtIndex:2] worldHcoord] floatValue]);
-    float vGridSpacing= fabs([[[calibPointsOrdered objectAtIndex:1] worldVcoord] floatValue] - [[[calibPointsOrdered objectAtIndex:2] worldVcoord] floatValue]);
-    float gridSpacing = (hGridSpacing > vGridSpacing) ? hGridSpacing : vGridSpacing;
+    // Calculate the grid spacing by sorting the unique hCoord and vCoord values and comparing the difference between consecutive values on both dimensions and using the minimum (h or v) value
+    NSMutableSet *__block allHVals = [NSMutableSet set];
+    NSMutableSet *__block allVVals = [NSMutableSet set];
+    [calibPointsOrdered enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+        VSCalibrationPoint *pt = (VSCalibrationPoint *) obj;
+        [allHVals addObject:[pt worldHcoord]];
+        [allVVals addObject:[pt worldVcoord]];
+    }];
+    NSArray *uniqueHVals = [[NSOrderedSet orderedSetWithSet:allHVals] array];
+    NSArray *uniqueVVals = [[NSOrderedSet orderedSetWithSet:allVVals] array];
+    NSArray *sortedUniqueHVals = [uniqueHVals sortedArrayUsingSelector:@selector(compare:)];
+    NSArray *sortedUniqueVVals = [uniqueVVals sortedArrayUsingSelector:@selector(compare:)];
+    float hGridSpacing = fabs([[sortedUniqueHVals objectAtIndex:1] floatValue] - [[sortedUniqueHVals objectAtIndex:0] floatValue]);
+    float vGridSpacing = fabs([[sortedUniqueVVals objectAtIndex:1] floatValue] - [[sortedUniqueVVals objectAtIndex:0] floatValue]);
+    float gridSpacing = fmin(hGridSpacing,vGridSpacing);//(hGridSpacing > vGridSpacing) ? hGridSpacing : vGridSpacing;
     
 	float lineWidth = [[[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"quadratGridOverlayLineThickness"] floatValue];
     
@@ -1163,5 +1178,10 @@
         [vwc.document stepForwardAll:self];
     }
 }
-
+/*
+- (void) dealloc
+{
+    [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKeyPath:nil];   // passing nil removes observer for all key paths
+}
+*/
 @end

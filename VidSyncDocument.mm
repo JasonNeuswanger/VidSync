@@ -279,11 +279,13 @@ static void *AVSPPlayerCurrentTimeContext = &AVSPPlayerCurrentTimeContext;
 				VSEventScreenPoint *selectedScreenPoint = [selectedPoint screenPointForVideoClip:self.frontVideoClip];
 				if ([selectedScreenPoint.screenX floatValue] > 0.0 || [selectedScreenPoint.screenY floatValue] > 0.0) {
 					NSPoint newPoint = NSMakePoint([selectedScreenPoint.screenX floatValue],[selectedScreenPoint.screenY floatValue]);
+                    [self refreshOverlaysOfAllClips:nil];   // Refresh overlays before updating preview image, for speed
 					[self updatePreviewImageWithPlayerLayer:self.frontVideoClip.windowController.playerLayer atPoint:newPoint];
 				}
 				[eventsPointsController scrollTableToSelectedObject];				
-			}
-			[self refreshOverlaysOfAllClips:nil];	
+			} else {
+                [self refreshOverlaysOfAllClips:nil];   // Refresh overlays if we deselected a clip, too
+            }
 
 		} else if ([[notification object] isEqualTo:distortionLinesController.mainTableView]) {
 			
