@@ -42,7 +42,7 @@
 {
     // I'm basically disabling makeKeyAndOrderFront for this window, because it was being called when creating a new document, which made playback controls visible before they were ready. I can't find any call to it (sender was VidSyncDocument), so it must be something behind the scenes, and I haven't figured out why. This little hack fixes the problem but it's not ideal. However, everything currently using this panel refers only to orderFront:, not makeKeyAndOrderFront:, so it should be fine.
     
-    //[super makeKeyAndOrderFront:sender];
+    // [super makeKeyAndOrderFront:sender];
 }
    
 /*
@@ -50,7 +50,6 @@
  the initial location.
  */
 - (void)mouseDown:(NSEvent *)theEvent {
-    
     // Get the mouse location in window coordinates.
     self.initialLocation = [theEvent locationInWindow];
 }

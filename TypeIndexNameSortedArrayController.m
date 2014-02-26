@@ -24,6 +24,10 @@
 - (IBAction) reSort:(id)sender
 {
 	[self rearrangeObjects];
+    NSSortDescriptor *typeDescriptor = [[NSSortDescriptor alloc] initWithKey:@"type.name" ascending:YES];
+	NSSortDescriptor *indexDescriptor = [[NSSortDescriptor alloc] initWithKey:@"index" ascending:YES];
+	NSSortDescriptor *nameDescriptor = [[NSSortDescriptor alloc] initWithKey:@"name" ascending:YES];
+    [self.mainTableView setSortDescriptors:[NSArray arrayWithObjects:typeDescriptor,indexDescriptor,nameDescriptor,nil]];
 }
 
 @end

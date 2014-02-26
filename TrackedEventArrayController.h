@@ -11,10 +11,10 @@
 
 @interface TrackedEventArrayController : TypeIndexNameSortedArrayController {
 
-	IBOutlet NSTextField *newEventName;
-	IBOutlet NSPopUpButton *newEventType;
-	IBOutlet NSPanel *eventAddPanel;
-	IBOutlet VidSyncDocument *document;
+	IBOutlet NSTextField *__weak newEventName;
+	IBOutlet NSPopUpButton *__weak newEventType;
+	IBOutlet NSPanel *__weak eventAddPanel;
+	IBOutlet VidSyncDocument *__weak document;
 	
 }
 

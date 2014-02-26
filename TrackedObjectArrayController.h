@@ -11,11 +11,11 @@
 
 @interface TrackedObjectArrayController : TypeIndexNameSortedArrayController {
 
-	IBOutlet NSTextField *newObjectName;
-	IBOutlet NSPopUpButton *newObjectType;
-	IBOutlet NSColorWell *newTypeColorWell;
-	IBOutlet NSPanel *objectAddPanel;
-	IBOutlet VidSyncDocument *document;
+	IBOutlet NSTextField *__weak newObjectName;
+	IBOutlet NSPopUpButton *__weak newObjectType;
+	IBOutlet NSColorWell *__weak newTypeColorWell;
+	IBOutlet NSPanel *__weak objectAddPanel;
+	IBOutlet VidSyncDocument *__weak document;
 	
 }
 

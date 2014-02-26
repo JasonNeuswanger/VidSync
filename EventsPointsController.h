@@ -12,9 +12,9 @@
 
 @interface EventsPointsController : VSVisibleItemArrayController {
 
-	IBOutlet NSPopUpButton *framesSelectButton;
-	IBOutlet NSButton *goToPointButton;
-	IBOutlet VidSyncDocument *document;
+	IBOutlet NSPopUpButton *__weak framesSelectButton;
+	IBOutlet NSButton *__weak goToPointButton;
+	IBOutlet VidSyncDocument *__weak document;
 }
 
 - (NSArray *)arrangeObjects:(NSArray *)objects;

@@ -11,9 +11,9 @@
 
 @interface ObjectSynonymizeArrayController : TypeIndexNameSortedArrayController {
 	
-	IBOutlet TrackedObjectArrayController *mainObjectsController;
-	IBOutlet NSPopUpButton *typeFilterButton;
-	IBOutlet VidSyncDocument *document;
+	IBOutlet TrackedObjectArrayController *__weak mainObjectsController;
+	IBOutlet NSPopUpButton *__weak typeFilterButton;
+	IBOutlet VidSyncDocument *__weak document;
 	
 }
 
