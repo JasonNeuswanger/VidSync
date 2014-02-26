@@ -58,6 +58,7 @@
  Once the user starts dragging the mouse, move the window with it. The window has no title bar for
  the user to drag (so we have to implement dragging ourselves)
  */
+
 - (void)mouseDragged:(NSEvent *)theEvent {
     
     NSRect screenVisibleFrame = [[NSScreen mainScreen] visibleFrame];
@@ -76,6 +77,7 @@
     }
     
     // Move the window to the new location
+    
     [self setFrameOrigin:newOrigin];
 }
 

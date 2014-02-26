@@ -37,6 +37,7 @@
     
     [stepForwardButton setCustomTitle:@"\uf051" withColor:videoButtonColor fontSize:videoButtonFontSize];
     [stepBackwardButton setCustomTitle:@"\uf048" withColor:videoButtonColor fontSize:videoButtonFontSize];
+    
 }
 
 - (void)drawRect:(NSRect)dirtyRect

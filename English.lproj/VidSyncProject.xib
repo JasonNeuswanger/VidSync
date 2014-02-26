@@ -7704,12 +7704,12 @@ Some useful refractive index values are:  1.000 for air, 1.335 for fresh water, 
                                             <binding destination="100045" name="selectedIndex" keyPath="values.advancedPlaybackMode1" id="NrV-fs-dQp"/>
                                         </connections>
                                     </popUpButton>
-                                    <tabView drawsBackground="NO" type="noTabsNoBorder" initialItem="3Sp-RI-lDy" id="kQ5-a0-ThH">
+                                    <tabView drawsBackground="NO" type="noTabsNoBorder" initialItem="3Sp-RI-lDy" id="kQ5-a0-ThH" customClass="PlaybackDurationTabView">
                                         <rect key="frame" x="147" y="7" width="223" height="20"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <font key="font" metaFont="system"/>
                                         <tabViewItems>
-                                            <tabViewItem label="TilStop" identifier="1" id="3Sp-RI-lDy">
+                                            <tabViewItem label="TilStop" identifier="1" id="3Sp-RI-lDy" customClass="PlaybackDurationTabViewItem">
                                                 <view key="view" id="rjr-ac-Hgm">
                                                     <rect key="frame" x="0.0" y="0.0" width="223" height="20"/>
                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -7851,6 +7851,7 @@ Some useful refractive index values are:  1.000 for air, 1.335 for fresh water, 
                                         </tabViewItems>
                                         <connections>
                                             <binding destination="100045" name="selectedIndex" keyPath="values.advancedPlaybackMode1" id="Pna-XM-f1i"/>
+                                            <outlet property="syncedPlaybackPanel" destination="s4r-NB-r3v" id="EL2-b8-s29"/>
                                         </connections>
                                     </tabView>
                                     <textField toolTip="Advanced playback rate 1" verticalHuggingPriority="750" id="103277">
@@ -7966,7 +7967,7 @@ Some useful refractive index values are:  1.000 for air, 1.335 for fresh water, 
                                             <binding destination="100045" name="selectedIndex" keyPath="values.advancedPlaybackMode2" id="725-Ty-9vS"/>
                                         </connections>
                                     </popUpButton>
-                                    <tabView drawsBackground="NO" type="noTabsNoBorder" initialItem="Chh-aH-xzz" id="29v-F3-4ax">
+                                    <tabView drawsBackground="NO" type="noTabsNoBorder" initialItem="Chh-aH-xzz" id="29v-F3-4ax" customClass="PlaybackDurationTabView">
                                         <rect key="frame" x="147" y="8" width="223" height="20"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <font key="font" metaFont="system"/>
@@ -8113,6 +8114,7 @@ Some useful refractive index values are:  1.000 for air, 1.335 for fresh water, 
                                         </tabViewItems>
                                         <connections>
                                             <binding destination="100045" name="selectedIndex" keyPath="values.advancedPlaybackMode2" id="Uck-jf-31P"/>
+                                            <outlet property="syncedPlaybackPanel" destination="s4r-NB-r3v" id="Iwm-4G-QhQ"/>
                                         </connections>
                                     </tabView>
                                     <textField toolTip="Advanced playback rate 2" verticalHuggingPriority="750" id="8gS-b5-JNb">

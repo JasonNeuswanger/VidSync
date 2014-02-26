@@ -70,5 +70,6 @@
 #import "PlaybackRateDescriptionTransformer.h"
 #import "SyncedPlaybackPanelControlBox.h"
 #import "MainProjectWindow.h"
+#import "PlaybackDurationTabView.h"
 
 #endif

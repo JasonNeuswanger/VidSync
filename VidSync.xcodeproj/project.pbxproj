@@ -128,6 +128,7 @@
 		96AF8EB814C18F8700731DEA /* opencv in Resources */ = {isa = PBXBuildFile; fileRef = 96AF8EB614C18F8700731DEA /* opencv */; };
 		96AF8EB914C18F8700731DEA /* opencv2 in Resources */ = {isa = PBXBuildFile; fileRef = 96AF8EB714C18F8700731DEA /* opencv2 */; };
 		96AF8EBB14C206AF00731DEA /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 96AF8EBA14C206AE00731DEA /* libz.dylib */; };
+		96B766B118BE9928005EB380 /* PlaybackDurationTabView.m in Sources */ = {isa = PBXBuildFile; fileRef = 96B766B018BE9928005EB380 /* PlaybackDurationTabView.m */; };
 		96BBAD60151A93760066E9CC /* VSScientificNotationFormatter.m in Sources */ = {isa = PBXBuildFile; fileRef = 96BBAD5F151A93760066E9CC /* VSScientificNotationFormatter.m */; };
 		96BDA40B117B826100C39399 /* VSDistortionLine.m in Sources */ = {isa = PBXBuildFile; fileRef = 96BDA40A117B826100C39399 /* VSDistortionLine.m */; };
 		96BDA421117B84D900C39399 /* CalibDistortionLineArrayController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 96BDA420117B84D900C39399 /* CalibDistortionLineArrayController.mm */; };
@@ -663,6 +664,8 @@
 		96AF8EB614C18F8700731DEA /* opencv */ = {isa = PBXFileReference; lastKnownFileType = folder; name = opencv; path = OpenCV/opencv; sourceTree = "<group>"; };
 		96AF8EB714C18F8700731DEA /* opencv2 */ = {isa = PBXFileReference; lastKnownFileType = folder; name = opencv2; path = OpenCV/opencv2; sourceTree = "<group>"; };
 		96AF8EBA14C206AE00731DEA /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
+		96B766AF18BE9928005EB380 /* PlaybackDurationTabView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlaybackDurationTabView.h; sourceTree = "<group>"; };
+		96B766B018BE9928005EB380 /* PlaybackDurationTabView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PlaybackDurationTabView.m; sourceTree = "<group>"; };
 		96BBAD5D151A8C270066E9CC /* VidSyncProject 1.07.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "VidSyncProject 1.07.xcdatamodel"; sourceTree = "<group>"; };
 		96BBAD5E151A93760066E9CC /* VSScientificNotationFormatter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VSScientificNotationFormatter.h; sourceTree = "<group>"; };
 		96BBAD5F151A93760066E9CC /* VSScientificNotationFormatter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VSScientificNotationFormatter.m; sourceTree = "<group>"; };
@@ -1437,6 +1440,8 @@
 				961A2F4818B40D05009EA198 /* SyncedPlaybackView.m */,
 				9612EC2118B741F500BBED62 /* SyncedPlaybackPanelControlBox.h */,
 				9612EC2218B741F500BBED62 /* SyncedPlaybackPanelControlBox.m */,
+				96B766AF18BE9928005EB380 /* PlaybackDurationTabView.h */,
+				96B766B018BE9928005EB380 /* PlaybackDurationTabView.m */,
 				9612EC1518B5EDE400BBED62 /* PortraitBrowserView.h */,
 				9612EC1618B5EDE400BBED62 /* PortraitBrowserView.m */,
 				9612EC1818B5EE0100BBED62 /* PortraitBrowserCell.h */,
@@ -1549,6 +1554,7 @@
 				96EF265110976B7B001DEF3A /* MagnifiedPreviewView.m in Sources */,
 				96EEB8D210A9F4B1005C500F /* SimultaneousPlayback.m in Sources */,
 				9612EC1718B5EDE400BBED62 /* PortraitBrowserView.m in Sources */,
+				96B766B118BE9928005EB380 /* PlaybackDurationTabView.m in Sources */,
 				96DC9B461152C7600078A956 /* VSPoint.m in Sources */,
 				9612EC2318B741F500BBED62 /* SyncedPlaybackPanelControlBox.m in Sources */,
 				961A2F4918B40D05009EA198 /* SyncedPlaybackView.m in Sources */,
