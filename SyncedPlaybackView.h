@@ -10,11 +10,24 @@
 
 @class VideoControlButton;
 @class BookmarkControlButton;
+@class PlayWhilePressedButton;
 
 @interface SyncedPlaybackView : NSView {
     
-    IBOutlet __weak VideoControlButton *playOrPauseButton, *stepForwardButton, *stepBackwardButton, *playBackwardButton, *fastForwardButton, *fastBackwardButton, *bookmarkSetButton1, *bookmarkSetButton2, *bookmarkGoButton1, *bookmarkGoButton2;
+    IBOutlet VideoControlButton __weak *playOrPauseButton;
+    IBOutlet VideoControlButton __weak *stepForwardButton;
+    IBOutlet VideoControlButton __weak *stepBackwardButton;
+    IBOutlet VideoControlButton __weak *playBackwardButton;
+    IBOutlet VideoControlButton __weak *bookmarkSetButton1;
+    IBOutlet VideoControlButton __weak *bookmarkSetButton2;
+    IBOutlet VideoControlButton __weak *bookmarkGoButton1;
+    IBOutlet VideoControlButton __weak *bookmarkGoButton2;
+    
+    IBOutlet VideoControlButton __weak *maximizeButton;
 
+    IBOutlet PlayWhilePressedButton __weak *mainPlayForwardWhilePressedButton;
+    IBOutlet PlayWhilePressedButton __weak *mainPlayBackwardWhilePressedButton;
+    
 }
 
 @end

@@ -18,4 +18,6 @@
 
 @property NSPoint initialLocation;
 
+- (IBAction) maximizeSyncedPlaybackPanel:(id)sender;
+
 @end

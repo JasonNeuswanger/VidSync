@@ -33,7 +33,6 @@
         [self setBackgroundColor:[NSColor clearColor]];
         [self setMovableByWindowBackground:YES];
         [self setStyleMask:NSResizableWindowMask];
-        
     }
     return self;
 }
@@ -44,7 +43,16 @@
     
     // [super makeKeyAndOrderFront:sender];
 }
-   
+
+
+- (IBAction) maximizeSyncedPlaybackPanel:(id)sender
+{
+    NSRect windowFrame = [self frame];
+    NSRect screenVisibleFrame = [[NSScreen mainScreen] visibleFrame];
+    NSRect newFrame = NSMakeRect(screenVisibleFrame.origin.x,screenVisibleFrame.origin.y + (screenVisibleFrame.size.height - windowFrame.size.height),screenVisibleFrame.size.width,windowFrame.size.height);
+    [self setFrame:newFrame display:YES];
+}
+
 /*
  Start tracking a potential drag operation here when the user first clicks the mouse, to establish
  the initial location.

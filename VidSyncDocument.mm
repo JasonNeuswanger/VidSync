@@ -31,6 +31,8 @@
 
 @synthesize syncedPlaybackScrubber;
 
+@synthesize playForwardWhilePressedButton;
+@synthesize playBackwardWhilePressedButton;
 @synthesize playForwardAtRate1WhilePressedButton;
 @synthesize playBackwardAtRate1WhilePressedButton;
 @synthesize playForwardAtRate2WhilePressedButton;
@@ -138,6 +140,10 @@ static void *AVSPPlayerCurrentTimeContext = &AVSPPlayerCurrentTimeContext;
 		[distortionLinesController setSortDescriptors:[NSArray arrayWithObject:timecodeDescriptor]];
 		[distortionPointsController setSortDescriptors:[NSArray arrayWithObject:indexDescriptor]];
 		
+        playForwardWhilePressedButton.direction = 1.0;
+        playForwardWhilePressedButton.advancedRateToUse = 0;
+        playBackwardWhilePressedButton.direction = -1.0;
+        playBackwardWhilePressedButton.advancedRateToUse = 0;
 		playForwardAtRate1WhilePressedButton.direction = 1.0;
 		playForwardAtRate1WhilePressedButton.advancedRateToUse = 1;
 		playBackwardAtRate1WhilePressedButton.direction = -1.0;

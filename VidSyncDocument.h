@@ -57,7 +57,7 @@
     IBOutlet NSSlider *__weak syncedPlaybackScrubber;
     int scrubberMaxTime;
     
-	IBOutlet PlayWhilePressedButton *__weak playForwardAtRate1WhilePressedButton,*__weak playBackwardAtRate1WhilePressedButton,*__weak playForwardAtRate2WhilePressedButton,*__weak playBackwardAtRate2WhilePressedButton;
+	IBOutlet PlayWhilePressedButton *__weak playForwardAtRate1WhilePressedButton,*__weak playBackwardAtRate1WhilePressedButton,*__weak playForwardAtRate2WhilePressedButton,*__weak playBackwardAtRate2WhilePressedButton, *__weak playForwardWhilePressedButton, *__weak playBackwardWhilePressedButton;
 	IBOutlet NSButton *goToBookmarkButton;
 	CMTime bookmarkTime1, bookmarkTime2;
     BOOL bookmarkIsSet1, bookmarkIsSet2;
@@ -116,6 +116,8 @@
 
 @property (weak) IBOutlet NSSlider *syncedPlaybackScrubber;
 
+@property (readonly, weak) IBOutlet PlayWhilePressedButton *playForwardWhilePressedButton;
+@property (readonly, weak) IBOutlet PlayWhilePressedButton *playBackwardWhilePressedButton;
 @property (readonly, weak) IBOutlet PlayWhilePressedButton *playForwardAtRate1WhilePressedButton;
 @property (readonly, weak) IBOutlet PlayWhilePressedButton *playBackwardAtRate1WhilePressedButton;
 @property (readonly, weak) IBOutlet PlayWhilePressedButton *playForwardAtRate2WhilePressedButton;

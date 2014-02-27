@@ -20,18 +20,18 @@
     float videoButtonFontSize = 25.0f;
     float bookmarkButtonFontSize = 20.0f;
     
+    [maximizeButton setCustomTitle:@"\uf055" withColor:videoButtonColor fontSize:10.0f];
+    
     [stepForwardButton setCustomTitle:@"\uf051" withColor:videoButtonColor fontSize:videoButtonFontSize];
     [stepBackwardButton setCustomTitle:@"\uf048" withColor:videoButtonColor fontSize:videoButtonFontSize];
-    [fastForwardButton setCustomTitle:@"\uf04e" withColor:videoButtonColor fontSize:videoButtonFontSize];
-    [fastBackwardButton setCustomTitle:@"\uf04a" withColor:videoButtonColor fontSize:videoButtonFontSize];
     [playOrPauseButton setCustomTitle:@"\uf04b" withColor:videoButtonColor fontSize:videoButtonFontSize];
     [playBackwardButton setCustomTitle:@"\uf04b" withColor:videoButtonColor fontSize:videoButtonFontSize];
-
-    [bookmarkSetButton1 setCustomTitle:@"\uf02e" withColor:videoButtonColor fontSize:bookmarkButtonFontSize];
-    [bookmarkSetButton2 setCustomTitle:@"\uf02e" withColor:videoButtonColor fontSize:bookmarkButtonFontSize];
+    [mainPlayForwardWhilePressedButton setCustomTitle:@"\uf0a4" withColor:videoButtonColor fontSize:videoButtonFontSize];
+    [mainPlayBackwardWhilePressedButton setCustomTitle:@"\uf0a5" withColor:videoButtonColor fontSize:videoButtonFontSize];
     
     NSColor *unpressedBookmarkGoColor = [NSColor colorWithWhite:1.0 alpha:0.15];
-    
+    [bookmarkSetButton1 setCustomTitle:@"\uf02e" withColor:videoButtonColor fontSize:bookmarkButtonFontSize];
+    [bookmarkSetButton2 setCustomTitle:@"\uf02e" withColor:videoButtonColor fontSize:bookmarkButtonFontSize];
     [bookmarkGoButton1 setCustomTitle:@"\uf18e" withColor:unpressedBookmarkGoColor fontSize:bookmarkButtonFontSize];
     [bookmarkGoButton2 setCustomTitle:@"\uf18e" withColor:unpressedBookmarkGoColor fontSize:bookmarkButtonFontSize];
     bookmarkGoButton1.enabled = NO;

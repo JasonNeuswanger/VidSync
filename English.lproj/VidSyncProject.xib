@@ -31,8 +31,10 @@
                 <outlet property="objectsPortraitsArrayController" destination="ik8-He-CGb" id="ggG-s8-ilS"/>
                 <outlet property="playBackwardAtRate1WhilePressedButton" destination="103808" id="103844"/>
                 <outlet property="playBackwardAtRate2WhilePressedButton" destination="veC-Ir-XbZ" id="CXc-F5-xT9"/>
+                <outlet property="playBackwardWhilePressedButton" destination="FXJ-iK-wvZ" id="VE4-un-3RZ"/>
                 <outlet property="playForwardAtRate1WhilePressedButton" destination="103806" id="103846"/>
                 <outlet property="playForwardAtRate2WhilePressedButton" destination="40m-N8-S9a" id="LYK-02-dhg"/>
+                <outlet property="playForwardWhilePressedButton" destination="uEO-d7-N6O" id="Oj4-Nk-Yhh"/>
                 <outlet property="playOrPauseButton" destination="103247" id="103309"/>
                 <outlet property="pointRecalculatePanel" destination="103591" id="103596"/>
                 <outlet property="pointRecalculateProgressIndicator" destination="103003" id="103595"/>
@@ -7550,7 +7552,7 @@ Some useful refractive index values are:  1.000 for air, 1.335 for fresh water, 
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <slider verticalHuggingPriority="750" id="AUE-Bz-KZS">
-                                <rect key="frame" x="223" y="82" width="704" height="20"/>
+                                <rect key="frame" x="234" y="83" width="740" height="20"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                 <sliderCell key="cell" controlSize="small" continuous="YES" alignment="left" maxValue="100" tickMarkPosition="below" numberOfTickMarks="100" sliderType="linear" id="5DL-JP-QSf"/>
                                 <connections>
@@ -7558,7 +7560,7 @@ Some useful refractive index values are:  1.000 for air, 1.335 for fresh water, 
                                 </connections>
                             </slider>
                             <textField toolTip="Current time (measured relative to start of the master clip)" verticalHuggingPriority="750" id="103583">
-                                <rect key="frame" x="933" y="85" width="206" height="14"/>
+                                <rect key="frame" x="980" y="79" width="159" height="14"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
                                 <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" placeholderString="-0:00:00:00:1234/2997" id="103584">
                                     <font key="font" metaFont="smallSystem"/>
@@ -7566,8 +7568,42 @@ Some useful refractive index values are:  1.000 for air, 1.335 for fresh water, 
                                     <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                 </textFieldCell>
                             </textField>
+                            <textField toolTip="Current project's title" verticalHuggingPriority="750" id="dN9-Bo-Lal">
+                                <rect key="frame" x="980" y="98" width="159" height="14"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
+                                <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Project Name" placeholderString="Project Title" id="DEc-PY-W5T">
+                                    <font key="font" metaFont="smallSystem"/>
+                                    <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                    <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                </textFieldCell>
+                                <connections>
+                                    <binding destination="100044" name="value" keyPath="selection.name" id="kSh-c6-iYL"/>
+                                </connections>
+                            </textField>
+                            <button toolTip="Play forward at advanced playback rate 1 while pressed" verticalHuggingPriority="750" tag="1" id="uEO-d7-N6O" customClass="PlayWhilePressedButton">
+                                <rect key="frame" x="54" y="71" width="32" height="44"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                <buttonCell key="cell" type="square" title="↣" bezelStyle="shadowlessSquare" alignment="center" continuous="YES" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="pPm-fG-Lsk">
+                                    <behavior key="behavior" lightByContents="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                </buttonCell>
+                                <connections>
+                                    <outlet property="document" destination="-2" id="Zh5-56-6do"/>
+                                </connections>
+                            </button>
+                            <button toolTip="Play backward at advanced playback rate 1 while pressed" verticalHuggingPriority="750" id="FXJ-iK-wvZ" customClass="PlayWhilePressedButton">
+                                <rect key="frame" x="17" y="71" width="30" height="44"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                <buttonCell key="cell" type="square" title="↢" bezelStyle="shadowlessSquare" alignment="center" continuous="YES" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="5ZU-40-QZY">
+                                    <behavior key="behavior" lightByContents="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                </buttonCell>
+                                <connections>
+                                    <outlet property="document" destination="-2" id="Uym-t8-ILg"/>
+                                </connections>
+                            </button>
                             <button toolTip="Step Backward (Command+LeftArrow)" verticalHuggingPriority="750" tag="1" id="103244" customClass="VideoControlButton">
-                                <rect key="frame" x="43" y="69" width="26" height="44"/>
+                                <rect key="frame" x="99" y="71" width="26" height="44"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                 <buttonCell key="cell" type="square" title="⇤" bezelStyle="shadowlessSquare" alignment="center" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="103257">
                                     <behavior key="behavior" lightByContents="YES"/>
@@ -7580,7 +7616,7 @@ Some useful refractive index values are:  1.000 for air, 1.335 for fresh water, 
                                 </connections>
                             </button>
                             <button toolTip="Play Backward (Command+DownArrow)" wantsLayer="YES" verticalHuggingPriority="750" tag="1" id="103248" customClass="VideoControlButton">
-                                <rect key="frame" x="78" y="69" width="27" height="44"/>
+                                <rect key="frame" x="165" y="71" width="27" height="44"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                 <contentFilters>
                                     <ciFilter name="CIAffineTransform">
@@ -7601,7 +7637,7 @@ Some useful refractive index values are:  1.000 for air, 1.335 for fresh water, 
                                 </connections>
                             </button>
                             <button toolTip="Step Forward (Command+RightArrow)" verticalHuggingPriority="750" tag="2" id="103245" customClass="VideoControlButton">
-                                <rect key="frame" x="152" y="69" width="27" height="44"/>
+                                <rect key="frame" x="127" y="71" width="27" height="44"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                 <buttonCell key="cell" type="square" title="⇥" bezelStyle="shadowlessSquare" alignment="center" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="103256">
                                     <behavior key="behavior" lightByContents="YES"/>
@@ -7613,34 +7649,8 @@ Some useful refractive index values are:  1.000 for air, 1.335 for fresh water, 
                                     <action selector="stepForwardAll:" target="-2" id="103260"/>
                                 </connections>
                             </button>
-                            <button toolTip="Fast Backward (Command+Option+LeftArrow)" verticalHuggingPriority="750" tag="1" id="103243" customClass="VideoControlButton">
-                                <rect key="frame" x="7" y="69" width="26" height="44"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                <buttonCell key="cell" type="square" title="⇇" bezelStyle="shadowlessSquare" alignment="center" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="103258">
-                                    <behavior key="behavior" lightByContents="YES"/>
-                                    <font key="font" metaFont="system"/>
-                                    <string key="keyEquivalent"></string>
-                                    <modifierMask key="keyEquivalentModifierMask" option="YES" command="YES"/>
-                                </buttonCell>
-                                <connections>
-                                    <action selector="fastBackwardAll:" target="-2" id="103263"/>
-                                </connections>
-                            </button>
-                            <button toolTip="Fast Forward (Command+Option+RightArrow)" verticalHuggingPriority="750" tag="2" id="103246" customClass="VideoControlButton">
-                                <rect key="frame" x="189" y="69" width="26" height="44"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                <buttonCell key="cell" type="square" title="⇉" bezelStyle="shadowlessSquare" alignment="center" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="103255">
-                                    <behavior key="behavior" lightByContents="YES"/>
-                                    <font key="font" metaFont="system"/>
-                                    <string key="keyEquivalent"></string>
-                                    <modifierMask key="keyEquivalentModifierMask" option="YES" command="YES"/>
-                                </buttonCell>
-                                <connections>
-                                    <action selector="fastForwardAll:" target="-2" id="103262"/>
-                                </connections>
-                            </button>
                             <button toolTip="Play/Pause (Command+UpArrow)" verticalHuggingPriority="750" id="103247" customClass="VideoControlButton">
-                                <rect key="frame" x="115" y="69" width="26" height="44"/>
+                                <rect key="frame" x="197" y="71" width="26" height="44"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                 <buttonCell key="cell" type="square" title="►" bezelStyle="shadowlessSquare" alignment="center" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="103254">
                                     <behavior key="behavior" lightByContents="YES"/>
@@ -7895,7 +7905,7 @@ Some useful refractive index values are:  1.000 for air, 1.335 for fresh water, 
                                         </connections>
                                     </button>
                                     <button toolTip="Play forward at advanced playback rate 1" verticalHuggingPriority="750" tag="1" id="103273" customClass="VideoControlButton">
-                                        <rect key="frame" x="114" y="13" width="25" height="35"/>
+                                        <rect key="frame" x="113" y="13" width="25" height="35"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                         <buttonCell key="cell" type="square" title="→" bezelStyle="shadowlessSquare" alignment="center" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="103274">
                                             <behavior key="behavior" lightByContents="YES"/>
@@ -8158,7 +8168,7 @@ Some useful refractive index values are:  1.000 for air, 1.335 for fresh water, 
                                         </connections>
                                     </button>
                                     <button toolTip="Play forward at advanced playback rate 2" verticalHuggingPriority="750" tag="3" id="lHM-k5-cER" customClass="VideoControlButton">
-                                        <rect key="frame" x="114" y="13" width="25" height="35"/>
+                                        <rect key="frame" x="113" y="13" width="25" height="35"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                         <buttonCell key="cell" type="square" title="→" bezelStyle="shadowlessSquare" alignment="center" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="gCU-wG-B36">
                                             <behavior key="behavior" lightByContents="YES"/>
@@ -8183,7 +8193,7 @@ Some useful refractive index values are:  1.000 for air, 1.335 for fresh water, 
                                 <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
                                 <subviews>
                                     <textField verticalHuggingPriority="750" mirrorLayoutDirectionWhenInternationalizing="never" id="103300">
-                                        <rect key="frame" x="5" y="22" width="27" height="14"/>
+                                        <rect key="frame" x="13" y="22" width="27" height="14"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                         <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="step" id="103301">
                                             <font key="font" metaFont="smallSystem"/>
@@ -8192,7 +8202,7 @@ Some useful refractive index values are:  1.000 for air, 1.335 for fresh water, 
                                         </textFieldCell>
                                     </textField>
                                     <textField verticalHuggingPriority="750" id="QFy-I2-ffJ">
-                                        <rect key="frame" x="67" y="22" width="44" height="14"/>
+                                        <rect key="frame" x="75" y="22" width="44" height="14"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                         <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="frames:" id="amz-tL-MW4">
                                             <font key="font" metaFont="smallSystem"/>
@@ -8201,7 +8211,7 @@ Some useful refractive index values are:  1.000 for air, 1.335 for fresh water, 
                                         </textFieldCell>
                                     </textField>
                                     <button toolTip="Step backward by the specified number of step frames" verticalHuggingPriority="750" id="103267" customClass="VideoControlButton">
-                                        <rect key="frame" x="118" y="14" width="25" height="35"/>
+                                        <rect key="frame" x="126" y="14" width="25" height="35"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                         <buttonCell key="cell" type="square" title="⇤" bezelStyle="shadowlessSquare" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="103268">
                                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
@@ -8214,7 +8224,7 @@ Some useful refractive index values are:  1.000 for air, 1.335 for fresh water, 
                                         </connections>
                                     </button>
                                     <textField verticalHuggingPriority="750" id="103299">
-                                        <rect key="frame" x="34" y="19" width="30" height="19"/>
+                                        <rect key="frame" x="42" y="19" width="30" height="19"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                         <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="103302">
                                             <numberFormatter key="formatter" formatterBehavior="custom10_4" positiveFormat="#" negativeFormat="#" allowsFloats="NO" usesGroupingSeparator="NO" groupingSize="0" minimumIntegerDigits="0" maximumIntegerDigits="42" minimumFractionDigits="0" maximumFractionDigits="0" id="103335">
@@ -8232,7 +8242,7 @@ Some useful refractive index values are:  1.000 for air, 1.335 for fresh water, 
                                         </connections>
                                     </textField>
                                     <button toolTip="Step forward by the specified number of step frames" verticalHuggingPriority="750" id="103269" customClass="VideoControlButton">
-                                        <rect key="frame" x="152" y="14" width="25" height="35"/>
+                                        <rect key="frame" x="153" y="14" width="25" height="35"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                         <buttonCell key="cell" type="square" title="⇥" bezelStyle="shadowlessSquare" alignment="center" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="103270">
                                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
@@ -8310,15 +8320,26 @@ Some useful refractive index values are:  1.000 for air, 1.335 for fresh water, 
                                     </button>
                                 </subviews>
                             </customView>
+                            <button id="69O-qU-ucK" customClass="VideoControlButton">
+                                <rect key="frame" x="4" y="106" width="13" height="12"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                <buttonCell key="cell" type="square" title="⊕" bezelStyle="shadowlessSquare" imagePosition="overlaps" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="YeL-aJ-mT6">
+                                    <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                </buttonCell>
+                                <connections>
+                                    <action selector="maximizeSyncedPlaybackPanel:" target="s4r-NB-r3v" id="H7n-EN-HpR"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <connections>
                             <outlet property="bookmarkGoButton1" destination="fAi-CH-CR0" id="ih7-ew-qxJ"/>
                             <outlet property="bookmarkGoButton2" destination="iYE-SF-ZRZ" id="fJO-w2-2CD"/>
                             <outlet property="bookmarkSetButton1" destination="YtL-by-SnH" id="83p-Yq-O35"/>
                             <outlet property="bookmarkSetButton2" destination="Otp-Sc-uJX" id="BqK-9e-9Ku"/>
-                            <outlet property="document" destination="-2" id="nqg-vS-elp"/>
-                            <outlet property="fastBackwardButton" destination="103243" id="pWX-KA-ssw"/>
-                            <outlet property="fastForwardButton" destination="103246" id="b4y-iL-IVc"/>
+                            <outlet property="mainPlayBackwardWhilePressedButton" destination="FXJ-iK-wvZ" id="qHM-DK-OJc"/>
+                            <outlet property="mainPlayForwardWhilePressedButton" destination="uEO-d7-N6O" id="P0e-Da-DZi"/>
+                            <outlet property="maximizeButton" destination="69O-qU-ucK" id="r6y-Q7-vgb"/>
                             <outlet property="playBackwardButton" destination="103248" id="ufa-7k-60l"/>
                             <outlet property="playOrPauseButton" destination="103247" id="Lok-ET-Wut"/>
                             <outlet property="stepBackwardButton" destination="103244" id="KIp-XZ-TWu"/>
