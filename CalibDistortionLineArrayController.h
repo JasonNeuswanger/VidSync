@@ -11,7 +11,7 @@
 
 @interface CalibDistortionLineArrayController : VSVisibleItemArrayController {
 
-	IBOutlet VidSyncDocument *document;	
+	IBOutlet VidSyncDocument *__weak document;
 	
 }
 

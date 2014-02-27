@@ -19,8 +19,8 @@
 	
     IBOutlet AVPlayerView *__weak playerView;
 	
-	IBOutlet NSPanel *newAnnotationPanel;
-	IBOutlet NSTextView *newAnnotationContents;
+	IBOutlet NSPanel *__weak newAnnotationPanel;
+	IBOutlet NSTextView *__strong newAnnotationContents;    // class NSTextView does not support weak references
 	NSPoint newAnnotationCoords;
 	NSString *newAnnotationStartTimecode;
 	
@@ -32,8 +32,8 @@
     AVAssetImageGenerator *__strong assetImageGenerator;
 	CGSize movieSize;
 	
-	NSWindow *overlayWindow;
-	VideoOverlayView *overlayView;
+	NSWindow *__strong overlayWindow;
+	VideoOverlayView *__strong overlayView;
 	float overlayWidth,overlayHeight;
     
     NSPoint portraitDragStartCoords, portraitDragCurrentCoords;
@@ -48,13 +48,13 @@
 @property (strong) AVPlayerLayer *playerLayer;
 @property (strong) AVAssetImageGenerator *assetImageGenerator;
 @property (weak) IBOutlet AVPlayerView *playerView;
-@property CGSize movieSize;
+@property (assign) CGSize movieSize;
 @property (weak) NSManagedObjectContext *managedObjectContext;
-@property  VideoOverlayView *overlayView;
-@property float overlayWidth;
-@property float overlayHeight;
-@property NSPoint portraitDragStartCoords;
-@property NSPoint portraitDragCurrentCoords;
+@property (strong) VideoOverlayView *overlayView;
+@property (assign) float overlayWidth;
+@property (assign) float overlayHeight;
+@property (assign) NSPoint portraitDragStartCoords;
+@property (assign) NSPoint portraitDragCurrentCoords;
 @property (strong) NSString *shouldShowPortraitFrame;
 
 - (VideoWindowController *)initWithVideoClip:(VSVideoClip *)inVideoClip inManagedObjectContext:(NSManagedObjectContext *)moc;

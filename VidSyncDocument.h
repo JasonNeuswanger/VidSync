@@ -35,7 +35,7 @@
     NSWindowController *__strong advancedPlaybackWindowController;
     
 	NSTimer *__strong playbackTimer;
-	IBOutlet MagnifiedPreviewView *magnifiedCalibrationPreview,*magnifiedMeasurementPreview,*magnifiedDistortionPreview;
+	IBOutlet MagnifiedPreviewView *__weak magnifiedCalibrationPreview,*__weak magnifiedMeasurementPreview,*__weak magnifiedDistortionPreview;
 	IBOutlet VideoClipArrayController *__weak videoClipArrayController;
 	IBOutlet CalibScreenPtArrayController *__weak calibScreenPtFrontArrayController;
 	IBOutlet CalibScreenPtArrayController *__weak calibScreenPtBackArrayController;
@@ -47,10 +47,10 @@
 	IBOutlet VSVisibleItemArrayController *__weak annotationsController;
 	IBOutlet VSVisibleItemArrayController *__weak distortionPointsController;
 	IBOutlet CalibDistortionLineArrayController *__weak distortionLinesController;	
-	IBOutlet ObjectSynonymizeArrayController *objectSynonymizeController;
-	IBOutlet NSTableView *eventsPointsTable;
+	IBOutlet ObjectSynonymizeArrayController *__weak objectSynonymizeController;
+	IBOutlet NSTableView *__weak eventsPointsTable;
 	
-	IBOutlet VideoControlButton *playOrPauseButton;
+	IBOutlet VideoControlButton *__weak playOrPauseButton;
     
     IBOutlet SyncedPlaybackPanel *__weak syncedPlaybackPanel;
     IBOutlet SyncedPlaybackView *__weak syncedPlaybackView;
@@ -58,32 +58,31 @@
     int scrubberMaxTime;
     
 	IBOutlet PlayWhilePressedButton *__weak playForwardAtRate1WhilePressedButton,*__weak playBackwardAtRate1WhilePressedButton,*__weak playForwardAtRate2WhilePressedButton,*__weak playBackwardAtRate2WhilePressedButton, *__weak playForwardWhilePressedButton, *__weak playBackwardWhilePressedButton;
-	IBOutlet NSButton *goToBookmarkButton;
 	CMTime bookmarkTime1, bookmarkTime2;
     BOOL bookmarkIsSet1, bookmarkIsSet2;
 	
-	IBOutlet NSTextField *masterTimeDisplay;
+	IBOutlet NSTextField *__weak masterTimeDisplay;
 
 	IBOutlet MainProjectWindow *__weak mainWindow;
 	IBOutlet NSTabView *__weak mainTabView;
 	IBOutlet NSTabView *__weak calibrationSurfaceTabView;
 	IBOutlet NSTabView *__weak calibrationInputTabView;
 	
-	IBOutlet NSPopUpButton *exportClipSelectionPopUpButton;
-	IBOutlet NSProgressIndicator *videoCaptureProgressIndicator;
-    IBOutlet NSTextField *videoCaptureProgressDescription;
+	IBOutlet NSPopUpButton *__weak exportClipSelectionPopUpButton;
+	IBOutlet NSProgressIndicator *__weak videoCaptureProgressIndicator;
+    IBOutlet NSTextField *__weak videoCaptureProgressDescription;
 	
-	IBOutlet NSProgressIndicator *pointRecalculateProgressIndicator;
-	IBOutlet NSPanel *pointRecalculatePanel;
+	IBOutlet NSProgressIndicator *__weak pointRecalculateProgressIndicator;
+	IBOutlet NSPanel *__weak pointRecalculatePanel;
 	
 	VSVideoClip *__weak frontVideoClip;	// whichever clip is the key window or in front of the other at the moment
 	
 	CMTime stopTime;							// These two are temporarily non-nil when playing to or from a stoptime.
 	NSComparisonResult stopTimeComparison;
 	
-	NSSound *shutterClick;
+	NSSound *__strong shutterClick;
     
-	NSNumberFormatter *decimalFormatter;	
+	NSNumberFormatter *__strong decimalFormatter;
     
     AVAssetExportSession *__strong exportSession;   // used for exporting videos without overlays -- needs to be an instance variable so I can use it from the progress bar update function
     
@@ -123,14 +122,14 @@
 @property (readonly, weak) IBOutlet PlayWhilePressedButton *playForwardAtRate2WhilePressedButton;
 @property (readonly, weak) IBOutlet PlayWhilePressedButton *playBackwardAtRate2WhilePressedButton;
 
-@property (readonly) NSNumberFormatter *decimalFormatter;
+@property (strong) NSNumberFormatter *decimalFormatter;
 @property (weak) VSVideoClip *frontVideoClip;
 
 @property (weak) IBOutlet NSImageView *directOpenCVView;
 @property (weak) IBOutlet NSWindow *directOpenCVWindow;
-@property IBOutlet MagnifiedPreviewView *magnifiedCalibrationPreview;
-@property IBOutlet MagnifiedPreviewView *magnifiedMeasurementPreview;
-@property IBOutlet MagnifiedPreviewView *magnifiedDistortionPreview;
+@property (weak) IBOutlet MagnifiedPreviewView *magnifiedCalibrationPreview;
+@property (weak) IBOutlet MagnifiedPreviewView *magnifiedMeasurementPreview;
+@property (weak) IBOutlet MagnifiedPreviewView *magnifiedDistortionPreview;
 
 @property (weak) IBOutlet ObjectsPortraitsArrayController *objectsPortraitsArrayController;
 

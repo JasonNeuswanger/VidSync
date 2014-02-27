@@ -10,21 +10,21 @@
 
 @interface MagnifiedPreviewView : NSClipView {
 	
-	NSView *previewMovieView;
+	NSView *__strong previewMovieView;
 	
-	CALayer *previewMovieContainer;
+	CALayer *__strong previewMovieContainer;
     
-    AVPlayerLayer *previewMovieLayer;
-    CALayer *videoFilterContainerLayer;
-	CAShapeLayer *previewDot;
-	CAShapeLayer *previewReticle;
+    AVPlayerLayer *__strong previewMovieLayer;
+    CALayer *__strong videoFilterContainerLayer;
+	CAShapeLayer *__strong previewDot;
+	CAShapeLayer *__strong previewReticle;
     
 	NSPoint previewCenterPoint;
 	CGPoint crosshairsCenterPoint;
 	NSPoint lastMousePoint;
-	AVPlayerItem *lastPlayerItem;
+	AVPlayerItem *__strong lastPlayerItem;
 	
-	CIFilter *exposureFilter,*gammaFilter,*unsharpMaskFilter,*sharpenFilter;
+	CIFilter *__strong exposureFilter, *__strong gammaFilter, *__strong unsharpMaskFilter, *__strong sharpenFilter;
 
 }
 

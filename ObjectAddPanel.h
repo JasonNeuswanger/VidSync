@@ -13,8 +13,8 @@
 
 @interface ObjectAddPanel : NSPanel {	
 
-	IBOutlet NSColorWell *colorWell;
-	IBOutlet NSPopUpButton *typeButton;
+	IBOutlet NSColorWell *__weak colorWell;
+	IBOutlet NSPopUpButton *__weak typeButton;
 	
 }
 

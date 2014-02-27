@@ -11,7 +11,7 @@
 
 @interface EventAwareTableView : NSTableView {
 
-	IBOutlet NSButton *deleteButton;
+	IBOutlet NSButton *__weak deleteButton;
 	
 }
 

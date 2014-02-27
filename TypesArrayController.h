@@ -11,10 +11,10 @@
 
 @interface TypesArrayController : NSArrayController {
 
-	IBOutlet VidSyncDocument *document;
-	IBOutlet NSTextField *newTypeName;
-	IBOutlet NSTextField *newTypeDescription;
-	IBOutlet NSPanel *inputPanel;
+	IBOutlet VidSyncDocument *__weak document;
+	IBOutlet NSTextField *__weak newTypeName;
+	IBOutlet NSTextField *__weak newTypeDescription;
+	IBOutlet NSPanel *__weak inputPanel;
 	
 }
 

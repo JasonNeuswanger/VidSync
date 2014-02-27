@@ -28,7 +28,7 @@ NSPoint project2DPoint(NSPoint pt, double projectionMatrix[9]);
 
 @interface VSPoint : NSManagedObject {
 	
-	NSMapTable *pointToPointDistanceCache;
+	NSMapTable *__strong pointToPointDistanceCache;
 	
 }
 

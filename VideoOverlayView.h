@@ -21,6 +21,9 @@
 	NSTrackingArea *__strong trackingArea;
 	NSArray *__strong quadratCoordinateGrids;
     
+    NSSet *__strong visibleScreenPoints;
+    NSSet *__strong visibleAnnotations;
+    
 }
 
 @property (weak) id delegate; // I make the VideoWindowController a delegate, so I can call its methods when click things happen in the view.

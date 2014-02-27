@@ -1292,6 +1292,17 @@
 			path = libs;
 			sourceTree = "<group>";
 		};
+		96A8734618BF36B5000D1B75 /* Value Transformers */ = {
+			isa = PBXGroup;
+			children = (
+				96AD2FAE10B37D4400FA1217 /* VS2DMatrixToStringTransformer.h */,
+				96AD2FAF10B37D4400FA1217 /* VS2DMatrixToStringTransformer.m */,
+				96BBAD5E151A93760066E9CC /* VSScientificNotationFormatter.h */,
+				96BBAD5F151A93760066E9CC /* VSScientificNotationFormatter.m */,
+			);
+			name = "Value Transformers";
+			sourceTree = "<group>";
+		};
 		96AF8E7514C1878100731DEA /* OpenCV library */ = {
 			isa = PBXGroup;
 			children = (
@@ -1482,12 +1493,9 @@
 				96AE95801162ED6600118398 /* EventAwareTableView.m */,
 				96AE97AC1164F92700118398 /* ObjectAddPanel.h */,
 				96AE97AD1164F92700118398 /* ObjectAddPanel.m */,
-				96AD2FAE10B37D4400FA1217 /* VS2DMatrixToStringTransformer.h */,
-				96AD2FAF10B37D4400FA1217 /* VS2DMatrixToStringTransformer.m */,
-				96BBAD5E151A93760066E9CC /* VSScientificNotationFormatter.h */,
-				96BBAD5F151A93760066E9CC /* VSScientificNotationFormatter.m */,
 				96B766B918BEB26D005EB380 /* Synced Playback Panel Views */,
 				96B766BA18BEB2A4005EB380 /* Portrait Views */,
+				96A8734618BF36B5000D1B75 /* Value Transformers */,
 			);
 			name = "View Classes";
 			sourceTree = "<group>";

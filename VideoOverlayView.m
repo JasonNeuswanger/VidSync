@@ -11,6 +11,10 @@
 
 @implementation VideoOverlayView
 
+@synthesize visibleScreenPoints;
+@synthesize visibleAnnotations;
+
+
 - (id)initWithFrame:(NSRect)frame {
     self = [super initWithFrame:frame];
     if (self) {
