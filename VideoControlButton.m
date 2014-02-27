@@ -11,12 +11,14 @@
 @implementation VideoControlButton
 
 @synthesize enabled;
+@synthesize unpressedColor;
 
 - (void) awakeFromNib
 {
     [self setBordered:NO];
     [self setNeedsDisplay];
     pressedHighlightColor = [NSColor grayColor];
+    unpressedColor = [NSColor whiteColor];
     enabled = YES;
 }
 
@@ -33,7 +35,7 @@
 - (void) mouseUp:(NSEvent *)theEvent
 {
     if (enabled) {
-        [self setCustomTitle:[self title] withColor:[NSColor whiteColor] fontSize:fontSizeSet];
+        [self setCustomTitle:[self title] withColor:unpressedColor fontSize:fontSizeSet];
         [super mouseUp:theEvent];
     }
 }

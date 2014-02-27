@@ -7709,7 +7709,7 @@ Some useful refractive index values are:  1.000 for air, 1.335 for fresh water, 
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <font key="font" metaFont="system"/>
                                         <tabViewItems>
-                                            <tabViewItem label="TilStop" identifier="1" id="3Sp-RI-lDy" customClass="PlaybackDurationTabViewItem">
+                                            <tabViewItem label="TilStop" identifier="1" id="3Sp-RI-lDy">
                                                 <view key="view" id="rjr-ac-Hgm">
                                                     <rect key="frame" x="0.0" y="0.0" width="223" height="20"/>
                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>

@@ -29,10 +29,15 @@
 
     [bookmarkSetButton1 setCustomTitle:@"\uf02e" withColor:videoButtonColor fontSize:bookmarkButtonFontSize];
     [bookmarkSetButton2 setCustomTitle:@"\uf02e" withColor:videoButtonColor fontSize:bookmarkButtonFontSize];
-    [bookmarkGoButton1 setCustomTitle:@"\uf18e" withColor:[NSColor colorWithWhite:1.0 alpha:0.15] fontSize:bookmarkButtonFontSize];
-    [bookmarkGoButton2 setCustomTitle:@"\uf18e" withColor:[NSColor colorWithWhite:1.0 alpha:0.15] fontSize:bookmarkButtonFontSize];
+    
+    NSColor *unpressedBookmarkGoColor = [NSColor colorWithWhite:1.0 alpha:0.15];
+    
+    [bookmarkGoButton1 setCustomTitle:@"\uf18e" withColor:unpressedBookmarkGoColor fontSize:bookmarkButtonFontSize];
+    [bookmarkGoButton2 setCustomTitle:@"\uf18e" withColor:unpressedBookmarkGoColor fontSize:bookmarkButtonFontSize];
     bookmarkGoButton1.enabled = NO;
     bookmarkGoButton2.enabled = NO;
+    bookmarkGoButton1.unpressedColor = unpressedBookmarkGoColor;
+    bookmarkGoButton2.unpressedColor = unpressedBookmarkGoColor;
 }
 
 - (void)drawRect:(NSRect)rect {
@@ -47,10 +52,12 @@
         VidSyncDocument *document = (VidSyncDocument *) object;
         if (document.bookmarkIsSet1) {
             [bookmarkGoButton1 setCustomTitle:@"\uf18e" withColor:[NSColor colorWithWhite:1.0 alpha:1.0] fontSize:bookmarkButtonFontSize];
+            bookmarkGoButton1.unpressedColor = [NSColor whiteColor];
             bookmarkGoButton1.enabled = YES;
         }
         if (document.bookmarkIsSet2) {
             [bookmarkGoButton2 setCustomTitle:@"\uf18e" withColor:[NSColor colorWithWhite:1.0 alpha:1.0] fontSize:bookmarkButtonFontSize];
+            bookmarkGoButton2.unpressedColor = [NSColor whiteColor];
             bookmarkGoButton2.enabled = YES;
         }
     }

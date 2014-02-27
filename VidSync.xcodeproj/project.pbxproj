@@ -862,21 +862,14 @@
 		2A37F4B8FDCFA73011CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				96B766BB18BEB41C005EB380 /* NIBs */,
 				961A2F4A18B42506009EA198 /* Fonts */,
 				96F1E26C152559B800F246F6 /* VidSync Help Draft */,
-				9658610311738CA700BC99D5 /* Example Quadrat.VidSyncQuadrat */,
-				9658610411738CA700BC99D5 /* Example Types.VidSyncTypes */,
-				9697F69B116D31D900BA3BB1 /* CamerasIcon.icns */,
-				9697F69C116D31D900BA3BB1 /* Fish3DIcon.icns */,
-				96070356153365BF00905BCC /* DistortionIcon.icns */,
-				9697F69D116D31D900BA3BB1 /* QuadratIcon.icns */,
+				96B766BD18BEB445005EB380 /* Example Data */,
+				96B766BC18BEB438005EB380 /* Icons */,
 				9612EC2418B74A6F00BBED62 /* TallVideoScrubberBackground.png */,
 				96EF200610915B28001DEF3A /* CameraClick.mp3 */,
 				96EF200710915B28001DEF3A /* Credits.html */,
-				96EF200A10915B28001DEF3A /* VidSyncIcon.icns */,
-				2F7446A70DB6BCF400F9684A /* MainMenu.xib */,
-				2F7446A90DB6BCF400F9684A /* VidSyncProject.xib */,
-				96EF227510956DE9001DEF3A /* VideoClipWindow.xib */,
 				2A37F4B9FDCFA73011CA2CEA /* Credits.rtf */,
 				8D15AC360486D014006FF6A4 /* VidSync-Info.plist */,
 				089C165FFE840EACC02AAC07 /* InfoPlist.strings */,
@@ -1321,6 +1314,69 @@
 			name = "OpenCV library";
 			sourceTree = "<group>";
 		};
+		96B766B918BEB26D005EB380 /* Synced Playback Panel Views */ = {
+			isa = PBXGroup;
+			children = (
+				961A2F4418B40AB2009EA198 /* SyncedPlaybackPanel.h */,
+				961A2F4518B40AB2009EA198 /* SyncedPlaybackPanel.m */,
+				961A2F4718B40D05009EA198 /* SyncedPlaybackView.h */,
+				961A2F4818B40D05009EA198 /* SyncedPlaybackView.m */,
+				96D5595E1182501300032E44 /* PlayWhilePressedButton.h */,
+				96D5595F1182501300032E44 /* PlayWhilePressedButton.m */,
+				961A2F4C18B43FCE009EA198 /* VideoControlButton.h */,
+				961A2F4D18B43FCE009EA198 /* VideoControlButton.m */,
+				9612EC2118B741F500BBED62 /* SyncedPlaybackPanelControlBox.h */,
+				9612EC2218B741F500BBED62 /* SyncedPlaybackPanelControlBox.m */,
+				96B766AF18BE9928005EB380 /* PlaybackDurationTabView.h */,
+				96B766B018BE9928005EB380 /* PlaybackDurationTabView.m */,
+				9612EC1E18B6FFE300BBED62 /* PlaybackRateDescriptionTransformer.h */,
+				9612EC1F18B6FFE300BBED62 /* PlaybackRateDescriptionTransformer.m */,
+			);
+			name = "Synced Playback Panel Views";
+			sourceTree = "<group>";
+		};
+		96B766BA18BEB2A4005EB380 /* Portrait Views */ = {
+			isa = PBXGroup;
+			children = (
+				9612EC1518B5EDE400BBED62 /* PortraitBrowserView.h */,
+				9612EC1618B5EDE400BBED62 /* PortraitBrowserView.m */,
+				9612EC1818B5EE0100BBED62 /* PortraitBrowserCell.h */,
+				9612EC1918B5EE0100BBED62 /* PortraitBrowserCell.m */,
+			);
+			name = "Portrait Views";
+			sourceTree = "<group>";
+		};
+		96B766BB18BEB41C005EB380 /* NIBs */ = {
+			isa = PBXGroup;
+			children = (
+				2F7446A90DB6BCF400F9684A /* VidSyncProject.xib */,
+				96EF227510956DE9001DEF3A /* VideoClipWindow.xib */,
+				2F7446A70DB6BCF400F9684A /* MainMenu.xib */,
+			);
+			name = NIBs;
+			sourceTree = "<group>";
+		};
+		96B766BC18BEB438005EB380 /* Icons */ = {
+			isa = PBXGroup;
+			children = (
+				96EF200A10915B28001DEF3A /* VidSyncIcon.icns */,
+				9697F69B116D31D900BA3BB1 /* CamerasIcon.icns */,
+				9697F69C116D31D900BA3BB1 /* Fish3DIcon.icns */,
+				96070356153365BF00905BCC /* DistortionIcon.icns */,
+				9697F69D116D31D900BA3BB1 /* QuadratIcon.icns */,
+			);
+			name = Icons;
+			sourceTree = "<group>";
+		};
+		96B766BD18BEB445005EB380 /* Example Data */ = {
+			isa = PBXGroup;
+			children = (
+				9658610311738CA700BC99D5 /* Example Quadrat.VidSyncQuadrat */,
+				9658610411738CA700BC99D5 /* Example Types.VidSyncTypes */,
+			);
+			name = "Example Data";
+			sourceTree = "<group>";
+		};
 		96EF22541095667C001DEF3A /* Model Classes */ = {
 			isa = PBXGroup;
 			children = (
@@ -1428,26 +1484,10 @@
 				96AE97AD1164F92700118398 /* ObjectAddPanel.m */,
 				96AD2FAE10B37D4400FA1217 /* VS2DMatrixToStringTransformer.h */,
 				96AD2FAF10B37D4400FA1217 /* VS2DMatrixToStringTransformer.m */,
-				96D5595E1182501300032E44 /* PlayWhilePressedButton.h */,
-				96D5595F1182501300032E44 /* PlayWhilePressedButton.m */,
-				961A2F4C18B43FCE009EA198 /* VideoControlButton.h */,
-				961A2F4D18B43FCE009EA198 /* VideoControlButton.m */,
 				96BBAD5E151A93760066E9CC /* VSScientificNotationFormatter.h */,
 				96BBAD5F151A93760066E9CC /* VSScientificNotationFormatter.m */,
-				961A2F4418B40AB2009EA198 /* SyncedPlaybackPanel.h */,
-				961A2F4518B40AB2009EA198 /* SyncedPlaybackPanel.m */,
-				961A2F4718B40D05009EA198 /* SyncedPlaybackView.h */,
-				961A2F4818B40D05009EA198 /* SyncedPlaybackView.m */,
-				9612EC2118B741F500BBED62 /* SyncedPlaybackPanelControlBox.h */,
-				9612EC2218B741F500BBED62 /* SyncedPlaybackPanelControlBox.m */,
-				96B766AF18BE9928005EB380 /* PlaybackDurationTabView.h */,
-				96B766B018BE9928005EB380 /* PlaybackDurationTabView.m */,
-				9612EC1518B5EDE400BBED62 /* PortraitBrowserView.h */,
-				9612EC1618B5EDE400BBED62 /* PortraitBrowserView.m */,
-				9612EC1818B5EE0100BBED62 /* PortraitBrowserCell.h */,
-				9612EC1918B5EE0100BBED62 /* PortraitBrowserCell.m */,
-				9612EC1E18B6FFE300BBED62 /* PlaybackRateDescriptionTransformer.h */,
-				9612EC1F18B6FFE300BBED62 /* PlaybackRateDescriptionTransformer.m */,
+				96B766B918BEB26D005EB380 /* Synced Playback Panel Views */,
+				96B766BA18BEB2A4005EB380 /* Portrait Views */,
 			);
 			name = "View Classes";
 			sourceTree = "<group>";

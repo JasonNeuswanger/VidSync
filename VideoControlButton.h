@@ -15,12 +15,14 @@
     float fontSizeSet;
     
     NSColor *__strong pressedHighlightColor;
+    NSColor *__strong unpressedColor;
     
     BOOL enabled;
     
 }
 
-@property BOOL enabled;
+@property (assign) BOOL enabled;
+@property (strong) NSColor *unpressedColor;
 
 - (void) setCustomTitle:(NSString *)title withColor:(NSColor *)color fontSize:(float)fontSize;
 
