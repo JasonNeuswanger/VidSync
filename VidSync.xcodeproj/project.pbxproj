@@ -1299,8 +1299,101 @@
 				96AD2FAF10B37D4400FA1217 /* VS2DMatrixToStringTransformer.m */,
 				96BBAD5E151A93760066E9CC /* VSScientificNotationFormatter.h */,
 				96BBAD5F151A93760066E9CC /* VSScientificNotationFormatter.m */,
+				9612EC1218B5AA5F00BBED62 /* OrderedSetArrayValueTransformer.h */,
+				9612EC1318B5AA5F00BBED62 /* OrderedSetArrayValueTransformer.m */,
 			);
 			name = "Value Transformers";
+			sourceTree = "<group>";
+		};
+		96A8734718BFD336000D1B75 /* Visible Item Array Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				96010ED410FE410500944387 /* VSVisibleItemArrayController.h */,
+				96010ED510FE410500944387 /* VSVisibleItemArrayController.m */,
+				9690663B116AFB08002B3F20 /* TypeIndexNameSortedArrayController.h */,
+				9690663C116AFB08002B3F20 /* TypeIndexNameSortedArrayController.m */,
+				96E1284210F57EF900DAF12C /* TrackedObjectArrayController.h */,
+				96E1284310F57EF900DAF12C /* TrackedObjectArrayController.m */,
+				96E128DA10FC418B00DAF12C /* TrackedEventArrayController.h */,
+				96E128DB10FC418B00DAF12C /* TrackedEventArrayController.m */,
+				96FA1CEF1155ACCA0065DF96 /* EventsPointsController.h */,
+				96FA1CF01155ACCA0065DF96 /* EventsPointsController.m */,
+				96010D4510FCF0A300944387 /* EventsOtherObjectsArrayController.h */,
+				96010D4610FCF0A300944387 /* EventsOtherObjectsArrayController.m */,
+				969065B3116AEA0B002B3F20 /* ObjectSynonymizeArrayController.h */,
+				969065B4116AEA0B002B3F20 /* ObjectSynonymizeArrayController.m */,
+				96AE94411162B65A00118398 /* CalibScreenPtArrayController.h */,
+				96AE94421162B65A00118398 /* CalibScreenPtArrayController.m */,
+				9612EC2C18B9744700BBED62 /* CalibDistortionPtArrayController.h */,
+				9612EC2D18B9744700BBED62 /* CalibDistortionPtArrayController.m */,
+				96BDA41F117B84D900C39399 /* CalibDistortionLineArrayController.h */,
+				96BDA420117B84D900C39399 /* CalibDistortionLineArrayController.mm */,
+				96A0CB591165D22200845DCD /* VSAnnotationArrayController.h */,
+				96A0CB5A1165D22200845DCD /* VSAnnotationArrayController.m */,
+			);
+			name = "Visible Item Array Controllers";
+			sourceTree = "<group>";
+		};
+		96A8734818BFD3C9000D1B75 /* Portrait Array Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				9612EC0C18B597F700BBED62 /* PortraitsArrayController.h */,
+				9612EC0D18B597F700BBED62 /* PortraitsArrayController.m */,
+				9612EC1B18B68EAD00BBED62 /* AllPortraitsArrayController.h */,
+				9612EC1C18B68EAD00BBED62 /* AllPortraitsArrayController.m */,
+				9612EC0F18B59A6900BBED62 /* ObjectsPortraitsArrayController.h */,
+				9612EC1018B59A6900BBED62 /* ObjectsPortraitsArrayController.m */,
+			);
+			name = "Portrait Array Controllers";
+			sourceTree = "<group>";
+		};
+		96A8734918BFD44E000D1B75 /* Video Window */ = {
+			isa = PBXGroup;
+			children = (
+				96EF24E610967B62001DEF3A /* VideoOverlayView.h */,
+				96EF24E710967B62001DEF3A /* VideoOverlayView.m */,
+				9695B87718BC4F4100D15C38 /* VSAVPlayerView.h */,
+				9695B87818BC4F4100D15C38 /* VSAVPlayerView.m */,
+				96A5DEBB1162501500D58616 /* VideoOverlayWindow.h */,
+				96A5DEBC1162501500D58616 /* VideoOverlayWindow.m */,
+			);
+			name = "Video Window";
+			sourceTree = "<group>";
+		};
+		96A8734A18BFD4E0000D1B75 /* VSVisibleItem Classes */ = {
+			isa = PBXGroup;
+			children = (
+				96AD316110B78C2100FA1217 /* VSVisibleItem.h */,
+				96AD316210B78C2100FA1217 /* VSVisibleItem.m */,
+				96E1284C10F678C900DAF12C /* VSTrackedObject.h */,
+				96E1284D10F678C900DAF12C /* VSTrackedObject.m */,
+				96E128DF10FC474000DAF12C /* VSTrackedEvent.h */,
+				96E128E010FC474000DAF12C /* VSTrackedEvent.m */,
+				96AE9617116315CC00118398 /* VSAnnotation.h */,
+				96AE9618116315CC00118398 /* VSAnnotation.m */,
+			);
+			name = "VSVisibleItem Classes";
+			sourceTree = "<group>";
+		};
+		96A8734B18BFD5AB000D1B75 /* Other Visible Items */ = {
+			isa = PBXGroup;
+			children = (
+				96DC9B441152C7600078A956 /* VSPoint.h */,
+				96DC9B451152C7600078A956 /* VSPoint.m */,
+				96DC9B3F1152C64E0078A956 /* VSEventScreenPoint.h */,
+				96DC9B401152C64E0078A956 /* VSEventScreenPoint.m */,
+				969D6CE6115C079700A6D5A3 /* VSHintLine.h */,
+				969D6CE7115C079700A6D5A3 /* VSHintLine.m */,
+				96BDA409117B826100C39399 /* VSDistortionLine.h */,
+				96BDA40A117B826100C39399 /* VSDistortionLine.m */,
+				96BDA488117B925300C39399 /* VSDistortionPoint.h */,
+				96BDA489117B925300C39399 /* VSDistortionPoint.m */,
+				96AD296510ACEDBD00FA1217 /* VSCalibrationPoint.h */,
+				96AD296610ACEDBD00FA1217 /* VSCalibrationPoint.m */,
+				9612EC0918B5825300BBED62 /* VSTrackedObjectPortrait.h */,
+				9612EC0A18B5825300BBED62 /* VSTrackedObjectPortrait.m */,
+			);
+			name = "Other Visible Items";
 			sourceTree = "<group>";
 		};
 		96AF8E7514C1878100731DEA /* OpenCV library */ = {
@@ -1395,34 +1488,14 @@
 				96EF21A21095432A001DEF3A /* VSProject.m */,
 				96EF20FE1092567A001DEF3A /* VSVideoClip.h */,
 				96EF20FF1092567A001DEF3A /* VSVideoClip.m */,
-				96AD259D10AA0B8F00FA1217 /* VSCalibration.h */,
-				96AD259E10AA0B8F00FA1217 /* VSCalibration.mm */,
-				96AD296510ACEDBD00FA1217 /* VSCalibrationPoint.h */,
-				96AD296610ACEDBD00FA1217 /* VSCalibrationPoint.m */,
-				96BDA409117B826100C39399 /* VSDistortionLine.h */,
-				96BDA40A117B826100C39399 /* VSDistortionLine.m */,
-				96BDA488117B925300C39399 /* VSDistortionPoint.h */,
-				96BDA489117B925300C39399 /* VSDistortionPoint.m */,
-				96DC9B441152C7600078A956 /* VSPoint.h */,
-				96DC9B451152C7600078A956 /* VSPoint.m */,
-				96DC9B3F1152C64E0078A956 /* VSEventScreenPoint.h */,
-				96DC9B401152C64E0078A956 /* VSEventScreenPoint.m */,
-				969D6CE6115C079700A6D5A3 /* VSHintLine.h */,
-				969D6CE7115C079700A6D5A3 /* VSHintLine.m */,
-				96AD316110B78C2100FA1217 /* VSVisibleItem.h */,
-				96AD316210B78C2100FA1217 /* VSVisibleItem.m */,
 				96AD316810B78DBB00FA1217 /* VSTrackedObjectType.h */,
 				96AD316910B78DBB00FA1217 /* VSTrackedObjectType.m */,
 				96AD322C10B7D70E00FA1217 /* VSTrackedEventType.h */,
 				96AD322D10B7D70E00FA1217 /* VSTrackedEventType.m */,
-				96E1284C10F678C900DAF12C /* VSTrackedObject.h */,
-				96E1284D10F678C900DAF12C /* VSTrackedObject.m */,
-				9612EC0918B5825300BBED62 /* VSTrackedObjectPortrait.h */,
-				9612EC0A18B5825300BBED62 /* VSTrackedObjectPortrait.m */,
-				96E128DF10FC474000DAF12C /* VSTrackedEvent.h */,
-				96E128E010FC474000DAF12C /* VSTrackedEvent.m */,
-				96AE9617116315CC00118398 /* VSAnnotation.h */,
-				96AE9618116315CC00118398 /* VSAnnotation.m */,
+				96AD259D10AA0B8F00FA1217 /* VSCalibration.h */,
+				96AD259E10AA0B8F00FA1217 /* VSCalibration.mm */,
+				96A8734A18BFD4E0000D1B75 /* VSVisibleItem Classes */,
+				96A8734B18BFD5AB000D1B75 /* Other Visible Items */,
 			);
 			name = "Model Classes";
 			sourceTree = "<group>";
@@ -1440,38 +1513,10 @@
 				96EF23011096305B001DEF3A /* VideoWindowController.m */,
 				96EF247D10966F60001DEF3A /* VideoClipArrayController.h */,
 				96EF247E10966F60001DEF3A /* VideoClipArrayController.m */,
-				96010ED410FE410500944387 /* VSVisibleItemArrayController.h */,
-				96010ED510FE410500944387 /* VSVisibleItemArrayController.m */,
-				9690663B116AFB08002B3F20 /* TypeIndexNameSortedArrayController.h */,
-				9690663C116AFB08002B3F20 /* TypeIndexNameSortedArrayController.m */,
-				96AE94411162B65A00118398 /* CalibScreenPtArrayController.h */,
-				96AE94421162B65A00118398 /* CalibScreenPtArrayController.m */,
-				9612EC2C18B9744700BBED62 /* CalibDistortionPtArrayController.h */,
-				9612EC2D18B9744700BBED62 /* CalibDistortionPtArrayController.m */,
-				96BDA41F117B84D900C39399 /* CalibDistortionLineArrayController.h */,
-				96BDA420117B84D900C39399 /* CalibDistortionLineArrayController.mm */,
 				969DB351116FF3AF00DBA9F4 /* TypesArrayController.h */,
 				969DB352116FF3AF00DBA9F4 /* TypesArrayController.m */,
-				96E1284210F57EF900DAF12C /* TrackedObjectArrayController.h */,
-				96E1284310F57EF900DAF12C /* TrackedObjectArrayController.m */,
-				96E128DA10FC418B00DAF12C /* TrackedEventArrayController.h */,
-				96E128DB10FC418B00DAF12C /* TrackedEventArrayController.m */,
-				96010D4510FCF0A300944387 /* EventsOtherObjectsArrayController.h */,
-				96010D4610FCF0A300944387 /* EventsOtherObjectsArrayController.m */,
-				969065B3116AEA0B002B3F20 /* ObjectSynonymizeArrayController.h */,
-				969065B4116AEA0B002B3F20 /* ObjectSynonymizeArrayController.m */,
-				96FA1CEF1155ACCA0065DF96 /* EventsPointsController.h */,
-				96FA1CF01155ACCA0065DF96 /* EventsPointsController.m */,
-				96A0CB591165D22200845DCD /* VSAnnotationArrayController.h */,
-				96A0CB5A1165D22200845DCD /* VSAnnotationArrayController.m */,
-				9612EC0C18B597F700BBED62 /* PortraitsArrayController.h */,
-				9612EC0D18B597F700BBED62 /* PortraitsArrayController.m */,
-				9612EC1B18B68EAD00BBED62 /* AllPortraitsArrayController.h */,
-				9612EC1C18B68EAD00BBED62 /* AllPortraitsArrayController.m */,
-				9612EC0F18B59A6900BBED62 /* ObjectsPortraitsArrayController.h */,
-				9612EC1018B59A6900BBED62 /* ObjectsPortraitsArrayController.m */,
-				9612EC1218B5AA5F00BBED62 /* OrderedSetArrayValueTransformer.h */,
-				9612EC1318B5AA5F00BBED62 /* OrderedSetArrayValueTransformer.m */,
+				96A8734718BFD336000D1B75 /* Visible Item Array Controllers */,
+				96A8734818BFD3C9000D1B75 /* Portrait Array Controllers */,
 			);
 			name = "Controller Classes";
 			sourceTree = "<group>";
@@ -1481,18 +1526,13 @@
 			children = (
 				9612EC2918B9426700BBED62 /* MainProjectWindow.h */,
 				9612EC2A18B9426700BBED62 /* MainProjectWindow.m */,
-				96EF24E610967B62001DEF3A /* VideoOverlayView.h */,
-				96EF24E710967B62001DEF3A /* VideoOverlayView.m */,
-				9695B87718BC4F4100D15C38 /* VSAVPlayerView.h */,
-				9695B87818BC4F4100D15C38 /* VSAVPlayerView.m */,
-				96A5DEBB1162501500D58616 /* VideoOverlayWindow.h */,
-				96A5DEBC1162501500D58616 /* VideoOverlayWindow.m */,
 				96EF264F10976B7B001DEF3A /* MagnifiedPreviewView.h */,
 				96EF265010976B7B001DEF3A /* MagnifiedPreviewView.m */,
 				96AE957F1162ED6600118398 /* EventAwareTableView.h */,
 				96AE95801162ED6600118398 /* EventAwareTableView.m */,
 				96AE97AC1164F92700118398 /* ObjectAddPanel.h */,
 				96AE97AD1164F92700118398 /* ObjectAddPanel.m */,
+				96A8734918BFD44E000D1B75 /* Video Window */,
 				96B766B918BEB26D005EB380 /* Synced Playback Panel Views */,
 				96B766BA18BEB2A4005EB380 /* Portrait Views */,
 				96A8734618BF36B5000D1B75 /* Value Transformers */,
