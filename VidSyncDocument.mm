@@ -68,9 +68,15 @@ static void *AVSPPlayerCurrentTimeContext = &AVSPPlayerCurrentTimeContext;
     if (self != nil) {
 		shutterClick = [[NSSound alloc] initWithContentsOfFile:[[NSBundle mainBundle] pathForSoundResource:@"CameraClick"] byReference:YES];
         
-        NSURL *fontPathURL = [NSURL fileURLWithPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/Fonts"]];
-        CTFontManagerCreateFontDescriptorsFromURL((__bridge CFURLRef)(fontPathURL));
+        /*-- For some reason I previously thought this code was necessary for the custom FontAwesome font to work; however, things seem to be fine without it.
         
+        NSURL *fontPathURL = [NSURL fileURLWithPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/Fonts"]];
+        CFArrayRef fontDescriptors = CTFontManagerCreateFontDescriptorsFromURL((__bridge CFURLRef)(fontPathURL));
+         // And below is a more modern version of the above line
+        //NSArray *fontDescriptors = (__bridge_transfer NSArray *) CTFontManagerCreateFontDescriptorsFromURL((__bridge CFURLRef)(fontPathURL));
+        
+         -----*/
+         
 		stopTime = kCMTimeIndefinite;
         bookmarkIsSet1 = NO;
         bookmarkIsSet2 = NO;

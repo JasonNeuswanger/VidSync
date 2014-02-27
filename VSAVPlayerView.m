@@ -37,4 +37,17 @@
     }
 }
 
+
+// Arrow keys step the video when not synced
+
+- (void)keyDown:(NSEvent *)theEvent {
+    unichar key = [[theEvent charactersIgnoringModifiers] characterAtIndex: 0];
+    if (key == NSRightArrowFunctionKey) {
+        [videoWindowController.playerView.player.currentItem stepByCount:1];
+    } else if (key == NSLeftArrowFunctionKey) {
+        [videoWindowController.playerView.player.currentItem stepByCount:-1];
+    }
+    
+}
+
 @end

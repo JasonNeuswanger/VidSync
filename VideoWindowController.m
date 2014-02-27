@@ -285,8 +285,8 @@
 - (void) handleOverlayKeyDown:(NSEvent *)theEvent
 {
 	VidSyncDocument *doc = self.document;
-	if ([theEvent modifierFlags] & NSCommandKeyMask) {				// Forward all keypresses with the Command key down (mainly playback controls) to the main window
-		[doc.mainWindow keyDown:theEvent];
+	if ([theEvent modifierFlags] & NSCommandKeyMask) {				// Forward all keypresses with the Command key down (mainly playback controls) to the playback control window
+		[doc.syncedPlaybackPanel keyDown:theEvent];
 		return;
 	}
     
