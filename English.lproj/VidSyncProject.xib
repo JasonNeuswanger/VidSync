@@ -7551,7 +7551,7 @@ Some useful refractive index values are:  1.000 for air, 1.335 for fresh water, 
                         <rect key="frame" x="0.0" y="0.0" width="1144" height="120"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <slider verticalHuggingPriority="750" id="AUE-Bz-KZS">
+                            <slider toolTip="This slider shows the current timecode relative to the start of the master clip." verticalHuggingPriority="750" id="AUE-Bz-KZS">
                                 <rect key="frame" x="234" y="83" width="740" height="20"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                 <sliderCell key="cell" controlSize="small" continuous="YES" alignment="left" maxValue="100" tickMarkPosition="below" numberOfTickMarks="100" sliderType="linear" id="5DL-JP-QSf"/>
@@ -7580,7 +7580,7 @@ Some useful refractive index values are:  1.000 for air, 1.335 for fresh water, 
                                     <binding destination="100044" name="value" keyPath="selection.name" id="kSh-c6-iYL"/>
                                 </connections>
                             </textField>
-                            <button toolTip="Play forward at advanced playback rate 1 while pressed" verticalHuggingPriority="750" tag="1" id="uEO-d7-N6O" customClass="PlayWhilePressedButton">
+                            <button toolTip="Play forward at normal speed while pressed (Option+RightArrow)" verticalHuggingPriority="750" tag="1" id="uEO-d7-N6O" customClass="PlayWhilePressedButton">
                                 <rect key="frame" x="54" y="71" width="32" height="44"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                 <buttonCell key="cell" type="square" title="↣" bezelStyle="shadowlessSquare" alignment="center" continuous="YES" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="pPm-fG-Lsk">
@@ -7591,7 +7591,7 @@ Some useful refractive index values are:  1.000 for air, 1.335 for fresh water, 
                                     <outlet property="document" destination="-2" id="Zh5-56-6do"/>
                                 </connections>
                             </button>
-                            <button toolTip="Play backward at advanced playback rate 1 while pressed" verticalHuggingPriority="750" id="FXJ-iK-wvZ" customClass="PlayWhilePressedButton">
+                            <button toolTip="Play backward at normal speed while pressed (Option+LeftArrow)" verticalHuggingPriority="750" id="FXJ-iK-wvZ" customClass="PlayWhilePressedButton">
                                 <rect key="frame" x="17" y="71" width="30" height="44"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                 <buttonCell key="cell" type="square" title="↢" bezelStyle="shadowlessSquare" alignment="center" continuous="YES" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="5ZU-40-QZY">
@@ -7602,7 +7602,7 @@ Some useful refractive index values are:  1.000 for air, 1.335 for fresh water, 
                                     <outlet property="document" destination="-2" id="Uym-t8-ILg"/>
                                 </connections>
                             </button>
-                            <button toolTip="Step Backward (Command+LeftArrow)" verticalHuggingPriority="750" tag="1" id="103244" customClass="VideoControlButton">
+                            <button toolTip="Step backward 1 frame (Command+LeftArrow, or scroll mouse wheel up)" verticalHuggingPriority="750" tag="1" id="103244" customClass="VideoControlButton">
                                 <rect key="frame" x="99" y="71" width="26" height="44"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                 <buttonCell key="cell" type="square" title="⇤" bezelStyle="shadowlessSquare" alignment="center" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="103257">
@@ -7615,7 +7615,7 @@ Some useful refractive index values are:  1.000 for air, 1.335 for fresh water, 
                                     <action selector="stepBackwardAll:" target="-2" id="103261"/>
                                 </connections>
                             </button>
-                            <button toolTip="Play Backward (Command+DownArrow)" wantsLayer="YES" verticalHuggingPriority="750" tag="1" id="103248" customClass="VideoControlButton">
+                            <button toolTip="Play backward (Command+DownArrow)" wantsLayer="YES" verticalHuggingPriority="750" tag="1" id="103248" customClass="VideoControlButton">
                                 <rect key="frame" x="165" y="71" width="27" height="44"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                 <contentFilters>
@@ -7636,7 +7636,7 @@ Some useful refractive index values are:  1.000 for air, 1.335 for fresh water, 
                                     <action selector="playAllBackward:" target="-2" id="103264"/>
                                 </connections>
                             </button>
-                            <button toolTip="Step Forward (Command+RightArrow)" verticalHuggingPriority="750" tag="2" id="103245" customClass="VideoControlButton">
+                            <button toolTip="Step forward 1 frame (Command+RightArrow, or scroll mouse wheel down)" verticalHuggingPriority="750" tag="2" id="103245" customClass="VideoControlButton">
                                 <rect key="frame" x="127" y="71" width="27" height="44"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                 <buttonCell key="cell" type="square" title="⇥" bezelStyle="shadowlessSquare" alignment="center" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="103256">
@@ -7649,7 +7649,7 @@ Some useful refractive index values are:  1.000 for air, 1.335 for fresh water, 
                                     <action selector="stepForwardAll:" target="-2" id="103260"/>
                                 </connections>
                             </button>
-                            <button toolTip="Play/Pause (Command+UpArrow)" verticalHuggingPriority="750" id="103247" customClass="VideoControlButton">
+                            <button toolTip="Play forward or Pause (Command+UpArrow)" verticalHuggingPriority="750" id="103247" customClass="VideoControlButton">
                                 <rect key="frame" x="197" y="71" width="26" height="44"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                 <buttonCell key="cell" type="square" title="►" bezelStyle="shadowlessSquare" alignment="center" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="103254">
@@ -7882,7 +7882,7 @@ Some useful refractive index values are:  1.000 for air, 1.335 for fresh water, 
                                             <binding destination="100045" name="value" keyPath="values.advancedPlaybackRate1" id="UuR-ym-3UG"/>
                                         </connections>
                                     </textField>
-                                    <button toolTip="Play forward at advanced playback rate 1 while pressed" verticalHuggingPriority="750" tag="1" id="103806" customClass="PlayWhilePressedButton">
+                                    <button toolTip="Play forward at advanced playback rate 1 while pressed (Option+Control+RightArrow)" verticalHuggingPriority="750" tag="1" id="103806" customClass="PlayWhilePressedButton">
                                         <rect key="frame" x="42" y="13" width="27" height="35"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                         <buttonCell key="cell" type="square" title="↣" bezelStyle="shadowlessSquare" alignment="center" continuous="YES" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="103807">
@@ -7893,7 +7893,7 @@ Some useful refractive index values are:  1.000 for air, 1.335 for fresh water, 
                                             <outlet property="document" destination="-2" id="103811"/>
                                         </connections>
                                     </button>
-                                    <button toolTip="Play backward at advanced playback rate 1 while pressed" verticalHuggingPriority="750" id="103808" customClass="PlayWhilePressedButton">
+                                    <button toolTip="Play backward at advanced playback rate 1 while pressed (Option+Control+LeftArrow)" verticalHuggingPriority="750" id="103808" customClass="PlayWhilePressedButton">
                                         <rect key="frame" x="7" y="13" width="25" height="35"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                         <buttonCell key="cell" type="square" title="↢" bezelStyle="shadowlessSquare" alignment="center" continuous="YES" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="103809">
@@ -8145,7 +8145,7 @@ Some useful refractive index values are:  1.000 for air, 1.335 for fresh water, 
                                             <binding destination="100045" name="value" keyPath="values.advancedPlaybackRate2" id="E06-o6-R85"/>
                                         </connections>
                                     </textField>
-                                    <button toolTip="Play forward at advanced playback rate 2 while pressed" verticalHuggingPriority="750" tag="1" id="40m-N8-S9a" customClass="PlayWhilePressedButton">
+                                    <button toolTip="Play forward at advanced playback rate 2 while pressed (Option+Shift+RightArrow)" verticalHuggingPriority="750" tag="1" id="40m-N8-S9a" customClass="PlayWhilePressedButton">
                                         <rect key="frame" x="42" y="13" width="27" height="35"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                         <buttonCell key="cell" type="square" title="↣" bezelStyle="shadowlessSquare" alignment="center" continuous="YES" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="hKm-n2-Q6l">
@@ -8156,7 +8156,7 @@ Some useful refractive index values are:  1.000 for air, 1.335 for fresh water, 
                                             <outlet property="document" destination="-2" id="vW2-aF-471"/>
                                         </connections>
                                     </button>
-                                    <button toolTip="Play backward at advanced playback rate 2 while pressed" verticalHuggingPriority="750" id="veC-Ir-XbZ" customClass="PlayWhilePressedButton">
+                                    <button toolTip="Play backward at advanced playback rate 2 while pressed (Option+Shift+LeftArrow)" verticalHuggingPriority="750" id="veC-Ir-XbZ" customClass="PlayWhilePressedButton">
                                         <rect key="frame" x="7" y="13" width="25" height="35"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                         <buttonCell key="cell" type="square" title="↢" bezelStyle="shadowlessSquare" alignment="center" continuous="YES" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="qOu-dB-puJ">

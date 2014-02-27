@@ -254,20 +254,29 @@
 
 - (void) handleOverlayKeyUp:(NSEvent *)theEvent
 {
+    // Option + Arrow plays at normal rate while pressed
+    // Control + Option + Arrow plays at advanced playback rate 1 while pressed
+    // Command + Option + Arrow plays at advanced playback rate 2 while pressed
+    
+    
 	VidSyncDocument *doc = self.document;
     if ([theEvent modifierFlags] & NSAlternateKeyMask) {            // Forward option+leftarrow and option+rightarrow keypresses to the appropriate PlayWhilePressedButton
         unichar key = [[theEvent charactersIgnoringModifiers] characterAtIndex: 0];
         if (key == NSLeftArrowFunctionKey) {
             if ([theEvent modifierFlags] & NSControlKeyMask) {
+                [doc.playBackwardAtRate1WhilePressedButton stopPlaying];
+            } else if ([theEvent modifierFlags] & NSShiftKeyMask) {
                 [doc.playBackwardAtRate2WhilePressedButton stopPlaying];
             } else {
-                [doc.playBackwardAtRate1WhilePressedButton stopPlaying];
+                [doc.playBackwardWhilePressedButton stopPlaying];
             }
-        } else if (key == NSRightArrowFunctionKey ) {
-            if ([theEvent modifierFlags] & NSControlKeyMask || [theEvent modifierFlags] & NSCommandKeyMask) {
+        } else if (key == NSRightArrowFunctionKey) {
+            if ([theEvent modifierFlags] & NSControlKeyMask) {
+                [doc.playForwardAtRate1WhilePressedButton stopPlaying];
+            } else  if ([theEvent modifierFlags] & NSShiftKeyMask) {
                 [doc.playForwardAtRate2WhilePressedButton stopPlaying];
             } else {
-                [doc.playForwardAtRate1WhilePressedButton stopPlaying];
+                [doc.playForwardWhilePressedButton stopPlaying];
             }
         }
 	}
@@ -280,26 +289,36 @@
 		[doc.mainWindow keyDown:theEvent];
 		return;
 	}
+    
+    // Option + Arrow plays at normal rate while pressed
+    // Control + Option + Arrow plays at advanced playback rate 1 while pressed
+    // Command + Option + Arrow plays at advanced playback rate 2 while pressed
+    
     if ([theEvent modifierFlags] & NSAlternateKeyMask) {            // Forward option+leftarrow and option+rightarrow keypresses to the appropriate PlayWhilePressedButton
         if (![theEvent isARepeat]) {
             unichar key = [[theEvent charactersIgnoringModifiers] characterAtIndex: 0];
             if (key == NSLeftArrowFunctionKey) {
                 if ([theEvent modifierFlags] & NSControlKeyMask) {
+                    [doc.playBackwardAtRate1WhilePressedButton startPlaying];
+                } else if ([theEvent modifierFlags] & NSShiftKeyMask) {
                     [doc.playBackwardAtRate2WhilePressedButton startPlaying];
                 } else {
-                    [doc.playBackwardAtRate1WhilePressedButton startPlaying];
+                    [doc.playBackwardWhilePressedButton startPlaying];
                 }
             } else if (key == NSRightArrowFunctionKey) {
                 if ([theEvent modifierFlags] & NSControlKeyMask) {
+                    [doc.playForwardAtRate1WhilePressedButton startPlaying];
+                } else  if ([theEvent modifierFlags] & NSShiftKeyMask) {
                     [doc.playForwardAtRate2WhilePressedButton startPlaying];
                 } else {
-                    [doc.playForwardAtRate1WhilePressedButton startPlaying];
+                    [doc.playForwardWhilePressedButton startPlaying];
                 }
             }
         }
         return;
 	}
-	if ([[theEvent charactersIgnoringModifiers] isEqualToString:@" "]) {
+	
+    if ([[theEvent charactersIgnoringModifiers] isEqualToString:@" "]) {
 		if ([[doc videoClipArrayController] canSelectNext]) {
 			[[doc videoClipArrayController] selectNext:self];
 		} else {
