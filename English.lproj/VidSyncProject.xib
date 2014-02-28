@@ -7552,7 +7552,7 @@ Some useful refractive index values are:  1.000 for air, 1.335 for fresh water, 
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <slider toolTip="This slider shows the current timecode relative to the start of the master clip." verticalHuggingPriority="750" id="AUE-Bz-KZS">
-                                <rect key="frame" x="234" y="83" width="740" height="20"/>
+                                <rect key="frame" x="240" y="83" width="734" height="20"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                 <sliderCell key="cell" controlSize="small" continuous="YES" alignment="left" maxValue="100" tickMarkPosition="below" numberOfTickMarks="100" sliderType="linear" id="5DL-JP-QSf"/>
                                 <connections>
@@ -7650,7 +7650,7 @@ Some useful refractive index values are:  1.000 for air, 1.335 for fresh water, 
                                 </connections>
                             </button>
                             <button toolTip="Play forward or Pause (Command+UpArrow)" verticalHuggingPriority="750" id="103247" customClass="VideoControlButton">
-                                <rect key="frame" x="197" y="71" width="26" height="44"/>
+                                <rect key="frame" x="197" y="74" width="35" height="44"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                 <buttonCell key="cell" type="square" title="►" bezelStyle="shadowlessSquare" alignment="center" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="103254">
                                     <behavior key="behavior" lightByContents="YES"/>

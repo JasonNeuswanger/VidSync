@@ -16,6 +16,7 @@
     
     NSColor *__strong pressedHighlightColor;
     NSColor *__strong unpressedColor;
+    NSColor *__strong currentColor;
     
     BOOL enabled;
     
@@ -23,7 +24,10 @@
 
 @property (assign) BOOL enabled;
 @property (strong) NSColor *unpressedColor;
+@property (strong) NSColor *pressedHighlightColor;
 
 - (void) setCustomTitle:(NSString *)title withColor:(NSColor *)color fontSize:(float)fontSize;
+
+- (void) setCustomTitle:(NSString *)title;  // uses existing color and font size
 
 @end

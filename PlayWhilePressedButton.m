@@ -36,9 +36,11 @@
 	float playRate;
 	if (self.advancedRateToUse == 1) {
 		playRate = self.direction * [[[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"advancedPlaybackRate1"] floatValue];
-	} else {	// use advanced rate 2
+	} else if (self.advancedRateToUse == 2) {	// use advanced rate 2
 		playRate = self.direction * [[[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"advancedPlaybackRate2"] floatValue];
-	}
+	} else {    // advancedRate is zero, use 1
+        playRate = self.direction;
+    }
 	[document setAllVideoRates:playRate];
 	[document updateMasterTimeDisplay];			// Temp fix; only updates on start and stop; doesn't do overlays
 }
