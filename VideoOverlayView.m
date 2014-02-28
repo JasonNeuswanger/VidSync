@@ -741,7 +741,8 @@
 		[line2path setLineWidth:3.0];
 		[line1path stroke];
 		[line2path stroke];
-	}	
+	}
+    
 	BOOL pointIsSelected = ([[screenPoint.videoClip.project.document.eventsPointsController selectedObjects] count] > 0 && [[screenPoint.videoClip.project.document.eventsPointsController selectedObjects] containsObject:screenPoint.point]);
 	if (pointIsSelected) [self drawSelectionIndicatorAtPoint:point forShapeOfSize:shapeSize opacity:opacity];
 }

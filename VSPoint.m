@@ -109,7 +109,7 @@ NSPoint project2DPoint(NSPoint pt, double projectionMatrix[9])
 	[self calculate3DCoords];
 	if ([self.screenPoints count] == 0) [[self managedObjectContext] deleteObject:self]; // if the point now has no screenpoints, delete it
 	[doc.eventsPointsController.mainTableView setNeedsDisplay];	// refresh the point table
-	[doc.trackedEventsController.mainTableView setNeedsDisplayInRect:[doc.trackedEventsController.mainTableView rectOfColumn:3]];	// refresh the event table's # Points column		
+	[doc.trackedEventsController.mainTableView setNeedsDisplayInRect:[doc.trackedEventsController.mainTableView rectOfColumn:4]];	// refresh the event table's # Points column
 }
 
 - (void) clearPointToPointDistanceCache

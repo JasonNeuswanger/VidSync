@@ -50,7 +50,7 @@
 {
 	[super remove:sender];
 	[document refreshOverlaysOfAllClips:sender];
-	[[[document trackedEventsController] mainTableView] setNeedsDisplayInRect:[[[document trackedEventsController] mainTableView] rectOfColumn:3]];	// refresh the event table's # Points column
+	[[[document trackedEventsController] mainTableView] setNeedsDisplayInRect:[[[document trackedEventsController] mainTableView] rectOfColumn:4]];	// refresh the event table's # Points column
 
 }
 

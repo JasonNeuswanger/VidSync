@@ -93,6 +93,8 @@
     
     IBOutlet ObjectsPortraitsArrayController *__weak objectsPortraitsArrayController;
     IBOutlet NSButton *__weak allPortraitBrowserOpenButton;
+    
+    BOOL objectsTableSelectionChangeNotificationCascadeEnabled, eventsTableSelectionChangeNotificationCascadeEnabled;
 	
 }
 
@@ -139,6 +141,9 @@
 
 @property (assign) BOOL bookmarkIsSet1;
 @property (assign) BOOL bookmarkIsSet2;
+
+@property (assign) BOOL objectsTableSelectionChangeNotificationCascadeEnabled;
+@property (assign) BOOL eventsTableSelectionChangeNotificationCascadeEnabled;
 
 - (id) initWithType:(NSString *)type error:(NSError **)error;
 - (void) windowControllerDidLoadNib:(NSWindowController *)windowController;

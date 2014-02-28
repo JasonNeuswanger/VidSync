@@ -23,6 +23,8 @@
 @dynamic connectingLineLengthLabelUnitMultiplier;
 @dynamic connectingLineLengthLabelUnits;
 
+@dynamic trackedEvents;
+
 @dynamic project;
 
 - (void)awakeFromFetch
@@ -52,26 +54,40 @@
 
 + (void) insertNewTypeFromLoadedDictionary:(NSDictionary *)eventTypeDictionary inProject:(VSProject *)project inManagedObjectContext:(NSManagedObjectContext *)moc
 {
+    // This function loads a type's information from a saved dictionary. If its name matches an old type, it updates the old type's visual properties to match those in the loaded file. Otherwise, it creates a new type.
 	VSTrackedEventType *newType = nil;
+    BOOL overwritingOldType = NO;
 	for (VSTrackedEventType *oldType in project.trackedEventTypes) {
-		if ([oldType.name isEqualToString:[eventTypeDictionary objectForKey:@"name"]]) {		// If a type exists with the same name as the one being imported, overwrite it.
-			newType = oldType;
+		if ([oldType.name isEqualToString:[eventTypeDictionary objectForKey:@"name"]]) {
+            overwritingOldType = YES;
+            oldType.maxNumPoints = [eventTypeDictionary objectForKey:@"maxNumPoints"];
+            oldType.connectingLineType = [eventTypeDictionary objectForKey:@"connectingLineType"];
+            oldType.requiresSameTimecode = [eventTypeDictionary objectForKey:@"requiresSameTimecode"];
+            oldType.connectingLineLengthLabeled = [eventTypeDictionary objectForKey:@"connectingLineLengthLabeled"];
+            oldType.connectingLineThickness = [eventTypeDictionary objectForKey:@"connectingLineThickness"];
+            oldType.connectingLineLengthLabelFontSize = [eventTypeDictionary objectForKey:@"connectingLineLengthLabelFontSize"];
+            oldType.connectingLineLengthLabelFractionDigits = [eventTypeDictionary objectForKey:@"connectingLineLengthLabelFractionDigits"];
+            oldType.connectingLineLengthLabelUnitMultiplier = [eventTypeDictionary objectForKey:@"connectingLineLengthLabelUnitMultiplier"];
+            oldType.connectingLineLengthLabelUnits = [eventTypeDictionary objectForKey:@"connectingLineLengthLabelUnits"];
+            [oldType setVisibleItemPropertiesFromDictionary:eventTypeDictionary];
 		}
 	}
-	if (newType == nil) newType = [NSEntityDescription insertNewObjectForEntityForName:@"VSTrackedEventType" inManagedObjectContext:moc];
-	[newType addObserver:newType forKeyPath:@"name" options:NSKeyValueObservingOptionNew context:NULL];
-	newType.project = project;
-	newType.name = [eventTypeDictionary objectForKey:@"name"];
-	newType.maxNumPoints = [eventTypeDictionary objectForKey:@"maxNumPoints"];
-	newType.connectingLineType = [eventTypeDictionary objectForKey:@"connectingLineType"];
-	newType.requiresSameTimecode = [eventTypeDictionary objectForKey:@"requiresSameTimecode"];
-	newType.connectingLineLengthLabeled = [eventTypeDictionary objectForKey:@"connectingLineLengthLabeled"];
-	newType.connectingLineThickness = [eventTypeDictionary objectForKey:@"connectingLineThickness"];
-	newType.connectingLineLengthLabelFontSize = [eventTypeDictionary objectForKey:@"connectingLineLengthLabelFontSize"];
-	newType.connectingLineLengthLabelFractionDigits = [eventTypeDictionary objectForKey:@"connectingLineLengthLabelFractionDigits"];
-	newType.connectingLineLengthLabelUnitMultiplier = [eventTypeDictionary objectForKey:@"connectingLineLengthLabelUnitMultiplier"];
-	newType.connectingLineLengthLabelUnits = [eventTypeDictionary objectForKey:@"connectingLineLengthLabelUnits"];
-	[newType setVisibleItemPropertiesFromDictionary:eventTypeDictionary];	
+	if (!overwritingOldType) {
+        newType = [NSEntityDescription insertNewObjectForEntityForName:@"VSTrackedEventType" inManagedObjectContext:moc];
+        [newType addObserver:newType forKeyPath:@"name" options:NSKeyValueObservingOptionNew context:NULL];
+        newType.project = project;
+        newType.name = [eventTypeDictionary objectForKey:@"name"];
+        newType.maxNumPoints = [eventTypeDictionary objectForKey:@"maxNumPoints"];
+        newType.connectingLineType = [eventTypeDictionary objectForKey:@"connectingLineType"];
+        newType.requiresSameTimecode = [eventTypeDictionary objectForKey:@"requiresSameTimecode"];
+        newType.connectingLineLengthLabeled = [eventTypeDictionary objectForKey:@"connectingLineLengthLabeled"];
+        newType.connectingLineThickness = [eventTypeDictionary objectForKey:@"connectingLineThickness"];
+        newType.connectingLineLengthLabelFontSize = [eventTypeDictionary objectForKey:@"connectingLineLengthLabelFontSize"];
+        newType.connectingLineLengthLabelFractionDigits = [eventTypeDictionary objectForKey:@"connectingLineLengthLabelFractionDigits"];
+        newType.connectingLineLengthLabelUnitMultiplier = [eventTypeDictionary objectForKey:@"connectingLineLengthLabelUnitMultiplier"];
+        newType.connectingLineLengthLabelUnits = [eventTypeDictionary objectForKey:@"connectingLineLengthLabelUnits"];
+        [newType setVisibleItemPropertiesFromDictionary:eventTypeDictionary];
+    }
 }
 
 - (NSMutableDictionary *) contentsAsWriteableDictionary

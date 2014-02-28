@@ -113,6 +113,8 @@
 		96A0CE6D1166CBA600845DCD /* Capture.m in Sources */ = {isa = PBXBuildFile; fileRef = 96A0CE6C1166CBA600845DCD /* Capture.m */; };
 		96A5DD3B1161AC7900D58616 /* MyApplicationDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 96A5DD3A1161AC7900D58616 /* MyApplicationDelegate.m */; };
 		96A5DEBD1162501500D58616 /* VideoOverlayWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = 96A5DEBC1162501500D58616 /* VideoOverlayWindow.m */; };
+		96A8734E18BFEE8A000D1B75 /* TrackedObjectTypesArrayController.m in Sources */ = {isa = PBXBuildFile; fileRef = 96A8734D18BFEE8A000D1B75 /* TrackedObjectTypesArrayController.m */; };
+		96A8735118BFEEA5000D1B75 /* TrackedEventTypesArrayController.m in Sources */ = {isa = PBXBuildFile; fileRef = 96A8735018BFEEA5000D1B75 /* TrackedEventTypesArrayController.m */; };
 		96AD259F10AA0B8F00FA1217 /* VSCalibration.mm in Sources */ = {isa = PBXBuildFile; fileRef = 96AD259E10AA0B8F00FA1217 /* VSCalibration.mm */; };
 		96AD296710ACEDBD00FA1217 /* VSCalibrationPoint.m in Sources */ = {isa = PBXBuildFile; fileRef = 96AD296610ACEDBD00FA1217 /* VSCalibrationPoint.m */; };
 		96AD2FB010B37D4400FA1217 /* VS2DMatrixToStringTransformer.m in Sources */ = {isa = PBXBuildFile; fileRef = 96AD2FAF10B37D4400FA1217 /* VS2DMatrixToStringTransformer.m */; };
@@ -640,6 +642,10 @@
 		96A5DD3A1161AC7900D58616 /* MyApplicationDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = MyApplicationDelegate.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		96A5DEBB1162501500D58616 /* VideoOverlayWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VideoOverlayWindow.h; sourceTree = "<group>"; };
 		96A5DEBC1162501500D58616 /* VideoOverlayWindow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VideoOverlayWindow.m; sourceTree = "<group>"; };
+		96A8734C18BFEE8A000D1B75 /* TrackedObjectTypesArrayController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TrackedObjectTypesArrayController.h; sourceTree = "<group>"; };
+		96A8734D18BFEE8A000D1B75 /* TrackedObjectTypesArrayController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TrackedObjectTypesArrayController.m; sourceTree = "<group>"; };
+		96A8734F18BFEEA5000D1B75 /* TrackedEventTypesArrayController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TrackedEventTypesArrayController.h; sourceTree = "<group>"; };
+		96A8735018BFEEA5000D1B75 /* TrackedEventTypesArrayController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TrackedEventTypesArrayController.m; sourceTree = "<group>"; };
 		96AD259D10AA0B8F00FA1217 /* VSCalibration.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VSCalibration.h; sourceTree = "<group>"; };
 		96AD259E10AA0B8F00FA1217 /* VSCalibration.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; lineEnding = 0; path = VSCalibration.mm; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		96AD296510ACEDBD00FA1217 /* VSCalibrationPoint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VSCalibrationPoint.h; sourceTree = "<group>"; };
@@ -1312,6 +1318,12 @@
 				96010ED510FE410500944387 /* VSVisibleItemArrayController.m */,
 				9690663B116AFB08002B3F20 /* TypeIndexNameSortedArrayController.h */,
 				9690663C116AFB08002B3F20 /* TypeIndexNameSortedArrayController.m */,
+				969DB351116FF3AF00DBA9F4 /* TypesArrayController.h */,
+				969DB352116FF3AF00DBA9F4 /* TypesArrayController.m */,
+				96A8734C18BFEE8A000D1B75 /* TrackedObjectTypesArrayController.h */,
+				96A8734D18BFEE8A000D1B75 /* TrackedObjectTypesArrayController.m */,
+				96A8734F18BFEEA5000D1B75 /* TrackedEventTypesArrayController.h */,
+				96A8735018BFEEA5000D1B75 /* TrackedEventTypesArrayController.m */,
 				96E1284210F57EF900DAF12C /* TrackedObjectArrayController.h */,
 				96E1284310F57EF900DAF12C /* TrackedObjectArrayController.m */,
 				96E128DA10FC418B00DAF12C /* TrackedEventArrayController.h */,
@@ -1365,6 +1377,10 @@
 			children = (
 				96AD316110B78C2100FA1217 /* VSVisibleItem.h */,
 				96AD316210B78C2100FA1217 /* VSVisibleItem.m */,
+				96AD316810B78DBB00FA1217 /* VSTrackedObjectType.h */,
+				96AD316910B78DBB00FA1217 /* VSTrackedObjectType.m */,
+				96AD322C10B7D70E00FA1217 /* VSTrackedEventType.h */,
+				96AD322D10B7D70E00FA1217 /* VSTrackedEventType.m */,
 				96E1284C10F678C900DAF12C /* VSTrackedObject.h */,
 				96E1284D10F678C900DAF12C /* VSTrackedObject.m */,
 				96E128DF10FC474000DAF12C /* VSTrackedEvent.h */,
@@ -1488,10 +1504,6 @@
 				96EF21A21095432A001DEF3A /* VSProject.m */,
 				96EF20FE1092567A001DEF3A /* VSVideoClip.h */,
 				96EF20FF1092567A001DEF3A /* VSVideoClip.m */,
-				96AD316810B78DBB00FA1217 /* VSTrackedObjectType.h */,
-				96AD316910B78DBB00FA1217 /* VSTrackedObjectType.m */,
-				96AD322C10B7D70E00FA1217 /* VSTrackedEventType.h */,
-				96AD322D10B7D70E00FA1217 /* VSTrackedEventType.m */,
 				96AD259D10AA0B8F00FA1217 /* VSCalibration.h */,
 				96AD259E10AA0B8F00FA1217 /* VSCalibration.mm */,
 				96A8734A18BFD4E0000D1B75 /* VSVisibleItem Classes */,
@@ -1513,8 +1525,6 @@
 				96EF23011096305B001DEF3A /* VideoWindowController.m */,
 				96EF247D10966F60001DEF3A /* VideoClipArrayController.h */,
 				96EF247E10966F60001DEF3A /* VideoClipArrayController.m */,
-				969DB351116FF3AF00DBA9F4 /* TypesArrayController.h */,
-				969DB352116FF3AF00DBA9F4 /* TypesArrayController.m */,
 				96A8734718BFD336000D1B75 /* Visible Item Array Controllers */,
 				96A8734818BFD3C9000D1B75 /* Portrait Array Controllers */,
 			);
@@ -1641,6 +1651,7 @@
 				96EF24E810967B62001DEF3A /* VideoOverlayView.m in Sources */,
 				96EF265110976B7B001DEF3A /* MagnifiedPreviewView.m in Sources */,
 				96EEB8D210A9F4B1005C500F /* SimultaneousPlayback.m in Sources */,
+				96A8735118BFEEA5000D1B75 /* TrackedEventTypesArrayController.m in Sources */,
 				9612EC1718B5EDE400BBED62 /* PortraitBrowserView.m in Sources */,
 				96B766B118BE9928005EB380 /* PlaybackDurationTabView.m in Sources */,
 				96DC9B461152C7600078A956 /* VSPoint.m in Sources */,
@@ -1674,6 +1685,7 @@
 				96AE9619116315CC00118398 /* VSAnnotation.m in Sources */,
 				96AE97AE1164F92700118398 /* ObjectAddPanel.m in Sources */,
 				96A0CB5B1165D22200845DCD /* VSAnnotationArrayController.m in Sources */,
+				96A8734E18BFEE8A000D1B75 /* TrackedObjectTypesArrayController.m in Sources */,
 				961A2F4618B40AB2009EA198 /* SyncedPlaybackPanel.m in Sources */,
 				96A0CE6D1166CBA600845DCD /* Capture.m in Sources */,
 				9612EC1D18B68EAD00BBED62 /* AllPortraitsArrayController.m in Sources */,

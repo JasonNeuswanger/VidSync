@@ -23,8 +23,17 @@
 
 - (void)remove:(id)sender
 {
-	[super remove:sender];
-	[document refreshOverlaysOfAllClips:sender];	
+    VSTrackedEvent *eventToDelete = (VSTrackedEvent *) [[self selectedObjects] firstObject];
+    if ([eventToDelete.points count] > 0) {
+        NSInteger alertResult = NSRunAlertPanel(@"Are you sure?",[NSString stringWithFormat:@"Are you sure you want to delete event %@?",eventToDelete.index],@"Yes",@"No",nil);
+        if (alertResult == 1) {
+            [super remove:sender];
+            [document refreshOverlaysOfAllClips:sender];
+        }
+    } else {
+        [super remove:sender];
+        [document refreshOverlaysOfAllClips:sender];
+    }
 }
 
 @end

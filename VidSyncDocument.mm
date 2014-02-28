@@ -56,6 +56,9 @@
 @synthesize bookmarkIsSet1;
 @synthesize bookmarkIsSet2;
 
+@synthesize objectsTableSelectionChangeNotificationCascadeEnabled;
+@synthesize eventsTableSelectionChangeNotificationCascadeEnabled;
+
 static void *AVSPPlayerRateContext = &AVSPPlayerRateContext;
 static void *AVSPPlayerCurrentTimeContext = &AVSPPlayerCurrentTimeContext;
 
@@ -69,6 +72,7 @@ static void *AVSPPlayerCurrentTimeContext = &AVSPPlayerCurrentTimeContext;
 		shutterClick = [[NSSound alloc] initWithContentsOfFile:[[NSBundle mainBundle] pathForSoundResource:@"CameraClick"] byReference:YES];
         
         /*-- For some reason I previously thought this code was necessary for the custom FontAwesome font to work; however, things seem to be fine without it.
+        It might be that my system is just using the font as installed, though.
         
         NSURL *fontPathURL = [NSURL fileURLWithPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/Fonts"]];
         CFArrayRef fontDescriptors = CTFontManagerCreateFontDescriptorsFromURL((__bridge CFURLRef)(fontPathURL));
@@ -80,6 +84,8 @@ static void *AVSPPlayerCurrentTimeContext = &AVSPPlayerCurrentTimeContext;
 		stopTime = kCMTimeIndefinite;
         bookmarkIsSet1 = NO;
         bookmarkIsSet2 = NO;
+        objectsTableSelectionChangeNotificationCascadeEnabled = YES;
+        objectsTableSelectionChangeNotificationCascadeEnabled = YES;
 		
 		decimalFormatter = [[NSNumberFormatter alloc] init];
 		[decimalFormatter setFormatterBehavior:NSNumberFormatterBehavior10_4];
@@ -285,7 +291,7 @@ static void *AVSPPlayerCurrentTimeContext = &AVSPPlayerCurrentTimeContext;
 	if (self.project.masterClip != nil) {
 		
 		if ([[notification object] isEqualTo:eventsPointsTable]) {
-			[[self managedObjectContext] processPendingChanges];
+            [[self managedObjectContext] processPendingChanges];
 			if ([[eventsPointsController selectedObjects] count] > 0) {
 				VSPoint *selectedPoint = [[eventsPointsController selectedObjects] objectAtIndex:0];
 				VSEventScreenPoint *selectedScreenPoint = [selectedPoint screenPointForVideoClip:self.frontVideoClip];
@@ -373,19 +379,31 @@ static void *AVSPPlayerCurrentTimeContext = &AVSPPlayerCurrentTimeContext;
 		} else if ([[notification object] isEqualTo:trackedObjectsController.mainTableView]) {
 			
 			if ([[trackedObjectsController selectedObjects] count] > 0) {
+                [trackedObjectsController scrollTableToSelectedObject];
 				VSTrackedObject *selectedObject = [[trackedObjectsController selectedObjects] objectAtIndex:0];
 				[selectedObject addObserver:self forKeyPath:@"color" options:NSKeyValueObservingOptionNew context:NULL];
-				[trackedEventsController setSelectionIndex:0];	// Select the object's first event
-				[eventsPointsController setSelectionIndex:0];	// and that event's first point
+                if (objectsTableSelectionChangeNotificationCascadeEnabled) {
+                    [trackedEventsController setSelectionIndex:0];	// Select the object's first event
+                    [eventsPointsController setSelectionIndex:0];	// and that event's first point
+                } else {
+                    objectsTableSelectionChangeNotificationCascadeEnabled = YES;
+                }
+                // the problem is if I disable the notification, they won't scroll and stuff... I just need to tell them not to trigger notifications on their own
+                
 				[objectSynonymizeController rearrangeObjects];
                 [objectsPortraitsArrayController refreshImageBrowserView];
 				
 			}
 			
 		} else if ([[notification object] isEqualTo:trackedEventsController.mainTableView]) {
-
-			[eventsPointsController setSelectionIndex:0];	// Select the event's first point.
-		
+            if ([[trackedEventsController selectedObjects] count] > 0) {
+                [trackedEventsController scrollTableToSelectedObject];
+                if (eventsTableSelectionChangeNotificationCascadeEnabled) {
+                    [eventsPointsController setSelectionIndex:0];	// Select the event's first point.
+                } else {
+                    eventsTableSelectionChangeNotificationCascadeEnabled = YES;
+                }
+            }
 		}
 	}
 }
@@ -462,6 +480,7 @@ static void *AVSPPlayerCurrentTimeContext = &AVSPPlayerCurrentTimeContext;
 	[openPanel setAllowedFileTypes:[NSArray arrayWithObjects:@"VidSyncTypes",nil]];
 	[openPanel setCanChooseDirectories:NO];
 	[openPanel setAllowsMultipleSelection:NO];
+    [openPanel setMessage:@"Loading types from a file will add them to the existing types list, not replace it. If loaded types have the same name as existing types, their attributes (color, etc.) will be updated from the new file."];
 	if ([openPanel runModal]) {
 		filePath = [[[openPanel URLs] objectAtIndex:0] path];
 		[self loadObjectAndEventTypesFromFileAtPath:filePath];

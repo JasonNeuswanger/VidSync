@@ -31,5 +31,4 @@
 	[self setSelectionIndex:newSelectionIndex];			
 }
 
-
 @end

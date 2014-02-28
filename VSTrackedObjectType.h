@@ -15,6 +15,7 @@
 
 @property (strong) NSString *name;
 @property (strong) VSProject *project;
+@property (strong) NSSet *trackedObjects;
 
 + (void) insertNewTypeFromLoadedDictionary:(NSDictionary *)objectTypeDictionary inProject:(VSProject *)project inManagedObjectContext:(NSManagedObjectContext *)moc;
 

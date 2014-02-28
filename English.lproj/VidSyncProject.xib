@@ -7128,7 +7128,7 @@ IA
             </connections>
         </arrayController>
         <userDefaultsController representsSharedInstance="YES" id="100045"/>
-        <arrayController mode="entity" entityName="VSTrackedObjectType" automaticallyPreparesContent="YES" id="101330" userLabel="TrackedObjectTypes Controller" customClass="TypesArrayController">
+        <arrayController mode="entity" entityName="VSTrackedObjectType" automaticallyPreparesContent="YES" id="101330" userLabel="TrackedObjectTypes Controller" customClass="TrackedObjectTypesArrayController">
             <declaredKeys>
                 <string>name</string>
                 <string>shape</string>
@@ -7153,7 +7153,7 @@ IA
                 <outlet property="newTypeName" destination="103432" id="103570"/>
             </connections>
         </arrayController>
-        <arrayController mode="entity" entityName="VSTrackedEventType" automaticallyPreparesContent="YES" id="101331" userLabel="TrackedEventTypes Controller" customClass="TypesArrayController">
+        <arrayController mode="entity" entityName="VSTrackedEventType" automaticallyPreparesContent="YES" id="101331" userLabel="TrackedEventTypes Controller" customClass="TrackedEventTypesArrayController">
             <declaredKeys>
                 <string>name</string>
                 <string>notes</string>

@@ -717,8 +717,12 @@
 				previouslySelectedObject = [[self.videoClip.project.document.trackedObjectsController selectedObjects] objectAtIndex:0];
 			}
 			if (previouslySelectedObject != nil && ![previouslySelectedObject isEqualTo:objectToSelect]) {	// If and only if we're selecting a new object, post a selection change notification for the object table.
+                // why is this necessary? shouldn't the setSelectedObjects line below post this notification? no... it's the selectionISchanging not selectionDIDchange
 				[[NSNotificationCenter defaultCenter] postNotificationName:NSTableViewSelectionIsChangingNotification object:self.videoClip.project.document.trackedObjectsController.mainTableView];
 			}
+            VidSyncDocument *doc = self.document;
+            doc.objectsTableSelectionChangeNotificationCascadeEnabled = NO; // For one time only, prevents event/point tables from selecting their first object when object selection changes
+            doc.eventsTableSelectionChangeNotificationCascadeEnabled = NO;  // Same as above but the cascade is smaller when the selection changes events within the same object
 			[self.videoClip.project.document.trackedObjectsController setSelectedObjects:[NSArray arrayWithObject:objectToSelect]];
 			[self.videoClip.project.document.trackedEventsController setSelectedObjects:[NSArray arrayWithObject:pointToSelect.trackedEvent]];
 			[self.videoClip.project.document.eventsPointsController setSelectedObjects:[NSArray arrayWithObject:pointToSelect]];

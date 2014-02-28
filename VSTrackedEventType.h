@@ -26,6 +26,8 @@
 @property (strong) NSNumber *connectingLineLengthLabelUnitMultiplier;
 @property (strong) NSString *connectingLineLengthLabelUnits;
 
+@property (strong) NSSet *trackedEvents;
+
 @property (strong) VSProject *project;
 
 
