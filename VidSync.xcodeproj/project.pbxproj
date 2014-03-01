@@ -115,6 +115,7 @@
 		96A5DEBD1162501500D58616 /* VideoOverlayWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = 96A5DEBC1162501500D58616 /* VideoOverlayWindow.m */; };
 		96A8734E18BFEE8A000D1B75 /* TrackedObjectTypesArrayController.m in Sources */ = {isa = PBXBuildFile; fileRef = 96A8734D18BFEE8A000D1B75 /* TrackedObjectTypesArrayController.m */; };
 		96A8735118BFEEA5000D1B75 /* TrackedEventTypesArrayController.m in Sources */ = {isa = PBXBuildFile; fileRef = 96A8735018BFEEA5000D1B75 /* TrackedEventTypesArrayController.m */; };
+		96A8735818C12551000D1B75 /* SyncedPlaybackWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 96A8735718C12551000D1B75 /* SyncedPlaybackWindow.xib */; };
 		96AD259F10AA0B8F00FA1217 /* VSCalibration.mm in Sources */ = {isa = PBXBuildFile; fileRef = 96AD259E10AA0B8F00FA1217 /* VSCalibration.mm */; };
 		96AD296710ACEDBD00FA1217 /* VSCalibrationPoint.m in Sources */ = {isa = PBXBuildFile; fileRef = 96AD296610ACEDBD00FA1217 /* VSCalibrationPoint.m */; };
 		96AD2FB010B37D4400FA1217 /* VS2DMatrixToStringTransformer.m in Sources */ = {isa = PBXBuildFile; fileRef = 96AD2FAF10B37D4400FA1217 /* VS2DMatrixToStringTransformer.m */; };
@@ -646,6 +647,7 @@
 		96A8734D18BFEE8A000D1B75 /* TrackedObjectTypesArrayController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TrackedObjectTypesArrayController.m; sourceTree = "<group>"; };
 		96A8734F18BFEEA5000D1B75 /* TrackedEventTypesArrayController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TrackedEventTypesArrayController.h; sourceTree = "<group>"; };
 		96A8735018BFEEA5000D1B75 /* TrackedEventTypesArrayController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TrackedEventTypesArrayController.m; sourceTree = "<group>"; };
+		96A8735718C12551000D1B75 /* SyncedPlaybackWindow.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SyncedPlaybackWindow.xib; sourceTree = "<group>"; };
 		96AD259D10AA0B8F00FA1217 /* VSCalibration.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VSCalibration.h; sourceTree = "<group>"; };
 		96AD259E10AA0B8F00FA1217 /* VSCalibration.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; lineEnding = 0; path = VSCalibration.mm; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		96AD296510ACEDBD00FA1217 /* VSCalibrationPoint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VSCalibrationPoint.h; sourceTree = "<group>"; };
@@ -1470,6 +1472,7 @@
 			isa = PBXGroup;
 			children = (
 				2F7446A90DB6BCF400F9684A /* VidSyncProject.xib */,
+				96A8735718C12551000D1B75 /* SyncedPlaybackWindow.xib */,
 				96EF227510956DE9001DEF3A /* VideoClipWindow.xib */,
 				2F7446A70DB6BCF400F9684A /* MainMenu.xib */,
 			);
@@ -1626,6 +1629,7 @@
 				9697F6A0116D31D900BA3BB1 /* QuadratIcon.icns in Resources */,
 				9658610511738CA700BC99D5 /* Example Quadrat.VidSyncQuadrat in Resources */,
 				961A2F4B18B42506009EA198 /* Fonts in Resources */,
+				96A8735818C12551000D1B75 /* SyncedPlaybackWindow.xib in Resources */,
 				9658610611738CA700BC99D5 /* Example Types.VidSyncTypes in Resources */,
 				96AF8EB814C18F8700731DEA /* opencv in Resources */,
 				96AF8EB914C18F8700731DEA /* opencv2 in Resources */,

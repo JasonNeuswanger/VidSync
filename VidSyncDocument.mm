@@ -70,16 +70,6 @@ static void *AVSPPlayerCurrentTimeContext = &AVSPPlayerCurrentTimeContext;
     self = [super init];
     if (self != nil) {
 		shutterClick = [[NSSound alloc] initWithContentsOfFile:[[NSBundle mainBundle] pathForSoundResource:@"CameraClick"] byReference:YES];
-        
-        /*-- For some reason I previously thought this code was necessary for the custom FontAwesome font to work; however, things seem to be fine without it.
-        It might be that my system is just using the font as installed, though.
-        
-        NSURL *fontPathURL = [NSURL fileURLWithPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/Fonts"]];
-        CFArrayRef fontDescriptors = CTFontManagerCreateFontDescriptorsFromURL((__bridge CFURLRef)(fontPathURL));
-         // And below is a more modern version of the above line
-        //NSArray *fontDescriptors = (__bridge_transfer NSArray *) CTFontManagerCreateFontDescriptorsFromURL((__bridge CFURLRef)(fontPathURL));
-        
-         -----*/
          
 		stopTime = kCMTimeIndefinite;
         bookmarkIsSet1 = NO;
@@ -92,19 +82,27 @@ static void *AVSPPlayerCurrentTimeContext = &AVSPPlayerCurrentTimeContext;
 		[decimalFormatter setNumberStyle:NSNumberFormatterDecimalStyle];				// Prevents occasional numbers from being spit out in scientific notation, which screws up importers (Mathematica and others)
 		[decimalFormatter setGroupingSeparator:@""];
 		[decimalFormatter setMinimumFractionDigits:15];
+        
     }
     return self;
 }
 
 - (void)makeWindowControllers
 {
-	mainWindowController = [[NSWindowController alloc] initWithWindowNibName:@"VidSyncProject" owner:self];
+	NSWindowController *mainWindowController = [[NSWindowController alloc] initWithWindowNibName:@"VidSyncProject" owner:self];
 	[mainWindowController setShouldCloseDocument:YES];
 	[mainWindowController setShouldCascadeWindows:NO];
 	[self addWindowController:mainWindowController];
     
-    advancedPlaybackWindowController = [[NSWindowController alloc] init];
+    
+    NSArray *playbackWindowTopLevelObjects;
+    [[NSBundle mainBundle] loadNibNamed:@"SyncedPlaybackWindow" owner:self topLevelObjects:&playbackWindowTopLevelObjects];
+    SyncedPlaybackPanel *loadingSyncedPlaybackPanel;
+    for (id obj in playbackWindowTopLevelObjects) if ([obj isKindOfClass:[SyncedPlaybackPanel class]]) loadingSyncedPlaybackPanel = (SyncedPlaybackPanel *) obj;
+    NSWindowController *advancedPlaybackWindowController = [[NSWindowController alloc] init];
+    [advancedPlaybackWindowController setWindow:loadingSyncedPlaybackPanel];
     [self addWindowController:advancedPlaybackWindowController];
+    
     
     for (VSVideoClip *clip in [self.project.videoClips allObjects]) {
         VideoWindowController __strong *vwc = [[VideoWindowController alloc] initWithVideoClip:clip inManagedObjectContext:[self managedObjectContext]];
@@ -136,9 +134,9 @@ static void *AVSPPlayerCurrentTimeContext = &AVSPPlayerCurrentTimeContext;
 
 - (void) windowControllerDidLoadNib:(NSWindowController *)windowController
 {
-	if (windowController == mainWindowController) { // only do after the main window loads its nib (this is when videoClipArrayController is non-null, for example)
+	if ([[windowController windowNibName] isEqualToString:@"VidSyncProject"]) { // only do after the main window loads its nib (this is when videoClipArrayController is non-null, for example)
 		NSString *fileName = [[self fileURL] absoluteString];
-		if (fileName != nil) [[mainWindowController window] setFrameAutosaveName:fileName];
+		if (fileName != nil) [[windowController window] setFrameAutosaveName:fileName];
 		[[NSNotificationCenter defaultCenter] addObserver:videoClipArrayController
 											 selector:@selector(keyWindowDidChange:)
 												 name:NSWindowDidBecomeKeyNotification object:nil];	
@@ -151,32 +149,30 @@ static void *AVSPPlayerCurrentTimeContext = &AVSPPlayerCurrentTimeContext;
 		[trackedObjectTypesController setSortDescriptors:[NSArray arrayWithObject:nameDescriptor]];
 		[distortionLinesController setSortDescriptors:[NSArray arrayWithObject:timecodeDescriptor]];
 		[distortionPointsController setSortDescriptors:[NSArray arrayWithObject:indexDescriptor]];
-		
-        playForwardWhilePressedButton.direction = 1.0;
-        playForwardWhilePressedButton.advancedRateToUse = 0;
-        playBackwardWhilePressedButton.direction = -1.0;
-        playBackwardWhilePressedButton.advancedRateToUse = 0;
-		playForwardAtRate1WhilePressedButton.direction = 1.0;
-		playForwardAtRate1WhilePressedButton.advancedRateToUse = 1;
-		playBackwardAtRate1WhilePressedButton.direction = -1.0;
-		playBackwardAtRate1WhilePressedButton.advancedRateToUse = 1;
-		playForwardAtRate2WhilePressedButton.direction = 1.0;
-		playForwardAtRate2WhilePressedButton.advancedRateToUse = 2;
-		playBackwardAtRate2WhilePressedButton.direction = -1.0;
-		playBackwardAtRate2WhilePressedButton.advancedRateToUse = 2;
-        
-        scrubberMaxTime = 1000000000;
-        [syncedPlaybackScrubber setMaxValue:(double) scrubberMaxTime];
-        
         NSMutableAttributedString *portraitWindowOpenButtonTitle =[[NSMutableAttributedString alloc] initWithAttributedString:[[NSMutableAttributedString alloc] initWithString:@"\uf030"]];
         [portraitWindowOpenButtonTitle addAttribute:NSFontAttributeName value:[NSFont fontWithName:@"FontAwesome" size:12.0f] range:NSMakeRange(0,1)];
         [allPortraitBrowserOpenButton setAttributedTitle:portraitWindowOpenButtonTitle];
-
-        [advancedPlaybackWindowController setWindow:syncedPlaybackPanel];   // Need to have a separate window controller for this window or it doesn't close. Setting it here, after nib loads the window.
-        [self addObserver:syncedPlaybackView forKeyPath:@"bookmarkIsSet1" options:NSKeyValueObservingOptionNew context:NULL];
-        [self addObserver:syncedPlaybackView forKeyPath:@"bookmarkIsSet2" options:NSKeyValueObservingOptionNew context:NULL];
-
 	}
+}
+
+- (void) syncedPlaybackPanelAwokeFromNib    // called by SyncedPlaybackPanel when it wakes up
+{
+    scrubberMaxTime = 1000000000;
+    [syncedPlaybackScrubber setMaxValue:(double) scrubberMaxTime];
+    [self addObserver:syncedPlaybackView forKeyPath:@"bookmarkIsSet1" options:NSKeyValueObservingOptionNew context:NULL];
+    [self addObserver:syncedPlaybackView forKeyPath:@"bookmarkIsSet2" options:NSKeyValueObservingOptionNew context:NULL];
+    playForwardWhilePressedButton.direction = 1.0;
+    playForwardWhilePressedButton.advancedRateToUse = 0;
+    playBackwardWhilePressedButton.direction = -1.0;
+    playBackwardWhilePressedButton.advancedRateToUse = 0;
+    playForwardAtRate1WhilePressedButton.direction = 1.0;
+    playForwardAtRate1WhilePressedButton.advancedRateToUse = 1;
+    playBackwardAtRate1WhilePressedButton.direction = -1.0;
+    playBackwardAtRate1WhilePressedButton.advancedRateToUse = 1;
+    playForwardAtRate2WhilePressedButton.direction = 1.0;
+    playForwardAtRate2WhilePressedButton.advancedRateToUse = 2;
+    playBackwardAtRate2WhilePressedButton.direction = -1.0;
+    playBackwardAtRate2WhilePressedButton.advancedRateToUse = 2;
 }
 
 - (id)initWithType:(NSString *)type error:(NSError **)error {	// This method is called only when a new document is created.
@@ -616,11 +612,16 @@ static void *AVSPPlayerCurrentTimeContext = &AVSPPlayerCurrentTimeContext;
 
 - (void) canCloseDocumentWithDelegate:(id)delegate shouldCloseSelector:(SEL)shouldCloseSelector contextInfo:(void *)contextInfo
 {
-    // Have to unregister as an observer of the master playback rate in its windowcontroller, otherwise there's an error about deallocing a VideoWindowController while it's being observed
+    [playbackTimer invalidate]; // This prevents the run loop from retaining the document via the timer after it's supposed to be released
+
+    // Unregister various observers, or else there are complaints about deallocing objects with observers still attachced
     @try {
         [self removeObserver:self forKeyPath:@"project.masterClip.windowController.playerView.player.rate"];
+        if (syncedPlaybackView != nil) [self removeObserver:syncedPlaybackView forKeyPath:@"bookmarkIsSet1"];
+        if (syncedPlaybackView != nil) [self removeObserver:syncedPlaybackView forKeyPath:@"bookmarkIsSet2"];
+        [self removeObserver:self forKeyPath:@"portraitSubject"];
     } @catch (id exception) {
-        NSLog(@"Exception closing document, observer did not exist to be removed: %@",exception);
+        NSLog(@"Exception closing document, observer did not exist to be removed: %@",(NSException *)exception);
     }
     [super canCloseDocumentWithDelegate:delegate shouldCloseSelector:shouldCloseSelector contextInfo:contextInfo];
 }

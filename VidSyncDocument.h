@@ -31,8 +31,6 @@
 	NSManagedObjectModel *managedObjectModel;
 	
 	VSProject *__weak project;
-	NSWindowController *__strong mainWindowController;
-    NSWindowController *__strong advancedPlaybackWindowController;
     
 	NSTimer *__strong playbackTimer;
 	IBOutlet MagnifiedPreviewView *__weak magnifiedCalibrationPreview,*__weak magnifiedMeasurementPreview,*__weak magnifiedDistortionPreview;
@@ -51,7 +49,6 @@
 	IBOutlet NSTableView *__weak eventsPointsTable;
 	
 	IBOutlet VideoControlButton *__weak playOrPauseButton;
-    
     IBOutlet SyncedPlaybackPanel *__weak syncedPlaybackPanel;
     IBOutlet SyncedPlaybackView *__weak syncedPlaybackView;
     IBOutlet NSSlider *__weak syncedPlaybackScrubber;
@@ -115,8 +112,8 @@
 @property (readonly, weak) IBOutlet CalibDistortionLineArrayController *distortionLinesController;	
 @property (readonly, weak) IBOutlet NSWindow *mainWindow;
 
+@property (weak) IBOutlet SyncedPlaybackPanel *syncedPlaybackPanel;
 @property (weak) IBOutlet NSSlider *syncedPlaybackScrubber;
-
 @property (readonly, weak) IBOutlet PlayWhilePressedButton *playForwardWhilePressedButton;
 @property (readonly, weak) IBOutlet PlayWhilePressedButton *playBackwardWhilePressedButton;
 @property (readonly, weak) IBOutlet PlayWhilePressedButton *playForwardAtRate1WhilePressedButton;
@@ -135,7 +132,6 @@
 
 @property (weak) IBOutlet ObjectsPortraitsArrayController *objectsPortraitsArrayController;
 
-@property (readonly, weak) IBOutlet SyncedPlaybackPanel *syncedPlaybackPanel;
 
 @property (weak) VSTrackedObject *portraitSubject;
 
@@ -147,6 +143,7 @@
 
 - (id) initWithType:(NSString *)type error:(NSError **)error;
 - (void) windowControllerDidLoadNib:(NSWindowController *)windowController;
+- (void) syncedPlaybackPanelAwokeFromNib;
 - (VSProject *) project;
 
 - (void) anyTableViewSelectionDidChange:(NSNotification *)notification;
@@ -190,8 +187,6 @@
 - (IBAction) playAll:(id)sender;
 - (IBAction) pauseAll:(id)sender;
 - (IBAction) playAllBackward:(id)sender;
-- (IBAction) fastForwardAll:(id)sender;
-- (IBAction) fastBackwardAll:(id)sender;
 - (IBAction) stepForwardAll:(id)sender;
 - (IBAction) stepBackwardAll:(id)sender;
 

@@ -33,6 +33,7 @@
     
     double newSliderTime = (double) sliderTimeToSet.value;
     [syncedPlaybackScrubber setDoubleValue:newSliderTime];
+
 }
 
 #pragma mark
@@ -52,16 +53,6 @@
 - (IBAction) playAllBackward:(id)sender
 {
 	[self setAllVideoRates:-1.0];
-}
-
-- (IBAction) fastForwardAll:(id)sender
-{
-	[self setAllVideoRates:3.0];
-}
-
-- (IBAction) fastBackwardAll:(id)sender
-{
-	[self setAllVideoRates:-3.0];
 }
 
 - (IBAction) stepForwardAll:(id)sender
@@ -213,19 +204,16 @@
                 clip.windowController.playerView.player.rate = 0.0f;
             }
         }
-        
     }
 }
 
 - (IBAction) setTimeFromScrubber:(id)sender
 {
     NSSlider *slider = (NSSlider *)sender;
-    
     CMTimeRange masterTimeRange = [[[self.project.masterClip.windowController.videoAsset tracksWithMediaType:AVMediaTypeVideo] firstObject] timeRange];
     CMTime newTimeOnSliderScale = CMTimeMake(round([slider doubleValue]),scrubberMaxTime);
     CMTimeRange sliderRange = CMTimeRangeMake(CMTimeMake(0,scrubberMaxTime),CMTimeMake(scrubberMaxTime,scrubberMaxTime));
     CMTime timeToSet = CMTimeMapTimeFromRangeToRange(newTimeOnSliderScale,sliderRange,masterTimeRange);
-    
     [self goToMasterTime:timeToSet];
 }
 

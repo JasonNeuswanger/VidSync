@@ -49,13 +49,12 @@
 {
     if ([keyPath isEqual:@"bookmarkIsSet1"] || [keyPath isEqual:@"bookmarkIsSet2"]) {
         float bookmarkButtonFontSize = 20.0f;
-        VidSyncDocument *document = (VidSyncDocument *) object;
-        if (document.bookmarkIsSet1) {
+        if ([(VidSyncDocument *) object bookmarkIsSet1]) {
             [bookmarkGoButton1 setCustomTitle:@"\uf18e" withColor:[NSColor colorWithWhite:1.0 alpha:1.0] fontSize:bookmarkButtonFontSize];
             bookmarkGoButton1.unpressedColor = [NSColor whiteColor];
             bookmarkGoButton1.enabled = YES;
         }
-        if (document.bookmarkIsSet2) {
+        if ([(VidSyncDocument *) object bookmarkIsSet2]) {
             [bookmarkGoButton2 setCustomTitle:@"\uf18e" withColor:[NSColor colorWithWhite:1.0 alpha:1.0] fontSize:bookmarkButtonFontSize];
             bookmarkGoButton2.unpressedColor = [NSColor whiteColor];
             bookmarkGoButton2.enabled = YES;
