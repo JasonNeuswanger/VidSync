@@ -51,10 +51,12 @@
 
 - (void) keyWindowDidChange:(NSNotification *)notification
 {
-	if ([[[notification object] windowController] isKindOfClass:[VideoWindowController class]]) {	// ignore the main document window
-		VideoWindowController *__weak vwc = [[notification object] windowController];
-		[self setSelectedObjects:[NSArray arrayWithObjects:vwc.videoClip,nil]];
-	}
+    if ([[notification object] windowController] != nil) {
+        if ([[[notification object] windowController] isKindOfClass:[VideoWindowController class]]) {	// ignore the main document window
+            VideoWindowController *__weak vwc = [[notification object] windowController];
+            [self setSelectedObjects:[NSArray arrayWithObjects:vwc.videoClip,nil]];
+        }
+    }
 }
 
 - (void)remove:(id)sender

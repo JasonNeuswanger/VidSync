@@ -419,7 +419,7 @@
 				[managedObjectContext deleteObject:selectedScreenPoint];
 				[managedObjectContext processPendingChanges];	// have to do this to get a correct screenPoints count in handleScreenPointChange
 				[selectedPoint handleScreenPointChange];
-				[self refreshOverlay];
+                [self.videoClip.project.document refreshOverlaysOfAllClips:self];   // refresh both clips, not just this one, because it may affect hint/connecting lines on both
 			} else if (key == NSUpArrowFunctionKey) {
 				selectedScreenPoint.screenY = [NSNumber numberWithFloat:[selectedScreenPoint.screenY floatValue] + selectedPointNudgeDistance];
 			} else if (key == NSDownArrowFunctionKey) {
