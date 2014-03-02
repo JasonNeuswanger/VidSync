@@ -1183,10 +1183,43 @@
         [vwc.document stepForwardAll:self];
     }
 }
-/*
+
 - (void) dealloc
 {
-    [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKeyPath:nil];   // passing nil removes observer for all key paths
+    NSLog(@"deallocing VideoOverlayView");
+    [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKeyPath:@"values.quadratGridOverlayLineSpacing"];
+    [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKeyPath:@"values.quadratGridOverlayLineThickness"];
+    [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKeyPath:@"values.pointSelectionIndicatorLineLength"];
+    [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKeyPath:@"values.pointSelectionIndicatorLineWidth"];
+    [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKeyPath:@"values.pointSelectionIndicatorSizeFactor"];
+    [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKeyPath:@"values.pointSelectionIndicatorColor"];
+    [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKeyPath:@"values.quadratShowSurfaceGridOverlayFront"];
+    [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKeyPath:@"values.quadratShowSurfaceGridOverlayBack"];
+    [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKeyPath:@"values.quadratOverlayColorFront"];
+    [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKeyPath:@"values.quadratOverlayColorBack"];
+    [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKeyPath:@"values.quadratPointOverlayCircleDiameterFront"];
+    [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKeyPath:@"values.quadratPointOverlayCircleDiameterBack"];
+    [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKeyPath:@"values.showWorldCoordinatesNextToQuadratPoints"];
+    [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKeyPath:@"values.showPixelErrorOverlay"];
+    [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKeyPath:@"values.pixelErrorDotSize"];
+    [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKeyPath:@"values.pixelErrorLineWidth"];
+    [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKeyPath:@"values.pixelErrorLineColor"];
+    [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKeyPath:@"values.pixelErrorPointColor"];
+    [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKeyPath:@"values.hintLineDrawInterval"];
+    [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKeyPath:@"values.showDistortionOverlay"];
+    [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKeyPath:@"values.distortionPointsColor"];
+    [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKeyPath:@"values.distortionConnectingLinesColor"];
+    [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKeyPath:@"values.distortionTipToTipLinesColor"];
+    [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKeyPath:@"values.distortionCorrectedPointsColor"];
+    [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKeyPath:@"values.distortionCorrectedLinesColor"];
+    [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKeyPath:@"values.distortionCenterColor"];
+    [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKeyPath:@"values.distortionLineThickness"];
+    [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKeyPath:@"values.distortionPointSize"];
+    [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKeyPath:@"values.showDistortionConnectingLines"];
+    [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKeyPath:@"values.showDistortionTipToTipLines"];
+    [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKeyPath:@"values.showDistortionCorrectedPoints"];
+    [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKeyPath:@"values.showScreenItemDropShadows"];
+    [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKeyPath:@"values.screenItemDropShadowBlurRadius"];
 }
-*/
+
 @end

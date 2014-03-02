@@ -31,4 +31,9 @@
 	[self setSelectionIndex:newSelectionIndex];			
 }
 
+- (void) dealloc
+{
+    NSLog(@"deallocing a VSVisibleItemArrayController");
+}
+
 @end

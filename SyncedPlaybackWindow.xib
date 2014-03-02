@@ -14,6 +14,7 @@
                 <outlet property="playForwardAtRate2WhilePressedButton" destination="4DB-v6-USk" id="DPj-Iz-ppv"/>
                 <outlet property="playForwardWhilePressedButton" destination="S3k-Pl-5Yk" id="1tl-xo-gWf"/>
                 <outlet property="playOrPauseButton" destination="UCC-eN-gHg" id="Q9d-QB-XjK"/>
+                <outlet property="projectNameDisplayInSyncedPlaybackWindow" destination="hkI-el-fyZ" id="gzO-5N-2Wg"/>
                 <outlet property="syncedPlaybackPanel" destination="ID5-hV-LOZ" id="Rus-en-Nz3"/>
                 <outlet property="syncedPlaybackScrubber" destination="Rhk-PX-NnY" id="kMO-ar-ssp"/>
                 <outlet property="syncedPlaybackView" destination="pEg-3k-Wyv" id="Uiz-UF-ayB"/>
@@ -211,6 +212,7 @@
                                         <tabViewItems>
                                             <tabViewItem label="TilStop" identifier="1" id="9fh-fw-tBq">
                                                 <view key="view" id="pWE-OE-ACx">
+                                                    <rect key="frame" x="0.0" y="0.0" width="223" height="20"/>
                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                     <subviews>
                                                         <textField verticalHuggingPriority="750" id="HaI-zs-3uh">
@@ -475,6 +477,7 @@
                                         <tabViewItems>
                                             <tabViewItem label="TilStop" identifier="1" id="l3s-Z6-SI3">
                                                 <view key="view" id="77A-5n-bMy">
+                                                    <rect key="frame" x="0.0" y="0.0" width="223" height="20"/>
                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                     <subviews>
                                                         <textField verticalHuggingPriority="750" id="Eoo-AX-1wj">

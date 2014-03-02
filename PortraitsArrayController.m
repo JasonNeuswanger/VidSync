@@ -41,4 +41,9 @@
     [self removeObjectsAtArrangedObjectIndexes:indexes];
 }
 
+- (void) dealloc
+{
+    NSLog(@"deallocing a PortraitsArrayController");
+}
+
 @end

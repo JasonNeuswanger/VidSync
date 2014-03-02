@@ -36,4 +36,6 @@
 
 + (void) insertNewTypeFromLoadedDictionary:(NSDictionary *)objectTypeDictionary inProject:(VSProject *)project inManagedObjectContext:(NSManagedObjectContext *)moc;
 
+- (void) carefullyRemoveObserver:(NSObject *)observer forKeyPath:(NSString *)keyPath;
+
 @end

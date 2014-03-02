@@ -15,6 +15,8 @@
 @class CalibScreenPtArrayController;
 @class VSVideoClip;
 @class VSTrackedObject;
+@class TypeIndexNameSortedArrayController;
+@class EventsOtherObjectsArrayController;
 @class VSVisibleItemArrayController;
 @class ObjectSynonymizeArrayController;
 @class TypesArrayController;
@@ -24,15 +26,29 @@
 @class SyncedPlaybackView;
 @class SyncedPlaybackPanel;
 @class ObjectsPortraitsArrayController;
+@class AllPortraitsArrayController;
 @class MainProjectWindow;
 
 @interface VidSyncDocument: NSPersistentDocument {
 	
-	NSManagedObjectModel *managedObjectModel;
+	NSManagedObjectModel *__strong managedObjectModel;
 	
 	VSProject *__weak project;
     
 	NSTimer *__strong playbackTimer;
+    
+    // IBOutlets for the sole purpose of removing observers for things that observe the document through bindings
+    
+    IBOutlet NSTextField *__weak projectNameDisplayInSyncedPlaybackWindow;
+    IBOutlet NSObjectController *__weak projectController;
+    IBOutlet TypeIndexNameSortedArrayController *__weak eventsObjectsController;
+    IBOutlet TypeIndexNameSortedArrayController *__weak objectsEventsController;
+    IBOutlet EventsOtherObjectsArrayController *__weak eventsOtherObjectsController;
+    IBOutlet AllPortraitsArrayController *__weak allPortraitsArrayController;
+    
+    
+    // Other IBOutlets
+    
 	IBOutlet MagnifiedPreviewView *__weak magnifiedCalibrationPreview,*__weak magnifiedMeasurementPreview,*__weak magnifiedDistortionPreview;
 	IBOutlet VideoClipArrayController *__weak videoClipArrayController;
 	IBOutlet CalibScreenPtArrayController *__weak calibScreenPtFrontArrayController;
@@ -95,7 +111,7 @@
 	
 }
 
-@property (weak, nonatomic) VSProject *project;
+@property (weak, nonatomic) VSProject *project; // was (weak, nonatomic)
 @property (readonly, weak) IBOutlet NSTabView *mainTabView;
 @property (readonly, weak) IBOutlet NSTabView *calibrationSurfaceTabView;
 @property (readonly, weak) IBOutlet NSTabView *calibrationInputTabView;
@@ -168,6 +184,8 @@
 - (void) setPortraitSubject:(VSTrackedObject *)subject; // Not synthesizing the getters and setters here because the synthesized ones don't seem to
 - (VSTrackedObject *) portraitSubject;                  // play nice with the Interface Builder bindings
 
+- (void) carefullyRemoveObserver:(NSObject *)observer forKeyPath:(NSString *)keyPath;
+
 @end
 
 @interface VidSyncDocument (SimultaneousPlayback)
@@ -236,14 +254,3 @@
 - (NSString *)fileNameForExportedFile:(NSString *)extension;
 
 @end // VidSyncDocument (DataExport)
-
-
-@interface VidSyncDocument (NSApplicationDelegate) // spot to write out the delegate methods for NSApplication so I don't get lots of "not found" warnings
-
-+ (void)initialize;
-+ (NSMutableDictionary *) userDefaultsInitialValues;
-+ (void) setUserDefaultsInitialValues;
-
-- (NSError*) application:(NSApplication*)application willPresentError:(NSError*)error;
-
-@end

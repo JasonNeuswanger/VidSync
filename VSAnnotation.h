@@ -24,4 +24,6 @@
 
 - (NSString *) tableGlyphForColor;
 
+- (void) carefullyRemoveObserver:(NSObject *)observer forKeyPath:(NSString *)keyPath;
+
 @end

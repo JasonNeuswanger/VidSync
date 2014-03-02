@@ -610,20 +610,73 @@ static void *AVSPPlayerCurrentTimeContext = &AVSPPlayerCurrentTimeContext;
 #pragma mark
 #pragma mark Document-closing cleanup behavior
 
+/*
 - (void) canCloseDocumentWithDelegate:(id)delegate shouldCloseSelector:(SEL)shouldCloseSelector contextInfo:(void *)contextInfo
 {
+    
+    // This is just called to check if the document CAN be closed; before the user has chosen yes/no/cancel
+    
+}
+ */
+
+- (void) close
+{
+    NSLog(@"called close for VidSyncDocument");
+    
+    // I CAN COMMENT OUT THE PLAYBACK TIMER INVALIDATION TO MAKE DOCUMENTS "CLOSE" WITHOUT CRASHING, EXCEPT THEY AREN'T ACTUALLY CLOSED
     [playbackTimer invalidate]; // This prevents the run loop from retaining the document via the timer after it's supposed to be released
 
     // Unregister various observers, or else there are complaints about deallocing objects with observers still attachced
     @try {
-        [self removeObserver:self forKeyPath:@"project.masterClip.windowController.playerView.player.rate"];
-        if (syncedPlaybackView != nil) [self removeObserver:syncedPlaybackView forKeyPath:@"bookmarkIsSet1"];
-        if (syncedPlaybackView != nil) [self removeObserver:syncedPlaybackView forKeyPath:@"bookmarkIsSet2"];
-        [self removeObserver:self forKeyPath:@"portraitSubject"];
+        [[NSNotificationCenter defaultCenter] removeObserver:self];
     } @catch (id exception) {
-        NSLog(@"Exception closing document, observer did not exist to be removed: %@",(NSException *)exception);
     }
-    [super canCloseDocumentWithDelegate:delegate shouldCloseSelector:shouldCloseSelector contextInfo:contextInfo];
+    [self carefullyRemoveObserver:self forKeyPath:@"project.masterClip.windowController.playerView.player.rate"];
+    [self carefullyRemoveObserver:self forKeyPath:@"portraitSubject"];
+    [self carefullyRemoveObserver:syncedPlaybackView forKeyPath:@"bookmarkIsSet1"];
+    [self carefullyRemoveObserver:syncedPlaybackView forKeyPath:@"bookmarkIsSet2"];
+    
+    /*-- the bindings ones are unnecessary, because the observer isn't the object itself, and it gets removed automatically anyway
+    [self carefullyRemoveObserver:projectNameDisplayInSyncedPlaybackWindow forKeyPath:@"project.name"];
+    [self carefullyRemoveObserver:projectController forKeyPath:@"managedObjectContext"];
+    [self carefullyRemoveObserver:videoClipArrayController forKeyPath:@"managedObjectContext"];
+    [self carefullyRemoveObserver:calibScreenPtFrontArrayController forKeyPath:@"managedObjectContext"];
+    [self carefullyRemoveObserver:calibScreenPtBackArrayController forKeyPath:@"managedObjectContext"];
+    [self carefullyRemoveObserver:trackedObjectTypesController forKeyPath:@"managedObjectContext"];
+    [self carefullyRemoveObserver:trackedEventTypesController forKeyPath:@"managedObjectContext"];
+    [self carefullyRemoveObserver:trackedObjectsController forKeyPath:@"managedObjectContext"];
+    [self carefullyRemoveObserver:trackedEventsController forKeyPath:@"managedObjectContext"];
+    [self carefullyRemoveObserver:eventsObjectsController forKeyPath:@"managedObjectContext"];
+    [self carefullyRemoveObserver:eventsOtherObjectsController forKeyPath:@"managedObjectContext"];
+    [self carefullyRemoveObserver:objectsEventsController forKeyPath:@"managedObjectContext"];
+    [self carefullyRemoveObserver:eventsPointsController forKeyPath:@"managedObjectContext"];
+    [self carefullyRemoveObserver:annotationsController forKeyPath:@"managedObjectContext"];
+    [self carefullyRemoveObserver:objectSynonymizeController forKeyPath:@"managedObjectContext"];
+    [self carefullyRemoveObserver:distortionLinesController forKeyPath:@"managedObjectContext"];
+    [self carefullyRemoveObserver:distortionPointsController forKeyPath:@"managedObjectContext"];
+    [self carefullyRemoveObserver:allPortraitsArrayController forKeyPath:@"managedObjectContext"];
+    [self carefullyRemoveObserver:objectsPortraitsArrayController forKeyPath:@"managedObjectContext"];
+    --*/
+    
+    NSLog(@"finished my close code");
+    
+    
+    
+    
+    [super close];
+}
+
+- (void) carefullyRemoveObserver:(NSObject *)observer forKeyPath:(NSString *)keyPath
+{
+    if (observer != nil) {
+        @try {
+            [self removeObserver:observer forKeyPath:keyPath];
+        } @catch (id exception) {
+            // The "close" method is called twice when closing the document thorugh the menu, because the document closing the first time tells its main window to close, which tells
+            // the document to close. This is normal, but the second time will always fail to find the observers because they're removed in the first run.
+            // NSLog(@"Exception removing observer %@ from VidSyncDocument on close: %@",observer,(NSException *)exception);
+        }
+    }
 }
 
 @end

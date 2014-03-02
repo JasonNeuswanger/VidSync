@@ -1,14 +1,14 @@
 //
-//  MyApplicationDelegate.m
+//  AppDelegate.m
 //  VidSync
 //
-//  Created by Jason Neuswanger on 3/29/10.
-//  Copyright 2010 University of Alaska Fairbanks. All rights reserved.
+//  Created by Jason Neuswanger on 3/1/14.
+//  Copyright (c) 2014 Jason Neuswanger. All rights reserved.
 //
 
-#import "VidSyncDocument.h"
+#import "AppDelegate.h"
 
-@implementation VidSyncDocument (NSApplicationDelegate)
+@implementation AppDelegate
 
 + (void)initialize
 {
@@ -28,20 +28,20 @@
 
 
 + (void) setUserDefaultsInitialValues {
-    [[NSUserDefaultsController sharedUserDefaultsController] setInitialValues:[VidSyncDocument userDefaultsInitialValues]];
+    [[NSUserDefaultsController sharedUserDefaultsController] setInitialValues:[AppDelegate userDefaultsInitialValues]];
 }
 
 + (NSMutableDictionary *) userDefaultsInitialValues {
 	NSMutableDictionary *initialValueDict = [NSMutableDictionary new];
-    	
+    
 	// miscellaneous initial values
 	
 	[initialValueDict setObject:@"Project" forKey:@"latestMainTabViewSelectedLabel"];
 	[initialValueDict setObject:[NSHomeDirectory() stringByAppendingPathComponent:@"Documents"] forKey:@"masterCaptureFolder"];
 	[initialValueDict setObject:@"Unpaired" forKey:@"hintLinesSetting"];
-	[initialValueDict setObject:[NSNumber numberWithBool:YES] forKey:@"showWorldCoordinatesNextToQuadratPoints"];	
+	[initialValueDict setObject:[NSNumber numberWithBool:YES] forKey:@"showWorldCoordinatesNextToQuadratPoints"];
 	[initialValueDict setObject:@"All Frames" forKey:@"selectedEventsPointsTimeFilter"];
-	[initialValueDict setObject:[NSNumber numberWithFloat:0.05] forKey:@"calibrationRefinementIgnoresHighestPercent"];	
+	[initialValueDict setObject:[NSNumber numberWithFloat:0.05] forKey:@"calibrationRefinementIgnoresHighestPercent"];
 	[initialValueDict setObject:[NSNumber numberWithFloat:20.0] forKey:@"hintLineDrawInterval"];
     [initialValueDict setObject:[NSNumber numberWithBool:YES] forKey:@"showScreenItemDropShadows"];
     [initialValueDict setObject:[NSNumber numberWithBool:1.0] forKey:@"screenItemDropShadowBlurRadius"];
@@ -62,15 +62,15 @@
 	[initialValueDict setObject:[NSNumber numberWithFloat:10.0] forKey:@"advancedPlaybackMaxRandomDuration2"];
 	
 	// initial values for the magnified preview settings
-	[initialValueDict setObject:[NSNumber numberWithFloat:3.5] forKey:@"previewMagnification"];		
-	[initialValueDict setObject:[NSNumber numberWithFloat:0.0] forKey:@"previewUnsharpMaskRadius"];		
-	[initialValueDict setObject:[NSNumber numberWithFloat:0.0] forKey:@"previewUnsharpMaskIntensity"];			
-	[initialValueDict setObject:[NSNumber numberWithFloat:0.0] forKey:@"previewExposure"];		
-	[initialValueDict setObject:[NSNumber numberWithFloat:1.0] forKey:@"previewGamma"];	
+	[initialValueDict setObject:[NSNumber numberWithFloat:3.5] forKey:@"previewMagnification"];
+	[initialValueDict setObject:[NSNumber numberWithFloat:0.0] forKey:@"previewUnsharpMaskRadius"];
+	[initialValueDict setObject:[NSNumber numberWithFloat:0.0] forKey:@"previewUnsharpMaskIntensity"];
+	[initialValueDict setObject:[NSNumber numberWithFloat:0.0] forKey:@"previewExposure"];
+	[initialValueDict setObject:[NSNumber numberWithFloat:1.0] forKey:@"previewGamma"];
 	[initialValueDict setObject:[NSNumber numberWithFloat:0.0] forKey:@"previewSharpness"];
 	[initialValueDict setObject:[NSNumber numberWithFloat:3.0] forKey:@"previewDotSize"];
 	[initialValueDict setObject:[NSNumber numberWithFloat:100.0] forKey:@"previewReticleSize"];
-	[initialValueDict setObject:[NSNumber numberWithFloat:1.0] forKey:@"previewUseReticle"];    
+	[initialValueDict setObject:[NSNumber numberWithFloat:1.0] forKey:@"previewUseReticle"];
 	[initialValueDict setObject:[NSArchiver archivedDataWithRootObject:[NSColor cyanColor]] forKey:@"previewDotColor"];
 	
 	// initial values for quadrat coordinate point/grid overlays
@@ -84,9 +84,9 @@
 	[initialValueDict setObject:[NSNumber numberWithBool:NO] forKey:@"quadratShowSurfaceGridOverlayBack"];
 	
 	// initial values for distortion correction overlays
-	[initialValueDict setObject:[NSNumber numberWithBool:NO] forKey:@"showDistortionOverlay"];	
-	[initialValueDict setObject:[NSNumber numberWithBool:YES] forKey:@"showDistortionConnectingLines"];	
-	[initialValueDict setObject:[NSNumber numberWithBool:YES] forKey:@"showDistortionTipToTipLines"];	
+	[initialValueDict setObject:[NSNumber numberWithBool:NO] forKey:@"showDistortionOverlay"];
+	[initialValueDict setObject:[NSNumber numberWithBool:YES] forKey:@"showDistortionConnectingLines"];
+	[initialValueDict setObject:[NSNumber numberWithBool:YES] forKey:@"showDistortionTipToTipLines"];
 	[initialValueDict setObject:[NSNumber numberWithBool:YES] forKey:@"showDistortionCorrectedPoints"];
 	[initialValueDict setObject:[NSNumber numberWithFloat:2.5] forKey:@"distortionPointSize"];
 	[initialValueDict setObject:[NSNumber numberWithFloat:1.0] forKey:@"distortionLineThickness"];
@@ -95,7 +95,7 @@
 	[initialValueDict setObject:[NSArchiver archivedDataWithRootObject:[NSColor magentaColor]] forKey:@"distortionCorrectedPointsColor"];
 	[initialValueDict setObject:[NSArchiver archivedDataWithRootObject:[NSColor cyanColor]] forKey:@"distortionCorrectedLinesColor"];
 	[initialValueDict setObject:[NSArchiver archivedDataWithRootObject:[NSColor yellowColor]] forKey:@"distortionCenterColor"];
-	[initialValueDict setObject:[NSArchiver archivedDataWithRootObject:[NSColor redColor]] forKey:@"distortionPointsColor"];	
+	[initialValueDict setObject:[NSArchiver archivedDataWithRootObject:[NSColor redColor]] forKey:@"distortionPointsColor"];
 	
 	// initial values for automatic plumbline detection algorithm for distortion correction
     [initialValueDict setObject:[NSNumber numberWithBool:FALSE] forKey:@"showDirectOpenCVOutputWindow"];
@@ -107,7 +107,7 @@
 	[initialValueDict setObject:[NSNumber numberWithInt:15] forKey:@"chessboardDetectionCornerSubPixwindowSize"];
 	
 	// initial values for the pixel error overlay
-	[initialValueDict setObject:[NSNumber numberWithBool:NO] forKey:@"showPixelErrorOverlay"];	
+	[initialValueDict setObject:[NSNumber numberWithBool:NO] forKey:@"showPixelErrorOverlay"];
 	[initialValueDict setObject:[NSNumber numberWithFloat:3.0] forKey:@"pixelErrorDotSize"];
 	[initialValueDict setObject:[NSNumber numberWithFloat:2.0] forKey:@"pixelErrorLineWidth"];
 	[initialValueDict setObject:[NSArchiver archivedDataWithRootObject:[NSColor cyanColor]] forKey:@"pixelErrorLineColor"];
@@ -119,11 +119,11 @@
 	[initialValueDict setObject:[NSNumber numberWithFloat:1.5] forKey:@"pointSelectionIndicatorSizeFactor"];
 	[initialValueDict setObject:[NSArchiver archivedDataWithRootObject:[NSColor yellowColor]] forKey:@"pointSelectionIndicatorColor"];
 	[initialValueDict setObject:[NSNumber numberWithFloat:0.3] forKey:@"selectedPointNudgeDistance"];
-		
+    
 	// initial values for annotation visual settings
 	
-	[initialValueDict setObject:[NSNumber numberWithInt:5] forKey:@"newAnnotationDuration"];	
-	[initialValueDict setObject:[NSNumber numberWithInt:3] forKey:@"newAnnotationFadeTime"];	
+	[initialValueDict setObject:[NSNumber numberWithInt:5] forKey:@"newAnnotationDuration"];
+	[initialValueDict setObject:[NSNumber numberWithInt:3] forKey:@"newAnnotationFadeTime"];
 	[initialValueDict setObject:[NSNumber numberWithInt:30] forKey:@"newAnnotationFontSize"];
 	[initialValueDict setObject:[NSNumber numberWithInt:400] forKey:@"newAnnotationWidth"];
 	[initialValueDict setObject:@"Arial" forKey:@"newAnnotationFontFace"];
@@ -131,22 +131,22 @@
 	
 	// initial values for capture settings
 	
-	[initialValueDict setObject:[NSNumber numberWithBool:YES] forKey:@"includeOverlaysInExportedFiles"];	
-	[initialValueDict setObject:[NSNumber numberWithBool:YES] forKey:@"includeProjectNameInCapturedFileName"];	
-	[initialValueDict setObject:[NSNumber numberWithBool:YES] forKey:@"includeMasterTimecodeInCapturedFileName"];	
-	[initialValueDict setObject:[NSNumber numberWithBool:YES] forKey:@"includeClipNameInCapturedFileName"];	
-	[initialValueDict setObject:[NSNumber numberWithBool:NO] forKey:@"separateClipsByFolder"];	
+	[initialValueDict setObject:[NSNumber numberWithBool:YES] forKey:@"includeOverlaysInExportedFiles"];
+	[initialValueDict setObject:[NSNumber numberWithBool:YES] forKey:@"includeProjectNameInCapturedFileName"];
+	[initialValueDict setObject:[NSNumber numberWithBool:YES] forKey:@"includeMasterTimecodeInCapturedFileName"];
+	[initialValueDict setObject:[NSNumber numberWithBool:YES] forKey:@"includeClipNameInCapturedFileName"];
+	[initialValueDict setObject:[NSNumber numberWithBool:NO] forKey:@"separateClipsByFolder"];
 	[initialValueDict setObject:[NSNumber numberWithBool:NO] forKey:@"createFolderForProjectCaptures"];
-	[initialValueDict setObject:@"" forKey:@"capturedFileNameCustomText"];	
-
+	[initialValueDict setObject:@"" forKey:@"capturedFileNameCustomText"];
+    
 	// initial values for data export settings
 	
-	[initialValueDict setObject:[NSNumber numberWithBool:YES] forKey:@"includeProjectNameInExportedFileName"];	
-	[initialValueDict setObject:[NSNumber numberWithBool:YES] forKey:@"includeCurrentDateInExportedFileName"];	
-	[initialValueDict setObject:[NSNumber numberWithBool:YES] forKey:@"includeCurrentTimeInExportedFileName"];	
-	[initialValueDict setObject:[NSNumber numberWithBool:YES] forKey:@"createFolderForProjectExports"];	
-	[initialValueDict setObject:[NSNumber numberWithBool:NO] forKey:@"includeScreenCoordsInExports"];	
-	[initialValueDict setObject:@"" forKey:@"exportedFileNameCustomText"];	
+	[initialValueDict setObject:[NSNumber numberWithBool:YES] forKey:@"includeProjectNameInExportedFileName"];
+	[initialValueDict setObject:[NSNumber numberWithBool:YES] forKey:@"includeCurrentDateInExportedFileName"];
+	[initialValueDict setObject:[NSNumber numberWithBool:YES] forKey:@"includeCurrentTimeInExportedFileName"];
+	[initialValueDict setObject:[NSNumber numberWithBool:YES] forKey:@"createFolderForProjectExports"];
+	[initialValueDict setObject:[NSNumber numberWithBool:NO] forKey:@"includeScreenCoordsInExports"];
+	[initialValueDict setObject:@"" forKey:@"exportedFileNameCustomText"];
 	
     // initial values for portrait browser zoom sliders
     
@@ -159,7 +159,7 @@
     [initialValueDict setObject:@"~/" forKey:@"mainFileSaveDirectory"];
     
     return initialValueDict;
-
+    
 }
 
 @end

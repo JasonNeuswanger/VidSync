@@ -18,9 +18,11 @@
 #import <AVFoundation/AVFoundation.h>
 #import <AVKit/AVKit.h>
 
+#import "AppDelegate.h"
 #import "UtilityFunctions.h"
 #import "VideoWindowController.h"
 #import "VSProject.h"
+#import "ProjectController.h"
 #import "VSVideoClip.h"
 #import "VSCalibration.h"
 #import "VSCalibrationPoint.h"

@@ -59,8 +59,15 @@
 	// Close the window before deleting it
 	VideoWindowController *__weak vwc = [[[self selectedObjects] objectAtIndex:0] windowController];
 	[vwc close];
+    [document removeWindowController:vwc];
 	[super remove:sender];
 	
+}
+
+- (void) dealloc
+{
+    NSLog(@"deallocing the VideoClipArrayController");
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 #pragma mark

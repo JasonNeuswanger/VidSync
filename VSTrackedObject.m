@@ -121,5 +121,15 @@
 	newObj.project = self.project;
 }
 
+- (void) dealloc
+{
+    NSLog(@"deallocing a VStrackedObject");
+    if (self.project != nil && self.project.document != nil) {
+        @try {
+            [self removeObserver:self.project.document forKeyPath:@"color"];
+        } @catch (id exception) {
+        }
+    }
+}
 
 @end

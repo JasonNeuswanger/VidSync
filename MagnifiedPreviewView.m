@@ -246,4 +246,18 @@
 	[self scrollToPoint:previewCenterPoint];
 }
 
+- (void) dealloc
+{
+    [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKeyPath:@"values.previewMagnification"];
+    [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKeyPath:@"values.previewExposure"];
+    [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKeyPath:@"values.previewGamma"];
+    [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKeyPath:@"values.previewUnsharpMaskRadius"];
+    [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKeyPath:@"values.previewUnsharpMaskIntensity"];
+    [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKeyPath:@"values.previewSharpness"];
+    [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKeyPath:@"values.previewDotSize"];
+    [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKeyPath:@"values.previewDotColor"];
+    [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKeyPath:@"values.previewReticleSize"];
+    [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKeyPath:@"values.previewUseReticle"];
+}
+
 @end

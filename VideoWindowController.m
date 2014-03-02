@@ -871,4 +871,9 @@
     [self.videoClip.project.document.syncedPlaybackScrubber setNumberOfTickMarks:masterTimeDurationMinutes+1];  // adds 1 extra tickmark because there's a tick at 0. will be close but not exactly 1 tick/minute now
 }
 
+- (void) dealloc
+{
+    NSLog(@"Called dealloc for VideoWindowController %@ (%@)",self,self.videoClip.clipName);
+}
+
 @end

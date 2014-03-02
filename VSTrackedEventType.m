@@ -108,4 +108,29 @@
 	return superDict;
 }
 
+- (void) dealloc
+{
+    NSLog(@"deallocing a VSTrackedEventType");
+    [self carefullyRemoveObserver:self forKeyPath:@"name"];
+	[self carefullyRemoveObserver:self forKeyPath:@"shape"];
+	[self carefullyRemoveObserver:self forKeyPath:@"size"];
+	[self carefullyRemoveObserver:self forKeyPath:@"connectingLineLengthLabeled"];
+	[self carefullyRemoveObserver:self forKeyPath:@"connectingLineThickness"];
+	[self carefullyRemoveObserver:self forKeyPath:@"connectingLineType"];
+	[self carefullyRemoveObserver:self forKeyPath:@"connectingLineLengthLabelFontSize"];
+	[self carefullyRemoveObserver:self forKeyPath:@"connectingLineLengthLabelFractionDigits"];
+	[self carefullyRemoveObserver:self forKeyPath:@"connectingLineLengthLabelUnitMultiplier"];
+	[self carefullyRemoveObserver:self forKeyPath:@"connectingLineLengthLabelUnits"];
+}
+
+- (void) carefullyRemoveObserver:(NSObject *)observer forKeyPath:(NSString *)keyPath
+{
+    if (observer != nil) {
+        @try {
+            [self removeObserver:observer forKeyPath:keyPath];
+        } @catch (id exception) {
+        }
+    }
+}
+
 @end

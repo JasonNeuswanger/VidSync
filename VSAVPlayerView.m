@@ -50,4 +50,9 @@
     
 }
 
+- (void) dealloc
+{
+    NSLog(@"deallocing VSAVPlayerView");
+}
+
 @end

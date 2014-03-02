@@ -12,7 +12,7 @@ int main(int argc, char *argv[])
 {
 	
     @autoreleasepool {
-        [VidSyncDocument setUserDefaultsInitialValues];	// placed the call here, based on this: http://www.cocoabuilder.com/archive/cocoa/181530-dumb-bindings-user-defaults-question.html        
+        [AppDelegate setUserDefaultsInitialValues];	// placed the call here, based on this: http://www.cocoabuilder.com/archive/cocoa/181530-dumb-bindings-user-defaults-question.html
     }
 	
     int retVal = 0;

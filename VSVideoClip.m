@@ -115,4 +115,17 @@
 	return mainElement;
 }
 
+- (void) dealloc
+{
+    NSLog(@"deallocing VSVideoClip");
+    if (windowController != nil) {
+        @try {
+            [self removeObserver:windowController forKeyPath:@"syncIsLocked"];
+            [self removeObserver:windowController forKeyPath:@"syncOffset"];
+            [self removeObserver:windowController forKeyPath:@"isMasterClipOf"];
+        } @catch (id exception) {
+        }
+    }
+}
+
 @end

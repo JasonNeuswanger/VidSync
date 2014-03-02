@@ -23,4 +23,24 @@
 	return @"█";
 }
 
+- (void) dealloc
+{
+    NSLog(@"deallocing a VSAnnotation");
+    [self carefullyRemoveObserver:self.videoClip.windowController forKeyPath:@"width"];
+    [self carefullyRemoveObserver:self.videoClip.windowController forKeyPath:@"color"];
+    [self carefullyRemoveObserver:self.videoClip.windowController forKeyPath:@"size"];
+    [self carefullyRemoveObserver:self.videoClip.windowController forKeyPath:@"shape"];
+    [self carefullyRemoveObserver:self.videoClip.windowController forKeyPath:@"notes"];
+}
+
+- (void) carefullyRemoveObserver:(NSObject *)observer forKeyPath:(NSString *)keyPath
+{
+    if (observer != nil) {
+        @try {
+            [self removeObserver:observer forKeyPath:keyPath];
+        } @catch (id exception) {
+        }
+    }
+}
+
 @end

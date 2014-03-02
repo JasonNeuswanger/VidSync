@@ -47,6 +47,8 @@
 		961A2F4B18B42506009EA198 /* Fonts in Resources */ = {isa = PBXBuildFile; fileRef = 961A2F4A18B42506009EA198 /* Fonts */; };
 		961A2F4E18B43FCE009EA198 /* VideoControlButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 961A2F4D18B43FCE009EA198 /* VideoControlButton.m */; };
 		961A2F5218B5293D009EA198 /* ImageKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 961A2F5118B5293D009EA198 /* ImageKit.framework */; };
+		964A49E218C29B030051EAFB /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 964A49E118C29B030051EAFB /* AppDelegate.m */; };
+		964A49E518C2BEAE0051EAFB /* ProjectController.m in Sources */ = {isa = PBXBuildFile; fileRef = 964A49E418C2BEAE0051EAFB /* ProjectController.m */; };
 		9658610511738CA700BC99D5 /* Example Quadrat.VidSyncQuadrat in Resources */ = {isa = PBXBuildFile; fileRef = 9658610311738CA700BC99D5 /* Example Quadrat.VidSyncQuadrat */; };
 		9658610611738CA700BC99D5 /* Example Types.VidSyncTypes in Resources */ = {isa = PBXBuildFile; fileRef = 9658610411738CA700BC99D5 /* Example Types.VidSyncTypes */; };
 		96823015151333C900F91ED2 /* libgsl.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 96822FE6151333C800F91ED2 /* libgsl.a */; };
@@ -111,7 +113,6 @@
 		969DB353116FF3AF00DBA9F4 /* TypesArrayController.m in Sources */ = {isa = PBXBuildFile; fileRef = 969DB352116FF3AF00DBA9F4 /* TypesArrayController.m */; };
 		96A0CB5B1165D22200845DCD /* VSAnnotationArrayController.m in Sources */ = {isa = PBXBuildFile; fileRef = 96A0CB5A1165D22200845DCD /* VSAnnotationArrayController.m */; };
 		96A0CE6D1166CBA600845DCD /* Capture.m in Sources */ = {isa = PBXBuildFile; fileRef = 96A0CE6C1166CBA600845DCD /* Capture.m */; };
-		96A5DD3B1161AC7900D58616 /* MyApplicationDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 96A5DD3A1161AC7900D58616 /* MyApplicationDelegate.m */; };
 		96A5DEBD1162501500D58616 /* VideoOverlayWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = 96A5DEBC1162501500D58616 /* VideoOverlayWindow.m */; };
 		96A8734E18BFEE8A000D1B75 /* TrackedObjectTypesArrayController.m in Sources */ = {isa = PBXBuildFile; fileRef = 96A8734D18BFEE8A000D1B75 /* TrackedObjectTypesArrayController.m */; };
 		96A8735118BFEEA5000D1B75 /* TrackedEventTypesArrayController.m in Sources */ = {isa = PBXBuildFile; fileRef = 96A8735018BFEEA5000D1B75 /* TrackedEventTypesArrayController.m */; };
@@ -230,6 +231,10 @@
 		961A2F4C18B43FCE009EA198 /* VideoControlButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VideoControlButton.h; sourceTree = "<group>"; };
 		961A2F4D18B43FCE009EA198 /* VideoControlButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VideoControlButton.m; sourceTree = "<group>"; };
 		961A2F5118B5293D009EA198 /* ImageKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ImageKit.framework; path = Quartz.framework/Frameworks/ImageKit.framework; sourceTree = "<group>"; };
+		964A49E018C29B030051EAFB /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
+		964A49E118C29B030051EAFB /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
+		964A49E318C2BEAE0051EAFB /* ProjectController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProjectController.h; sourceTree = "<group>"; };
+		964A49E418C2BEAE0051EAFB /* ProjectController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProjectController.m; sourceTree = "<group>"; };
 		965510C214B2BE7000A4D9E3 /* VidSyncProject 1.04.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "VidSyncProject 1.04.xcdatamodel"; sourceTree = "<group>"; };
 		9658610311738CA700BC99D5 /* Example Quadrat.VidSyncQuadrat */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = "Example Quadrat.VidSyncQuadrat"; sourceTree = "<group>"; };
 		9658610411738CA700BC99D5 /* Example Types.VidSyncTypes */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = "Example Types.VidSyncTypes"; sourceTree = "<group>"; };
@@ -640,7 +645,6 @@
 		96A0CB5A1165D22200845DCD /* VSAnnotationArrayController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VSAnnotationArrayController.m; sourceTree = "<group>"; };
 		96A0CE6C1166CBA600845DCD /* Capture.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Capture.m; sourceTree = "<group>"; };
 		96A3718E15202B3C008DCB6C /* VidSyncProject 1.08.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "VidSyncProject 1.08.xcdatamodel"; sourceTree = "<group>"; };
-		96A5DD3A1161AC7900D58616 /* MyApplicationDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = MyApplicationDelegate.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		96A5DEBB1162501500D58616 /* VideoOverlayWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VideoOverlayWindow.h; sourceTree = "<group>"; };
 		96A5DEBC1162501500D58616 /* VideoOverlayWindow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VideoOverlayWindow.m; sourceTree = "<group>"; };
 		96A8734C18BFEE8A000D1B75 /* TrackedObjectTypesArrayController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TrackedObjectTypesArrayController.h; sourceTree = "<group>"; };
@@ -1523,7 +1527,10 @@
 				96EEB8D110A9F4B1005C500F /* SimultaneousPlayback.m */,
 				96A0CE6C1166CBA600845DCD /* Capture.m */,
 				9697F59C116D165E00BA3BB1 /* DataExport.m */,
-				96A5DD3A1161AC7900D58616 /* MyApplicationDelegate.m */,
+				964A49E018C29B030051EAFB /* AppDelegate.h */,
+				964A49E118C29B030051EAFB /* AppDelegate.m */,
+				964A49E318C2BEAE0051EAFB /* ProjectController.h */,
+				964A49E418C2BEAE0051EAFB /* ProjectController.m */,
 				96EF23001096305B001DEF3A /* VideoWindowController.h */,
 				96EF23011096305B001DEF3A /* VideoWindowController.m */,
 				96EF247D10966F60001DEF3A /* VideoClipArrayController.h */,
@@ -1681,11 +1688,12 @@
 				96FA1CF11155ACCA0065DF96 /* EventsPointsController.m in Sources */,
 				96897AE7115992EA00B3C3C3 /* UtilityFunctions.mm in Sources */,
 				969D6CE8115C079700A6D5A3 /* VSHintLine.m in Sources */,
-				96A5DD3B1161AC7900D58616 /* MyApplicationDelegate.m in Sources */,
+				964A49E218C29B030051EAFB /* AppDelegate.m in Sources */,
 				9612EC2E18B9744700BBED62 /* CalibDistortionPtArrayController.m in Sources */,
 				96A5DEBD1162501500D58616 /* VideoOverlayWindow.m in Sources */,
 				96AE94431162B65A00118398 /* CalibScreenPtArrayController.m in Sources */,
 				96AE95811162ED6600118398 /* EventAwareTableView.m in Sources */,
+				964A49E518C2BEAE0051EAFB /* ProjectController.m in Sources */,
 				96AE9619116315CC00118398 /* VSAnnotation.m in Sources */,
 				96AE97AE1164F92700118398 /* ObjectAddPanel.m in Sources */,
 				96A0CB5B1165D22200845DCD /* VSAnnotationArrayController.m in Sources */,
