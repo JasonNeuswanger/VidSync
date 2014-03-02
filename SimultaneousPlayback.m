@@ -15,7 +15,7 @@
     
     // It seems to not be calling this function at all while the button is pressed down
     
-	if (project.masterClip.windowController.playerView.player.rate != 0.0) {
+	if (project.masterClip.windowController != nil && project.masterClip.windowController.playerView.player.rate != 0.0) {
 		for (VSVideoClip *videoClip in self.project.videoClips) [videoClip.windowController refreshOverlay];
 		[eventsPointsController rearrangeObjects];
 		[self updateMasterTimeDisplay];

@@ -33,7 +33,6 @@
 
 - (void) dealloc
 {
-    NSLog(@"deallocing a VSVisibleItemArrayController");
 }
 
 @end

@@ -12,6 +12,11 @@
 
 - (void) dealloc
 {
+    /*
+    VSProject *project = [self content];
+    for (VSVideoClip *clip in project.videoClips) {
+        clip.windowController = nil;
+    }*/
     NSLog(@"deallocing ProjectController");
 }
 

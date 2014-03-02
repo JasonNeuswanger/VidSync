@@ -43,7 +43,6 @@
 
 - (void) dealloc
 {
-    NSLog(@"deallocing a PortraitsArrayController");
 }
 
 @end

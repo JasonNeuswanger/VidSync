@@ -873,6 +873,11 @@
 
 - (void) dealloc
 {
+    @try {
+        if (self.document != nil) [self removeObserver:self.document forKeyPath:@"playerView.player.rate"];
+    } @catch (id exception) {
+        NSLog(@"exception trying to remove observer form VideoWindowController: %@",(NSException *)exception);
+    }
     NSLog(@"Called dealloc for VideoWindowController %@ (%@)",self,self.videoClip.clipName);
 }
 

@@ -160,6 +160,7 @@
 - (id) initWithType:(NSString *)type error:(NSError **)error;
 - (void) windowControllerDidLoadNib:(NSWindowController *)windowController;
 - (void) syncedPlaybackPanelAwokeFromNib;
+- (void) observeWindowControllerVideoRate:(VideoWindowController *)vwc;
 - (VSProject *) project;
 
 - (void) anyTableViewSelectionDidChange:(NSNotification *)notification;

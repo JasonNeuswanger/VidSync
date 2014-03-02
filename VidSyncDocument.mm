@@ -106,10 +106,10 @@ static void *AVSPPlayerCurrentTimeContext = &AVSPPlayerCurrentTimeContext;
     
     for (VSVideoClip *clip in [self.project.videoClips allObjects]) {
         VideoWindowController __strong *vwc = [[VideoWindowController alloc] initWithVideoClip:clip inManagedObjectContext:[self managedObjectContext]];
+        [self observeWindowControllerVideoRate:vwc];
         if (vwc != nil) [self addWindowController:vwc];
     }
 
-    [self addObserver:self forKeyPath:@"project.masterClip.windowController.playerView.player.rate" options:NSKeyValueObservingOptionNew context:AVSPPlayerRateContext];
     [self addObserver:self forKeyPath:@"portraitSubject" options:NSKeyValueObservingOptionNew context:NULL];
 
     [[NSNotificationCenter defaultCenter] addObserver:self
@@ -130,6 +130,11 @@ static void *AVSPPlayerCurrentTimeContext = &AVSPPlayerCurrentTimeContext;
     [[NSRunLoop currentRunLoop] addTimer:playbackTimer forMode:NSRunLoopCommonModes];
     [[NSRunLoop currentRunLoop] addTimer:playbackTimer forMode:NSEventTrackingRunLoopMode]; // This keeps the timer running and overlays updating during play-while-pressed and other user interface actions
     
+}
+
+- (void) observeWindowControllerVideoRate:(VideoWindowController *)vwc  // called from above and also VideoClipArrayController when adding new clips
+{
+    [vwc addObserver:self forKeyPath:@"playerView.player.rate" options:NSKeyValueObservingOptionNew context:AVSPPlayerRateContext];
 }
 
 - (void) windowControllerDidLoadNib:(NSWindowController *)windowController
@@ -408,9 +413,11 @@ static void *AVSPPlayerCurrentTimeContext = &AVSPPlayerCurrentTimeContext;
 {
     if ([keyPath isEqual:@"color"] && [object class] == [VSTrackedObject class]) {
 		[self refreshOverlaysOfAllClips:self];
-    } else if ([keyPath isEqualToString:@"project.masterClip.windowController.playerView.player.rate"]) {
+    } else if ([keyPath isEqualToString:@"playerView.player.rate"]) {
         // trigger player rate change handler
-        [self movieRateDidChange];
+        if (self.project.masterClip.windowController != nil && [object isEqualTo:self.project.masterClip.windowController]) {
+            [self movieRateDidChange];
+        }
     } else if ([keyPath isEqualToString:@"portraitSubject"]) {
         if (portraitSubject == nil) {
             [[NSCursor arrowCursor] set];
@@ -627,11 +634,21 @@ static void *AVSPPlayerCurrentTimeContext = &AVSPPlayerCurrentTimeContext;
     [playbackTimer invalidate]; // This prevents the run loop from retaining the document via the timer after it's supposed to be released
 
     // Unregister various observers, or else there are complaints about deallocing objects with observers still attachced
+    
+    for (id windowController in [self windowControllers]) { // Putting this here to remove observer on window controller before document no longer exists
+        if ([windowController class] == [VideoWindowController class]) {
+            @try {
+                [windowController removeObserver:self forKeyPath:@"playerView.player.rate"];
+            } @catch (id exception) {
+                NSLog(@"exception when document tries to to remove observer form VideoWindowController: %@",(NSException *)exception);
+            }
+        }
+    }
+    
     @try {
         [[NSNotificationCenter defaultCenter] removeObserver:self];
     } @catch (id exception) {
     }
-    [self carefullyRemoveObserver:self forKeyPath:@"project.masterClip.windowController.playerView.player.rate"];
     [self carefullyRemoveObserver:self forKeyPath:@"portraitSubject"];
     [self carefullyRemoveObserver:syncedPlaybackView forKeyPath:@"bookmarkIsSet1"];
     [self carefullyRemoveObserver:syncedPlaybackView forKeyPath:@"bookmarkIsSet2"];

@@ -36,7 +36,10 @@
             [[[NSUserDefaultsController sharedUserDefaultsController] values] setValue:[[[[movieOpenPanel URLs] objectAtIndex:0] path] stringByDeletingLastPathComponent] forKey:@"movieOpenDirectory"];
 			[self addObject:newClip];
 			VideoWindowController *newVideoWindowController = [[VideoWindowController alloc] initWithVideoClip:newClip inManagedObjectContext:[self managedObjectContext]];
-			if (newVideoWindowController != nil) [document addWindowController:newVideoWindowController];
+			if (newVideoWindowController != nil) {
+                [document observeWindowControllerVideoRate:newVideoWindowController];
+                [document addWindowController:newVideoWindowController];
+            }
             if (!newClip.project.masterClip) newClip.project.masterClip = newClip;
 			self.nameOfNewClip = nil;
 			[newClipNamePanel performClose:self];
