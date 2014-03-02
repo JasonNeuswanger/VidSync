@@ -23,10 +23,12 @@
     
     NSSet *__strong visibleScreenPoints;
     NSSet *__strong visibleAnnotations;
+
+    VideoWindowController *__weak vwc;
     
 }
 
-@property (weak) id delegate; // I make the VideoWindowController a delegate, so I can call its methods when click things happen in the view.
+@property (weak) VideoWindowController *vwc;
 
 @property (strong) NSSet * visibleScreenPoints;
 @property (strong) NSSet * visibleAnnotations;
