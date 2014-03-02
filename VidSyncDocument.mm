@@ -652,34 +652,8 @@ static void *AVSPPlayerCurrentTimeContext = &AVSPPlayerCurrentTimeContext;
     [self carefullyRemoveObserver:self forKeyPath:@"portraitSubject"];
     [self carefullyRemoveObserver:syncedPlaybackView forKeyPath:@"bookmarkIsSet1"];
     [self carefullyRemoveObserver:syncedPlaybackView forKeyPath:@"bookmarkIsSet2"];
-    
-    /*-- the bindings ones are unnecessary, because the observer isn't the object itself, and it gets removed automatically anyway
-    [self carefullyRemoveObserver:projectNameDisplayInSyncedPlaybackWindow forKeyPath:@"project.name"];
-    [self carefullyRemoveObserver:projectController forKeyPath:@"managedObjectContext"];
-    [self carefullyRemoveObserver:videoClipArrayController forKeyPath:@"managedObjectContext"];
-    [self carefullyRemoveObserver:calibScreenPtFrontArrayController forKeyPath:@"managedObjectContext"];
-    [self carefullyRemoveObserver:calibScreenPtBackArrayController forKeyPath:@"managedObjectContext"];
-    [self carefullyRemoveObserver:trackedObjectTypesController forKeyPath:@"managedObjectContext"];
-    [self carefullyRemoveObserver:trackedEventTypesController forKeyPath:@"managedObjectContext"];
-    [self carefullyRemoveObserver:trackedObjectsController forKeyPath:@"managedObjectContext"];
-    [self carefullyRemoveObserver:trackedEventsController forKeyPath:@"managedObjectContext"];
-    [self carefullyRemoveObserver:eventsObjectsController forKeyPath:@"managedObjectContext"];
-    [self carefullyRemoveObserver:eventsOtherObjectsController forKeyPath:@"managedObjectContext"];
-    [self carefullyRemoveObserver:objectsEventsController forKeyPath:@"managedObjectContext"];
-    [self carefullyRemoveObserver:eventsPointsController forKeyPath:@"managedObjectContext"];
-    [self carefullyRemoveObserver:annotationsController forKeyPath:@"managedObjectContext"];
-    [self carefullyRemoveObserver:objectSynonymizeController forKeyPath:@"managedObjectContext"];
-    [self carefullyRemoveObserver:distortionLinesController forKeyPath:@"managedObjectContext"];
-    [self carefullyRemoveObserver:distortionPointsController forKeyPath:@"managedObjectContext"];
-    [self carefullyRemoveObserver:allPortraitsArrayController forKeyPath:@"managedObjectContext"];
-    [self carefullyRemoveObserver:objectsPortraitsArrayController forKeyPath:@"managedObjectContext"];
-    --*/
-    
+
     NSLog(@"finished my close code");
-    
-    
-    
-    
     [super close];
 }
 

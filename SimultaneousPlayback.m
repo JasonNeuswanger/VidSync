@@ -25,14 +25,16 @@
 
 - (void) updateMasterTimeDisplay // also updates the synced playback scrubber
 {
-	[masterTimeDisplay setStringValue:[self currentMasterTimeString]];
-    
-    CMTimeRange masterTimeRange = [[[self.project.masterClip.windowController.videoAsset tracksWithMediaType:AVMediaTypeVideo] firstObject] timeRange];
-    CMTimeRange sliderRange = CMTimeRangeMake(CMTimeMake(0,scrubberMaxTime),CMTimeMake(scrubberMaxTime,scrubberMaxTime));
-    CMTime sliderTimeToSet = CMTimeMapTimeFromRangeToRange([self currentMasterTime],masterTimeRange,sliderRange);
-    
-    double newSliderTime = (double) sliderTimeToSet.value;
-    [syncedPlaybackScrubber setDoubleValue:newSliderTime];
+    if (self.project.masterClip.windowController != nil) {
+        [masterTimeDisplay setStringValue:[self currentMasterTimeString]];
+        
+        CMTimeRange masterTimeRange = [[[self.project.masterClip.windowController.videoAsset tracksWithMediaType:AVMediaTypeVideo] firstObject] timeRange];
+        CMTimeRange sliderRange = CMTimeRangeMake(CMTimeMake(0,scrubberMaxTime),CMTimeMake(scrubberMaxTime,scrubberMaxTime));
+        CMTime sliderTimeToSet = CMTimeMapTimeFromRangeToRange([self currentMasterTime],masterTimeRange,sliderRange);
+        
+        double newSliderTime = (double) sliderTimeToSet.value;
+        [syncedPlaybackScrubber setDoubleValue:newSliderTime];
+    }
 
 }
 

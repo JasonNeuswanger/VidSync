@@ -27,4 +27,9 @@
  return YES;
  }
 
+- (void) dealloc
+{
+    NSLog(@"deallocing MainProjectWindow");
+}
+
 @end

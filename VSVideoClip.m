@@ -118,11 +118,16 @@
 - (void) dealloc
 {
     NSLog(@"deallocing VSVideoClip");
-    if (windowController != nil) {
+}
+
+- (void) carefullyRemoveObserver:(NSObject *)observer forKeyPath:(NSString *)keyPath
+// This is called by VideoWindowController to remove itself as an observer from the VSVideoClip.
+// Doing this in the other way (removing the observers in the VSVideoClip results in maddeningly hard-to-trace crashes when the program closes, because
+// the WindowController is deallocated first, and it's sent messages by the observers while deallocated before the VSVideoClip could be deallocated to kill the observers.
+{
+    if (observer != nil) {
         @try {
-            [self removeObserver:windowController forKeyPath:@"syncIsLocked"];
-            [self removeObserver:windowController forKeyPath:@"syncOffset"];
-            [self removeObserver:windowController forKeyPath:@"isMasterClipOf"];
+            [self removeObserver:observer forKeyPath:keyPath];
         } @catch (id exception) {
         }
     }

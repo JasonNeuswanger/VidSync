@@ -32,6 +32,7 @@
 
 - (VideoWindowController *)initWithVideoClip:(VSVideoClip *)inVideoClip inManagedObjectContext:(NSManagedObjectContext *)moc
 {
+
     AVAsset *movieAsset = [self playableAssetForClipName:inVideoClip.clipName atPath:inVideoClip.fileName];
     if (movieAsset != nil) {
         NSArray *assetKeysToLoadAndTest = [NSArray arrayWithObjects:@"playable", @"tracks", @"duration", nil];
@@ -45,8 +46,9 @@
         self = [super initWithWindowNibName:@"VideoClipWindow"];
         [self window];  // This forces a call to loadWindow, which invokes windowDidLoad and windowWillLoad, and allows video to load properly
         [self setShouldCascadeWindows:NO];
-        self.videoClip = inVideoClip;
+        self.videoClip = inVideoClip;               // so the error here is definitely from this line, not the one below
         self.videoClip.windowController = self;
+        // inVideoClip.windowController = self; // if I replace the two lines above with this one, the error idsappears
         managedObjectContext = moc;
         if (self.videoClip.windowFrame != nil) [[self window] setFrameFromString:self.videoClip.windowFrame];
         
@@ -873,6 +875,10 @@
 
 - (void) dealloc
 {
+    [self.videoClip carefullyRemoveObserver:self forKeyPath:@"syncIsLocked"];
+    [self.videoClip carefullyRemoveObserver:self forKeyPath:@"syncOffset"];
+    [self.videoClip carefullyRemoveObserver:self forKeyPath:@"isMasterClipOf"];
+
     @try {
         if (self.document != nil) [self removeObserver:self.document forKeyPath:@"playerView.player.rate"];
     } @catch (id exception) {
