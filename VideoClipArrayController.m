@@ -69,7 +69,6 @@
 
 - (void) dealloc
 {
-    NSLog(@"deallocing the VideoClipArrayController");
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 

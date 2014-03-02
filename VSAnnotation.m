@@ -25,7 +25,6 @@
 
 - (void) dealloc
 {
-    NSLog(@"deallocing a VSAnnotation");
     [self carefullyRemoveObserver:self.videoClip.windowController forKeyPath:@"width"];
     [self carefullyRemoveObserver:self.videoClip.windowController forKeyPath:@"color"];
     [self carefullyRemoveObserver:self.videoClip.windowController forKeyPath:@"size"];

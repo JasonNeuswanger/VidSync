@@ -884,7 +884,6 @@
     } @catch (id exception) {
         NSLog(@"exception trying to remove observer form VideoWindowController: %@",(NSException *)exception);
     }
-    NSLog(@"Called dealloc for VideoWindowController %@ (%@)",self,self.videoClip.clipName);
 }
 
 @end

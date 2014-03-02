@@ -110,7 +110,6 @@
 
 - (void) dealloc
 {
-    NSLog(@"deallocing a VSTrackedEventType");
     [self carefullyRemoveObserver:self forKeyPath:@"name"];
 	[self carefullyRemoveObserver:self forKeyPath:@"shape"];
 	[self carefullyRemoveObserver:self forKeyPath:@"size"];

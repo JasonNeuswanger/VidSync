@@ -58,7 +58,6 @@
 
 - (void) dealloc
 {
-    NSLog(@"deallocing a VSTrackedObjectType");
     @try {
         [self removeObserver:self forKeyPath:@"name"];
     } @catch (id exception) {

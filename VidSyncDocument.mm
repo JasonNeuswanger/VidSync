@@ -628,8 +628,6 @@ static void *AVSPPlayerCurrentTimeContext = &AVSPPlayerCurrentTimeContext;
 
 - (void) close
 {
-    NSLog(@"called close for VidSyncDocument");
-    
     // I CAN COMMENT OUT THE PLAYBACK TIMER INVALIDATION TO MAKE DOCUMENTS "CLOSE" WITHOUT CRASHING, EXCEPT THEY AREN'T ACTUALLY CLOSED
     [playbackTimer invalidate]; // This prevents the run loop from retaining the document via the timer after it's supposed to be released
 
@@ -652,8 +650,6 @@ static void *AVSPPlayerCurrentTimeContext = &AVSPPlayerCurrentTimeContext;
     [self carefullyRemoveObserver:self forKeyPath:@"portraitSubject"];
     [self carefullyRemoveObserver:syncedPlaybackView forKeyPath:@"bookmarkIsSet1"];
     [self carefullyRemoveObserver:syncedPlaybackView forKeyPath:@"bookmarkIsSet2"];
-
-    NSLog(@"finished my close code");
     [super close];
 }
 

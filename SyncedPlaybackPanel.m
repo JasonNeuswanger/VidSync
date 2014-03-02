@@ -110,9 +110,4 @@
     return YES;
 }
 
-- (void) dealloc
-{
-    NSLog(@"deallocing SyncedPlaybackPanel");
-}
-
 @end

@@ -16,9 +16,4 @@
 	return YES;
 }
 
-- (void) dealloc
-{
-    NSLog(@"deallocing VideoOverlayWindow");
-}
-
 @end

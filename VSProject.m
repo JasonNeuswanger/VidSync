@@ -43,9 +43,4 @@
 	return [NSDate dateWithString:self.dateLastSaved];
 }
 
-- (void) dealloc
-{
-    NSLog(@"deallocing VSProject");
-}
-
 @end

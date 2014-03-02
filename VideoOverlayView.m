@@ -1170,7 +1170,6 @@
 
 - (void) dealloc
 {
-    NSLog(@"deallocing VideoOverlayView, vwc is %@",vwc);
     [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKeyPath:@"values.quadratGridOverlayLineSpacing"];
     [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKeyPath:@"values.quadratGridOverlayLineThickness"];
     [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKeyPath:@"values.pointSelectionIndicatorLineLength"];
