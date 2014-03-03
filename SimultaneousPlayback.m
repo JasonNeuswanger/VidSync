@@ -68,18 +68,23 @@
 }
 
 #pragma mark
-#pragma mark Advanced Playback 
+#pragma mark Advanced Playback
 
-- (IBAction) advancedStepForwardAll:(id)sender
+- (IBAction) advancedStepAll:(id)sender
 {
-	int numFrames = [[[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"advancedPlaybackStepFrames"] intValue];
-	for (VSVideoClip *clip in [self.project.videoClips allObjects]) if ([clip.syncIsLocked boolValue]) [clip.windowController.playerView.player.currentItem stepByCount:numFrames];
-}
-
-- (IBAction) advancedStepBackwardAll:(id)sender
-{
-	int numFrames = [[[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"advancedPlaybackStepFrames"] intValue];
-	for (VSVideoClip *clip in [self.project.videoClips allObjects]) if ([clip.syncIsLocked boolValue]) [clip.windowController.playerView.player.currentItem stepByCount:-numFrames];
+    NSString *stepUnits = [[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"advancedPlaybackStepUnits"];
+	double stepAmount = [[[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"advancedPlaybackStepAmount"] doubleValue];
+    BOOL isForward = ([sender tag] == 2);   // otherwise it's backward, [sender tag] == 1
+    if ([stepUnits isEqualToString:@"frames"]) {
+        int numFrames = (isForward) ? roundf(stepAmount) : -roundf(stepAmount);
+        for (VSVideoClip *clip in [self.project.videoClips allObjects]) if ([clip.syncIsLocked boolValue]) [clip.windowController.playerView.player.currentItem stepByCount:numFrames];
+    } else {
+        double stepUnitFactor = ([stepUnits isEqualToString:@"seconds"]) ? 1.0 : 60.0;  // if not "seconds," must be "minutes"
+        double directionFactor = (isForward) ? 1.0 : -1.0;
+        CMTime masterTime = [self currentMasterTime];
+        CMTime stepTime = CMTimeMakeWithSeconds(stepAmount*stepUnitFactor*directionFactor,masterTime.timescale);
+        [self goToMasterTime:CMTimeAdd(masterTime,stepTime)];
+    }
 }
 
 - (IBAction) advancedPlayAll:(id)sender

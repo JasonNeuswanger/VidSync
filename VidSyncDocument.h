@@ -210,8 +210,7 @@
 - (IBAction) stepBackwardAll:(id)sender;
 
 - (IBAction) advancedPlayAll:(id)sender;
-- (IBAction) advancedStepForwardAll:(id)sender;
-- (IBAction) advancedStepBackwardAll:(id)sender;
+- (IBAction) advancedStepAll:(id)sender;
 - (void) setStopTimeForDuration:(float)duration atRate:(float)rate;
 - (void) checkForStopAtCurrentTime;
 - (IBAction) setTimeFromScrubber:(id)sender;

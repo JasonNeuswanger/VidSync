@@ -49,7 +49,8 @@
     
 	// initial values for advanced playback controls
 	
-	[initialValueDict setObject:[NSNumber numberWithInt:3] forKey:@"advancedPlaybackStepFrames"];
+	[initialValueDict setObject:[NSNumber numberWithDouble:10] forKey:@"advancedPlaybackStepAmount"];
+	[initialValueDict setObject:@"frames" forKey:@"advancedPlaybackStepUnits"];
 	[initialValueDict setObject:[NSNumber numberWithFloat:0.33] forKey:@"advancedPlaybackRate1"];
 	[initialValueDict setObject:[NSNumber numberWithFloat:2.0] forKey:@"advancedPlaybackRate2"];
 	[initialValueDict setObject:[NSNumber numberWithInt:0] forKey:@"advancedPlaybackMode1"];

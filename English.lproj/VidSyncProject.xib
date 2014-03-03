@@ -1427,7 +1427,7 @@
                                                                             </connections>
                                                                         </textField>
                                                                         <box autoresizesSubviews="NO" horizontalHuggingPriority="750" title="Box" boxType="separator" titlePosition="noTitle" id="102374">
-                                                                            <rect key="frame" x="125" y="43.999999572775948" width="5" height="173"/>
+                                                                            <rect key="frame" x="125" y="44" width="5" height="173"/>
                                                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES" heightSizable="YES"/>
                                                                             <color key="borderColor" white="0.0" alpha="0.41999999999999998" colorSpace="calibratedWhite"/>
                                                                             <color key="fillColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
@@ -2677,7 +2677,7 @@ IA
                                                 </subviews>
                                                 <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                                             </clipView>
-                                            <scroller key="horizontalScroller" verticalHuggingPriority="750" doubleValue="1" horizontal="YES" id="101121">
+                                            <scroller key="horizontalScroller" verticalHuggingPriority="750" horizontal="YES" id="101121">
                                                 <rect key="frame" x="1" y="66" width="555" height="15"/>
                                                 <autoresizingMask key="autoresizingMask"/>
                                             </scroller>
