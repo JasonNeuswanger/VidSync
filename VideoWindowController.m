@@ -420,17 +420,18 @@
 				[managedObjectContext processPendingChanges];	// have to do this to get a correct screenPoints count in handleScreenPointChange
 				[selectedPoint handleScreenPointChange];
                 [self.videoClip.project.document refreshOverlaysOfAllClips:self];   // refresh both clips, not just this one, because it may affect hint/connecting lines on both
-			} else if (key == NSUpArrowFunctionKey) {
-				selectedScreenPoint.screenY = [NSNumber numberWithFloat:[selectedScreenPoint.screenY floatValue] + selectedPointNudgeDistance];
-			} else if (key == NSDownArrowFunctionKey) {
-				selectedScreenPoint.screenY = [NSNumber numberWithFloat:[selectedScreenPoint.screenY floatValue] - selectedPointNudgeDistance];
-			} else if (key == NSLeftArrowFunctionKey) {
-				selectedScreenPoint.screenX = [NSNumber numberWithFloat:[selectedScreenPoint.screenX floatValue] - selectedPointNudgeDistance];
-			} else if (key == NSRightArrowFunctionKey) {
-				selectedScreenPoint.screenX = [NSNumber numberWithFloat:[selectedScreenPoint.screenX floatValue] + selectedPointNudgeDistance];
 			}
 			if (key == NSUpArrowFunctionKey || key == NSDownArrowFunctionKey || key == NSLeftArrowFunctionKey || key == NSRightArrowFunctionKey) {
 				if ([self.document currentMasterTimeIs:[UtilityFunctions CMTimeFromString:[selectedPoint timecode]]]) {
+                    if (key == NSUpArrowFunctionKey) {
+                        selectedScreenPoint.screenY = [NSNumber numberWithFloat:[selectedScreenPoint.screenY floatValue] + selectedPointNudgeDistance];
+                    } else if (key == NSDownArrowFunctionKey) {
+                        selectedScreenPoint.screenY = [NSNumber numberWithFloat:[selectedScreenPoint.screenY floatValue] - selectedPointNudgeDistance];
+                    } else if (key == NSLeftArrowFunctionKey) {
+                        selectedScreenPoint.screenX = [NSNumber numberWithFloat:[selectedScreenPoint.screenX floatValue] - selectedPointNudgeDistance];
+                    } else if (key == NSRightArrowFunctionKey) {
+                        selectedScreenPoint.screenX = [NSNumber numberWithFloat:[selectedScreenPoint.screenX floatValue] + selectedPointNudgeDistance];
+                    }
 					[selectedPoint handleScreenPointChange];
                     [selectedScreenPoint updateCalibrationFrameCoords];
 					if ([self.videoClip isCalibrated]) [selectedScreenPoint calculateHintLines];
@@ -438,10 +439,10 @@
 					[self.videoClip.project.document refreshOverlaysOfAllClips:self];
 				} else {
 					NSUInteger nudgeWarningResult = NSRunAlertPanel(@"Can't nudge that point right now.",
-									@"You can only nudge a point while the video is on the frame/timecode at which the point was created, even though the point is visible for selection after that.",
-									@"Ok, ignore the nudge.",
-									@"Go to the point's original timecode.",
-									nil);
+                                                                    @"You can only nudge a point while the video is on the frame/timecode at which the point was created, even though the point is visible for selection after that.",
+                                                                    @"Ok, ignore the nudge.",
+                                                                    @"Go to the point's original timecode.",
+                                                                    nil);
 					if (nudgeWarningResult == NSAlertAlternateReturn) {
 						[self.document goToMasterTime:[UtilityFunctions CMTimeFromString:selectedPoint.timecode]];
 					}
