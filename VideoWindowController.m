@@ -432,6 +432,7 @@
 			if (key == NSUpArrowFunctionKey || key == NSDownArrowFunctionKey || key == NSLeftArrowFunctionKey || key == NSRightArrowFunctionKey) {
 				if ([self.document currentMasterTimeIs:[UtilityFunctions CMTimeFromString:[selectedPoint timecode]]]) {
 					[selectedPoint handleScreenPointChange];
+                    [selectedScreenPoint updateCalibrationFrameCoords];
 					if ([self.videoClip isCalibrated]) [selectedScreenPoint calculateHintLines];
 					[self updateMagnifiedPreviewWithCenter:NSMakePoint([selectedScreenPoint.screenX floatValue],[selectedScreenPoint.screenY floatValue])];
 					[self.videoClip.project.document refreshOverlaysOfAllClips:self];
@@ -553,6 +554,7 @@
                     newScreenPoint.videoClip = videoClip;
                     newScreenPoint.screenX = [NSNumber numberWithFloat:videoCoords.x];
                     newScreenPoint.screenY = [NSNumber numberWithFloat:videoCoords.y];
+                    [newScreenPoint updateCalibrationFrameCoords];
                     CMTime masterTime = [videoClip.project.document currentMasterTime];		// Current timecode of the project's masterClip
                     VSPoint *point = [activeEvent pointToTakeScreenPointFromClip:videoClip atTime:masterTime];	// Retrieve or create the appropriate VSPoint to add this VSScreenPoint to
                     newScreenPoint.point = point;

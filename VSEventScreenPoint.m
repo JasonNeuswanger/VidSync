@@ -42,11 +42,30 @@ NSPoint quadratCoords2Dfrom3D(const VSPoint3D *quadratCoords3D, const char axisH
 
 @dynamic screenX;
 @dynamic screenY;
+@dynamic frontFrameWorldH;
+@dynamic frontFrameWorldV;
+@dynamic backFrameWorldH;
+@dynamic backFrameWorldV;
 @dynamic videoClip;
 @dynamic point;
 @dynamic screenPoints;
 @dynamic hintLinesOut;
 @synthesize tempOpacity;
+
+- (void) updateCalibrationFrameCoords
+{
+    NSPoint videoCoords = NSMakePoint([self.screenX doubleValue],[self.screenY doubleValue]);
+    if (self.videoClip.calibration.frontIsCalibrated) {
+        NSPoint frontCalibrationFrameCoords = [self.videoClip.calibration projectScreenPoint:videoCoords toQuadratSurface:@"Front"];
+        self.frontFrameWorldH = [NSNumber numberWithDouble:frontCalibrationFrameCoords.x];
+        self.frontFrameWorldV = [NSNumber numberWithDouble:frontCalibrationFrameCoords.y];
+    }
+    if (self.videoClip.calibration.backIsCalibrated) {
+        NSPoint backCalibrationFrameCoords = [self.videoClip.calibration projectScreenPoint:videoCoords toQuadratSurface:@"Back"];
+        self.backFrameWorldH = [NSNumber numberWithDouble:backCalibrationFrameCoords.x];
+        self.backFrameWorldV = [NSNumber numberWithDouble:backCalibrationFrameCoords.y];
+    }
+}
 
 - (void) calculateHintLines
 {
@@ -185,12 +204,16 @@ NSPoint quadratCoords2Dfrom3D(const VSPoint3D *quadratCoords3D, const char axisH
 {
 	NSNumberFormatter *nf = self.point.trackedEvent.type.project.document.decimalFormatter;
     NSPoint undistortedScreenPoint = [self undistortedCoords];
-    return [NSString stringWithFormat:@",\"%@: screen={%@,%@} undistorted={%@,%@}\"",
+    return [NSString stringWithFormat:@",\"%@: screen={%@,%@} undistorted={%@,%@} calibrationFrameFront={%@,%@} calibrationFrameBack={%@,%@}\"",
             self.videoClip.clipName,
             [nf stringFromNumber:self.screenX],
             [nf stringFromNumber:self.screenY],
             [nf stringFromNumber:[NSNumber numberWithFloat:undistortedScreenPoint.x]],
-            [nf stringFromNumber:[NSNumber numberWithFloat:undistortedScreenPoint.y]]	            
+            [nf stringFromNumber:[NSNumber numberWithFloat:undistortedScreenPoint.y]],
+            [nf stringFromNumber:self.frontFrameWorldH],
+            [nf stringFromNumber:self.frontFrameWorldV],
+            [nf stringFromNumber:self.backFrameWorldH],
+            [nf stringFromNumber:self.backFrameWorldV]
             ];
 }
 
@@ -203,7 +226,11 @@ NSPoint quadratCoords2Dfrom3D(const VSPoint3D *quadratCoords3D, const char axisH
 	[mainElement addAttribute:[NSXMLNode attributeWithName:@"x" stringValue:[nf stringFromNumber:self.screenX]]];
 	[mainElement addAttribute:[NSXMLNode attributeWithName:@"y" stringValue:[nf stringFromNumber:self.screenY]]];
 	[mainElement addAttribute:[NSXMLNode attributeWithName:@"xu" stringValue:[nf stringFromNumber:[NSNumber numberWithFloat:undistortedScreenPoint.x]]]];
-	[mainElement addAttribute:[NSXMLNode attributeWithName:@"yu" stringValue:[nf stringFromNumber:[NSNumber numberWithFloat:undistortedScreenPoint.y]]]];	
+	[mainElement addAttribute:[NSXMLNode attributeWithName:@"yu" stringValue:[nf stringFromNumber:[NSNumber numberWithFloat:undistortedScreenPoint.y]]]];
+	[mainElement addAttribute:[NSXMLNode attributeWithName:@"frameFrontH" stringValue:[nf stringFromNumber:self.frontFrameWorldH]]];
+	[mainElement addAttribute:[NSXMLNode attributeWithName:@"frameFrontV" stringValue:[nf stringFromNumber:self.frontFrameWorldV]]];
+	[mainElement addAttribute:[NSXMLNode attributeWithName:@"frameBackH" stringValue:[nf stringFromNumber:self.backFrameWorldH]]];
+	[mainElement addAttribute:[NSXMLNode attributeWithName:@"frameBackV" stringValue:[nf stringFromNumber:self.backFrameWorldV]]];
 	return mainElement;
 }
 

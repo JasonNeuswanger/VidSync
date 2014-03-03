@@ -575,8 +575,9 @@ static void *AVSPPlayerCurrentTimeContext = &AVSPPlayerCurrentTimeContext;
 		[pointRecalculateProgressIndicator displayIfNeeded];
 		int i = 0;
 		for (VSPoint *point in fetchResults) {
+			for (VSEventScreenPoint *screenPoint in point.screenPoints) [screenPoint updateCalibrationFrameCoords];
 			[point calculate3DCoords];
-			[point clearPointToPointDistanceCache];			
+			[point clearPointToPointDistanceCache];
 			i += 1;
 			[pointRecalculateProgressIndicator setDoubleValue:(double) i / (double) [fetchResults count]];
 			[pointRecalculateProgressIndicator displayIfNeeded];			
@@ -585,7 +586,7 @@ static void *AVSPPlayerCurrentTimeContext = &AVSPPlayerCurrentTimeContext;
 		[pointRecalculatePanel performClose:self];
 		[eventsPointsController.mainTableView setNeedsDisplay];	// refresh the point table
     }	
-	if (fetchResults == nil) NSRunAlertPanel(@"No points.",@"There are no measured points yet, so there's not much point updating them.",@"Ok",nil,nil); 
+	if (fetchResults == nil) NSRunAlertPanel(@"No points.",@"There are no measured points yet, so nothing is being recalculated.",@"Ok",nil,nil); 
     if (fetchError != nil) [self presentError:fetchError];
 }
 

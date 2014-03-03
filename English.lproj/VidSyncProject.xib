@@ -52,7 +52,7 @@
             <windowPositionMask key="initialPositionMask" leftStrut="YES" topStrut="YES"/>
             <rect key="contentRect" x="146" y="773" width="589" height="657"/>
             <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1578"/>
-            <value key="minSize" type="size" width="589" height="629"/>
+            <value key="minSize" type="size" width="589" height="657"/>
             <view key="contentView" id="6">
                 <rect key="frame" x="0.0" y="0.0" width="589" height="657"/>
                 <autoresizingMask key="autoresizingMask"/>
@@ -2491,7 +2491,7 @@ IA
                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                 <subviews>
                                                     <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnSelection="YES" multipleSelection="NO" autosaveColumns="NO" rowHeight="14" headerView="101123" id="101122" customClass="EventAwareTableView">
-                                                        <rect key="frame" x="0.0" y="0.0" width="894" height="49"/>
+                                                        <rect key="frame" x="0.0" y="0.0" width="997" height="49"/>
                                                         <autoresizingMask key="autoresizingMask"/>
                                                         <size key="intercellSpacing" width="3" height="2"/>
                                                         <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
@@ -2628,7 +2628,7 @@ IA
                                                                     <binding destination="102065" name="value" keyPath="arrangedObjects.reprojectionErrorNorm" id="104191"/>
                                                                 </connections>
                                                             </tableColumn>
-                                                            <tableColumn editable="NO" width="400" minWidth="400" maxWidth="3.4028234663852886e+38" id="101161">
+                                                            <tableColumn editable="NO" width="250" minWidth="250" maxWidth="3.4028234663852886e+38" id="101161">
                                                                 <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left" title="Screen Coords">
                                                                     <font key="font" metaFont="smallSystem"/>
                                                                     <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
@@ -2641,7 +2641,32 @@ IA
                                                                 </textFieldCell>
                                                                 <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                                                 <connections>
-                                                                    <binding destination="102065" name="value" keyPath="arrangedObjects.screenPointsString" id="102084"/>
+                                                                    <binding destination="102065" name="value" keyPath="arrangedObjects.screenPointsString" id="a3E-gH-82X">
+                                                                        <dictionary key="options">
+                                                                            <bool key="NSAllowsEditingMultipleValuesSelection" value="NO"/>
+                                                                        </dictionary>
+                                                                    </binding>
+                                                                </connections>
+                                                            </tableColumn>
+                                                            <tableColumn width="250" minWidth="250" maxWidth="3.4028234663852886e+38" id="9kc-N5-GkR">
+                                                                <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left" title="Calibration Frame Coords">
+                                                                    <font key="font" metaFont="smallSystem"/>
+                                                                    <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
+                                                                    <color key="backgroundColor" name="headerColor" catalog="System" colorSpace="catalog"/>
+                                                                </tableHeaderCell>
+                                                                <textFieldCell key="dataCell" controlSize="small" lineBreakMode="truncatingTail" selectable="YES" editable="YES" alignment="left" title="Text Cell" id="Mqm-bB-Fm2">
+                                                                    <font key="font" metaFont="smallSystem"/>
+                                                                    <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                                                    <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                                                </textFieldCell>
+                                                                <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
+                                                                <connections>
+                                                                    <binding destination="102065" name="value" keyPath="arrangedObjects.calibrationFramePointsString" id="Obl-hO-4ED">
+                                                                        <dictionary key="options">
+                                                                            <bool key="NSConditionallySetsEditable" value="NO"/>
+                                                                            <bool key="NSAllowsEditingMultipleValuesSelection" value="NO"/>
+                                                                        </dictionary>
+                                                                    </binding>
                                                                 </connections>
                                                             </tableColumn>
                                                         </tableColumns>
@@ -2652,7 +2677,7 @@ IA
                                                 </subviews>
                                                 <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                                             </clipView>
-                                            <scroller key="horizontalScroller" verticalHuggingPriority="750" horizontal="YES" id="101121">
+                                            <scroller key="horizontalScroller" verticalHuggingPriority="750" doubleValue="1" horizontal="YES" id="101121">
                                                 <rect key="frame" x="1" y="66" width="555" height="15"/>
                                                 <autoresizingMask key="autoresizingMask"/>
                                             </scroller>
@@ -2661,7 +2686,7 @@ IA
                                                 <autoresizingMask key="autoresizingMask"/>
                                             </scroller>
                                             <tableHeaderView key="headerView" id="101123">
-                                                <rect key="frame" x="0.0" y="0.0" width="894" height="17"/>
+                                                <rect key="frame" x="0.0" y="0.0" width="997" height="17"/>
                                                 <autoresizingMask key="autoresizingMask"/>
                                             </tableHeaderView>
                                         </scrollView>

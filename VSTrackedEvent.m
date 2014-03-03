@@ -65,11 +65,6 @@
         if ([UtilityFunctions timeString:[obj timecode] isEqualToTimeString:currentTimeString]) [pointsAtCurrentTime addObject:obj];
     }];
     
-//  I'm commenting out a method of doing the above with a predicate, which would work fine for new files and more quickly. Instead, I'm using the above code for compatibility
-//  with files that were created when VidSync sometimes recorded timecodes on funny Quicktime/AVKit timescales like 1,000,000,000 instead of the native video scale, and times have to be compared.
-//  NSPredicate *atCurrentTime = [NSPredicate predicateWithFormat:@"timecode == %@",currentTimeString];
-//	NSSet *pointsAtCurrentTime = [self.points filteredSetUsingPredicate:atCurrentTime];
-     
 	if ([pointsAtCurrentTime count] > 0) {
 		for (VSPoint *maybePoint in pointsAtCurrentTime) {	// Loop over all points at this timecode, looking for the one with the lowest index that doesn't have a screenPoint for videoClip
 			if ([maybePoint screenPointForVideoClip:videoClip] == nil) {	// point has no screenPoint for this videoClip

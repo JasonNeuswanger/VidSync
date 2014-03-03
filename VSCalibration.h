@@ -100,6 +100,9 @@ int redistortionRootFunc_fdf(const gsl_vector* x, void* params, gsl_vector* f, g
 + (NSSet *) keyPathsForValuesAffectingAxisFrontToBack;
 - (NSString *) axisFrontToBack;
 
+- (BOOL) frontIsCalibrated;
+- (BOOL) backIsCalibrated;
+
 - (void) createPointsFromQuadratDescription;
 - (void) saveQuadratDescriptionToFile;
 - (void) loadQuadratDescriptionFromFile;
@@ -111,8 +114,8 @@ int redistortionRootFunc_fdf(const gsl_vector* x, void* params, gsl_vector* f, g
 
 - (void) processClickOnSurface:(NSString *)whichSurface withCoords:(NSPoint)videoCoords;
 - (void) calculateCalibration;
-- (void) calculatePixelResiduals;
-- (void) calculateWorldResiduals;
+- (void) calculatePixelResiduals:(NSString *)whichSurface;
+- (void) calculateWorldResiduals:(NSString *)whichSurface;
 - (double) leastSquaresResidualWithA:(double*)a_r x:(double[9])x_r rowsA:(int)rowsA;
 - (void) calculateCameraPosition;
 - (NSArray *) candidateCameraPositionsForRefinement;
@@ -132,13 +135,12 @@ int redistortionRootFunc_fdf(const gsl_vector* x, void* params, gsl_vector* f, g
 - (NSPoint) distortPoint:(NSPoint)undistortedPoint;
 - (NSPoint) undistortPoint:(NSPoint)distortedPoint;
 - (void) calculateDistortionCorrection;
-- (void) refineCalibration;
 
 - (void) refractionCorrectApparentPositionOfBackQuadratPoint:(VSCalibrationPoint*)point;
 
 - (NSPoint) snapToFeatureNearestToClick:(NSPoint)clickedPoint;
 
-- (void) calculateFCMMatrices;
+- (void) calculateFCMMatrix:(NSString *)whichSurface;
 - (void) putQuadratFrontToScreenFCMMatrixInArray:(double[9])arr;
 
 - (NSXMLNode *) representationAsXMLNode;

@@ -18,12 +18,17 @@ NSPoint quadratCoords2Dfrom3D(const VSPoint3D *quadratCoords3D, const char axisH
 
 @property (strong) NSNumber *screenX;
 @property (strong) NSNumber *screenY;
+@property (strong) NSNumber *frontFrameWorldH;
+@property (strong) NSNumber *frontFrameWorldV;
+@property (strong) NSNumber *backFrameWorldH;
+@property (strong) NSNumber *backFrameWorldV;
 @property (strong) VSVideoClip *videoClip;
 @property (strong) VSPoint *point;
 @property (strong) NSSet *screenPoints;
 @property (strong) NSSet *hintLinesOut;
 @property (assign) float tempOpacity;
 
+- (void) updateCalibrationFrameCoords;
 - (VSLine3D) computeLine3D:(BOOL)useReprojectedPoints;
 - (void) calculateHintLines;
 - (void) putPointsInFrontQuadratPlaneIntoArray:(VSPoint3D[3])quadratPlanePoints;

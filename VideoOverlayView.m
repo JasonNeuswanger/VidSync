@@ -971,8 +971,8 @@
 
 - (void) drawQuadratCoordinateGrids
 {
-	BOOL shouldDrawFront = [[[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"quadratShowSurfaceGridOverlayFront"] boolValue];
-	BOOL shouldDrawBack = [[[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"quadratShowSurfaceGridOverlayBack"] boolValue];
+	BOOL shouldDrawFront = [[[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"quadratShowSurfaceGridOverlayFront"] boolValue] && [vwc.videoClip.calibration frontIsCalibrated];
+	BOOL shouldDrawBack = [[[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"quadratShowSurfaceGridOverlayBack"] boolValue] && [vwc.videoClip.calibration backIsCalibrated];
     
     NSColor *frontColor = [UtilityFunctions userDefaultColorForKey:@"quadratOverlayColorFront"];
     NSColor *backColor = [UtilityFunctions userDefaultColorForKey:@"quadratOverlayColorBack"];
@@ -1003,14 +1003,19 @@
 
 - (void) calculateQuadratCoordinateGrids
 {
-	quadratCoordinateGrids = [NSArray arrayWithObjects:
+    NSMutableArray *grids = [NSMutableArray new];
+    if (vwc.videoClip.calibration.matrixQuadratFrontToScreen != nil) [grids addObject:@[[self quadratCoordinateGridForSurface:@"Front"]]];
+    if (vwc.videoClip.calibration.matrixQuadratBackToScreen != nil) [grids addObject:@[[self quadratCoordinateGridForSurface:@"Back"]]];
+    quadratCoordinateGrids = grids;
+	/*
+    quadratCoordinateGrids = [NSArray arrayWithObjects:
 							  [NSArray arrayWithObjects:
                                [self quadratCoordinateGridForSurface:@"Front"],
 							   nil],
 							  [NSArray arrayWithObjects:
                                [self quadratCoordinateGridForSurface:@"Back"],
 							   nil],
-							  nil];
+							  nil];*/
 }
 
 

@@ -260,6 +260,25 @@ NSPoint project2DPoint(NSPoint pt, double projectionMatrix[9])
 	return pointsStr;
 }
 
+- (NSString *) calibrationFramePointsString // Displays as "videoName1 front: {h1f,v1f}  videoName1: {h1b,h2b} videoName2 front...
+{
+	NSMutableString *pointsStr = [NSMutableString stringWithString:@""];
+	// Sort VSEventScreenPoints alphabetically by videoClip.clipName
+	NSSortDescriptor *alphabeticalByClipName = [NSSortDescriptor sortDescriptorWithKey:@"videoClip.clipName" ascending:YES];
+	NSArray *sortableScreenPoints = [self.screenPoints allObjects];
+	NSArray *sortedScreenPoints = [sortableScreenPoints sortedArrayUsingDescriptors:[NSArray arrayWithObject:alphabeticalByClipName]];
+	// Format and add all point to the string and return
+	for (VSEventScreenPoint *screenPoint in sortedScreenPoints) {
+        if (screenPoint.videoClip.calibration.frontIsCalibrated) {
+            [pointsStr appendFormat:@"%@Front: {%1.4f,%1.4f}   ",screenPoint.videoClip.clipName,[screenPoint.frontFrameWorldH floatValue],[screenPoint.frontFrameWorldV floatValue]];
+        }
+        if (screenPoint.videoClip.calibration.backIsCalibrated) {
+            [pointsStr appendFormat:@"%@Back: {%1.4f,%1.4f}   ",screenPoint.videoClip.clipName,[screenPoint.backFrameWorldH floatValue],[screenPoint.backFrameWorldV floatValue]];
+        }
+	}
+	return pointsStr;
+}
+
 - (BOOL) has3Dcoords
 {
 	return ([self.worldX floatValue] != 0.0 || [self.worldX floatValue] != 0.0 || [self.worldX floatValue] != 0.0);

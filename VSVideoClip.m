@@ -104,7 +104,7 @@
 
 - (BOOL) isCalibrated
 {
-	return (self.calibration.matrixQuadratBackToScreen != nil && self.calibration.matrixQuadratFrontToScreen != nil && self.calibration.matrixScreenToQuadratFront != nil && self.calibration.matrixScreenToQuadratBack != nil);
+	return ([self.calibration frontIsCalibrated] && [self.calibration backIsCalibrated]);
 }
 
 - (NSXMLNode *) representationAsXMLNode	// very partial implementation just to get me onto distortion lines ASAP, although the idea of flattening the calibration with the clip in the XML may remain

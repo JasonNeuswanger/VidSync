@@ -44,6 +44,7 @@ NSPoint project2DPoint(NSPoint pt, double projectionMatrix[9]);
 
 - (void) clearPointToPointDistanceCache;
 - (NSString *) screenPointsString;
+- (NSString *) calibrationFramePointsString;
 - (BOOL) has3Dcoords;
 - (NSNumber *) distanceToVSPoint:(VSPoint *)otherPoint;
 - (VSEventScreenPoint *) screenPointForVideoClip:(VSVideoClip *)videoClip;

@@ -726,92 +726,132 @@ int refractionRootFunc_f(const gsl_vector* x, void* params, gsl_vector* f)
 
 - (void) calculateCalibration
 {
-	if ([self.pointsFront count] < 4 || [self.pointsBack count] < 4) {
-		NSRunAlertPanel(@"Need More Points",@"You need at least 4 points on each quadrat surface (front & back) before you can calculate the calibration.",@"Ok",nil,nil);
-	} else {
-		int numIncompletePoints = 0;
-		for (VSCalibrationPoint *calPoint in [self.pointsFront setByAddingObjectsFromSet:self.pointsBack]) {
-			if ([calPoint.screenX intValue] == 0 && [calPoint.screenY intValue] == 0) numIncompletePoints += 1;
-		}
-		if (numIncompletePoints > 0) {
-			NSString *msg = [NSString stringWithFormat:@"There are %i quadrat calibration points for which you haven't clicked the video to establish screen coordinates. You must click the screen for all points defined in your quadrat definition.  If a point's not visible to click, just delete it from the list instead.",numIncompletePoints];
-			NSRunAlertPanel(@"Some Points are Incomplete",msg,@"Ok",nil,nil);
-		} else {
-            // Also, look at only using quadrat interpolated positions to find the camera position, and see how which option gives better measurements -- I THINK THIS IS MY ERROR SOURCE!
-            // After all that stuff, build in the Core Data settings.
-            [self calculateMatrix:@"Front" correctRefraction:NO];
-            bool shouldCorrectRefraction = [self.shouldCorrectRefraction boolValue];
-            bool correctRefractionThisIteration = NO;
-            int maxIterations = (shouldCorrectRefraction) ? 4 : 1;
-            for (int i = 0; i < maxIterations; i++) {
-                if (i > 0) correctRefractionThisIteration = YES;
-                [self calculateMatrix:@"Back" correctRefraction:correctRefractionThisIteration];                    
-                [self calculateFCMMatrices];														// update the cached, row-major vector forms of the matrices
-                [self calculateCameraPosition];
-                // NSLog(@"Finished iteration %d, camera position (%1.15f,%1.15f,%1.15f)", i, [self.cameraX doubleValue],[self.cameraY doubleValue],[self.cameraZ doubleValue]);
-            }
-            
-			[self.videoClip.windowController.overlayView calculateQuadratCoordinateGrids];		// and the cached quadrat coordinate grid
-            [self calculatePixelResiduals];
-            [self calculateWorldResiduals];
-			[self.videoClip.project.document recalculateAllPoints:self];
-			[self.videoClip.windowController refreshOverlay];			
-		}
-	}
-	[self.videoClip.project.document.calibrationInputTabView selectLastTabViewItem:nil];	// Switch over to the "Results" tab after calculating the calibration.	
+    BOOL calibrateFront = NO;
+    BOOL calibrateBack = NO;
+    
+    // Check which surface(s) have enough points (empty or not) to be calibrated
+    
+    if ([self.pointsFront count] >= 4 && [self.pointsBack count] >= 4) {
+        calibrateFront = YES;
+        calibrateBack = YES;
+    } else if ([self.pointsFront count] >= 4 || [self.pointsBack count] >= 4) {
+        NSString *whichSurface = ([self.pointsFront count] >= 4) ? @"Front" : @"Back";
+        NSAlert *tooFewPointsAlert = [NSAlert new];
+        [tooFewPointsAlert setMessageText:@"Too few points for 3-D calibration"];
+        [tooFewPointsAlert setInformativeText:[NSString stringWithFormat:@"To calibrate for 3-D measurement, you need at least 4 points on both surfaces and you only have points for the %@ surface.\n\nDo you want to proceed with a 2-D calibration on that surface, or cancel and enter points on the other surface for 3-D analysis?",whichSurface]];
+        [tooFewPointsAlert addButtonWithTitle:@"Cancel"];
+        [tooFewPointsAlert addButtonWithTitle:@"Proceed with 2-D calibration"];
+        [tooFewPointsAlert setAlertStyle:NSCriticalAlertStyle];
+        NSInteger alertResult = [tooFewPointsAlert runModal];
+        if (alertResult == NSAlertSecondButtonReturn) {
+            ([self.pointsFront count] >= 4) ? calibrateFront = YES : calibrateBack = YES;
+        }
+    } else {
+        NSAlert *tooFewPointsAlert = [NSAlert new];
+        [tooFewPointsAlert setMessageText:@"Too few points for calibration"];
+        [tooFewPointsAlert setInformativeText:@"You need at least 4 points on both calibration frame surfaces for 3-D calibration (or on one surface for 2-D calibration)."];
+        [tooFewPointsAlert addButtonWithTitle:@"Ok"];
+        [tooFewPointsAlert setAlertStyle:NSCriticalAlertStyle];
+        [tooFewPointsAlert runModal];
+    }
+    
+    // Check that all the points on the surface(s) being calibrated have both screen and qudarat coordinates
+    
+    int numIncompletePoints = 0;
+    if (calibrateFront) for (VSCalibrationPoint *calPoint in self.pointsFront) if ([calPoint.screenX intValue] == 0 && [calPoint.screenY intValue] == 0) numIncompletePoints += 1;
+    if (calibrateBack) for (VSCalibrationPoint *calPoint in self.pointsBack) if ([calPoint.screenX intValue] == 0 && [calPoint.screenY intValue] == 0) numIncompletePoints += 1;
+    if (numIncompletePoints > 0) {
+        calibrateFront = NO;
+        calibrateBack = NO;
+        NSAlert *tooFewPointsAlert = [NSAlert new];
+        [tooFewPointsAlert setMessageText:@"Calibration points are incomplete"];
+        [tooFewPointsAlert setInformativeText:[NSString stringWithFormat:@"There are %i calibration points in the table for which you haven't clicked the video to establish screen coordinates.\n\nEither establish coordinates for those points, or, if a point is not clearly visible to click, just delete it from the list instead of guessing its position.",numIncompletePoints]];
+        [tooFewPointsAlert addButtonWithTitle:@"Ok"];
+        [tooFewPointsAlert setAlertStyle:NSCriticalAlertStyle];
+        [tooFewPointsAlert runModal];
+    }
+    
+    // If the points passed all the tests, run the calibration on the appropriate clips. Refraction correcton on the back surface is ignored if it is the only surface.
+    
+    if (calibrateFront) {
+        [self calculateMatrix:@"Front" correctRefraction:NO];
+        [self calculateFCMMatrix:@"Front"];
+        [self calculatePixelResiduals:@"Front"];
+        [self calculateWorldResiduals:@"Front"];
+    }
+    
+    if (calibrateBack) {
+        BOOL shouldCorrectRefraction = [self.shouldCorrectRefraction boolValue] && calibrateFront;  // Only correct refraction if set to, and if we're doing both front & back
+        BOOL correctRefractionThisIteration = NO;
+        int maxIterations = (shouldCorrectRefraction) ? 4 : 1;
+        for (int i = 0; i < maxIterations; i++) {
+            if (i > 0) correctRefractionThisIteration = YES;
+            [self calculateMatrix:@"Back" correctRefraction:correctRefractionThisIteration];
+            [self calculateFCMMatrix:@"Back"];														// update the cached, row-major vector forms of the matrices
+            if (calibrateFront) [self calculateCameraPosition]; // can only get the front camera position if both clips have been calibrated
+        }
+        [self calculatePixelResiduals:@"Back"];
+        [self calculateWorldResiduals:@"Back"];
+    }
+    
+    [self.videoClip.windowController.overlayView calculateQuadratCoordinateGrids];		// and the cached quadrat coordinate grid
+    
+    if (calibrateFront || calibrateBack) {
+        [self.videoClip.project.document recalculateAllPoints:self];
+        [self.videoClip.windowController refreshOverlay];
+        [self.videoClip.project.document.calibrationInputTabView selectLastTabViewItem:nil];	// Switch over to the "Results" tab after calculating the calibration.
+    }
+    
 }
 
-- (void) calculatePixelResiduals    
+- (BOOL) frontIsCalibrated
+{
+    return (self.matrixScreenToQuadratFront != nil && self.matrixQuadratFrontToScreen != nil);
+}
+
+- (BOOL) backIsCalibrated
+{
+    return (self.matrixScreenToQuadratBack != nil && self.matrixQuadratFrontToScreen != nil);
+}
+
+- (void) calculatePixelResiduals:(NSString *)whichSurface
 {
     // Calculates the mean distance between the screen point clicked for a quadrat point, and the projection of that quadrat point's coordinates onto the screen using
     // the matrix result from the overall calibration, and redistorting so that result is directly comparable to the clicked point.
     
     NSPoint quadratPoint, projectedScreenPoint;
     float xdiff,ydiff;
-    float totalFrontResidual = 0.0;
-    float totalBackResidual = 0.0;    
-    for (VSCalibrationPoint *point in self.pointsFront) {
+    float totalResidual = 0.0;
+    NSSet *__weak points = ([whichSurface isEqualToString:@"Front"]) ? self.pointsFront : self.pointsBack;
+    for (VSCalibrationPoint *point in points) {
         quadratPoint = NSMakePoint([point.apparentWorldHcoord floatValue],[point.apparentWorldVcoord floatValue]);
-        projectedScreenPoint = [self projectToScreenFromPoint:quadratPoint onQuadratSurface:@"Front" redistort:TRUE];
+        projectedScreenPoint = [self projectToScreenFromPoint:quadratPoint onQuadratSurface:whichSurface redistort:TRUE];
         xdiff = projectedScreenPoint.x - [point.screenX floatValue];
         ydiff = projectedScreenPoint.y - [point.screenY floatValue];
-        totalFrontResidual += sqrt(xdiff*xdiff + ydiff*ydiff);
+        totalResidual += sqrt(xdiff*xdiff + ydiff*ydiff);
     }
-    for (VSCalibrationPoint *point in self.pointsBack) {
-        quadratPoint = NSMakePoint([point.apparentWorldHcoord floatValue],[point.apparentWorldVcoord floatValue]);
-        projectedScreenPoint = [self projectToScreenFromPoint:quadratPoint onQuadratSurface:@"Back" redistort:TRUE];
-        xdiff = projectedScreenPoint.x - [point.screenX floatValue];
-        ydiff = projectedScreenPoint.y - [point.screenY floatValue];
-        totalBackResidual += sqrt(xdiff*xdiff + ydiff*ydiff);
-    }
-    self.residualFrontPixel = [NSNumber numberWithFloat:(totalFrontResidual / [self.pointsFront count])];
-    self.residualBackPixel = [NSNumber numberWithFloat:(totalBackResidual / [self.pointsBack count])];
+    int numPoints = ([whichSurface isEqualToString:@"Front"]) ? [self.pointsFront count] : [self.pointsBack count];
+    NSNumber *residualPerPoint = [NSNumber numberWithFloat:(totalResidual / numPoints)];
+    ([whichSurface isEqualToString:@"Front"]) ? self.residualFrontPixel = residualPerPoint : self.residualBackPixel = residualPerPoint;
 }
 
-- (void) calculateWorldResiduals    
+- (void) calculateWorldResiduals:(NSString *)whichSurface    
 {
     // This one takes the clicked screen point, projects it onto the quadrat surface using the matrix resulting from the calibration, and compares it to the world point 
     // that quadrat dot was supposed to represent.
     NSPoint screenPoint, projectedQuadratPoint;
     float xdiff,ydiff;
-    float totalFrontResidual = 0.0;
-    float totalBackResidual = 0.0;    
+    float totalResidual = 0.0;
     for (VSCalibrationPoint *point in self.pointsFront) {
         screenPoint = NSMakePoint([point.screenX floatValue],[point.screenY floatValue]);
-        projectedQuadratPoint = [self projectScreenPoint:screenPoint toQuadratSurface:@"Front"];
+        projectedQuadratPoint = [self projectScreenPoint:screenPoint toQuadratSurface:whichSurface];
         xdiff = projectedQuadratPoint.x - [point.apparentWorldHcoord floatValue];
         ydiff = projectedQuadratPoint.y - [point.apparentWorldVcoord floatValue];
-        totalFrontResidual += sqrt(xdiff*xdiff + ydiff*ydiff);
+        totalResidual += sqrt(xdiff*xdiff + ydiff*ydiff);
     }
-    for (VSCalibrationPoint *point in self.pointsBack) {
-        screenPoint = NSMakePoint([point.screenX floatValue],[point.screenY floatValue]);
-        projectedQuadratPoint = [self projectScreenPoint:screenPoint toQuadratSurface:@"Back"];
-        xdiff = projectedQuadratPoint.x - [point.apparentWorldHcoord floatValue];
-        ydiff = projectedQuadratPoint.y - [point.apparentWorldVcoord floatValue];
-        totalBackResidual += sqrt(xdiff*xdiff + ydiff*ydiff);
-    }
-    self.residualFrontWorld = [NSNumber numberWithFloat:(totalFrontResidual / [self.pointsFront count])];
-    self.residualBackWorld = [NSNumber numberWithFloat:(totalBackResidual / [self.pointsBack count])];
+    int numPoints = ([whichSurface isEqualToString:@"Front"]) ? [self.pointsFront count] : [self.pointsBack count];
+    NSNumber *residualPerPoint = [NSNumber numberWithFloat:(totalResidual / numPoints)];
+    ([whichSurface isEqualToString:@"Front"]) ? self.residualFrontWorld = residualPerPoint : self.residualBackWorld = residualPerPoint;
 }
 
 - (void) calculateCameraPosition
@@ -834,20 +874,7 @@ int refractionRootFunc_f(const gsl_vector* x, void* params, gsl_vector* f)
         [[self managedObjectContext] deleteObject:tempScreenPoint];
         k += 1;
     }
-    /*
-	for (float i = 0.0; i <= 1.0; i += tempPointIncrement) {
-		for (float j = 0.0; j <= 1.0; j += tempPointIncrement) {
-			VSEventScreenPoint *tempScreenPoint = [NSEntityDescription insertNewObjectForEntityForName:@"VSEventScreenPoint" inManagedObjectContext:[self managedObjectContext]]; 
-			tempScreenPoint.videoClip = self.videoClip;
-			tempScreenPoint.screenX = [NSNumber numberWithFloat:self.videoClip.windowController.movieSize.width * i];
-			tempScreenPoint.screenY = [NSNumber numberWithFloat:self.videoClip.windowController.movieSize.height * j];
-			lines[k] = [tempScreenPoint computeLine3D:NO];
-            // NSLog(@"{{%f,%f,%f},{%f,%f,%f}} ",lines[k].front.x,lines[k].front.y,lines[k].front.z,lines[k].back.x,lines[k].back.y,lines[k].back.z);
-			[[self managedObjectContext] deleteObject:tempScreenPoint];
-			k += 1;
-		}
-	}
-     */
+
     double pld; // Mean point-line distance from all the intersection lines to the camera position
 	VSPoint3D cameraPoint = [UtilityFunctions intersectionOfNumber:numLines of3DLines:lines meanPLD:&pld];
 
@@ -1009,7 +1036,7 @@ int refractionRootFunc_f(const gsl_vector* x, void* params, gsl_vector* f)
 	}
 	
 	[[self managedObjectContext] processPendingChanges];
-	[self calculateFCMMatrices];
+	[self calculateFCMMatrix:whichMatrix];
 	
 }
 
@@ -1246,10 +1273,10 @@ int refractionRootFunc_f(const gsl_vector* x, void* params, gsl_vector* f)
 	NSPoint undistortedPoint = [self undistortPoint:screenPoint];
 	NSPoint projectedPoint;
 	if ([surface isEqualToString:@"Front"]) {
-		if (matrixScreenToQuadratFrontFCM[0] == 0.0) [self calculateFCMMatrices];
+		if (matrixScreenToQuadratFrontFCM[0] == 0.0) [self calculateFCMMatrix:surface];
 		projectedPoint = [UtilityFunctions project2DPoint:undistortedPoint usingMatrix:matrixScreenToQuadratFrontFCM];
 	} else {																												// if not Front surface, must be Back
-		if (matrixScreenToQuadratBackFCM[0] == 0.0) [self calculateFCMMatrices];
+		if (matrixScreenToQuadratBackFCM[0] == 0.0) [self calculateFCMMatrix:surface];
 		projectedPoint = [UtilityFunctions project2DPoint:undistortedPoint usingMatrix:matrixScreenToQuadratBackFCM];
 	}
 	return projectedPoint;
@@ -1259,10 +1286,10 @@ int refractionRootFunc_f(const gsl_vector* x, void* params, gsl_vector* f)
 {
 	NSPoint undistortedScreenPoint;
 	if ([surface isEqualToString:@"Front"]) {
-		if (matrixQuadratFrontToScreenFCM[0] == 0.0) [self calculateFCMMatrices];
+		if (matrixQuadratFrontToScreenFCM[0] == 0.0) [self calculateFCMMatrix:surface];
 		undistortedScreenPoint = [UtilityFunctions project2DPoint:quadratPoint usingMatrix:matrixQuadratFrontToScreenFCM];
 	} else {																												// if not Front surface, must be Back
-		if (matrixQuadratBackToScreenFCM[0] == 0.0) [self calculateFCMMatrices];
+		if (matrixQuadratBackToScreenFCM[0] == 0.0) [self calculateFCMMatrix:surface];
 		undistortedScreenPoint = [UtilityFunctions project2DPoint:quadratPoint usingMatrix:matrixQuadratBackToScreenFCM];
 	}
 	if (redistort) {
@@ -1747,50 +1774,6 @@ int refractionRootFunc_f(const gsl_vector* x, void* params, gsl_vector* f)
 }
 
 #pragma mark
-#pragma mark Refinement
-
-// This function isn't used currently.  It existed only for the purpose of plugging manual matrix modifications from Mathematica into VidSync, but right now there aren't any such modifications.
-
-- (void) refineCalibration
-{
-    double newp_front_left[9] = {0.000147088213424, -0.0000113219960846, -0.0000902698266745, 0.00000249655967902, 0.00015690969526, 0.0000103662132105, -0.0683255747555, -0.00869985435937, 0.680087182829};
-    double newp_back_left[9] = {0.000301449019542, -0.0000120939502663, -0.0000820485543353, 0.00000571727631299, 0.000315517615529, 0.00000855372563451, -0.167887643775, -0.102041197162, 0.64705425962};
-    double newp_front_right[9] = {0.000181732426868, 0.0000139870683732, 0.000130059754604, 0.00000342491751068, 0.000148271476251, 0.0000107790275628, -0.0758758164239, -0.0331460476452, 0.425367472157};
-    double newp_back_right[9] = {0.000326185625857, 0.000012064535746, 0.000130816402735, 0.00000451157739884, 0.00030289308191, 0.0000083131759578, -0.311166215469, -0.121813837306, 0.398528343768};
-    
-    double newpinv_front_left[9] = {7230.64425869, 574.462740188, 0.950986898533, -162.899398258, 6354.76892682, -0.118484500339, 724.349372, 139.005797251, 1.56442579039};
-    double newpinv_back_left[9] = {3561.41411937, 281.358952444, 0.447879305779, -89.2039587187, 3148.85542525, -0.0529376025502, 909.993153611, 569.580778402, 1.65332592916};
-    double newpinv_front_right[9] = {4900.35088738, -792.729875811, -1.47823615547, -175.743471237, 6734.82475228, -0.116928801915, 860.415868229, 383.395078997, 2.0781135255};
-    double newpinv_back_right[9] = {2344.93761028, -399.606541014, -0.761387008152, -84.4698062119, 3288.42358679, -0.0408683797955, 1805.08057136, 693.128719875, 1.9022580548};
-    
-    double leftCam[3] = {0.0397965865, -0.3947444299, 0.1174556132};
-    double rightCam[3] = {0.330573056, -0.3827759354, 0.1154640939};
-    
-    if ([self.videoClip.clipName isEqualToString:@"Left Camera"]) {
-        self.matrixScreenToQuadratFront = [VSCalibration createMatrixOfNSArraysFromCMatrix:newp_front_left];	
-        self.matrixQuadratFrontToScreen = [VSCalibration createMatrixOfNSArraysFromCMatrix:newpinv_front_left];
-        self.matrixScreenToQuadratBack = [VSCalibration createMatrixOfNSArraysFromCMatrix:newp_back_left];	
-        self.matrixQuadratBackToScreen = [VSCalibration createMatrixOfNSArraysFromCMatrix:newpinv_back_left];
-        self.cameraX = [NSNumber numberWithDouble:leftCam[0]];
-        self.cameraY = [NSNumber numberWithDouble:leftCam[1]];
-        self.cameraZ = [NSNumber numberWithDouble:leftCam[2]];    
-    } else {
-        self.matrixScreenToQuadratFront = [VSCalibration createMatrixOfNSArraysFromCMatrix:newp_front_right];	
-        self.matrixQuadratFrontToScreen = [VSCalibration createMatrixOfNSArraysFromCMatrix:newpinv_front_right];        
-        self.matrixScreenToQuadratBack = [VSCalibration createMatrixOfNSArraysFromCMatrix:newp_back_right];	
-        self.matrixQuadratBackToScreen = [VSCalibration createMatrixOfNSArraysFromCMatrix:newpinv_back_right];        
-        self.cameraX = [NSNumber numberWithDouble:rightCam[0]];
-        self.cameraY = [NSNumber numberWithDouble:rightCam[1]];
-        self.cameraZ = [NSNumber numberWithDouble:rightCam[2]];
-    }
-    
-	[[self managedObjectContext] processPendingChanges];
-	
-	[self calculateFCMMatrices];														// update the cached, row-major forms of the projection matrices
-	[self.videoClip.project.document recalculateAllPoints:self];
-}
-
-#pragma mark
 #pragma mark Utilitarian Class Functions
 
 + (void) rightMultiply3x3Matrix:(double[9])A trans:(enum CBLAS_TRANSPOSE)transA by3x3Matrix:(double[9])B trans:(enum CBLAS_TRANSPOSE)transB intoResultingMatrix:(double[9])C
@@ -1870,15 +1853,22 @@ int refractionRootFunc_f(const gsl_vector* x, void* params, gsl_vector* f)
 	}		
 }
 
-- (void) calculateFCMMatrices
+- (void) calculateFCMMatrix:(NSString *)whichSurface
 {
 	// Put the values of each projection matrix into a one-dimensional Fortran column-major form for use in Lapack
 	for (int v=0; v < 3; v++) {
 		for (int u=0; u < 3; u++) {
-			matrixQuadratFrontToScreenFCM[v*3+u] = [[[self.matrixQuadratFrontToScreen objectAtIndex:u] objectAtIndex:v] doubleValue];
-			matrixQuadratBackToScreenFCM[v*3+u] = [[[self.matrixQuadratBackToScreen objectAtIndex:u] objectAtIndex:v] doubleValue];
-			matrixScreenToQuadratFrontFCM[v*3+u] = [[[self.matrixScreenToQuadratFront objectAtIndex:u] objectAtIndex:v] doubleValue];
-			matrixScreenToQuadratBackFCM[v*3+u] = [[[self.matrixScreenToQuadratBack objectAtIndex:u] objectAtIndex:v] doubleValue];
+            if ([whichSurface isEqualToString:@"Front"]) {
+                if (self.matrixScreenToQuadratFront != nil) {
+                    matrixQuadratFrontToScreenFCM[v*3+u] = [[[self.matrixQuadratFrontToScreen objectAtIndex:u] objectAtIndex:v] doubleValue];
+                    matrixScreenToQuadratFrontFCM[v*3+u] = [[[self.matrixScreenToQuadratFront objectAtIndex:u] objectAtIndex:v] doubleValue];
+                }
+            } else {
+                if (self.matrixScreenToQuadratBack != nil) {
+                    matrixQuadratBackToScreenFCM[v*3+u] = [[[self.matrixQuadratBackToScreen objectAtIndex:u] objectAtIndex:v] doubleValue];
+                    matrixScreenToQuadratBackFCM[v*3+u] = [[[self.matrixScreenToQuadratBack objectAtIndex:u] objectAtIndex:v] doubleValue];
+                }
+            }
 		}
 	}	
 }
