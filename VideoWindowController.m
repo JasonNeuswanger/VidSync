@@ -883,7 +883,9 @@
     [self.videoClip carefullyRemoveObserver:self forKeyPath:@"isMasterClipOf"];
 
     @try {
-        if (self.document != nil) [self removeObserver:self.document forKeyPath:@"playerView.player.rate"];
+        if (self.document != nil) {
+            [self removeObserver:self.document forKeyPath:@"playerView.player.rate"];
+        }
     } @catch (id exception) {
         NSLog(@"exception trying to remove observer form VideoWindowController: %@",(NSException *)exception);
     }
