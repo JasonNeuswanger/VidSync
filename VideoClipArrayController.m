@@ -61,19 +61,22 @@
 
 - (void)remove:(id)sender
 {
-	// Close the window before deleting it
-	VideoWindowController *__weak vwc = [[[self selectedObjects] objectAtIndex:0] windowController];
-    [vwc removeObserver:document forKeyPath:@"playerView.player.rate"];
-	[vwc close];
-    [document removeWindowController:vwc];
-	[super remove:sender];
-    if ([document.project.videoClips count] > 0) {
-        if ([document.project.videoClips count] == 1) {
-            [document.project setMasterClip:[document.project.videoClips anyObject]];   // If only one video is left, set it as the master clip
+    VSVideoClip *clipToDelete = [[self selectedObjects] objectAtIndex:0];
+    NSInteger alertResult = NSRunAlertPanel(@"Are you sure?",[NSString stringWithFormat:@"Are you sure you want to delete clip %@?",clipToDelete.clipName],@"Yes",@"No",nil);
+    if (alertResult == 1) {
+        // Close the window before deleting it
+        [clipToDelete.windowController removeObserver:document forKeyPath:@"playerView.player.rate"];
+        [clipToDelete.windowController close];
+        [document removeWindowController:clipToDelete.windowController];
+        [super remove:sender];
+        if ([document.project.videoClips count] > 0) {
+            if ([document.project.videoClips count] == 1) {
+                [document.project setMasterClip:[document.project.videoClips anyObject]];   // If only one video is left, set it as the master clip
+            }
+            for (VSVideoClip *clip in document.project.videoClips) [clip.windowController processSynchronizationStatus];
         }
-        for (VSVideoClip *clip in document.project.videoClips) [clip.windowController processSynchronizationStatus];
+        [document refreshOverlaysOfAllClips:self];
     }
-	
 }
 
 - (void) dealloc
