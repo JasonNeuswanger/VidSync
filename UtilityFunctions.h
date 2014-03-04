@@ -54,4 +54,7 @@ typedef struct {		// Creates a pair of 2D points, which can be used to represent
 + (void *)CreateIplImageFromCGImage:(CGImageRef)imageRef;   // returns an IplImage ; can't use that c++ type in a .c header though
 + (CGImageRef)CGImageFromIplImage:(void *)imageAsVoid;
 
++(NSManagedObject *) Clone:(NSManagedObject *)source inContext:(NSManagedObjectContext *)context deep:(BOOL)deep;
+
+
 @end

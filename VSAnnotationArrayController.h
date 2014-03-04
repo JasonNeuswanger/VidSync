@@ -18,4 +18,6 @@
 
 - (IBAction) goToAnnotation:(id)sender;
 
+- (IBAction) mirrorSelectedAnnotation:(id)sender;
+
 @end

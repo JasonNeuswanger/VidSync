@@ -28,5 +28,19 @@
 	}	
 }
 
+- (IBAction) mirrorSelectedAnnotation:(id)sender
+{
+    if ([[self selectedObjects] count] > 0) {
+        VSAnnotation *selectedAnnotation = [[self selectedObjects] objectAtIndex:0];
+        for (VSVideoClip *clip in selectedAnnotation.videoClip.project.videoClips) {
+            if (![clip isEqualTo:selectedAnnotation.videoClip]) {
+                VSAnnotation *newAnnotation = (VSAnnotation *) [UtilityFunctions Clone:selectedAnnotation inContext:[self managedObjectContext] deep:NO];
+                newAnnotation.videoClip = clip;
+            }
+        }
+	}
+    [[self managedObjectContext] processPendingChanges];
+	[document refreshOverlaysOfAllClips:self];
+}
 
 @end

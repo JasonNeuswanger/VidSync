@@ -276,6 +276,8 @@
 }
 
 #pragma mark Helpers for OpenCV
+#pragma mark
+
 
 // These IplImage<-->CGImage conversion functions are adapted from http://niw.at/articles/2009/03/14/using-opencv-on-iphone/en
 
@@ -329,6 +331,39 @@
     CGDataProviderRelease(provider);
     CGColorSpaceRelease(colorSpace);
     return imageRef;
+}
+
+#pragma mark Clone an NSManagedObject
+#pragma mark
+
+// Modified from http://stackoverflow.com/questions/2730832/how-can-i-duplicate-or-copy-a-core-data-managed-object
+// added a "deep" boolean parameter which says whether or not to also copy child objects and parent relationships
+
++(NSManagedObject *) Clone:(NSManagedObject *)source inContext:(NSManagedObjectContext *)context deep:(BOOL)deep
+{
+    NSString *entityName = [[source entity] name];
+    NSManagedObject *cloned = [NSEntityDescription insertNewObjectForEntityForName:entityName inManagedObjectContext:context];
+    NSDictionary *attributes = [[NSEntityDescription entityForName:entityName inManagedObjectContext:context] attributesByName];
+    for (NSString *attr in attributes) [cloned setValue:[source valueForKey:attr] forKey:attr];
+    if (deep) {
+        //Loop through all relationships, and clone them.
+        NSDictionary *relationships = [[NSEntityDescription entityForName:entityName inManagedObjectContext:context] relationshipsByName];
+        for (NSRelationshipDescription *rel in relationships){
+            NSString *keyName = [NSString stringWithFormat:@"%@",rel];
+            //get a set of all objects in the relationship
+            NSMutableSet *sourceSet = [source mutableSetValueForKey:keyName];
+            NSMutableSet *clonedSet = [cloned mutableSetValueForKey:keyName];
+            NSEnumerator *e = [sourceSet objectEnumerator];
+            NSManagedObject *relatedObject;
+            while ( relatedObject = [e nextObject]){
+                //Clone it, and add clone to set
+                NSManagedObject *clonedRelatedObject = [UtilityFunctions Clone:relatedObject inContext:context deep:deep];
+                [clonedSet addObject:clonedRelatedObject];
+            }
+        }
+    }
+    
+    return cloned;
 }
 
 @end
