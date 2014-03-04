@@ -3425,7 +3425,11 @@ IA
                                                         <size key="minSize" width="517" height="116"/>
                                                         <size key="maxSize" width="535" height="10000000"/>
                                                         <connections>
-                                                            <binding destination="102264" name="value" keyPath="selection.notes" id="YhZ-Jd-txf"/>
+                                                            <binding destination="102264" name="value" keyPath="selection.notes" id="JLn-zx-JDH">
+                                                                <dictionary key="options">
+                                                                    <bool key="NSContinuouslyUpdatesValue" value="YES"/>
+                                                                </dictionary>
+                                                            </binding>
                                                         </connections>
                                                     </textView>
                                                 </subviews>
