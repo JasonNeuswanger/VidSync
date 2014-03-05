@@ -1634,7 +1634,7 @@ int refractionRootFunc_f(const gsl_vector* x, void* params, gsl_vector* f)
     free(firstLine);
     cvReleaseImage(&videoFrameIpl);
     cvReleaseImage(&videoFrameSingleChannelIpl);
-    
+    self.videoClip.project.distortionDisplayMode = @"Uncorrected";
     [self.videoClip.windowController refreshOverlay];
 
 }
@@ -1774,6 +1774,7 @@ int refractionRootFunc_f(const gsl_vector* x, void* params, gsl_vector* f)
     free(p.lines);
     free(p.lineLengths);
  
+    self.videoClip.project.distortionDisplayMode = @"Corrected";
     [self.videoClip.windowController refreshOverlay];
 }
 

@@ -86,10 +86,8 @@
 	[initialValueDict setObject:[NSNumber numberWithBool:NO] forKey:@"quadratShowSurfaceGridOverlayBack"];
 	
 	// initial values for distortion correction overlays
-	[initialValueDict setObject:[NSNumber numberWithBool:NO] forKey:@"showDistortionOverlay"];
 	[initialValueDict setObject:[NSNumber numberWithBool:YES] forKey:@"showDistortionConnectingLines"];
 	[initialValueDict setObject:[NSNumber numberWithBool:YES] forKey:@"showDistortionTipToTipLines"];
-	[initialValueDict setObject:[NSNumber numberWithBool:YES] forKey:@"showDistortionCorrectedPoints"];
 	[initialValueDict setObject:[NSNumber numberWithFloat:2.5] forKey:@"distortionPointSize"];
 	[initialValueDict setObject:[NSNumber numberWithFloat:1.0] forKey:@"distortionLineThickness"];
 	[initialValueDict setObject:[NSArchiver archivedDataWithRootObject:[NSColor greenColor]] forKey:@"distortionConnectingLinesColor"];

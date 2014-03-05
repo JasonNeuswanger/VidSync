@@ -32,6 +32,7 @@
 @property (strong) NSString *capturePathForStills;
 @property (strong) NSString *movieCaptureStartTime;
 @property (strong) NSString *movieCaptureEndTime;
+@property (strong) NSString *distortionDisplayMode;
 
 @property (weak) VidSyncDocument *document;
 @property (strong) NSMutableSet *trackedObjectTypes;
@@ -41,5 +42,7 @@
 
 - (NSDate *) dateCreatedAsNSDate;
 - (NSDate *) dateLastSavedAsNSDate;
+
+- (void) carefullyRemoveObserver:(NSObject *)observer forKeyPath:(NSString *)keyPath;
 
 @end

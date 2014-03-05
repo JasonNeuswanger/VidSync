@@ -31,6 +31,7 @@
 @dynamic capturePathForStills;
 @dynamic movieCaptureStartTime;
 @dynamic movieCaptureEndTime;
+@dynamic distortionDisplayMode;
 
 @synthesize document;
 
@@ -42,6 +43,16 @@
 - (NSDate *) dateLastSavedAsNSDate
 {
 	return [NSDate dateWithString:self.dateLastSaved];
+}
+
+- (void) carefullyRemoveObserver:(NSObject *)observer forKeyPath:(NSString *)keyPath
+{
+    if (observer != nil) {
+        @try {
+            [self removeObserver:observer forKeyPath:keyPath];
+        } @catch (id exception) {
+        }
+    }
 }
 
 @end

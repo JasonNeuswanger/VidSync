@@ -65,6 +65,7 @@
 		newDistortionPoint.distortionLine = selectedLine;
 		[document.distortionPointsController setSelectedObjects:[NSArray arrayWithObject:newDistortionPoint]];
 		[document.distortionLinesController.mainTableView display];	// refresh the line table's # Points column
+        selectedLine.calibration.videoClip.project.distortionDisplayMode = @"Uncorrected";
 	} else {
 		NSRunAlertPanel(@"No line selected.",@"You must create a distortion line before you can add points to it by clicking the video.",@"Ok",nil,nil);
 	}	

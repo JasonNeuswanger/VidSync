@@ -204,8 +204,7 @@
 										   overlayWidth,
 										   overlayHeight);
 	if (overlayView == nil) {
-		overlayView = [[VideoOverlayView alloc] initWithFrame:overlaySubViewRect];
-		overlayView.vwc = self;
+		overlayView = [[VideoOverlayView alloc] initWithFrame:overlaySubViewRect andWindowController:self];
 		[[overlayWindow contentView] addSubview:overlayView];
 		[[playerView window] addChildWindow:overlayWindow ordered:NSWindowAbove];
 		[overlayWindow orderFront:self];

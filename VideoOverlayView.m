@@ -16,9 +16,11 @@
 @synthesize vwc;    // VideoWindowController this view's window belongs to
 
 
-- (id)initWithFrame:(NSRect)frame {
+- (id)initWithFrame:(NSRect)frame andWindowController:(VideoWindowController *)windowController
+{
     self = [super initWithFrame:frame];
     if (self) {
+        vwc = windowController;
 		trackingArea = [[NSTrackingArea alloc] initWithRect:[self bounds]
 													options:NSTrackingMouseMoved|NSTrackingCursorUpdate|NSTrackingActiveInActiveApp|NSTrackingInVisibleRect
 													  owner:self
@@ -58,15 +60,24 @@
 		[[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKeyPath:@"values.showDistortionCorrectedPoints" options:0 context:NULL];
 		[[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKeyPath:@"values.showScreenItemDropShadows" options:0 context:NULL];
 		[[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKeyPath:@"values.screenItemDropShadowBlurRadius" options:0 context:NULL];
+        VidSyncDocument *__weak doc = (VidSyncDocument *) vwc.document;
+        [doc.project addObserver:self forKeyPath:@"distortionDisplayMode" options:NSKeyValueObservingOptionNew context:NULL];
 	}
     return self;
 }
+
+
+
 
 - (void) observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
 	if ([keyPath isEqualToString:@"values.quadratGridOverlayLineSpacing"] || [keyPath isEqualToString:@"values.quadratGridOverlayLineThickness"]) {
 		[self calculateQuadratCoordinateGrids];
 	}
 	if ([object isEqualTo:[NSUserDefaultsController sharedUserDefaultsController]]) [self display];
+    if ([keyPath isEqualToString:@"distortionDisplayMode"]) {
+        [self drawDistortionCorrections];
+        [self display];
+    }
 }
 
 #pragma mark
@@ -74,8 +85,6 @@
 
 - (void)drawRect:(NSRect)rect 
 {
-	BOOL showUncorrectedDistortionOverlay = [[[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"showDistortionOverlay"] boolValue];
-	BOOL showCorrectedDistortionOverlay = [[[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"showDistortionCorrectedPoints"] boolValue];
 	BOOL showPixelErrorOverlay = [[[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"showPixelErrorOverlay"] boolValue];
 	
 	[[NSColor clearColor] set]; // use clearColor when not testing size
@@ -88,7 +97,7 @@
 	[self drawAnnotations];
 	[self drawQuadratCoordinateGrids];
     [self drawPortraitSelectionBox];
-	if (showUncorrectedDistortionOverlay || showCorrectedDistortionOverlay) [self drawDistortionCorrections];
+	[self drawDistortionCorrections];
 	if (showPixelErrorOverlay) [self drawScreenPointToIdealScreenPointComparison];
 }
 
@@ -268,7 +277,28 @@
 }
 
 - (void) drawDistortionCorrections
-{		
+{
+    VidSyncDocument *__weak doc = (VidSyncDocument *) [vwc document];
+    BOOL showUncorrectedOverlay = NO;
+    BOOL showCorrectedOverlay = NO;
+    if ([[[doc.mainTabView selectedTabViewItem] label] isEqualToString:@"Calibration"] && [[[doc.calibrationInputTabView selectedTabViewItem] label] isEqualToString:@"Lens Distortion"]) {
+        if ([doc.project.distortionDisplayMode isEqualToString:@"Both"]) {
+            showUncorrectedOverlay = YES;
+            showCorrectedOverlay = YES;
+        } else if ([doc.project.distortionDisplayMode isEqualToString:@"Uncorrected"]) {
+            showUncorrectedOverlay = YES;
+            showCorrectedOverlay = NO;
+        } else if ([doc.project.distortionDisplayMode isEqualToString:@"Corrected"]) {
+            showUncorrectedOverlay = NO;
+            showCorrectedOverlay = YES;
+        }
+	}
+    if (!(showCorrectedOverlay || showUncorrectedOverlay)) return;
+
+    //showUncorrectedOverlay = [[[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"showDistortionOverlay"] boolValue];
+	//showCorrectedOverlay = [[[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"showDistortionCorrectedPoints"] boolValue];
+    
+    
 	NSColor *distortedPointColor = [UtilityFunctions userDefaultColorForKey:@"distortionPointsColor"];
 	NSColor *connectingLineColor = [UtilityFunctions userDefaultColorForKey:@"distortionConnectingLinesColor"];
 	NSColor *tipToTipLineColor = [UtilityFunctions userDefaultColorForKey:@"distortionTipToTipLinesColor"];
@@ -279,8 +309,6 @@
 	float lineWidth = [[[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"distortionLineThickness"] floatValue];
 	BOOL showConnectingLines = [[[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"showDistortionConnectingLines"] boolValue];
 	BOOL showTipToTipLines = [[[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"showDistortionTipToTipLines"] boolValue];
-	BOOL showUncorrectedOverlay = [[[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"showDistortionOverlay"] boolValue];
-	BOOL showCorrectedOverlay = [[[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"showDistortionCorrectedPoints"] boolValue];
 	
 	NSSet *distortionLines = vwc.videoClip.calibration.distortionLines;
 	NSSortDescriptor *indexDescriptor = [[NSSortDescriptor alloc] initWithKey:@"index" ascending:YES];

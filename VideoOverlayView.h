@@ -34,7 +34,7 @@
 @property (strong) NSSet * visibleAnnotations;
 
 - (void)drawRect:(NSRect)rect;
-- (id)initWithFrame:(NSRect)frameRect;
+- (id)initWithFrame:(NSRect)frame andWindowController:(VideoWindowController *)windowController;
 
 - (void) calculateVisibleScreenPoints;
 - (void) drawHintLines;
