@@ -7347,6 +7347,7 @@ IA
                 </binding>
                 <outlet property="eventController" destination="101602" id="101806"/>
                 <outlet property="eventsObjectsController" destination="101774" id="101814"/>
+                <outlet property="objectController" destination="101506" id="jgp-4m-qjr"/>
             </connections>
         </arrayController>
         <arrayController mode="entity" entityName="VSTrackedObject" automaticallyPreparesContent="YES" id="103147" userLabel="Object Synonymize Controller" customClass="ObjectSynonymizeArrayController">

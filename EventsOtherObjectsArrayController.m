@@ -44,7 +44,14 @@
 		NSMutableSet *trackedObjects = [NSMutableSet setWithSet:theEvent.trackedObjects];
 		[trackedObjects removeObject:objectToRemove];
 		theEvent.trackedObjects = trackedObjects;
-		[self rearrangeObjects];
+        if ([trackedObjects count] > 0) {
+            VSTrackedObject *newlySelectedObject = [trackedObjects anyObject];
+            [self setSelectedObjects:@[newlySelectedObject]];
+            [objectController setSelectedObjects:@[newlySelectedObject]];
+            [eventController setSelectedObjects:@[theEvent]];
+            
+        }
+        [self rearrangeObjects];
 	}
 }
 

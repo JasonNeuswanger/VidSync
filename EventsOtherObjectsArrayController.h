@@ -14,6 +14,7 @@
 
 @interface EventsOtherObjectsArrayController : TypeIndexNameSortedArrayController {
 
+    IBOutlet TrackedObjectArrayController *__weak objectController;
 	IBOutlet TrackedEventArrayController *__weak eventController;
 	IBOutlet VSVisibleItemArrayController *__weak eventsObjectsController;
 	
