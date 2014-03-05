@@ -12,13 +12,17 @@
 
 - (IBAction) add:(id)sender
 {
-	VSTrackedEvent *newEvent = [NSEntityDescription insertNewObjectForEntityForName:@"VSTrackedEvent" inManagedObjectContext:[self managedObjectContext]];	
-	newEvent.name = [newEventName stringValue];
-	newEvent.type = [[newEventType selectedItem] representedObject];
-	[self addObject:newEvent];
-	newEvent.index = [NSNumber numberWithInt:[VSTrackedEvent highestEventIndexInProject:document.project]+1];
-	[newEventName setStringValue:@""];
-	[eventAddPanel performClose:nil];
+    if ([newEventType selectedItem] == nil) {
+        [UtilityFunctions InformUser:@"You can't add an Event until you have defined at least one Event Type. Use the \"Edit Object/Event Types\" button to get started."];
+    } else {
+        VSTrackedEvent *newEvent = [NSEntityDescription insertNewObjectForEntityForName:@"VSTrackedEvent" inManagedObjectContext:[self managedObjectContext]];
+        newEvent.name = [newEventName stringValue];
+        newEvent.type = [[newEventType selectedItem] representedObject];
+        [self addObject:newEvent];
+        newEvent.index = [NSNumber numberWithInt:[VSTrackedEvent highestEventIndexInProject:document.project]+1];
+        [newEventName setStringValue:@""];
+        [eventAddPanel performClose:nil];
+    }
 }
 
 - (void)remove:(id)sender

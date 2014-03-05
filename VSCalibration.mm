@@ -460,23 +460,27 @@ int refractionRootFunc_f(const gsl_vector* x, void* params, gsl_vector* f)
 		arrayController = self.videoClip.project.document.calibScreenPtBackArrayController;
 	}
 	NSUInteger numberOfPoints = [[arrayController arrangedObjects] count];
-	if (numberOfPoints == 0) return;
-	pointToChange = nil;
-	NSUInteger pointIndex = 0;
-	VSCalibrationPoint *testPoint;
-	while (pointToChange == nil && pointIndex < numberOfPoints) {
-		testPoint = [[arrayController arrangedObjects] objectAtIndex:pointIndex];
-		if ([testPoint.screenX intValue] == 0 && [testPoint.screenY intValue] == 0) {
-			pointToChange = testPoint;
-		}
-		pointIndex += 1;
-	}
-	if (pointToChange != nil) {
-		pointToChange.screenX = [NSNumber numberWithFloat:videoCoords.x];
-		pointToChange.screenY = [NSNumber numberWithFloat:videoCoords.y];
-		[arrayController setSelectedObjects:[NSArray arrayWithObject:pointToChange]];
-	}
-	[self.videoClip.windowController refreshOverlay];
+    if (numberOfPoints == 0) {
+        [UtilityFunctions InformUser:[NSString stringWithFormat:@"Your click was ignored because you haven't set the world coordinates for any calibration points on the %@ yet. Please set them and try again.",whichSurface]];
+    } else {
+        if (numberOfPoints == 0) return;
+        pointToChange = nil;
+        NSUInteger pointIndex = 0;
+        VSCalibrationPoint *testPoint;
+        while (pointToChange == nil && pointIndex < numberOfPoints) {
+            testPoint = [[arrayController arrangedObjects] objectAtIndex:pointIndex];
+            if ([testPoint.screenX intValue] == 0 && [testPoint.screenY intValue] == 0) {
+                pointToChange = testPoint;
+            }
+            pointIndex += 1;
+        }
+        if (pointToChange != nil) {
+            pointToChange.screenX = [NSNumber numberWithFloat:videoCoords.x];
+            pointToChange.screenY = [NSNumber numberWithFloat:videoCoords.y];
+            [arrayController setSelectedObjects:[NSArray arrayWithObject:pointToChange]];
+        }
+        [self.videoClip.windowController refreshOverlay];
+    }
 }
 
 #pragma mark

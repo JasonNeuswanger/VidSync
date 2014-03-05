@@ -72,6 +72,8 @@
                                 <buttonCell key="cell" type="square" title="↣" bezelStyle="shadowlessSquare" alignment="center" continuous="YES" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="rC5-ar-Hiy">
                                     <behavior key="behavior" lightByContents="YES"/>
                                     <font key="font" metaFont="system"/>
+                                    <string key="keyEquivalent"></string>
+                                    <modifierMask key="keyEquivalentModifierMask" option="YES"/>
                                 </buttonCell>
                                 <connections>
                                     <outlet property="document" destination="-2" id="Vd4-QT-2wO"/>
@@ -83,6 +85,8 @@
                                 <buttonCell key="cell" type="square" title="↢" bezelStyle="shadowlessSquare" alignment="center" continuous="YES" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="gE1-Ad-TkF">
                                     <behavior key="behavior" lightByContents="YES"/>
                                     <font key="font" metaFont="system"/>
+                                    <string key="keyEquivalent"></string>
+                                    <modifierMask key="keyEquivalentModifierMask" option="YES"/>
                                 </buttonCell>
                                 <connections>
                                     <outlet property="document" destination="-2" id="n2i-HE-gqc"/>

@@ -35,6 +35,9 @@ typedef struct {		// Creates a pair of 2D points, which can be used to represent
 
 + (NSColor *) userDefaultColorForKey:(NSString *)key;
 
++ (BOOL) ConfirmAction:(NSString *)userMessage;
++ (void) InformUser:(NSString *)userMessage;
+
 + (BOOL) timeString:(NSString *)timeString1 isEqualToTimeString:(NSString *)timeString2;
 + (BOOL) time:(CMTime)time1 isEqualToTime:(CMTime)time2;
 + (NSString *) CMStringFromTime:(CMTime)time;

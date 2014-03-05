@@ -25,6 +25,27 @@
     return color;
 }
 
++ (BOOL) ConfirmAction:(NSString *)userMessage
+{
+    NSAlert *confirmationAlert = [NSAlert new];
+    [confirmationAlert setMessageText:@"Are you sure?"];
+    [confirmationAlert setInformativeText:userMessage];
+    [confirmationAlert addButtonWithTitle:@"No"];
+    [confirmationAlert addButtonWithTitle:@"Yes"];
+    [confirmationAlert setAlertStyle:NSWarningAlertStyle];
+    NSInteger alertResult = [confirmationAlert runModal];
+    return (alertResult == NSAlertSecondButtonReturn);
+}
+
++ (void) InformUser:(NSString *)userMessage
+{
+    NSAlert *alert = [NSAlert new];
+    [alert setMessageText:@"Important Information"];
+    [alert setInformativeText:userMessage];
+    [alert addButtonWithTitle:@"Ok"];
+    [alert setAlertStyle:NSInformationalAlertStyle];
+    [alert runModal];
+}
 
 + (BOOL) timeString:(NSString *)timeString1 isEqualToTimeString:(NSString *)timeString2
 {

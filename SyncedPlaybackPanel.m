@@ -40,6 +40,7 @@
 - (void) awakeFromNib
 {
     [document syncedPlaybackPanelAwokeFromNib];
+    self.initialFirstResponder = nil;
 }
 
 - (IBAction)makeKeyAndOrderFront:(id)sender
@@ -56,6 +57,38 @@
     NSRect screenVisibleFrame = [[NSScreen mainScreen] visibleFrame];
     NSRect newFrame = NSMakeRect(screenVisibleFrame.origin.x,screenVisibleFrame.origin.y + (screenVisibleFrame.size.height - windowFrame.size.height),screenVisibleFrame.size.width,windowFrame.size.height);
     [self setFrame:newFrame display:YES];
+}
+
+- (void) keyDown:(NSEvent *)theEvent
+{
+    // Option + Arrow plays at normal rate while pressed
+    // Control + Option + Arrow plays at advanced playback rate 1 while pressed
+    // Command + Option + Arrow plays at advanced playback rate 2 while pressed
+    
+    if ([theEvent modifierFlags] & NSAlternateKeyMask) {            // Forward option+leftarrow and option+rightarrow keypresses to the appropriate PlayWhilePressedButton
+        if (![theEvent isARepeat]) {
+            unichar key = [[theEvent charactersIgnoringModifiers] characterAtIndex: 0];
+            if (key == NSLeftArrowFunctionKey) {
+                if ([theEvent modifierFlags] & NSControlKeyMask) {
+                    [document.playBackwardAtRate1WhilePressedButton startPlaying];
+                } else if ([theEvent modifierFlags] & NSShiftKeyMask) {
+                    [document.playBackwardAtRate2WhilePressedButton startPlaying];
+                } else {
+                    [document.playBackwardWhilePressedButton startPlaying];
+                }
+            } else if (key == NSRightArrowFunctionKey) {
+                if ([theEvent modifierFlags] & NSControlKeyMask) {
+                    [document.playForwardAtRate1WhilePressedButton startPlaying];
+                } else  if ([theEvent modifierFlags] & NSShiftKeyMask) {
+                    [document.playForwardAtRate2WhilePressedButton startPlaying];
+                } else {
+                    [document.playForwardWhilePressedButton startPlaying];
+                }
+            }
+        }
+        return;
+	}
+    [super keyDown:theEvent];
 }
 
 /*
@@ -104,6 +137,11 @@
 }
 
 /*--- These key/main window settings are necessary to make text fields in this window editable ---*/
+
+- (BOOL) acceptsFirstResponder
+{
+    return YES;
+}
 
 - (BOOL) canBecomeKeyWindow
 {

@@ -995,7 +995,7 @@
                             <font key="font" metaFont="system"/>
                         </buttonCell>
                         <connections>
-                            <action selector="revertToInitialValues:" target="567" id="614"/>
+                            <action selector="revertToInitialValues:" target="sB6-Pu-6qh" id="soj-vg-u2D"/>
                         </connections>
                     </button>
                 </subviews>

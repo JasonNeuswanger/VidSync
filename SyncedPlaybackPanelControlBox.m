@@ -40,6 +40,11 @@
     
 }
 
+- (void) keyDown:(NSEvent *)theEvent
+{
+    [super keyDown:theEvent];
+}
+
 - (void)drawRect:(NSRect)dirtyRect
 {
 	[super drawRect:dirtyRect];

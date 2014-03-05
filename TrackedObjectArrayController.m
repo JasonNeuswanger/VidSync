@@ -13,14 +13,18 @@
 
 - (IBAction) add:(id)sender
 {
-	VSTrackedObject *newObj = [NSEntityDescription insertNewObjectForEntityForName:@"VSTrackedObject" inManagedObjectContext:[self managedObjectContext]];	
-	newObj.name = [newObjectName stringValue];
-	newObj.type = [[newObjectType selectedItem] representedObject];
-	[self addObject:newObj];	// Adding the object to the project before setting its index.  Convenient -- but is it harmless?  We'll see.
-	newObj.index = [NSNumber numberWithInt:[VSTrackedObject highestObjectIndexInProject:newObj.project]+1];
-	newObj.color = [newTypeColorWell color];
-	[newObjectName setStringValue:@""];
-	[objectAddPanel performClose:nil];
+    if ([newObjectType selectedItem] == nil) {
+        [UtilityFunctions InformUser:@"You can't add an Object until you have defined at least one Object Type. Use the \"Edit Object/Event Types\" button to get started."];
+    } else {
+        VSTrackedObject *newObj = [NSEntityDescription insertNewObjectForEntityForName:@"VSTrackedObject" inManagedObjectContext:[self managedObjectContext]];
+        newObj.name = [newObjectName stringValue];
+        newObj.type = [[newObjectType selectedItem] representedObject];
+        [self addObject:newObj];	// Adding the object to the project before setting its index.  Convenient -- but is it harmless?  We'll see.
+        newObj.index = [NSNumber numberWithInt:[VSTrackedObject highestObjectIndexInProject:newObj.project]+1];
+        newObj.color = [newTypeColorWell color];
+        [newObjectName setStringValue:@""];
+        [objectAddPanel performClose:nil];
+    }
 }
 
 - (void)remove:(id)sender

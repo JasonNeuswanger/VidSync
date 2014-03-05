@@ -38,16 +38,18 @@
 }
 
 - (IBAction) synonymize:(id)sender;
-{	
-	VSTrackedObject *deadSynonym = [[self selectedObjects] objectAtIndex:0];
-	VSTrackedObject *survivingSynonym = [[mainObjectsController selectedObjects] objectAtIndex:0];
-	if (deadSynonym.notes != nil) survivingSynonym.notes = [survivingSynonym.notes stringByAppendingString:[NSString stringWithFormat:@"\n\n%@",deadSynonym.notes]];
-	for (VSTrackedEvent *event in deadSynonym.trackedEvents) event.trackedObjects = [event.trackedObjects setByAddingObject:survivingSynonym];
-	[self removeObject:deadSynonym];
-	[self rearrangeObjects];						
-	[mainObjectsController rearrangeObjects];
-	[[survivingSynonym managedObjectContext] processPendingChanges];
-	[document refreshOverlaysOfAllClips:sender];
+{
+    if ([UtilityFunctions ConfirmAction:@"Are you sure you want to combine these two objects into one?"]) {
+        VSTrackedObject *deadSynonym = [[self selectedObjects] objectAtIndex:0];
+        VSTrackedObject *survivingSynonym = [[mainObjectsController selectedObjects] objectAtIndex:0];
+        if (deadSynonym.notes != nil) survivingSynonym.notes = [survivingSynonym.notes stringByAppendingString:[NSString stringWithFormat:@"\n\n%@",deadSynonym.notes]];
+        for (VSTrackedEvent *event in deadSynonym.trackedEvents) event.trackedObjects = [event.trackedObjects setByAddingObject:survivingSynonym];
+        [self removeObject:deadSynonym];
+        [self rearrangeObjects];						
+        [mainObjectsController rearrangeObjects];
+        [[survivingSynonym managedObjectContext] processPendingChanges];
+        [document refreshOverlaysOfAllClips:sender];
+    }
 }
 
 @end

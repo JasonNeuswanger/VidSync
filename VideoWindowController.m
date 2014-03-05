@@ -116,7 +116,16 @@
     [self fitVideoOverlay];
     [self processSynchronizationStatus];    // Must be run after the overlay is created, so it can be set not to receive mouse events if the clip is not synced
 
-    if (self.videoClip.isMasterClipOf == self.videoClip.project) [self updateMasterTimeScrubberTicks];
+    if (self.videoClip.isMasterClipOf == self.videoClip.project) {
+        // Master clip setup
+        [self updateMasterTimeScrubberTicks];
+    } else {
+        // If this isn't the masterClip, and the masterClip is loaded, and this one's timecode doesn't match, give an error
+        if ([self.videoClip.project.masterClip.timeScale intValue] != 0 && [self.videoClip.timeScale intValue] != [self.videoClip.project.masterClip.timeScale intValue]) {
+            NSString *wrongFramerateWarning = [NSString stringWithFormat:@"WARNING! The timescale (related to the framerate) for video clip %@ is %@, which does not match the master clip (%@) timescale of %@. VidSync will still try to run, but video navigation and measurement behavior may be unpredictable and inaccurate. It is HIGHLY recommended that you use a video editing program to convert your video clips to the same framerate before doing any analysis.",self.videoClip.clipName,self.videoClip.timeScale,self.videoClip.project.masterClip.clipName,self.videoClip.project.masterClip.timeScale];
+            [UtilityFunctions performSelector:@selector(InformUser:) withObject:wrongFramerateWarning afterDelay:0.5];
+        }
+    }
     
     if (self.videoClip.isMasterClipOf == self.videoClip.project && self.videoClip.project.currentTimecode) {	// If the master clip is loaded and there's a saved current time, go to it
         // The next three lines set the number of ticks in the synced playback scrubber to approximately 1 per minute
@@ -290,37 +299,9 @@
 - (void) handleOverlayKeyDown:(NSEvent *)theEvent
 {
 	VidSyncDocument *doc = self.document;
-	if ([theEvent modifierFlags] & NSCommandKeyMask) {				// Forward all keypresses with the Command key down (mainly playback controls) to the playback control window
+	if (([theEvent modifierFlags] & NSCommandKeyMask) || ([theEvent modifierFlags] & NSAlternateKeyMask)) {				// Forward all keypresses with the Command key down (mainly playback controls) to the playback control window
 		[doc.syncedPlaybackPanel keyDown:theEvent];
 		return;
-	}
-    
-    // Option + Arrow plays at normal rate while pressed
-    // Control + Option + Arrow plays at advanced playback rate 1 while pressed
-    // Command + Option + Arrow plays at advanced playback rate 2 while pressed
-    
-    if ([theEvent modifierFlags] & NSAlternateKeyMask) {            // Forward option+leftarrow and option+rightarrow keypresses to the appropriate PlayWhilePressedButton
-        if (![theEvent isARepeat]) {
-            unichar key = [[theEvent charactersIgnoringModifiers] characterAtIndex: 0];
-            if (key == NSLeftArrowFunctionKey) {
-                if ([theEvent modifierFlags] & NSControlKeyMask) {
-                    [doc.playBackwardAtRate1WhilePressedButton startPlaying];
-                } else if ([theEvent modifierFlags] & NSShiftKeyMask) {
-                    [doc.playBackwardAtRate2WhilePressedButton startPlaying];
-                } else {
-                    [doc.playBackwardWhilePressedButton startPlaying];
-                }
-            } else if (key == NSRightArrowFunctionKey) {
-                if ([theEvent modifierFlags] & NSControlKeyMask) {
-                    [doc.playForwardAtRate1WhilePressedButton startPlaying];
-                } else  if ([theEvent modifierFlags] & NSShiftKeyMask) {
-                    [doc.playForwardAtRate2WhilePressedButton startPlaying];
-                } else {
-                    [doc.playForwardWhilePressedButton startPlaying];
-                }
-            }
-        }
-        return;
 	}
 	
     if ([[theEvent charactersIgnoringModifiers] isEqualToString:@" "]) {
@@ -544,7 +525,7 @@
                 if ([videoClip isAtCalibrationTime]) {
                     [self.videoClip.calibration processClickOnSurface:[[doc.calibrationSurfaceTabView selectedTabViewItem] label] withCoords:videoCoords];
                 } else {
-                    NSRunAlertPanel(@"Not At Calibration Frame",@"Ignoring calibration click because this video isn't at the current calibration time.  Use 'Go to Calibration Frame' to go there, or 'Use Current Frame' to select this frame as the calibration frame.",@"Ok",nil,nil);
+                    [UtilityFunctions InformUser:@"Ignoring calibration click because this video isn't at the current calibration time.  Use 'Go to Calibration Frame' to go there, or 'Use Current Frame' to select this frame as the calibration frame."];
                 }
             } else if ([[[doc.calibrationInputTabView selectedTabViewItem] label] isEqualToString:@"Lens Distortion"]) {
                 [doc.distortionLinesController appendPointToSelectedLineAt:videoCoords];

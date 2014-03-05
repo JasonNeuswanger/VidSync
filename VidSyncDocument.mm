@@ -543,7 +543,9 @@ static void *AVSPPlayerCurrentTimeContext = &AVSPPlayerCurrentTimeContext;
 
 - (IBAction) setCalibrationTime:(id)sender
 {
-	self.project.calibrationTimecode = [self currentMasterTimeString];
+    BOOL doSet = YES;
+    if (self.project.calibrationTimecode != nil) doSet = [UtilityFunctions ConfirmAction:@"You already set a calibration time. Are you sure you want to change it?"];
+	if (doSet) self.project.calibrationTimecode = [self currentMasterTimeString];
 }
 
 - (IBAction) goToCalibrationTime:(id)sender
@@ -586,7 +588,7 @@ static void *AVSPPlayerCurrentTimeContext = &AVSPPlayerCurrentTimeContext;
 		[pointRecalculatePanel performClose:self];
 		[eventsPointsController.mainTableView setNeedsDisplay];	// refresh the point table
     }	
-	if (fetchResults == nil) NSRunAlertPanel(@"No points.",@"There are no measured points yet, so nothing is being recalculated.",@"Ok",nil,nil); 
+	if (fetchResults == nil) [UtilityFunctions InformUser:@"There are no measured points yet, so nothing is being recalculated."];
     if (fetchError != nil) [self presentError:fetchError];
 }
 
