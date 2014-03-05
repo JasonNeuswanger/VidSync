@@ -3486,9 +3486,9 @@ IA
                                                                 </connections>
                                                             </textField>
                                                             <button verticalHuggingPriority="750" id="102492">
-                                                                <rect key="frame" x="229" y="56" width="274" height="25"/>
+                                                                <rect key="frame" x="354" y="56" width="149" height="25"/>
                                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                                                <buttonCell key="cell" type="roundTextured" title="Capture Movie Clip(s) as MPEG-4 (.mp4)" bezelStyle="texturedRounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="102493">
+                                                                <buttonCell key="cell" type="roundTextured" title="Capture Movie Clip(s)" bezelStyle="texturedRounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="102493">
                                                                     <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                                                     <font key="font" metaFont="system"/>
                                                                 </buttonCell>
@@ -3639,7 +3639,7 @@ IA
                                                         </subviews>
                                                     </view>
                                                 </tabViewItem>
-                                                <tabViewItem label="Still Image Capture" identifier="2" id="t39-CV-8hq">
+                                                <tabViewItem label="Still Image and Portrait Capture" identifier="2" id="t39-CV-8hq">
                                                     <view key="view" id="amb-V2-1dW">
                                                         <rect key="frame" x="10" y="33" width="526" height="269"/>
                                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -3707,6 +3707,27 @@ IA
                                                                 </buttonCell>
                                                                 <connections>
                                                                     <binding destination="100045" name="value" keyPath="values.createFolderForProjectCaptures" id="103416"/>
+                                                                </connections>
+                                                            </button>
+                                                            <textField verticalHuggingPriority="750" id="XLP-La-34U">
+                                                                <rect key="frame" x="46" y="105" width="434" height="28"/>
+                                                                <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
+                                                                <textFieldCell key="cell" controlSize="small" sendsActionOnEndEditing="YES" id="I2I-ch-MbZ">
+                                                                    <font key="font" metaFont="smallSystem"/>
+                                                                    <string key="title">You can also export the portraits of all the objects in your project. They will be placed in a "Portraits" folder inside the still frame capture path specified above.</string>
+                                                                    <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                                                    <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                                                </textFieldCell>
+                                                            </textField>
+                                                            <button verticalHuggingPriority="750" id="Usr-47-sKa">
+                                                                <rect key="frame" x="128" y="43" width="270" height="25"/>
+                                                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                                <buttonCell key="cell" type="roundTextured" title="Capture Portraits as .jpg Images" bezelStyle="texturedRounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="6hF-O9-y76">
+                                                                    <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                                                    <font key="font" metaFont="system"/>
+                                                                </buttonCell>
+                                                                <connections>
+                                                                    <action selector="capturePortraits:" target="-2" id="6e4-bX-cCa"/>
                                                                 </connections>
                                                             </button>
                                                         </subviews>
@@ -3789,6 +3810,7 @@ IA
                                                                     <bool key="NSInsertsNullPlaceholder" value="YES"/>
                                                                 </dictionary>
                                                             </binding>
+                                                            <binding destination="100044" name="selectedValue" keyPath="selection.exportClipSelectedClipName" previousBinding="102911" id="Sol-Gk-jCp"/>
                                                         </connections>
                                                     </popUpButton>
                                                     <button id="103202">

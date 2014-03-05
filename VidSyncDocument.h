@@ -37,17 +37,14 @@
     
 	NSTimer *__strong playbackTimer;
     
-    // IBOutlets for the sole purpose of removing observers for things that observe the document through bindings
-    
     IBOutlet NSTextField *__weak projectNameDisplayInSyncedPlaybackWindow;
     IBOutlet NSObjectController *__weak projectController;
     IBOutlet TypeIndexNameSortedArrayController *__weak eventsObjectsController;
     IBOutlet TypeIndexNameSortedArrayController *__weak objectsEventsController;
     IBOutlet EventsOtherObjectsArrayController *__weak eventsOtherObjectsController;
     IBOutlet AllPortraitsArrayController *__weak allPortraitsArrayController;
-    
-    
-    // Other IBOutlets
+    IBOutlet ObjectsPortraitsArrayController *__weak objectsPortraitsArrayController;
+
     
 	IBOutlet MagnifiedPreviewView *__weak magnifiedCalibrationPreview,*__weak magnifiedMeasurementPreview,*__weak magnifiedDistortionPreview;
 	IBOutlet VideoClipArrayController *__weak videoClipArrayController;
@@ -98,17 +95,16 @@
     
 	NSNumberFormatter *__strong decimalFormatter;
     
-    AVAssetExportSession *__strong exportSession;   // used for exporting videos without overlays -- needs to be an instance variable so I can use it from the progress bar update function
-    
     IBOutlet NSImageView *__weak directOpenCVView;
     IBOutlet NSWindow *__weak directOpenCVWindow;
     
     VSTrackedObject *__weak portraitSubject;
     
-    IBOutlet ObjectsPortraitsArrayController *__weak objectsPortraitsArrayController;
     IBOutlet NSButton *__weak allPortraitBrowserOpenButton;
     
     BOOL objectsTableSelectionChangeNotificationCascadeEnabled, eventsTableSelectionChangeNotificationCascadeEnabled;
+    
+    NSMutableSet *activeExportSessions;
 	
 }
 
@@ -226,6 +222,7 @@
 @interface VidSyncDocument (Capture)
 
 - (IBAction)captureStills:(id)sender;
+- (IBAction)capturePortraits:(id)sender;
 - (IBAction)setVideoCaptureTime:(id)sender;
 - (IBAction)goToVideoCaptureTime:(id)sender;
 - (IBAction)chooseCapturePath:(id)sender;
@@ -233,14 +230,14 @@
 - (IBAction)captureVideoClips:(id)sender;
 
 - (void) captureWithOverlayFromVideoClip:(VSVideoClip *)videoClip toFile:(NSString *)destination;
-- (void) captureWithoutOverlayFromVideoClip:(VSVideoClip *)videoClip toFile:(NSString *)destination;
+- (void) captureWithoutOverlayFromVideoClip:(VSVideoClip *)videoClip usingPassthrough:(BOOL)usePassthrough;
 - (void) updateExportProgressBar;
 - (CVPixelBufferRef) pixelBufferFromCGImage:(CGImageRef)image size:(NSSize)inSize;
 
 - (CGImageRef) stillCGImageFromVSVideoClip:(VSVideoClip *)videoClip atMasterTime:(CMTime)masterTime showOverlay:(BOOL)showOverlay;
 - (NSImage*)currentOverlayImageFromVSVideoClip:(VSVideoClip *)videoClip;
 - (CGImageRef)highQualityStillFromVSVideoClip:(VSVideoClip *)videoClip atMasterTime:(CMTime)masterTime;
-- (void)saveNSImageAsJpeg:(NSImage*)img destination:(NSString*)destination;
+- (void)saveNSImageAsJpeg:(NSImage*)img destination:(NSString*)destination overwriteWarnings:(BOOL)overwriteWarnings;
 - (NSString *)fileNameForExportedFileFromClip:(VSVideoClip *)videoClip withExtension:(NSString *)extension;
 
 @end // VidSyncDocument (Capture)

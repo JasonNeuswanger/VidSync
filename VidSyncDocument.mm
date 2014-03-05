@@ -83,6 +83,8 @@ static void *AVSPPlayerCurrentTimeContext = &AVSPPlayerCurrentTimeContext;
 		[decimalFormatter setGroupingSeparator:@""];
 		[decimalFormatter setMinimumFractionDigits:15];
         
+        activeExportSessions = [NSMutableSet new];
+        
     }
     return self;
 }
@@ -434,9 +436,9 @@ static void *AVSPPlayerCurrentTimeContext = &AVSPPlayerCurrentTimeContext;
 	[[self managedObjectContext] processPendingChanges];
     NSString *savedPath = [[url path] stringByDeletingLastPathComponent];
     [[[NSUserDefaultsController sharedUserDefaultsController] values] setValue:savedPath forKey:@"mainFileSaveDirectory"];
-    if ([self.project.capturePathForMovies isEqualToString:@""] || [self.project.capturePathForMovies isEqualToString:[NSHomeDirectory() stringByAppendingPathComponent:@"Documents/VidSync Exports/Movies/"]]) self.project.capturePathForMovies = savedPath;
-    if ([self.project.capturePathForStills isEqualToString:@""] || [self.project.capturePathForStills isEqualToString:[NSHomeDirectory() stringByAppendingPathComponent:@"Documents/VidSync Exports/Stills/"]]) self.project.capturePathForStills = savedPath;
-    if ([self.project.exportPathForData isEqualToString:@""] || [self.project.exportPathForData isEqualToString:[NSHomeDirectory() stringByAppendingPathComponent:@"Documents/VidSync Exports/Data/"]]) self.project.exportPathForData = savedPath;
+    if (self.project.capturePathForMovies == nil || [self.project.capturePathForMovies isEqualToString:@""] || [self.project.capturePathForMovies isEqualToString:[NSHomeDirectory() stringByAppendingPathComponent:@"Documents/VidSync Exports/Movies/"]]) self.project.capturePathForMovies = savedPath;
+    if (self.project.capturePathForStills == nil || [self.project.capturePathForStills isEqualToString:@""] || [self.project.capturePathForStills isEqualToString:[NSHomeDirectory() stringByAppendingPathComponent:@"Documents/VidSync Exports/Stills/"]]) self.project.capturePathForStills = savedPath;
+    if (self.project.exportPathForData == nil || [self.project.exportPathForData isEqualToString:@""] || [self.project.exportPathForData isEqualToString:[NSHomeDirectory() stringByAppendingPathComponent:@"Documents/VidSync Exports/Data/"]]) self.project.exportPathForData = savedPath;
 	[super saveToURL:url ofType:typeName forSaveOperation:saveOperation completionHandler:completionHandler];
 }
 

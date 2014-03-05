@@ -236,6 +236,8 @@
 		964A49E318C2BEAE0051EAFB /* ProjectController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProjectController.h; sourceTree = "<group>"; };
 		964A49E418C2BEAE0051EAFB /* ProjectController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProjectController.m; sourceTree = "<group>"; };
 		964A49E618C417D80051EAFB /* VidSyncProject 1.14.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "VidSyncProject 1.14.xcdatamodel"; sourceTree = "<group>"; };
+		964D6EA918C6F984005D812E /* VidSyncProject 1.15.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = file; path = "VidSyncProject 1.15.xcdatamodel"; sourceTree = "<group>"; };
+		964D6EAA18C6FB6A005D812E /* VidSyncProject 1.16.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = file; path = "VidSyncProject 1.16.xcdatamodel"; sourceTree = "<group>"; };
 		965510C214B2BE7000A4D9E3 /* VidSyncProject 1.04.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "VidSyncProject 1.04.xcdatamodel"; sourceTree = "<group>"; };
 		9658610311738CA700BC99D5 /* Example Quadrat.VidSyncQuadrat */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = "Example Quadrat.VidSyncQuadrat"; sourceTree = "<group>"; };
 		9658610411738CA700BC99D5 /* Example Types.VidSyncTypes */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = "Example Types.VidSyncTypes"; sourceTree = "<group>"; };
@@ -1900,6 +1902,8 @@
 		96AE98861165348400118398 /* VidSyncProject.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
+				964D6EAA18C6FB6A005D812E /* VidSyncProject 1.16.xcdatamodel */,
+				964D6EA918C6F984005D812E /* VidSyncProject 1.15.xcdatamodel */,
 				964A49E618C417D80051EAFB /* VidSyncProject 1.14.xcdatamodel */,
 				9612EC2F18B9A51800BBED62 /* VidSyncProject 1.13.xcdatamodel */,
 				9612EC0818B57A1300BBED62 /* VidSyncProject 1.12.xcdatamodel */,

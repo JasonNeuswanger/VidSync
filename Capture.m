@@ -35,7 +35,7 @@
         writeImage = [[NSImage alloc] initWithCGImage:outImage size:NSZeroSize];
 		if ([writeImage isValid]) {
 			outFilePath = [self fileNameForExportedFileFromClip:videoClip withExtension:@"jpg"];				// construct the filename & path
-			[self saveNSImageAsJpeg:writeImage destination:outFilePath];											// write the image
+			[self saveNSImageAsJpeg:writeImage destination:outFilePath overwriteWarnings:YES];											// write the image
 		} else {
 			success = NO;
 			NSRunAlertPanel(@"Error saving frames",@"The frame image generated was not valid.",@"Ok",nil,nil);
@@ -44,7 +44,31 @@
 	if (success) [shutterClick play];
 }
 
-
+- (IBAction)capturePortraits:(id)sender
+{
+    NSImage *portraitImage;
+    if ([[allPortraitsArrayController arrangedObjects] count] > 0) {
+        
+        NSFileManager *fm = [NSFileManager defaultManager];
+        NSString *fileSafeProjectName = [[self.project.name stringByReplacingOccurrencesOfString:@":" withString:@"-"] stringByReplacingOccurrencesOfString:@"/" withString:@"+"];
+        NSString *portraitsFolder = [NSString stringWithFormat:@"%@/%@ Portraits",self.project.capturePathForStills,fileSafeProjectName];
+        if (![fm fileExistsAtPath:portraitsFolder]) [fm createDirectoryAtPath:portraitsFolder withIntermediateDirectories:YES attributes:nil error:NULL];
+        for (VSTrackedObjectPortrait *portrait in [allPortraitsArrayController arrangedObjects]) {
+            portraitImage = (NSImage *) [portrait imageRepresentation];
+            if ([portraitImage isValid]) {
+                NSMutableString *filePath = [NSMutableString new];
+                [filePath appendString:self.project.capturePathForStills];
+                NSString *nameString = ([portrait.trackedObject.name isEqualToString:@""]) ? @"" : [NSString stringWithFormat:@" (%@)",portrait.trackedObject.name];
+                NSString *fileSafeTimecode = [[[self currentMasterTimeString] stringByReplacingOccurrencesOfString:@":" withString:@"-"] stringByReplacingOccurrencesOfString:@"/" withString:@"+"];
+                [filePath appendFormat:@"/%@ Portraits/%@ %@%@ from %@ (%@) at %@.jpg",fileSafeProjectName,portrait.trackedObject.type.name,portrait.trackedObject.index,nameString,fileSafeProjectName,portrait.sourceVideoClip.clipName,fileSafeTimecode];
+                [self saveNSImageAsJpeg:portraitImage destination:filePath overwriteWarnings:NO];
+            }
+        }
+        [shutterClick play];
+    } else {
+        NSRunAlertPanel(@"There are no portraits yet",@"You have to create portraits of objects before you can export them.",@"Ok",nil,nil);
+    }
+}
 
 - (IBAction)setVideoCaptureTime:(id)sender
 {
@@ -122,7 +146,7 @@
 		BOOL doWrite = YES;
 		NSString *destination = [self fileNameForExportedFileFromClip:videoClip withExtension:@"mp4"];
 		if ([fm fileExistsAtPath:destination]) {
-			NSInteger alertResult = NSRunAlertPanel(@"Overwrite file?",@"The file you would be writing already exists.  Overwrite it?\n\n(Perhaps you didn't save the this document after your last capture session, and the Current Capture Code number has already been used.  If so, increase it manually and try again.)",@"No",@"Yes",nil);
+			NSInteger alertResult = NSRunAlertPanel(@"Overwrite file?",@"The file you would be writing already exists. Overwrite it?",@"No",@"Yes",nil);
 			if (alertResult == 1) {
                 doWrite = NO;
             } else {
@@ -135,7 +159,7 @@
 			if (showOverlaysInExportedFiles) {
 				[self captureWithOverlayFromVideoClip:videoClip toFile:destination];
 			} else {
-				[self captureWithoutOverlayFromVideoClip:videoClip toFile:destination];
+				[self captureWithoutOverlayFromVideoClip:videoClip usingPassthrough:YES];
 			}		
 		}
 	}	
@@ -146,53 +170,93 @@
 #pragma mark Fuctions for Movies Only
 
 
-- (void) captureWithoutOverlayFromVideoClip:(VSVideoClip *)videoClip toFile:(NSString *)destination
+- (void) captureWithoutOverlayFromVideoClip:(VSVideoClip *)videoClip usingPassthrough:(BOOL)usePassthrough
 {
     CMTime clipStartTime = [UtilityFunctions CMTimeFromString:self.project.movieCaptureStartTime];
 	CMTime clipEndTime = [UtilityFunctions CMTimeFromString:self.project.movieCaptureEndTime];
     
-    if (!videoClip.windowController.videoAsset.exportable) NSLog(@"The video clip is not exportable.");
+    if (!videoClip.windowController.videoAsset.exportable) {
+        NSLog(@"The video clip is not exportable.");
+        return;
+    }
     
-    // It works like this, but not as passthrough, for exporting to MPEG4... but won't do the same for quicktime
-    // I need to make it (automatically, or manually) select the preset most suitable to the media
-    // Another working combination is AVAssetExportPresetAppleM4V1080pHD with AVFileTypeAppleM4V (Apple MP4) but I don't see any advantage to using that one
-    exportSession = [AVAssetExportSession exportSessionWithAsset:videoClip.windowController.videoAsset presetName:AVAssetExportPreset1920x1080];
-    exportSession.outputFileType = AVFileTypeMPEG4;
+    AVAssetExportSession *__block exportSession; // used for exporting videos without overlays -- needs to be an instance variable so I can use it from the progress bar update function
     
-    /*
-    This is the one I'd like to have work. But the AVFileTypequickTimeMovie file type doesn't work with AVAssetExportPreset1920x1080 or the passthrough one.
-    AVAssetExportSession *exportSession = [AVAssetExportSession exportSessionWithAsset:videoClip.windowController.videoAsset presetName:AVAssetExportPresetPassthrough];
-    exportSession.outputFileType = AVFileTypeQuickTimeMovie;
-    */
-    exportSession.outputURL = [NSURL fileURLWithPath:destination];
+    /*-------
+     Passthrough is the ideal export mode here, but sometimes it doesn't work for inexplicable reasons with error messages that don't lead me to useful information.
+     So instead we try first with passthrough, and if passthrough fails then we try a single recursive call with passthrough = NO that forces an MP4 format ith fixed presets 
+     of an appropriate size, which seems to work more reliably, at least for my test videos.
+     --------*/
+    
+    NSString *newDestination;
+    if (usePassthrough) {
+        exportSession = [AVAssetExportSession exportSessionWithAsset:videoClip.windowController.videoAsset presetName:AVAssetExportPresetPassthrough];
+        exportSession.outputFileType = AVFileTypeQuickTimeMovie;
+        newDestination = [self fileNameForExportedFileFromClip:videoClip withExtension:[videoClip.fileName pathExtension]];
+    } else {
+        NSString *exportPreset;
+        if (videoClip.clipWidth > 1280) {
+            exportPreset = AVAssetExportPreset1920x1080;
+        } else if (videoClip.clipWidth > 960) {
+            exportPreset = AVAssetExportPreset1280x720;
+        } else if (videoClip.clipWidth > 640) {
+            exportPreset = AVAssetExportPreset960x540;
+        } else {
+            exportPreset = AVAssetExportPreset640x480;
+        }
+        exportSession = [AVAssetExportSession exportSessionWithAsset:videoClip.windowController.videoAsset presetName:exportPreset];
+        exportSession.outputFileType = AVFileTypeMPEG4;
+        newDestination = [self fileNameForExportedFileFromClip:videoClip withExtension:@"mp4"];
+    }
+    exportSession.outputURL = [NSURL fileURLWithPath:newDestination];
     exportSession.timeRange = CMTimeRangeFromTimeToTime(clipStartTime,clipEndTime);
     
-    NSTimer *exportProgressBarTimer = [NSTimer scheduledTimerWithTimeInterval:0.1 target:self selector:@selector(updateExportProgressBar) userInfo:nil repeats:YES];
+    NSTimer *__block exportProgressBarTimer = [NSTimer scheduledTimerWithTimeInterval:0.1 target:self selector:@selector(updateExportProgressBar) userInfo:nil repeats:YES];
     [videoCaptureProgressIndicator setDoubleValue:0.0];
     [videoCaptureProgressIndicator setHidden:NO];
 	[videoCaptureProgressIndicator displayIfNeeded];
     [videoCaptureProgressDescription setStringValue:[NSString stringWithFormat:@"Capturing '%@.'",videoClip.clipName]];
     [videoCaptureProgressDescription displayIfNeeded];
 
-    void (^completionHandler)(void) = ^(void)
+    void (^myCompletionHandler)(void) = ^(void)
     {
         if (exportSession.status == AVAssetExportSessionStatusCompleted) {
             [shutterClick play];
+            [videoCaptureProgressDescription setStringValue:@"Completed."];
         } else if (exportSession.status == AVAssetExportSessionStatusFailed && exportSession.error != nil) {
-            NSLog(@"Export to %@ failed with error: %@.",destination,exportSession.error);
+            if (usePassthrough == YES) {
+                [videoCaptureProgressDescription setStringValue:@"Retrying..."];
+                if ([activeExportSessions containsObject:exportSession]) [activeExportSessions removeObject:exportSession];
+                [self captureWithoutOverlayFromVideoClip:videoClip usingPassthrough:NO];
+            } else {
+                [videoCaptureProgressDescription setStringValue:@"Error."];
+            }
+        } else {
+            [shutterClick play];
+            [videoCaptureProgressDescription setStringValue:@"Completed."];
         }
-        [videoCaptureProgressIndicator setHidden:YES];
-        [videoCaptureProgressDescription setStringValue:@"Completed."];
-        [videoCaptureProgressDescription displayIfNeeded];
-        [exportProgressBarTimer invalidate];
+        if ([activeExportSessions containsObject:exportSession]) [activeExportSessions removeObject:exportSession];
+        if ([activeExportSessions count] == 0) {
+            [videoCaptureProgressIndicator setHidden:YES];
+            [videoCaptureProgressDescription displayIfNeeded];
+            [exportProgressBarTimer invalidate];
+        }
         exportSession = nil;
     };
-    [exportSession exportAsynchronouslyWithCompletionHandler:completionHandler];
+    [activeExportSessions addObject:exportSession];
+    [exportSession exportAsynchronouslyWithCompletionHandler:myCompletionHandler];
 }
 
-- (void) updateExportProgressBar
+- (void) updateExportProgressBar    // the progress bar for no-overlay exports reflects the minimum progress of any of the files
 {
-    [videoCaptureProgressIndicator setDoubleValue:exportSession.progress];
+    if ([activeExportSessions count] > 0) {
+        double lowestExportProgress = 1.0;
+        NSSet *currentActiveExportSessions = (NSSet *)activeExportSessions;
+        for (AVAssetExportSession *session in currentActiveExportSessions) {
+            if (session != nil && [session progress] < lowestExportProgress) lowestExportProgress = [session progress];
+        }
+        [videoCaptureProgressIndicator setDoubleValue:lowestExportProgress];
+    }
 }
 
 - (void) captureWithOverlayFromVideoClip:(VSVideoClip *)videoClip toFile:(NSString *)destination
@@ -217,7 +281,7 @@
     // Calculate the expected number of frames (used only for updating the progress indicator)
     
     CMTime frameIncrement = CMTimeMake(1000000,(long) round([videoClip frameRate]*1000000.0f));
-    double clipDuration = clipTimeRange.duration.value / clipTimeRange.duration.timescale;
+    double clipDuration = (double) clipTimeRange.duration.value / (double) clipTimeRange.duration.timescale;
     double frameDuration = (double)frameIncrement.value/(double)frameIncrement.timescale;
     NSUInteger numFrames = (NSUInteger) round(clipDuration/frameDuration);
     
@@ -524,11 +588,11 @@
     return image;
 }
 
-- (void)saveNSImageAsJpeg:(NSImage*)img destination:(NSString*)destination
+- (void)saveNSImageAsJpeg:(NSImage*)img destination:(NSString*)destination overwriteWarnings:(BOOL)overwriteWarnings
 {
 	NSFileManager *fm = [NSFileManager defaultManager];	// file manager to create image directory if it doesn't exist yet
 	bool doWrite = TRUE;
-	if ([fm fileExistsAtPath:destination]) {
+	if (overwriteWarnings && [fm fileExistsAtPath:destination]) {
 		NSInteger alertResult = NSRunAlertPanel(@"Overwrite file?",@"The file you would be writing already exists.  Overwrite it?",@"No",@"Yes",nil);
 		if (alertResult == 1) doWrite = FALSE;		
 	} 
@@ -537,7 +601,8 @@
 		NSBitmapImageRep *imageRep = [NSBitmapImageRep imageRepWithData:imageData];
 		NSDictionary *imageProps = [NSDictionary dictionaryWithObject:[NSNumber numberWithFloat:1.0] forKey:NSImageCompressionFactor];
 		imageData = [imageRep representationUsingType:NSJPEGFileType properties:imageProps];
-		[imageData writeToFile:destination atomically:YES];
+		BOOL result = [imageData writeToFile:destination atomically:YES];
+        if (!result) NSLog(@"File write failed for destination %@",destination);
 	}
 }
 

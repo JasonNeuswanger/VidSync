@@ -26,6 +26,7 @@
 @dynamic trackedEvents;
 
 @dynamic exportPathForData;
+@dynamic exportClipSelectedClipName;
 @dynamic capturePathForMovies;
 @dynamic capturePathForStills;
 @dynamic movieCaptureStartTime;

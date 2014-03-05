@@ -27,6 +27,7 @@
 @property (strong) NSNumber *useIterativeTriangulation;
 
 @property (strong) NSString *exportPathForData;
+@property (strong) NSNumber *exportClipSelectedClipName;
 @property (strong) NSString *capturePathForMovies;
 @property (strong) NSString *capturePathForStills;
 @property (strong) NSString *movieCaptureStartTime;
