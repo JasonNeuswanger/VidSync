@@ -4042,7 +4042,7 @@ IA
                                                                 </connections>
                                                             </button>
                                                             <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" setsMaxLayoutWidthAtFirstLayout="YES" id="FOs-xo-LBW">
-                                                                <rect key="frame" x="15" y="22" width="496" height="271.99999921135117"/>
+                                                                <rect key="frame" x="15" y="22" width="496" height="271.9999989572417"/>
                                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES" heightSizable="YES"/>
                                                                 <textFieldCell key="cell" sendsActionOnEndEditing="YES" id="lgm-WD-SgD">
                                                                     <font key="font" metaFont="system"/>
