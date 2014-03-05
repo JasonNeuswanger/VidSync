@@ -55,6 +55,13 @@
     }];
 }
 
+- (BOOL) respondsToSyncedControls
+{
+    BOOL showAdvancedControlsWithOnlyMasterClip = [[[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"showAdvancedControlsWithOnlyMasterClip"] boolValue];
+    
+    return ([self.syncIsLocked boolValue] || (showAdvancedControlsWithOnlyMasterClip && [self.isMasterClipOf isEqualTo:self.project] && [self.project.videoClips count] == 1));
+}
+
 - (NSNumber *) timeScale
 {
 	return [NSNumber numberWithInt:self.windowController.videoTrack.naturalTimeScale];

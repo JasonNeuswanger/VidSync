@@ -3128,8 +3128,8 @@ IA
                                             </connections>
                                         </button>
                                         <button toolTip="Mirroring an annotation creates an identical annotation on all the other video clips." verticalHuggingPriority="750" id="9Ch-Zo-TLm">
-                                            <rect key="frame" x="244" y="254" width="184" height="25"/>
-                                            <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
+                                            <rect key="frame" x="91" y="254" width="184" height="25"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                             <buttonCell key="cell" type="roundTextured" title="Mirror Selected Annotation" bezelStyle="texturedRounded" alignment="center" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="Rq9-wf-bUH">
                                                 <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                                 <font key="font" metaFont="system"/>

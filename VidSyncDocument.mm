@@ -29,8 +29,8 @@
 @synthesize distortionPointsController;
 @synthesize distortionLinesController;	
 
+@synthesize syncedPlaybackWindowController;
 @synthesize syncedPlaybackScrubber;
-
 @synthesize playForwardWhilePressedButton;
 @synthesize playBackwardWhilePressedButton;
 @synthesize playForwardAtRate1WhilePressedButton;
@@ -99,10 +99,8 @@ static void *AVSPPlayerCurrentTimeContext = &AVSPPlayerCurrentTimeContext;
     [[NSBundle mainBundle] loadNibNamed:@"SyncedPlaybackWindow" owner:self topLevelObjects:&playbackWindowTopLevelObjects];
     SyncedPlaybackPanel *loadingSyncedPlaybackPanel;
     for (id obj in playbackWindowTopLevelObjects) if ([obj isKindOfClass:[SyncedPlaybackPanel class]]) loadingSyncedPlaybackPanel = (SyncedPlaybackPanel *) obj;
-    NSWindowController *advancedPlaybackWindowController = [[NSWindowController alloc] init];
-    [advancedPlaybackWindowController setWindow:loadingSyncedPlaybackPanel];
-    [self addWindowController:advancedPlaybackWindowController];
-    
+    syncedPlaybackWindowController = [[NSWindowController alloc] initWithWindow:loadingSyncedPlaybackPanel];
+    [self addWindowController:syncedPlaybackWindowController];
     
     for (VSVideoClip *clip in [self.project.videoClips allObjects]) {
         VideoWindowController __strong *vwc = [[VideoWindowController alloc] initWithVideoClip:clip inManagedObjectContext:[self managedObjectContext]];
@@ -633,6 +631,9 @@ static void *AVSPPlayerCurrentTimeContext = &AVSPPlayerCurrentTimeContext;
     [playbackTimer invalidate]; // This prevents the run loop from retaining the document via the timer after it's supposed to be released
 
     // Unregister various observers, or else there are complaints about deallocing objects with observers still attachced
+    
+    [syncedPlaybackWindowController close];
+    syncedPlaybackWindowController = nil;
     
     for (id windowController in [self windowControllers]) { // Putting this here to remove observer on window controller before document no longer exists
         if ([windowController class] == [VideoWindowController class]) {

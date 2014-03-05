@@ -55,7 +55,7 @@
         [self.videoClip addObserver:self forKeyPath:@"syncIsLocked" options:NSKeyValueObservingOptionNew context:NULL];
         [self.videoClip addObserver:self forKeyPath:@"syncOffset" options:NSKeyValueObservingOptionNew context:NULL];
         [self.videoClip addObserver:self forKeyPath:@"isMasterClipOf" options:NSKeyValueObservingOptionNew context:NULL];
-        
+        [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKeyPath:@"values.showAdvancedControlsWithOnlyMasterClip" options:NSKeyValueObservingOptionNew context:NULL];
         return self;
     } else {
         return nil;
@@ -234,6 +234,9 @@
     if ([keyPath isEqual:@"isMasterClipOf"]) {
         [self updateMasterTimeScrubberTicks];
         for (VSVideoClip *clip in self.videoClip.project.videoClips) clip.syncIsLocked = [NSNumber numberWithBool:NO];  // When master clip changes, unlock all syncs
+    }
+    if ([keyPath isEqualTo:@"values.showAdvancedControlsWithOnlyMasterClip"]) {
+        [self processSynchronizationStatus];
     }
 }
 
@@ -825,6 +828,8 @@
 
 - (void) processSynchronizationStatus   // Called when loading clips when the file is opened or clip is created, and by observing syncOffset, syncIsLocked, and isMasterClipOf for the video
 {
+    BOOL showAdvancedControlsWithOnlyMasterClip = [[[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"showAdvancedControlsWithOnlyMasterClip"] boolValue];
+    
     BOOL noNonMasterClipsAreSynced = TRUE;
     for (VSVideoClip *clip in self.videoClip.project.videoClips) if (clip.isMasterClipOf == nil && [clip.syncIsLocked boolValue]) noNonMasterClipsAreSynced = FALSE;
     
@@ -840,10 +845,21 @@
         if ([self.videoClip.syncIsLocked boolValue] && ![self.videoClip.project.masterClip.syncIsLocked boolValue]) self.videoClip.project.masterClip.syncIsLocked = [NSNumber numberWithBool:YES];
     }
 
-    [self.videoClip.syncIsLocked boolValue] ? [self setMovieViewControllerVisible:NO] : [self setMovieViewControllerVisible:YES];
-
-    noNonMasterClipsAreSynced ? [self.videoClip.project.document.syncedPlaybackPanel close] : [self.videoClip.project.document.syncedPlaybackPanel orderFront:self];
-
+    if ([self.videoClip.syncIsLocked boolValue]) {
+        [self setMovieViewControllerVisible:NO];
+    } else {
+        if ([self.videoClip.isMasterClipOf isEqualTo:self.videoClip.project] && [self.videoClip.project.videoClips count] == 1 && showAdvancedControlsWithOnlyMasterClip) {
+            [self setMovieViewControllerVisible:NO];
+        } else {
+            [self setMovieViewControllerVisible:YES];
+        }
+    }
+    
+    if (noNonMasterClipsAreSynced && !(showAdvancedControlsWithOnlyMasterClip && [self.videoClip.isMasterClipOf isEqualTo:self.videoClip.project])) {
+        [[[[self document] syncedPlaybackWindowController] window] close];
+    } else {
+        [[[[self document] syncedPlaybackWindowController] window] orderFront:self];
+    }
     
 }
 
@@ -878,6 +894,7 @@
 
 - (void) dealloc
 {
+    [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKeyPath:@"values.showAdvancedControlsWithOnlyMasterClip"];
     [self.videoClip carefullyRemoveObserver:self forKeyPath:@"syncIsLocked"];
     [self.videoClip carefullyRemoveObserver:self forKeyPath:@"syncOffset"];
     [self.videoClip carefullyRemoveObserver:self forKeyPath:@"isMasterClipOf"];

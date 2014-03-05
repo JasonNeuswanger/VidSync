@@ -971,6 +971,17 @@
                                                 <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                             </textFieldCell>
                                         </textField>
+                                        <button id="tVl-tW-YRB">
+                                            <rect key="frame" x="15" y="180" width="433" height="18"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                            <buttonCell key="cell" type="check" title="Show advanced playback controls with only one video clip loaded" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="hgD-dU-CR6">
+                                                <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                                <font key="font" metaFont="system"/>
+                                            </buttonCell>
+                                            <connections>
+                                                <binding destination="567" name="value" keyPath="values.showAdvancedControlsWithOnlyMasterClip" id="B85-Zo-lLH"/>
+                                            </connections>
+                                        </button>
                                     </subviews>
                                 </view>
                             </tabViewItem>

@@ -34,6 +34,8 @@
 
 - (void) relocateClip;
 
+- (BOOL) respondsToSyncedControls;
+
 - (NSNumber *) timeScale;
 
 - (NSString *) clipLength;

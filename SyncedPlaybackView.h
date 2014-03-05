@@ -11,6 +11,7 @@
 @class VideoControlButton;
 @class BookmarkControlButton;
 @class PlayWhilePressedButton;
+@class VidSyncDocument;
 
 @interface SyncedPlaybackView : NSView {
     
@@ -27,6 +28,8 @@
 
     IBOutlet PlayWhilePressedButton __weak *mainPlayForwardWhilePressedButton;
     IBOutlet PlayWhilePressedButton __weak *mainPlayBackwardWhilePressedButton;
+    
+    IBOutlet VidSyncDocument __weak *document;
     
 }
 

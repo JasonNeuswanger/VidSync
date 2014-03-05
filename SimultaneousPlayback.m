@@ -59,12 +59,12 @@
 
 - (IBAction) stepForwardAll:(id)sender
 {
-	for (VSVideoClip *clip in [self.project.videoClips allObjects]) if ([clip.syncIsLocked boolValue]) [clip.windowController.playerView.player.currentItem stepByCount:1];
+	for (VSVideoClip *clip in [self.project.videoClips allObjects]) if ([clip respondsToSyncedControls]) [clip.windowController.playerView.player.currentItem stepByCount:1];
 }
 
 - (IBAction) stepBackwardAll:(id)sender
 {
-	for (VSVideoClip *clip in [self.project.videoClips allObjects]) if ([clip.syncIsLocked boolValue]) [clip.windowController.playerView.player.currentItem stepByCount:-1];
+	for (VSVideoClip *clip in [self.project.videoClips allObjects]) if ([clip respondsToSyncedControls]) [clip.windowController.playerView.player.currentItem stepByCount:-1];
 }
 
 #pragma mark
@@ -77,7 +77,7 @@
     BOOL isForward = ([sender tag] == 2);   // otherwise it's backward, [sender tag] == 1
     if ([stepUnits isEqualToString:@"frames"]) {
         int numFrames = (isForward) ? roundf(stepAmount) : -roundf(stepAmount);
-        for (VSVideoClip *clip in [self.project.videoClips allObjects]) if ([clip.syncIsLocked boolValue]) [clip.windowController.playerView.player.currentItem stepByCount:numFrames];
+        for (VSVideoClip *clip in [self.project.videoClips allObjects]) if ([clip respondsToSyncedControls]) [clip.windowController.playerView.player.currentItem stepByCount:numFrames];
     } else {
         double stepUnitFactor = ([stepUnits isEqualToString:@"seconds"]) ? 1.0 : 60.0;  // if not "seconds," must be "minutes"
         double directionFactor = (isForward) ? 1.0 : -1.0;
@@ -171,7 +171,7 @@
 {	
 	CMTime currentMasterTime = [self currentMasterTime];
 	for (VSVideoClip *clip in [self.project.videoClips allObjects]) {
-		if (!clip.isMasterClipOf && [clip.syncIsLocked boolValue]) {	// if the clip is sync-locked, and isn't the master clip, then sync it
+		if (!clip.isMasterClipOf && [clip respondsToSyncedControls]) {	// if the clip is sync-locked, and isn't the master clip, then sync it
 			CMTime offset = [UtilityFunctions CMTimeFromString:clip.syncOffset];
 			[clip.windowController.playerView.player seekToTime:CMTimeSubtract(currentMasterTime,offset) toleranceBefore:kCMTimeZero toleranceAfter:kCMTimeZero];
 		}
@@ -204,7 +204,7 @@
 - (void) setAllVideoRates:(float)rate
 {
 	for (VSVideoClip *clip in [self.project.videoClips allObjects]) {
-        if ([clip.syncIsLocked boolValue]) {
+        if ([clip respondsToSyncedControls]) {
             if (fabs(rate) > 0.0f) {
                 clip.windowController.playerView.player.rate = rate;
             } else {

@@ -64,6 +64,7 @@
 	IBOutlet ObjectSynonymizeArrayController *__weak objectSynonymizeController;
 	IBOutlet NSTableView *__weak eventsPointsTable;
 	
+    IBOutlet NSWindowController *__strong syncedPlaybackWindowController;
 	IBOutlet VideoControlButton *__weak playOrPauseButton;
     IBOutlet SyncedPlaybackPanel *__weak syncedPlaybackPanel;
     IBOutlet SyncedPlaybackView *__weak syncedPlaybackView;
@@ -128,6 +129,7 @@
 @property (readonly, weak) IBOutlet CalibDistortionLineArrayController *distortionLinesController;	
 @property (readonly, weak) IBOutlet NSWindow *mainWindow;
 
+@property (strong) NSWindowController *syncedPlaybackWindowController;
 @property (weak) IBOutlet SyncedPlaybackPanel *syncedPlaybackPanel;
 @property (weak) IBOutlet NSSlider *syncedPlaybackScrubber;
 @property (readonly, weak) IBOutlet PlayWhilePressedButton *playForwardWhilePressedButton;
@@ -147,7 +149,6 @@
 @property (weak) IBOutlet MagnifiedPreviewView *magnifiedDistortionPreview;
 
 @property (weak) IBOutlet ObjectsPortraitsArrayController *objectsPortraitsArrayController;
-
 
 @property (weak) VSTrackedObject *portraitSubject;
 

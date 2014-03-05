@@ -22,7 +22,7 @@
         </customObject>
         <customObject id="-1" userLabel="First Responder" customClass="FirstResponder"/>
         <customObject id="-3" userLabel="Application"/>
-        <window identifier="SyncedPlaybackPanel" title="Synchronized Playback Controls" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" oneShot="NO" showsToolbarButton="NO" visibleAtLaunch="NO" frameAutosaveName="Synchronized Playback Controls" animationBehavior="default" id="ID5-hV-LOZ" customClass="SyncedPlaybackPanel">
+        <window identifier="SyncedPlaybackPanel" title="Synchronized Playback Controls" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" oneShot="NO" releasedWhenClosed="NO" showsToolbarButton="NO" visibleAtLaunch="NO" frameAutosaveName="Synchronized Playback Controls" animationBehavior="default" id="ID5-hV-LOZ" customClass="SyncedPlaybackPanel">
             <windowStyleMask key="styleMask" resizable="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="61" y="1438" width="1170" height="120"/>
@@ -744,12 +744,12 @@
                                     <popUpButton verticalHuggingPriority="750" id="Vre-C0-vx5">
                                         <rect key="frame" x="80" y="17" width="76" height="22"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                        <popUpButtonCell key="cell" type="push" title="frames" bezelStyle="rounded" alignment="left" controlSize="small" lineBreakMode="truncatingTail" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" selectedItem="GHr-Kc-DTe" id="iIT-oE-Hdr">
+                                        <popUpButtonCell key="cell" type="push" title="frames" bezelStyle="rounded" alignment="left" controlSize="small" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" selectedItem="GHr-Kc-DTe" id="iIT-oE-Hdr">
                                             <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
                                             <font key="font" metaFont="smallSystem"/>
                                             <menu key="menu" title="OtherViews" id="Axv-db-xaS">
                                                 <items>
-                                                    <menuItem title="frames" id="GHr-Kc-DTe">
+                                                    <menuItem title="frames" state="on" id="GHr-Kc-DTe">
                                                         <modifierMask key="keyEquivalentModifierMask" option="YES" command="YES"/>
                                                     </menuItem>
                                                     <menuItem title="seconds" id="6Bz-aZ-SRd"/>
@@ -844,6 +844,7 @@
                             <outlet property="bookmarkGoButton2" destination="fGb-as-LTH" id="617-dO-5wB"/>
                             <outlet property="bookmarkSetButton1" destination="Dhh-Yr-mHU" id="TlA-FU-nc2"/>
                             <outlet property="bookmarkSetButton2" destination="U9D-qS-Naa" id="BmP-3a-Dbg"/>
+                            <outlet property="document" destination="-2" id="JA2-UX-W6H"/>
                             <outlet property="mainPlayBackwardWhilePressedButton" destination="ESf-Qx-OgJ" id="MwO-dl-rOA"/>
                             <outlet property="mainPlayForwardWhilePressedButton" destination="S3k-Pl-5Yk" id="Dfe-Lu-Sda"/>
                             <outlet property="maximizeButton" destination="Rjx-Pv-JQl" id="faI-mz-EbX"/>

@@ -62,4 +62,10 @@
     }
 }
 
+- (void) dealloc
+{
+    [document carefullyRemoveObserver:self forKeyPath:@"bookmarkIsSet1"];
+    [document carefullyRemoveObserver:self forKeyPath:@"bookmarkIsSet2"];
+}
+
 @end
