@@ -96,7 +96,7 @@
 	<key>CFBundleHelpBookFolder</key>
 	<string>VidSync Help Draft</string>
 	<key>CFBundleHelpBookName</key>
-	<string>VidSync Help Draft</string>
+	<string>vidsync.help</string>
 	<key>CFBundleIconFile</key>
 	<string>VidSyncIcon</string>
 	<key>CFBundleIdentifier</key>
