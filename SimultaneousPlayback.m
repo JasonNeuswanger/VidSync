@@ -181,7 +181,9 @@
 
 - (CMTime) currentMasterTime
 {
-	return [self.project.masterClip.windowController.playerView.player currentTime];
+    // Sometimes the player's time separates from the video's timescale by minute amounts like 1/3000 second. The conversion here prevents that quirk from messing up overlays of points recorded at the current time.
+    CMTime rawCurrentTime = [self.project.masterClip.windowController.playerView.player currentTime];
+	return CMTimeConvertScale(rawCurrentTime,[[self.project.masterClip timeScale] longValue],kCMTimeRoundingMethod_RoundHalfAwayFromZero);
 }
 
 - (NSString *) currentMasterTimeString
