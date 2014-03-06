@@ -1544,14 +1544,30 @@ int refractionRootFunc_f(const gsl_vector* x, void* params, gsl_vector* f)
     
     // Running cvFindCornerSubPix with a high window size like (15,15) corrected some severe mislocations around one of my squares that (5,5) did not.
     cvFindCornerSubPix(videoFrameSingleChannelIpl, foundCorners, numCorners, cvSize(cornerSubPixWindowSize,cornerSubPixWindowSize), cvSize(-1,-1), cvTermCriteria( CV_TERMCRIT_ITER | CV_TERMCRIT_EPS, 20, 0.01 ));
-        
-    CvPoint2D32f centroid = [self centroidOfNumber:numCorners ofCvPoints:foundCorners]; // geometrical center of all the detected point (NOT the centermost point)
+    
 
+    // Build the first distortion line
+    int lineLength, centerIndex, nextIndex;
     double dummyBestDistance;
-    int centerIndex = [self indexOfNearestPointTo:centroid inNumber:numCorners ofCvPoints:foundCorners bestDistance:&dummyBestDistance];
-    int nextIndex = [self indexOfNearestPointTo:foundCorners[centerIndex] inNumber:numCorners ofCvPoints:foundCorners bestDistance:&dummyBestDistance];
-    CvPoint2D32f *firstLine = (CvPoint2D32f*)malloc((maxLineCorners + 1) * sizeof(CvPoint2D32f)); 
-    int lineLength = [self buildLine:firstLine fromNumber:numCorners ofPoints:foundCorners byExtending:centerIndex inDirectionOf:nextIndex];
+    CvPoint2D32f *firstLine = (CvPoint2D32f*)malloc((maxLineCorners + 1) * sizeof(CvPoint2D32f));
+    // Manually seed the start of the line creation algorithm if the user has entered exactly one line with exactly two points as the seed.
+    if ([self.distortionLines count] == 1 && [[[self.distortionLines anyObject] distortionPoints] count] == 2) {
+        VSDistortionLine *seedLine = [self.distortionLines anyObject];
+        NSArray *seedPoints = [[seedLine distortionPoints] allObjects];
+        VSDistortionPoint *seedPoint1 = [seedPoints objectAtIndex:0];
+        VSDistortionPoint *seedPoint2 = [seedPoints objectAtIndex:1];
+        CvPoint2D32f seedPointCv1 = cvPoint2D32f([seedPoint1.screenX doubleValue],[seedPoint1.screenY doubleValue]);
+        CvPoint2D32f seedPointCv2 = cvPoint2D32f([seedPoint2.screenX doubleValue],[seedPoint2.screenY doubleValue]);
+        centerIndex = [self indexOfNearestPointTo:seedPointCv1 inNumber:numCorners ofCvPoints:foundCorners bestDistance:&dummyBestDistance];
+        nextIndex = [self indexOfNearestPointTo:seedPointCv2 inNumber:numCorners ofCvPoints:foundCorners bestDistance:&dummyBestDistance];
+        [[self managedObjectContext] deleteObject:seedLine];    // Delete the seed after using it
+    } else {    // Otherwise, start the line creation algorithm from the center point to the nearest other point
+        CvPoint2D32f centroid = [self centroidOfNumber:numCorners ofCvPoints:foundCorners]; // geometrical center of all the detected point (NOT the centermost point)
+        centerIndex = [self indexOfNearestPointTo:centroid inNumber:numCorners ofCvPoints:foundCorners bestDistance:&dummyBestDistance];
+        nextIndex = [self indexOfNearestPointTo:foundCorners[centerIndex] inNumber:numCorners ofCvPoints:foundCorners bestDistance:&dummyBestDistance];
+    }
+    lineLength = [self buildLine:firstLine fromNumber:numCorners ofPoints:foundCorners byExtending:centerIndex inDirectionOf:nextIndex];
+    
     // I'm not adding the first line to the object model here, because it would be duplicated later when crossing the crossing lines, and it's easier to just not add it here
     // than to skip over adding it there.
 
