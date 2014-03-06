@@ -281,9 +281,6 @@ static void *AVSPPlayerCurrentTimeContext = &AVSPPlayerCurrentTimeContext;
 			if ([[notification object] isEqualTo:trackedObjectsController.mainTableView]) {
 				if ([[trackedObjectsController selectedObjects] count] > 0) {
 					VSTrackedObject *selectedObject = [[trackedObjectsController selectedObjects] objectAtIndex:0];
-					// When an object is deselected (often via selecting a point or event belonging to a different object)
-					// remove the observer that is watching to see if its color changes so it can update the overlay.
-					[selectedObject removeObserver:self forKeyPath:@"color"];
 				}
 			}		
 		}
@@ -378,8 +375,6 @@ static void *AVSPPlayerCurrentTimeContext = &AVSPPlayerCurrentTimeContext;
 			
 			if ([[trackedObjectsController selectedObjects] count] > 0) {
                 [trackedObjectsController scrollTableToSelectedObject];
-				VSTrackedObject *selectedObject = [[trackedObjectsController selectedObjects] objectAtIndex:0];
-				[selectedObject addObserver:self forKeyPath:@"color" options:NSKeyValueObservingOptionNew context:NULL];
                 if (objectsTableSelectionChangeNotificationCascadeEnabled) {
                     [trackedEventsController setSelectionIndex:0];	// Select the object's first event
                     [eventsPointsController setSelectionIndex:0];	// and that event's first point
@@ -408,9 +403,7 @@ static void *AVSPPlayerCurrentTimeContext = &AVSPPlayerCurrentTimeContext;
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
 {
-    if ([keyPath isEqual:@"color"] && [object class] == [VSTrackedObject class]) {
-		[self refreshOverlaysOfAllClips:self];
-    } else if ([keyPath isEqualToString:@"playerView.player.rate"]) {
+    if ([keyPath isEqualToString:@"playerView.player.rate"]) {
         // trigger player rate change handler
         if (self.project.masterClip.windowController != nil && [object isEqualTo:self.project.masterClip.windowController]) {
             [self movieRateDidChange];

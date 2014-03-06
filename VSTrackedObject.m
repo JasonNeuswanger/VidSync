@@ -25,6 +25,25 @@
 	return highestIndex;
 }
 
+- (void)awakeFromFetch
+{
+	[self addObserver:self forKeyPath:@"color" options:0 context:NULL];
+	[super awakeFromFetch];
+}
+
+- (void)awakeFromInsert
+{
+	[self addObserver:self forKeyPath:@"color" options:0 context:NULL];
+	[super awakeFromFetch];
+}
+
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
+{
+	if ([keyPath isEqualToString:@"color"]) {
+        if (self.project.document != nil) [self.project.document refreshOverlaysOfAllClips:self];
+	}
+}
+
 - (NSNumber *) numEvents
 {
 	return [NSNumber numberWithInt:[self.trackedEvents count]];
@@ -123,11 +142,9 @@
 
 - (void) dealloc
 {
-    if (self.project != nil && self.project.document != nil) {
-        @try {
-            [self removeObserver:self.project.document forKeyPath:@"color"];
-        } @catch (id exception) {
-        }
+    @try {
+        [self removeObserver:self forKeyPath:@"color"];
+    } @catch (id exception) {
     }
 }
 
