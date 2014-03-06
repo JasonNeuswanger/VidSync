@@ -30,8 +30,8 @@
 
 @property (strong) VSProject *project;
 
+- (void) addObservers;
 
-- (void)awakeFromFetch;
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context;
 
 + (void) insertNewTypeFromLoadedDictionary:(NSDictionary *)objectTypeDictionary inProject:(VSProject *)project inManagedObjectContext:(NSManagedObjectContext *)moc;

@@ -29,18 +29,28 @@
 
 - (void)awakeFromFetch
 {
-	// Observe the values of all the visually obvious fields, so the overlays can be updated live when they're changed.
+	[self addObservers];
+	[super awakeFromFetch];
+}
+
+- (void)awakeFromInsert
+{
+    [self addObservers];
+    [super awakeFromInsert];
+}
+
+- (void)addObservers
+{
 	[self addObserver:self forKeyPath:@"name" options:NSKeyValueObservingOptionNew context:NULL];
 	[self addObserver:self forKeyPath:@"shape" options:NSKeyValueObservingOptionNew context:NULL];
 	[self addObserver:self forKeyPath:@"size" options:NSKeyValueObservingOptionNew context:NULL];
 	[self addObserver:self forKeyPath:@"connectingLineLengthLabeled" options:NSKeyValueObservingOptionNew context:NULL];
 	[self addObserver:self forKeyPath:@"connectingLineThickness" options:NSKeyValueObservingOptionNew context:NULL];
-	[self addObserver:self forKeyPath:@"connectingLineType" options:NSKeyValueObservingOptionNew context:NULL];	
-	[self addObserver:self forKeyPath:@"connectingLineLengthLabelFontSize" options:NSKeyValueObservingOptionNew context:NULL];	
-	[self addObserver:self forKeyPath:@"connectingLineLengthLabelFractionDigits" options:NSKeyValueObservingOptionNew context:NULL];	
-	[self addObserver:self forKeyPath:@"connectingLineLengthLabelUnitMultiplier" options:NSKeyValueObservingOptionNew context:NULL];	
-	[self addObserver:self forKeyPath:@"connectingLineLengthLabelUnits" options:NSKeyValueObservingOptionNew context:NULL];	
-	[super awakeFromFetch];
+	[self addObserver:self forKeyPath:@"connectingLineType" options:NSKeyValueObservingOptionNew context:NULL];
+	[self addObserver:self forKeyPath:@"connectingLineLengthLabelFontSize" options:NSKeyValueObservingOptionNew context:NULL];
+	[self addObserver:self forKeyPath:@"connectingLineLengthLabelFractionDigits" options:NSKeyValueObservingOptionNew context:NULL];
+	[self addObserver:self forKeyPath:@"connectingLineLengthLabelUnitMultiplier" options:NSKeyValueObservingOptionNew context:NULL];
+	[self addObserver:self forKeyPath:@"connectingLineLengthLabelUnits" options:NSKeyValueObservingOptionNew context:NULL];
 }
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context

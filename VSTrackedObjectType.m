@@ -22,6 +22,13 @@
 	[super awakeFromFetch];
 }
 
+- (void)awakeFromInsert
+{
+	// Observe the value of name, so the array controller can re-sort itself when a name is changed.
+	[self addObserver:self forKeyPath:@"name" options:NSKeyValueObservingOptionNew context:NULL];
+	[super awakeFromFetch];
+}
+
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
 {
 	if ([keyPath isEqualToString:@"name"]) {

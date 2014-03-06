@@ -874,7 +874,11 @@
 
 - (void) dealloc
 {
-    [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKeyPath:@"values.showAdvancedControlsWithOnlyMasterClip"];
+    @try {
+        [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKeyPath:@"values.showAdvancedControlsWithOnlyMasterClip"];
+    } @catch (id exception) {
+        NSLog(@"Error removing windowController as an observer for showAdvancedControlsWithOnlyMasterClip: %@",(NSException *)exception);
+    }
     [self.videoClip carefullyRemoveObserver:self forKeyPath:@"syncIsLocked"];
     [self.videoClip carefullyRemoveObserver:self forKeyPath:@"syncOffset"];
     [self.videoClip carefullyRemoveObserver:self forKeyPath:@"isMasterClipOf"];
@@ -886,6 +890,7 @@
     } @catch (id exception) {
         NSLog(@"exception trying to remove observer form VideoWindowController: %@",(NSException *)exception);
     }
+    
 }
 
 @end

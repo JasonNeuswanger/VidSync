@@ -236,26 +236,29 @@ static void *AVSPPlayerCurrentTimeContext = &AVSPPlayerCurrentTimeContext;
 
 - (VSProject *)project
 {
-    if (project != nil) return project;
-    NSManagedObjectContext *moc = [self managedObjectContext];
-    NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
-    NSError *fetchError = nil;
-    NSArray *fetchResults;
-    NSEntityDescription *entity = [NSEntityDescription entityForName:@"VSProject" inManagedObjectContext:moc];
-    [fetchRequest setEntity:entity];
-    fetchResults = [moc executeFetchRequest:fetchRequest error:&fetchError];
-    if ((fetchResults != nil) && ([fetchResults count] == 1) && (fetchError == nil)) {
-        self.project = [fetchResults objectAtIndex:0];
-		self.project.document = self;
+    if (project != nil) {
         return project;
+    } else {
+        NSManagedObjectContext *moc = [self managedObjectContext];
+        NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
+        NSError *fetchError = nil;
+        NSArray *fetchResults;
+        NSEntityDescription *entity = [NSEntityDescription entityForName:@"VSProject" inManagedObjectContext:moc];
+        [fetchRequest setEntity:entity];
+        fetchResults = [moc executeFetchRequest:fetchRequest error:&fetchError];
+        if ((fetchResults != nil) && ([fetchResults count] == 1) && (fetchError == nil)) {
+            project = [fetchResults objectAtIndex:0];
+            project.document = self;
+            return project;
+        } else {
+            if (fetchError != nil) {
+                [self presentError:fetchError];
+            } else {
+                NSLog(@"Project wasn't correctly fetched from the managed object context.");
+            }
+            return nil;
+        }
     }
-    if (fetchError != nil) {
-        [self presentError:fetchError];
-    }
-    else {
-        NSLog(@"Project wasn't correctly fetched from the managed object context.");
-    }
-    return nil;
 }
 
 #pragma mark
@@ -364,12 +367,6 @@ static void *AVSPPlayerCurrentTimeContext = &AVSPPlayerCurrentTimeContext;
 				VSAnnotation *selectedAnnotation = [[annotationsController selectedObjects] objectAtIndex:0];
 				[annotationsController scrollTableToSelectedObject];
 				[selectedAnnotation.videoClip.windowController refreshOverlay];
-				// Observe the current annotation while it's selected, so the overlay can be refreshed if any of its visual properites change.
-				[selectedAnnotation addObserver:selectedAnnotation.videoClip.windowController forKeyPath:@"width" options:NSKeyValueObservingOptionNew context:NULL];
-				[selectedAnnotation addObserver:selectedAnnotation.videoClip.windowController forKeyPath:@"color" options:NSKeyValueObservingOptionNew context:NULL];
-				[selectedAnnotation addObserver:selectedAnnotation.videoClip.windowController forKeyPath:@"size" options:NSKeyValueObservingOptionNew context:NULL];
-				[selectedAnnotation addObserver:selectedAnnotation.videoClip.windowController forKeyPath:@"shape" options:NSKeyValueObservingOptionNew context:NULL];
-				[selectedAnnotation addObserver:selectedAnnotation.videoClip.windowController forKeyPath:@"notes" options:NSKeyValueObservingOptionNew context:NULL];
 			} else {	// if no annotation is selected, find any annotation from the controller to figure out the right clip, and refresh its overlay to show the deselection
 				if ([[annotationsController arrangedObjects] count] > 0) {
 					VSAnnotation *anyAnnotation = [[annotationsController arrangedObjects] objectAtIndex:0];
@@ -650,10 +647,16 @@ static void *AVSPPlayerCurrentTimeContext = &AVSPPlayerCurrentTimeContext;
     
     for (id windowController in [self windowControllers]) { // Putting this here to remove observer on window controller before document no longer exists
         if ([windowController class] == [VideoWindowController class]) {
+            VideoWindowController *__weak vwc = (VideoWindowController *)windowController;
             @try {
                 [windowController removeObserver:self forKeyPath:@"playerView.player.rate"];
             } @catch (id exception) {
                 NSLog(@"exception when document tries to to remove observer form VideoWindowController: %@",(NSException *)exception);
+            }
+            @try {
+                [self.project carefullyRemoveObserver:vwc.overlayView forKeyPath:@"distortionDisplayMode"];
+            } @catch (id exception) {
+                NSLog(@"exception when document tries to to remove observer form VideoOverlayView: %@",(NSException *)exception);
             }
         }
     }

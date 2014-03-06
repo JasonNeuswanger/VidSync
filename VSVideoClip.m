@@ -131,6 +131,7 @@
         @try {
             [self removeObserver:observer forKeyPath:keyPath];
         } @catch (id exception) {
+            NSLog(@"Error removing observer for keypath %@ from VSVideoClip: %@",keyPath,(NSException *)exception);
         }
     }
 }
