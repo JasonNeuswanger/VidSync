@@ -123,8 +123,8 @@ static void *AVSPPlayerCurrentTimeContext = &AVSPPlayerCurrentTimeContext;
     
 	[[NSNotificationCenter defaultCenter] addObserver:self
 											 selector:@selector(anyTableViewSelectionIsChanging:)
-												 name:NSTableViewSelectionIsChangingNotification object:nil];	
-
+												 name:NSTableViewSelectionIsChangingNotification object:nil];
+    
 	// The lines below sets up the timer used for frame-by-frame updates of the overlay layer; it's the main playback loop for the calibration, measurement, and annotation points.
     playbackTimer = [NSTimer timerWithTimeInterval:0.03 target:self selector:@selector(playbackLoopActions) userInfo:nil repeats:YES];
     [[NSRunLoop currentRunLoop] addTimer:playbackTimer forMode:NSRunLoopCommonModes];
@@ -425,6 +425,15 @@ static void *AVSPPlayerCurrentTimeContext = &AVSPPlayerCurrentTimeContext;
             [[NSCursor crosshairCursor] set];
         }
     }
+}
+
+
+#pragma mark
+#pragma mark NSTabView delegate (for "observing" tab changes)
+
+- (void) tabView:(NSTabView *)tabView didSelectTabViewItem:(NSTabViewItem *)tabViewItem
+{
+    [self refreshOverlaysOfAllClips:self];
 }
 
 #pragma mark

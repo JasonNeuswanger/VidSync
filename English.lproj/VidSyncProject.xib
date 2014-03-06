@@ -2167,6 +2167,9 @@ IA
                                                     </view>
                                                 </tabViewItem>
                                             </tabViewItems>
+                                            <connections>
+                                                <outlet property="delegate" destination="-2" id="e6s-5y-B1y"/>
+                                            </connections>
                                         </tabView>
                                         <textField verticalHuggingPriority="750" id="100633">
                                             <rect key="frame" x="116" y="590" width="125" height="17"/>
@@ -4129,6 +4132,7 @@ An XML file stores information using custom markup tags. It more thoroughly refl
                         </tabViewItems>
                         <connections>
                             <binding destination="100045" name="selectedLabel" keyPath="values.latestMainTabViewSelectedLabel" id="102185"/>
+                            <outlet property="delegate" destination="-2" id="AVa-h1-frX"/>
                         </connections>
                     </tabView>
                 </subviews>
