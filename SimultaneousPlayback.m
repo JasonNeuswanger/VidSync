@@ -100,7 +100,7 @@
 	} else if ([sender tag] == 3) {		// playing forward at rate 2
 		rateMultiplier = 1.0;
         whichRate = @"2";
-    } else {                            // playing backward at rate 2
+    } else {                            // tag = 4; playing backward at rate 2
         rateMultiplier = -1.0;
         whichRate = @"2";
 	}

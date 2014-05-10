@@ -65,9 +65,9 @@
     // Control + Option + Arrow plays at advanced playback rate 1 while pressed
     // Command + Option + Arrow plays at advanced playback rate 2 while pressed
     
-    if ([theEvent modifierFlags] & NSAlternateKeyMask) {            // Forward option+leftarrow and option+rightarrow keypresses to the appropriate PlayWhilePressedButton
-        if (![theEvent isARepeat]) {
-            unichar key = [[theEvent charactersIgnoringModifiers] characterAtIndex: 0];
+    if (![theEvent isARepeat]) {
+        unichar key = [[theEvent charactersIgnoringModifiers] characterAtIndex: 0];
+        if ([theEvent modifierFlags] & NSAlternateKeyMask) {            // Forward option+leftarrow and option+rightarrow keypresses to the appropriate PlayWhilePressedButton
             if (key == NSLeftArrowFunctionKey) {
                 if ([theEvent modifierFlags] & NSControlKeyMask) {
                     [document.playBackwardAtRate1WhilePressedButton startPlaying];
@@ -85,9 +85,22 @@
                     [document.playForwardWhilePressedButton startPlaying];
                 }
             }
+            return;
         }
-        return;
-	}
+        if (key == '1') {
+            if ([theEvent modifierFlags] & NSControlKeyMask) {
+                [document advancedPlayAll:document.playBackwardAtRate1Button];
+            } else {
+                [document advancedPlayAll:document.playForwardAtRate1Button];
+            }
+        } else if (key == '2') {
+            if ([theEvent modifierFlags] & NSControlKeyMask) {
+                [document advancedPlayAll:document.playBackwardAtRate2Button];
+            } else {
+                [document advancedPlayAll:document.playForwardAtRate2Button];
+            }
+        }
+    }
     [super keyDown:theEvent];
 }
 

@@ -164,7 +164,7 @@
 
 - (IBAction)revertToInitialValues:(id)sender
 {
-    NSInteger alertResult = NSRunAlertPanel(@"Are you sure?",[NSString stringWithFormat:@"Are you sure you want to restore all preferences to their initial values?"],@"Yes",@"No",nil);
+    NSInteger alertResult = NSRunAlertPanel(@"Are you sure?",@"Are you sure you want to restore all preferences to their initial values?",@"Yes",@"No",nil);
     if (alertResult == 1) {
         [[NSUserDefaultsController sharedUserDefaultsController] revertToInitialValues:sender];
     }

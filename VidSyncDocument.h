@@ -68,7 +68,10 @@
     IBOutlet NSSlider *__weak syncedPlaybackScrubber;
     int scrubberMaxTime;
     
-	IBOutlet PlayWhilePressedButton *__weak playForwardAtRate1WhilePressedButton,*__weak playBackwardAtRate1WhilePressedButton,*__weak playForwardAtRate2WhilePressedButton,*__weak playBackwardAtRate2WhilePressedButton, *__weak playForwardWhilePressedButton, *__weak playBackwardWhilePressedButton;
+	IBOutlet PlayWhilePressedButton *__weak playForwardAtRate1WhilePressedButton,*__weak playBackwardAtRate1WhilePressedButton,*__weak playForwardAtRate2WhilePressedButton,*__weak playBackwardAtRate2WhilePressedButton,*__weak playForwardWhilePressedButton, *__weak playBackwardWhilePressedButton;
+    
+    IBOutlet VideoControlButton *__weak playForwardAtRate1Button, *__weak playBackwardAtRate1Button, *__weak playForwardAtRate2Button, *__weak playBackwardAtRate2Button;
+    
 	CMTime bookmarkTime1, bookmarkTime2;
     BOOL bookmarkIsSet1, bookmarkIsSet2;
 	
@@ -134,6 +137,10 @@
 @property (readonly, weak) IBOutlet PlayWhilePressedButton *playBackwardAtRate1WhilePressedButton;
 @property (readonly, weak) IBOutlet PlayWhilePressedButton *playForwardAtRate2WhilePressedButton;
 @property (readonly, weak) IBOutlet PlayWhilePressedButton *playBackwardAtRate2WhilePressedButton;
+@property (readonly, weak) IBOutlet VideoControlButton *playForwardAtRate1Button;
+@property (readonly, weak) IBOutlet VideoControlButton *playBackwardAtRate1Button;
+@property (readonly, weak) IBOutlet VideoControlButton *playForwardAtRate2Button;
+@property (readonly, weak) IBOutlet VideoControlButton *playBackwardAtRate2Button;
 
 @property (strong) NSNumberFormatter *decimalFormatter;
 @property (weak) VSVideoClip *frontVideoClip;

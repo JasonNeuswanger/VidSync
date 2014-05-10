@@ -38,6 +38,11 @@
 @synthesize playForwardAtRate2WhilePressedButton;
 @synthesize playBackwardAtRate2WhilePressedButton;
 
+@synthesize playForwardAtRate1Button;
+@synthesize playBackwardAtRate1Button;
+@synthesize playForwardAtRate2Button;
+@synthesize playBackwardAtRate2Button;
+
 @synthesize decimalFormatter;
 
 @synthesize mainWindow;
