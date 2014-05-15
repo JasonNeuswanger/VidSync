@@ -235,8 +235,16 @@
 
 - (void) setCenterPoint:(NSPoint)mousePoint
 {
-	lastMousePoint = mousePoint;	// Used to call this function when the magnification slider is changed
+    // NSLog(@"Setting center point to %@",[NSValue valueWithPoint:mousePoint]);
+	
+    lastMousePoint = mousePoint;	// Used to call this function when the magnification slider is changed
 	float mag = [[[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"previewMagnification"] floatValue];
+    
+    // the problem is happening in both of these variables (previewCenterPoint and crosshairsCenterPoint because the preview is centered+crosshaired on the wrong position
+    // yet the input mousePoint variable shows the right position
+    // and it happens even when "mag" = 1 so that should have no effect
+    // in other words I can't find a problem here... maybe the display of the layer itself is messed up?
+    
 	previewCenterPoint.x = mag * mousePoint.x - [self documentVisibleRect].size.width/2;
 	previewCenterPoint.y = mag * mousePoint.y - [self documentVisibleRect].size.height/2;
 	crosshairsCenterPoint.x = mag * mousePoint.x;// - previewMovieCrosshairs.frame.size.width/2;	not sure why I had to comment out this "correction" but it's actually right without it

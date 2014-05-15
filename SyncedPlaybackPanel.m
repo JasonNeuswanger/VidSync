@@ -100,6 +100,7 @@
                 [document advancedPlayAll:document.playForwardAtRate2Button];
             }
         }
+        return;
     }
     [super keyDown:theEvent];
 }

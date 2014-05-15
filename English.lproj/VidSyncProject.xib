@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="4514" systemVersion="13C64" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="5056" systemVersion="13C64" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
     <dependencies>
         <deployment defaultVersion="1090" identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="4514"/>
-        <plugIn identifier="com.apple.imagekit.ibplugin" version="3338"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="5056"/>
+        <plugIn identifier="com.apple.imagekit.ibplugin" version="5056"/>
     </dependencies>
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="VidSyncDocument">
@@ -47,7 +47,7 @@
         </customObject>
         <customObject id="-1" userLabel="First Responder" customClass="FirstResponder"/>
         <customObject id="-3" userLabel="Application"/>
-        <window title="New Project" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" releasedWhenClosed="NO" showsToolbarButton="NO" wantsToBeColor="NO" visibleAtLaunch="NO" frameAutosaveName="" animationBehavior="default" id="5" userLabel="Main Project Window" customClass="MainProjectWindow">
+        <window title="New Project" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" releasedWhenClosed="NO" showsToolbarButton="NO" visibleAtLaunch="NO" frameAutosaveName="" animationBehavior="default" id="5" userLabel="Main Project Window" customClass="MainProjectWindow">
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES" texturedBackground="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" topStrut="YES"/>
             <rect key="contentRect" x="146" y="773" width="589" height="657"/>
@@ -425,12 +425,7 @@
                                                                                         <color key="backgroundColor" name="headerColor" catalog="System" colorSpace="catalog"/>
                                                                                     </tableHeaderCell>
                                                                                     <textFieldCell key="dataCell" controlSize="small" lineBreakMode="truncatingTail" selectable="YES" editable="YES" alignment="left" title="Text Cell" id="103643">
-                                                                                        <numberFormatter key="formatter" formatterBehavior="custom10_4" positiveFormat="#" negativeFormat="#" allowsFloats="NO" usesGroupingSeparator="NO" groupingSize="0" minimumIntegerDigits="0" maximumIntegerDigits="42" minimumFractionDigits="0" maximumFractionDigits="0" id="Mv4-30-9iy">
-                                                                                            <real key="roundingIncrement" value="0.0"/>
-                                                                                            <metadata>
-                                                                                                <bool key="localizesFormat" value="YES"/>
-                                                                                            </metadata>
-                                                                                        </numberFormatter>
+                                                                                        <numberFormatter key="formatter" formatterBehavior="custom10_4" positiveFormat="#" negativeFormat="#" allowsFloats="NO" usesGroupingSeparator="NO" paddingCharacter="*" groupingSize="0" minimumIntegerDigits="0" maximumIntegerDigits="42" decimalSeparator="." groupingSeparator="," currencyDecimalSeparator="." plusSign="+" minusSign="-" notANumberSymbol="NaN" perMillSymbol="‰" percentSymbol="%" exponentSymbol="E" positivePrefix="" positiveSuffix="" negativePrefix="-" negativeSuffix="" id="Mv4-30-9iy"/>
                                                                                         <font key="font" metaFont="smallSystem"/>
                                                                                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                                                                         <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
@@ -555,12 +550,7 @@
                                                                 <rect key="frame" x="47" y="194" width="80" height="22"/>
                                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                                 <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="103679">
-                                                                    <numberFormatter key="formatter" formatterBehavior="custom10_4" positiveFormat="#0.###############" negativeFormat="#0.###############" usesGroupingSeparator="NO" groupingSize="0" minimumIntegerDigits="1" maximumIntegerDigits="42" minimumFractionDigits="0" maximumFractionDigits="15" id="103680" customClass="VSScientificNotationFormatter">
-                                                                        <real key="roundingIncrement" value="0.0"/>
-                                                                        <metadata>
-                                                                            <bool key="localizesFormat" value="YES"/>
-                                                                        </metadata>
-                                                                    </numberFormatter>
+                                                                    <numberFormatter key="formatter" formatterBehavior="custom10_4" positiveFormat="#0.###############" negativeFormat="#0.###############" usesGroupingSeparator="NO" paddingCharacter="*" groupingSize="0" minimumIntegerDigits="1" maximumIntegerDigits="42" maximumFractionDigits="15" decimalSeparator="." groupingSeparator="," currencyDecimalSeparator="." plusSign="+" minusSign="-" notANumberSymbol="NaN" perMillSymbol="‰" percentSymbol="%" exponentSymbol="E" positivePrefix="" positiveSuffix="" negativePrefix="-" negativeSuffix="" id="103680" customClass="VSScientificNotationFormatter"/>
                                                                     <font key="font" metaFont="smallSystem"/>
                                                                     <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                                                                     <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
@@ -587,12 +577,7 @@
                                                                 <rect key="frame" x="47" y="169" width="80" height="22"/>
                                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                                 <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="104039">
-                                                                    <numberFormatter key="formatter" formatterBehavior="custom10_4" positiveFormat="#0.###############" negativeFormat="#0.###############" usesGroupingSeparator="NO" groupingSize="0" minimumIntegerDigits="1" maximumIntegerDigits="42" minimumFractionDigits="0" maximumFractionDigits="15" id="104040" customClass="VSScientificNotationFormatter">
-                                                                        <real key="roundingIncrement" value="0.0"/>
-                                                                        <metadata>
-                                                                            <bool key="localizesFormat" value="YES"/>
-                                                                        </metadata>
-                                                                    </numberFormatter>
+                                                                    <numberFormatter key="formatter" formatterBehavior="custom10_4" positiveFormat="#0.###############" negativeFormat="#0.###############" usesGroupingSeparator="NO" paddingCharacter="*" groupingSize="0" minimumIntegerDigits="1" maximumIntegerDigits="42" maximumFractionDigits="15" decimalSeparator="." groupingSeparator="," currencyDecimalSeparator="." plusSign="+" minusSign="-" notANumberSymbol="NaN" perMillSymbol="‰" percentSymbol="%" exponentSymbol="E" positivePrefix="" positiveSuffix="" negativePrefix="-" negativeSuffix="" id="104040" customClass="VSScientificNotationFormatter"/>
                                                                     <font key="font" metaFont="smallSystem"/>
                                                                     <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                                                                     <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
@@ -619,12 +604,7 @@
                                                                 <rect key="frame" x="47" y="144" width="80" height="22"/>
                                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                                 <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="104045">
-                                                                    <numberFormatter key="formatter" formatterBehavior="custom10_4" positiveFormat="#0.###############" negativeFormat="#0.###############" usesGroupingSeparator="NO" groupingSize="0" minimumIntegerDigits="1" maximumIntegerDigits="42" minimumFractionDigits="0" maximumFractionDigits="15" id="104046" customClass="VSScientificNotationFormatter">
-                                                                        <real key="roundingIncrement" value="0.0"/>
-                                                                        <metadata>
-                                                                            <bool key="localizesFormat" value="YES"/>
-                                                                        </metadata>
-                                                                    </numberFormatter>
+                                                                    <numberFormatter key="formatter" formatterBehavior="custom10_4" positiveFormat="#0.###############" negativeFormat="#0.###############" usesGroupingSeparator="NO" paddingCharacter="*" groupingSize="0" minimumIntegerDigits="1" maximumIntegerDigits="42" maximumFractionDigits="15" decimalSeparator="." groupingSeparator="," currencyDecimalSeparator="." plusSign="+" minusSign="-" notANumberSymbol="NaN" perMillSymbol="‰" percentSymbol="%" exponentSymbol="E" positivePrefix="" positiveSuffix="" negativePrefix="-" negativeSuffix="" id="104046" customClass="VSScientificNotationFormatter"/>
                                                                     <font key="font" metaFont="smallSystem"/>
                                                                     <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                                                                     <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
@@ -642,12 +622,7 @@
                                                                 <rect key="frame" x="176" y="83" width="74" height="22"/>
                                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                                 <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="103672">
-                                                                    <numberFormatter key="formatter" formatterBehavior="custom10_4" positiveFormat="#.##" negativeFormat="#.##" usesGroupingSeparator="NO" groupingSize="0" minimumIntegerDigits="0" maximumIntegerDigits="42" minimumFractionDigits="0" maximumFractionDigits="2" id="103673">
-                                                                        <real key="roundingIncrement" value="0.0"/>
-                                                                        <metadata>
-                                                                            <bool key="localizesFormat" value="YES"/>
-                                                                        </metadata>
-                                                                    </numberFormatter>
+                                                                    <numberFormatter key="formatter" formatterBehavior="custom10_4" positiveFormat="#.##" negativeFormat="#.##" usesGroupingSeparator="NO" paddingCharacter="*" groupingSize="0" minimumIntegerDigits="0" maximumIntegerDigits="42" maximumFractionDigits="2" decimalSeparator="." groupingSeparator="," currencyDecimalSeparator="." plusSign="+" minusSign="-" notANumberSymbol="NaN" perMillSymbol="‰" percentSymbol="%" exponentSymbol="E" positivePrefix="" positiveSuffix="" negativePrefix="-" negativeSuffix="" id="103673"/>
                                                                     <font key="font" metaFont="smallSystem"/>
                                                                     <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                                                                     <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
@@ -780,12 +755,7 @@
                                                                 <rect key="frame" x="51" y="83" width="74" height="22"/>
                                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                                 <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="104030">
-                                                                    <numberFormatter key="formatter" formatterBehavior="custom10_4" positiveFormat="#.##" negativeFormat="#.##" usesGroupingSeparator="NO" groupingSize="0" minimumIntegerDigits="0" maximumIntegerDigits="42" minimumFractionDigits="0" maximumFractionDigits="2" id="104031">
-                                                                        <real key="roundingIncrement" value="0.0"/>
-                                                                        <metadata>
-                                                                            <bool key="localizesFormat" value="YES"/>
-                                                                        </metadata>
-                                                                    </numberFormatter>
+                                                                    <numberFormatter key="formatter" formatterBehavior="custom10_4" positiveFormat="#.##" negativeFormat="#.##" usesGroupingSeparator="NO" paddingCharacter="*" groupingSize="0" minimumIntegerDigits="0" maximumIntegerDigits="42" maximumFractionDigits="2" decimalSeparator="." groupingSeparator="," currencyDecimalSeparator="." plusSign="+" minusSign="-" notANumberSymbol="NaN" perMillSymbol="‰" percentSymbol="%" exponentSymbol="E" positivePrefix="" positiveSuffix="" negativePrefix="-" negativeSuffix="" id="104031"/>
                                                                     <font key="font" metaFont="smallSystem"/>
                                                                     <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                                                                     <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
@@ -830,12 +800,7 @@
                                                                 <rect key="frame" x="178" y="194" width="80" height="22"/>
                                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                                 <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="104080">
-                                                                    <numberFormatter key="formatter" formatterBehavior="custom10_4" positiveFormat="#0.###############" negativeFormat="#0.###############" usesGroupingSeparator="NO" groupingSize="0" minimumIntegerDigits="1" maximumIntegerDigits="42" minimumFractionDigits="0" maximumFractionDigits="15" id="104081" customClass="VSScientificNotationFormatter">
-                                                                        <real key="roundingIncrement" value="0.0"/>
-                                                                        <metadata>
-                                                                            <bool key="localizesFormat" value="YES"/>
-                                                                        </metadata>
-                                                                    </numberFormatter>
+                                                                    <numberFormatter key="formatter" formatterBehavior="custom10_4" positiveFormat="#0.###############" negativeFormat="#0.###############" usesGroupingSeparator="NO" paddingCharacter="*" groupingSize="0" minimumIntegerDigits="1" maximumIntegerDigits="42" maximumFractionDigits="15" decimalSeparator="." groupingSeparator="," currencyDecimalSeparator="." plusSign="+" minusSign="-" notANumberSymbol="NaN" perMillSymbol="‰" percentSymbol="%" exponentSymbol="E" positivePrefix="" positiveSuffix="" negativePrefix="-" negativeSuffix="" id="104081" customClass="VSScientificNotationFormatter"/>
                                                                     <font key="font" metaFont="smallSystem"/>
                                                                     <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                                                                     <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
@@ -861,12 +826,7 @@
                                                                 <rect key="frame" x="178" y="169" width="80" height="22"/>
                                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                                 <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="104077">
-                                                                    <numberFormatter key="formatter" formatterBehavior="custom10_4" positiveFormat="#0.###############" negativeFormat="#0.###############" usesGroupingSeparator="NO" groupingSize="0" minimumIntegerDigits="1" maximumIntegerDigits="42" minimumFractionDigits="0" maximumFractionDigits="15" id="104078" customClass="VSScientificNotationFormatter">
-                                                                        <real key="roundingIncrement" value="0.0"/>
-                                                                        <metadata>
-                                                                            <bool key="localizesFormat" value="YES"/>
-                                                                        </metadata>
-                                                                    </numberFormatter>
+                                                                    <numberFormatter key="formatter" formatterBehavior="custom10_4" positiveFormat="#0.###############" negativeFormat="#0.###############" usesGroupingSeparator="NO" paddingCharacter="*" groupingSize="0" minimumIntegerDigits="1" maximumIntegerDigits="42" maximumFractionDigits="15" decimalSeparator="." groupingSeparator="," currencyDecimalSeparator="." plusSign="+" minusSign="-" notANumberSymbol="NaN" perMillSymbol="‰" percentSymbol="%" exponentSymbol="E" positivePrefix="" positiveSuffix="" negativePrefix="-" negativeSuffix="" id="104078" customClass="VSScientificNotationFormatter"/>
                                                                     <font key="font" metaFont="smallSystem"/>
                                                                     <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                                                                     <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
@@ -892,12 +852,7 @@
                                                                 <rect key="frame" x="178" y="144" width="80" height="22"/>
                                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                                 <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="104074">
-                                                                    <numberFormatter key="formatter" formatterBehavior="custom10_4" positiveFormat="#0.###############" negativeFormat="#0.###############" usesGroupingSeparator="NO" groupingSize="0" minimumIntegerDigits="1" maximumIntegerDigits="42" minimumFractionDigits="0" maximumFractionDigits="15" id="104075" customClass="VSScientificNotationFormatter">
-                                                                        <real key="roundingIncrement" value="0.0"/>
-                                                                        <metadata>
-                                                                            <bool key="localizesFormat" value="YES"/>
-                                                                        </metadata>
-                                                                    </numberFormatter>
+                                                                    <numberFormatter key="formatter" formatterBehavior="custom10_4" positiveFormat="#0.###############" negativeFormat="#0.###############" usesGroupingSeparator="NO" paddingCharacter="*" groupingSize="0" minimumIntegerDigits="1" maximumIntegerDigits="42" maximumFractionDigits="15" decimalSeparator="." groupingSeparator="," currencyDecimalSeparator="." plusSign="+" minusSign="-" notANumberSymbol="NaN" perMillSymbol="‰" percentSymbol="%" exponentSymbol="E" positivePrefix="" positiveSuffix="" negativePrefix="-" negativeSuffix="" id="104075" customClass="VSScientificNotationFormatter"/>
                                                                     <font key="font" metaFont="smallSystem"/>
                                                                     <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                                                                     <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
@@ -966,7 +921,7 @@
                                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                                 <popUpButtonCell key="cell" type="push" title="Uncorrected" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" selectedItem="MyR-zx-fYN" id="flU-d5-sBb">
                                                                     <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
-                                                                    <font key="font" metaFont="system"/>
+                                                                    <font key="font" metaFont="menu"/>
                                                                     <menu key="menu" title="OtherViews" id="kNp-i2-bQd">
                                                                         <items>
                                                                             <menuItem title="Uncorrected" state="on" id="MyR-zx-fYN">
@@ -1383,12 +1338,7 @@
                                                                             <rect key="frame" x="165" y="198" width="57" height="19"/>
                                                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                                             <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="102376">
-                                                                                <numberFormatter key="formatter" formatterBehavior="default10_4" positiveFormat="#,##0.###" negativeFormat="#,##0.###" numberStyle="decimal" minimumIntegerDigits="1" maximumIntegerDigits="309" minimumFractionDigits="0" maximumFractionDigits="3" id="102377">
-                                                                                    <real key="roundingIncrement" value="0.0"/>
-                                                                                    <metadata>
-                                                                                        <bool key="localizesFormat" value="YES"/>
-                                                                                    </metadata>
-                                                                                </numberFormatter>
+                                                                                <numberFormatter key="formatter" formatterBehavior="default10_4" positiveFormat="#,##0.###" negativeFormat="#,##0.###" numberStyle="decimal" paddingCharacter="*" minimumIntegerDigits="1" maximumIntegerDigits="309" maximumFractionDigits="3" decimalSeparator="." groupingSeparator="," currencyDecimalSeparator="." plusSign="+" minusSign="-" notANumberSymbol="NaN" perMillSymbol="‰" percentSymbol="%" exponentSymbol="E" positivePrefix="" positiveSuffix="" negativePrefix="-" negativeSuffix="" id="102377"/>
                                                                                 <font key="font" metaFont="smallSystem"/>
                                                                                 <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                                                                                 <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
@@ -1401,12 +1351,7 @@
                                                                             <rect key="frame" x="55" y="198" width="57" height="19"/>
                                                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                                             <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="102384">
-                                                                                <numberFormatter key="formatter" formatterBehavior="default10_4" positiveFormat="#,##0.###" negativeFormat="#,##0.###" numberStyle="decimal" minimumIntegerDigits="1" maximumIntegerDigits="309" minimumFractionDigits="0" maximumFractionDigits="3" id="102385">
-                                                                                    <real key="roundingIncrement" value="0.0"/>
-                                                                                    <metadata>
-                                                                                        <bool key="localizesFormat" value="YES"/>
-                                                                                    </metadata>
-                                                                                </numberFormatter>
+                                                                                <numberFormatter key="formatter" formatterBehavior="default10_4" positiveFormat="#,##0.###" negativeFormat="#,##0.###" numberStyle="decimal" paddingCharacter="*" minimumIntegerDigits="1" maximumIntegerDigits="309" maximumFractionDigits="3" decimalSeparator="." groupingSeparator="," currencyDecimalSeparator="." plusSign="+" minusSign="-" notANumberSymbol="NaN" perMillSymbol="‰" percentSymbol="%" exponentSymbol="E" positivePrefix="" positiveSuffix="" negativePrefix="-" negativeSuffix="" id="102385"/>
                                                                                 <font key="font" metaFont="smallSystem"/>
                                                                                 <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                                                                                 <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
@@ -1428,7 +1373,7 @@
                                                                             </connections>
                                                                         </textField>
                                                                         <box autoresizesSubviews="NO" horizontalHuggingPriority="750" title="Box" boxType="separator" titlePosition="noTitle" id="102374">
-                                                                            <rect key="frame" x="125" y="43.999999572775948" width="5" height="173"/>
+                                                                            <rect key="frame" x="125" y="44" width="5" height="173"/>
                                                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES" heightSizable="YES"/>
                                                                             <color key="borderColor" white="0.0" alpha="0.41999999999999998" colorSpace="calibratedWhite"/>
                                                                             <color key="fillColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
@@ -1725,12 +1670,7 @@ IA
                                                                 <rect key="frame" x="221" y="509" width="65" height="22"/>
                                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                                 <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="100970">
-                                                                    <numberFormatter key="formatter" formatterBehavior="default10_4" positiveFormat="#,##0.###" negativeFormat="#,##0.###" numberStyle="decimal" minimumIntegerDigits="1" maximumIntegerDigits="309" minimumFractionDigits="0" maximumFractionDigits="3" id="102142">
-                                                                        <real key="roundingIncrement" value="0.0"/>
-                                                                        <metadata>
-                                                                            <bool key="localizesFormat" value="YES"/>
-                                                                        </metadata>
-                                                                    </numberFormatter>
+                                                                    <numberFormatter key="formatter" formatterBehavior="default10_4" positiveFormat="#,##0.###" negativeFormat="#,##0.###" numberStyle="decimal" paddingCharacter="*" minimumIntegerDigits="1" maximumIntegerDigits="309" maximumFractionDigits="3" decimalSeparator="." groupingSeparator="," currencyDecimalSeparator="." plusSign="+" minusSign="-" notANumberSymbol="NaN" perMillSymbol="‰" percentSymbol="%" exponentSymbol="E" positivePrefix="" positiveSuffix="" negativePrefix="-" negativeSuffix="" id="102142"/>
                                                                     <font key="font" metaFont="system"/>
                                                                     <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                                                                     <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
@@ -1749,12 +1689,7 @@ IA
                                                                 <rect key="frame" x="306" y="509" width="65" height="22"/>
                                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                                 <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="100974">
-                                                                    <numberFormatter key="formatter" formatterBehavior="default10_4" positiveFormat="#,##0.###" negativeFormat="#,##0.###" numberStyle="decimal" minimumIntegerDigits="1" maximumIntegerDigits="309" minimumFractionDigits="0" maximumFractionDigits="3" id="102141">
-                                                                        <real key="roundingIncrement" value="0.0"/>
-                                                                        <metadata>
-                                                                            <bool key="localizesFormat" value="YES"/>
-                                                                        </metadata>
-                                                                    </numberFormatter>
+                                                                    <numberFormatter key="formatter" formatterBehavior="default10_4" positiveFormat="#,##0.###" negativeFormat="#,##0.###" numberStyle="decimal" paddingCharacter="*" minimumIntegerDigits="1" maximumIntegerDigits="309" maximumFractionDigits="3" decimalSeparator="." groupingSeparator="," currencyDecimalSeparator="." plusSign="+" minusSign="-" notANumberSymbol="NaN" perMillSymbol="‰" percentSymbol="%" exponentSymbol="E" positivePrefix="" positiveSuffix="" negativePrefix="-" negativeSuffix="" id="102141"/>
                                                                     <font key="font" metaFont="system"/>
                                                                     <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                                                                     <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
@@ -1874,12 +1809,7 @@ IA
                                                                 <rect key="frame" x="135" y="509" width="66" height="22"/>
                                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                                 <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="100964">
-                                                                    <numberFormatter key="formatter" formatterBehavior="default10_4" positiveFormat="#,##0.###" negativeFormat="#,##0.###" numberStyle="decimal" minimumIntegerDigits="1" maximumIntegerDigits="309" minimumFractionDigits="0" maximumFractionDigits="3" id="102143">
-                                                                        <real key="roundingIncrement" value="0.0"/>
-                                                                        <metadata>
-                                                                            <bool key="localizesFormat" value="YES"/>
-                                                                        </metadata>
-                                                                    </numberFormatter>
+                                                                    <numberFormatter key="formatter" formatterBehavior="default10_4" positiveFormat="#,##0.###" negativeFormat="#,##0.###" numberStyle="decimal" paddingCharacter="*" minimumIntegerDigits="1" maximumIntegerDigits="309" maximumFractionDigits="3" decimalSeparator="." groupingSeparator="," currencyDecimalSeparator="." plusSign="+" minusSign="-" notANumberSymbol="NaN" perMillSymbol="‰" percentSymbol="%" exponentSymbol="E" positivePrefix="" positiveSuffix="" negativePrefix="-" negativeSuffix="" id="102143"/>
                                                                     <font key="font" metaFont="system"/>
                                                                     <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                                                                     <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
@@ -2588,10 +2518,8 @@ IA
                                                                     <color key="backgroundColor" name="headerColor" catalog="System" colorSpace="catalog"/>
                                                                 </tableHeaderCell>
                                                                 <textFieldCell key="dataCell" controlSize="small" lineBreakMode="truncatingTail" selectable="YES" editable="YES" alignment="left" title="Text Cell" id="102965">
-                                                                    <numberFormatter key="formatter" formatterBehavior="custom10_4" positiveFormat="#0.000#######" negativeFormat="#0.000#######" numberStyle="decimal" usesGroupingSeparator="NO" minimumIntegerDigits="1" maximumIntegerDigits="309" minimumFractionDigits="3" maximumFractionDigits="10" id="103861">
-                                                                        <real key="roundingIncrement" value="0.0"/>
+                                                                    <numberFormatter key="formatter" formatterBehavior="custom10_4" positiveFormat="#0.000#######" negativeFormat="#0.000#######" numberStyle="decimal" usesGroupingSeparator="NO" paddingCharacter="*" minimumIntegerDigits="1" maximumIntegerDigits="309" minimumFractionDigits="3" maximumFractionDigits="10" decimalSeparator="." groupingSeparator="," currencyDecimalSeparator="." plusSign="+" minusSign="-" notANumberSymbol="NaN" perMillSymbol="‰" percentSymbol="%" exponentSymbol="E" positivePrefix="" positiveSuffix="" negativePrefix="-" negativeSuffix="" id="103861">
                                                                         <metadata>
-                                                                            <bool key="localizesFormat" value="YES"/>
                                                                             <real key="inspectorSampleValue" value="0.00050000000000000001"/>
                                                                         </metadata>
                                                                     </numberFormatter>
@@ -2616,10 +2544,8 @@ IA
                                                                     <color key="backgroundColor" name="headerColor" catalog="System" colorSpace="catalog"/>
                                                                 </tableHeaderCell>
                                                                 <textFieldCell key="dataCell" controlSize="small" lineBreakMode="truncatingTail" selectable="YES" editable="YES" alignment="left" title="Text Cell" id="104189">
-                                                                    <numberFormatter key="formatter" formatterBehavior="custom10_4" positiveFormat="#0.000#######" negativeFormat="#0.000#######" numberStyle="decimal" usesGroupingSeparator="NO" minimumIntegerDigits="1" maximumIntegerDigits="309" minimumFractionDigits="3" maximumFractionDigits="10" id="104192">
-                                                                        <real key="roundingIncrement" value="0.0"/>
+                                                                    <numberFormatter key="formatter" formatterBehavior="custom10_4" positiveFormat="#0.000#######" negativeFormat="#0.000#######" numberStyle="decimal" usesGroupingSeparator="NO" paddingCharacter="*" minimumIntegerDigits="1" maximumIntegerDigits="309" minimumFractionDigits="3" maximumFractionDigits="10" decimalSeparator="." groupingSeparator="," currencyDecimalSeparator="." plusSign="+" minusSign="-" notANumberSymbol="NaN" perMillSymbol="‰" percentSymbol="%" exponentSymbol="E" positivePrefix="" positiveSuffix="" negativePrefix="-" negativeSuffix="" id="104192">
                                                                         <metadata>
-                                                                            <bool key="localizesFormat" value="YES"/>
                                                                             <real key="inspectorSampleValue" value="0.00050000000000000001"/>
                                                                         </metadata>
                                                                     </numberFormatter>
@@ -2667,8 +2593,8 @@ IA
                                                                 <connections>
                                                                     <binding destination="102065" name="value" keyPath="arrangedObjects.calibrationFramePointsString" id="Obl-hO-4ED">
                                                                         <dictionary key="options">
-                                                                            <bool key="NSConditionallySetsEditable" value="NO"/>
                                                                             <bool key="NSAllowsEditingMultipleValuesSelection" value="NO"/>
+                                                                            <bool key="NSConditionallySetsEditable" value="NO"/>
                                                                         </dictionary>
                                                                     </binding>
                                                                 </connections>
@@ -3180,14 +3106,9 @@ IA
                                             <rect key="frame" x="256" y="158" width="35" height="22"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                             <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="102232">
-                                                <numberFormatter key="formatter" formatterBehavior="custom10_4" positiveFormat="#" negativeFormat="#" usesGroupingSeparator="NO" groupingSize="0" minimumIntegerDigits="0" maximumIntegerDigits="42" minimumFractionDigits="0" maximumFractionDigits="0" id="102233">
-                                                    <real key="roundingIncrement" value="0.0"/>
-                                                    <nil key="nilSymbol"/>
+                                                <numberFormatter key="formatter" formatterBehavior="custom10_4" positiveFormat="#" negativeFormat="#" usesGroupingSeparator="NO" paddingCharacter="*" groupingSize="0" minimumIntegerDigits="0" maximumIntegerDigits="42" decimalSeparator="." groupingSeparator="," currencyDecimalSeparator="." plusSign="+" minusSign="-" notANumberSymbol="NaN" perMillSymbol="‰" percentSymbol="%" exponentSymbol="E" positivePrefix="" positiveSuffix="" negativePrefix="-" negativeSuffix="" id="102233">
                                                     <nil key="negativeInfinitySymbol"/>
                                                     <nil key="positiveInfinitySymbol"/>
-                                                    <metadata>
-                                                        <bool key="localizesFormat" value="YES"/>
-                                                    </metadata>
                                                 </numberFormatter>
                                                 <font key="font" metaFont="system"/>
                                                 <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
@@ -3240,12 +3161,7 @@ IA
                                             <rect key="frame" x="347" y="188" width="35" height="22"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                             <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="102225">
-                                                <numberFormatter key="formatter" formatterBehavior="custom10_4" positiveFormat="#.##" negativeFormat="#.##" usesGroupingSeparator="NO" groupingSize="0" minimumIntegerDigits="0" maximumIntegerDigits="42" minimumFractionDigits="0" maximumFractionDigits="2" id="102226">
-                                                    <real key="roundingIncrement" value="0.0"/>
-                                                    <metadata>
-                                                        <bool key="localizesFormat" value="YES"/>
-                                                    </metadata>
-                                                </numberFormatter>
+                                                <numberFormatter key="formatter" formatterBehavior="custom10_4" positiveFormat="#.##" negativeFormat="#.##" usesGroupingSeparator="NO" paddingCharacter="*" groupingSize="0" minimumIntegerDigits="0" maximumIntegerDigits="42" maximumFractionDigits="2" decimalSeparator="." groupingSeparator="," currencyDecimalSeparator="." plusSign="+" minusSign="-" notANumberSymbol="NaN" perMillSymbol="‰" percentSymbol="%" exponentSymbol="E" positivePrefix="" positiveSuffix="" negativePrefix="-" negativeSuffix="" id="102226"/>
                                                 <font key="font" metaFont="system"/>
                                                 <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                                                 <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
@@ -3264,12 +3180,7 @@ IA
                                             <rect key="frame" x="513" y="188" width="46" height="22"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                             <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="102805">
-                                                <numberFormatter key="formatter" formatterBehavior="custom10_4" positiveFormat="#" negativeFormat="#" usesGroupingSeparator="NO" groupingSize="0" minimumIntegerDigits="0" maximumIntegerDigits="42" minimumFractionDigits="0" maximumFractionDigits="0" id="102806">
-                                                    <real key="roundingIncrement" value="0.0"/>
-                                                    <metadata>
-                                                        <bool key="localizesFormat" value="YES"/>
-                                                    </metadata>
-                                                </numberFormatter>
+                                                <numberFormatter key="formatter" formatterBehavior="custom10_4" positiveFormat="#" negativeFormat="#" usesGroupingSeparator="NO" paddingCharacter="*" groupingSize="0" minimumIntegerDigits="0" maximumIntegerDigits="42" decimalSeparator="." groupingSeparator="," currencyDecimalSeparator="." plusSign="+" minusSign="-" notANumberSymbol="NaN" perMillSymbol="‰" percentSymbol="%" exponentSymbol="E" positivePrefix="" positiveSuffix="" negativePrefix="-" negativeSuffix="" id="102806"/>
                                                 <font key="font" metaFont="system"/>
                                                 <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                                                 <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
@@ -3288,12 +3199,7 @@ IA
                                             <rect key="frame" x="160" y="188" width="35" height="22"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                             <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="102227">
-                                                <numberFormatter key="formatter" formatterBehavior="custom10_4" positiveFormat="#.##" negativeFormat="#.##" usesGroupingSeparator="NO" groupingSize="0" minimumIntegerDigits="0" maximumIntegerDigits="42" minimumFractionDigits="0" maximumFractionDigits="2" id="102228">
-                                                    <real key="roundingIncrement" value="0.0"/>
-                                                    <metadata>
-                                                        <bool key="localizesFormat" value="YES"/>
-                                                    </metadata>
-                                                </numberFormatter>
+                                                <numberFormatter key="formatter" formatterBehavior="custom10_4" positiveFormat="#.##" negativeFormat="#.##" usesGroupingSeparator="NO" paddingCharacter="*" groupingSize="0" minimumIntegerDigits="0" maximumIntegerDigits="42" maximumFractionDigits="2" decimalSeparator="." groupingSeparator="," currencyDecimalSeparator="." plusSign="+" minusSign="-" notANumberSymbol="NaN" perMillSymbol="‰" percentSymbol="%" exponentSymbol="E" positivePrefix="" positiveSuffix="" negativePrefix="-" negativeSuffix="" id="102228"/>
                                                 <font key="font" metaFont="system"/>
                                                 <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                                                 <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
@@ -3805,8 +3711,8 @@ IA
                                                         <connections>
                                                             <binding destination="100325" name="content" keyPath="arrangedObjects.clipName" id="102908">
                                                                 <dictionary key="options">
-                                                                    <string key="NSNullPlaceholder">All Clips</string>
                                                                     <bool key="NSInsertsNullPlaceholder" value="YES"/>
+                                                                    <string key="NSNullPlaceholder">All Clips</string>
                                                                 </dictionary>
                                                             </binding>
                                                             <binding destination="100325" name="contentValues" keyPath="arrangedObjects.clipName" previousBinding="102908" id="102911">
@@ -4275,12 +4181,7 @@ Gw
                         <rect key="frame" x="284" y="251" width="30" height="19"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="100512">
-                            <numberFormatter key="formatter" formatterBehavior="default10_4" positiveFormat="#,##0.###" negativeFormat="#,##0.###" numberStyle="decimal" minimumIntegerDigits="1" maximumIntegerDigits="309" minimumFractionDigits="0" maximumFractionDigits="3" id="100525">
-                                <real key="roundingIncrement" value="0.0"/>
-                                <metadata>
-                                    <bool key="localizesFormat" value="YES"/>
-                                </metadata>
-                            </numberFormatter>
+                            <numberFormatter key="formatter" formatterBehavior="default10_4" positiveFormat="#,##0.###" negativeFormat="#,##0.###" numberStyle="decimal" paddingCharacter="*" minimumIntegerDigits="1" maximumIntegerDigits="309" maximumFractionDigits="3" decimalSeparator="." groupingSeparator="," currencyDecimalSeparator="." plusSign="+" minusSign="-" notANumberSymbol="NaN" perMillSymbol="‰" percentSymbol="%" exponentSymbol="E" positivePrefix="" positiveSuffix="" negativePrefix="-" negativeSuffix="" id="100525"/>
                             <font key="font" metaFont="smallSystem"/>
                             <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                             <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
@@ -4293,12 +4194,7 @@ Gw
                         <rect key="frame" x="284" y="173" width="30" height="19"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="100514">
-                            <numberFormatter key="formatter" formatterBehavior="default10_4" positiveFormat="#,##0.###" negativeFormat="#,##0.###" numberStyle="decimal" minimumIntegerDigits="1" maximumIntegerDigits="309" minimumFractionDigits="0" maximumFractionDigits="3" id="100568">
-                                <real key="roundingIncrement" value="0.0"/>
-                                <metadata>
-                                    <bool key="localizesFormat" value="YES"/>
-                                </metadata>
-                            </numberFormatter>
+                            <numberFormatter key="formatter" formatterBehavior="default10_4" positiveFormat="#,##0.###" negativeFormat="#,##0.###" numberStyle="decimal" paddingCharacter="*" minimumIntegerDigits="1" maximumIntegerDigits="309" maximumFractionDigits="3" decimalSeparator="." groupingSeparator="," currencyDecimalSeparator="." plusSign="+" minusSign="-" notANumberSymbol="NaN" perMillSymbol="‰" percentSymbol="%" exponentSymbol="E" positivePrefix="" positiveSuffix="" negativePrefix="-" negativeSuffix="" id="100568"/>
                             <font key="font" metaFont="smallSystem"/>
                             <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                             <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
@@ -4328,12 +4224,7 @@ Gw
                         <rect key="frame" x="284" y="147" width="30" height="19"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="100518">
-                            <numberFormatter key="formatter" formatterBehavior="default10_4" positiveFormat="#,##0.###" negativeFormat="#,##0.###" numberStyle="decimal" minimumIntegerDigits="1" maximumIntegerDigits="309" minimumFractionDigits="0" maximumFractionDigits="3" id="100569">
-                                <real key="roundingIncrement" value="0.0"/>
-                                <metadata>
-                                    <bool key="localizesFormat" value="YES"/>
-                                </metadata>
-                            </numberFormatter>
+                            <numberFormatter key="formatter" formatterBehavior="default10_4" positiveFormat="#,##0.###" negativeFormat="#,##0.###" numberStyle="decimal" paddingCharacter="*" minimumIntegerDigits="1" maximumIntegerDigits="309" maximumFractionDigits="3" decimalSeparator="." groupingSeparator="," currencyDecimalSeparator="." plusSign="+" minusSign="-" notANumberSymbol="NaN" perMillSymbol="‰" percentSymbol="%" exponentSymbol="E" positivePrefix="" positiveSuffix="" negativePrefix="-" negativeSuffix="" id="100569"/>
                             <font key="font" metaFont="smallSystem"/>
                             <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                             <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
@@ -4363,12 +4254,7 @@ Gw
                         <rect key="frame" x="284" y="224" width="30" height="19"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="100549">
-                            <numberFormatter key="formatter" formatterBehavior="default10_4" positiveFormat="#,##0.###" negativeFormat="#,##0.###" numberStyle="decimal" minimumIntegerDigits="1" maximumIntegerDigits="309" minimumFractionDigits="0" maximumFractionDigits="3" id="100566">
-                                <real key="roundingIncrement" value="0.0"/>
-                                <metadata>
-                                    <bool key="localizesFormat" value="YES"/>
-                                </metadata>
-                            </numberFormatter>
+                            <numberFormatter key="formatter" formatterBehavior="default10_4" positiveFormat="#,##0.###" negativeFormat="#,##0.###" numberStyle="decimal" paddingCharacter="*" minimumIntegerDigits="1" maximumIntegerDigits="309" maximumFractionDigits="3" decimalSeparator="." groupingSeparator="," currencyDecimalSeparator="." plusSign="+" minusSign="-" notANumberSymbol="NaN" perMillSymbol="‰" percentSymbol="%" exponentSymbol="E" positivePrefix="" positiveSuffix="" negativePrefix="-" negativeSuffix="" id="100566"/>
                             <font key="font" metaFont="smallSystem"/>
                             <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                             <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
@@ -4398,12 +4284,7 @@ Gw
                         <rect key="frame" x="284" y="200" width="30" height="19"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="100557">
-                            <numberFormatter key="formatter" formatterBehavior="default10_4" positiveFormat="#,##0.###" negativeFormat="#,##0.###" numberStyle="decimal" minimumIntegerDigits="1" maximumIntegerDigits="309" minimumFractionDigits="0" maximumFractionDigits="3" id="100567">
-                                <real key="roundingIncrement" value="0.0"/>
-                                <metadata>
-                                    <bool key="localizesFormat" value="YES"/>
-                                </metadata>
-                            </numberFormatter>
+                            <numberFormatter key="formatter" formatterBehavior="default10_4" positiveFormat="#,##0.###" negativeFormat="#,##0.###" numberStyle="decimal" paddingCharacter="*" minimumIntegerDigits="1" maximumIntegerDigits="309" maximumFractionDigits="3" decimalSeparator="." groupingSeparator="," currencyDecimalSeparator="." plusSign="+" minusSign="-" notANumberSymbol="NaN" perMillSymbol="‰" percentSymbol="%" exponentSymbol="E" positivePrefix="" positiveSuffix="" negativePrefix="-" negativeSuffix="" id="100567"/>
                             <font key="font" metaFont="smallSystem"/>
                             <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                             <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
@@ -4433,12 +4314,7 @@ Gw
                         <rect key="frame" x="284" y="122" width="30" height="19"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="100573">
-                            <numberFormatter key="formatter" formatterBehavior="default10_4" positiveFormat="#,##0.###" negativeFormat="#,##0.###" numberStyle="decimal" minimumIntegerDigits="1" maximumIntegerDigits="309" minimumFractionDigits="0" maximumFractionDigits="3" id="100574">
-                                <real key="roundingIncrement" value="0.0"/>
-                                <metadata>
-                                    <bool key="localizesFormat" value="YES"/>
-                                </metadata>
-                            </numberFormatter>
+                            <numberFormatter key="formatter" formatterBehavior="default10_4" positiveFormat="#,##0.###" negativeFormat="#,##0.###" numberStyle="decimal" paddingCharacter="*" minimumIntegerDigits="1" maximumIntegerDigits="309" maximumFractionDigits="3" decimalSeparator="." groupingSeparator="," currencyDecimalSeparator="." plusSign="+" minusSign="-" notANumberSymbol="NaN" perMillSymbol="‰" percentSymbol="%" exponentSymbol="E" positivePrefix="" positiveSuffix="" negativePrefix="-" negativeSuffix="" id="100574"/>
                             <font key="font" metaFont="smallSystem"/>
                             <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                             <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
@@ -4477,12 +4353,7 @@ Gw
                         <rect key="frame" x="284" y="98" width="30" height="19"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="102164">
-                            <numberFormatter key="formatter" formatterBehavior="default10_4" positiveFormat="#,##0.###" negativeFormat="#,##0.###" numberStyle="decimal" minimumIntegerDigits="1" maximumIntegerDigits="309" minimumFractionDigits="0" maximumFractionDigits="3" id="102165">
-                                <real key="roundingIncrement" value="0.0"/>
-                                <metadata>
-                                    <bool key="localizesFormat" value="YES"/>
-                                </metadata>
-                            </numberFormatter>
+                            <numberFormatter key="formatter" formatterBehavior="default10_4" positiveFormat="#,##0.###" negativeFormat="#,##0.###" numberStyle="decimal" paddingCharacter="*" minimumIntegerDigits="1" maximumIntegerDigits="309" maximumFractionDigits="3" decimalSeparator="." groupingSeparator="," currencyDecimalSeparator="." plusSign="+" minusSign="-" notANumberSymbol="NaN" perMillSymbol="‰" percentSymbol="%" exponentSymbol="E" positivePrefix="" positiveSuffix="" negativePrefix="-" negativeSuffix="" id="102165"/>
                             <font key="font" metaFont="smallSystem"/>
                             <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                             <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
@@ -4512,12 +4383,7 @@ Gw
                         <rect key="frame" x="284" y="74" width="30" height="19"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="104003">
-                            <numberFormatter key="formatter" formatterBehavior="default10_4" positiveFormat="#,##0.###" negativeFormat="#,##0.###" numberStyle="decimal" minimumIntegerDigits="1" maximumIntegerDigits="309" minimumFractionDigits="0" maximumFractionDigits="3" id="104004">
-                                <real key="roundingIncrement" value="0.0"/>
-                                <metadata>
-                                    <bool key="localizesFormat" value="YES"/>
-                                </metadata>
-                            </numberFormatter>
+                            <numberFormatter key="formatter" formatterBehavior="default10_4" positiveFormat="#,##0.###" negativeFormat="#,##0.###" numberStyle="decimal" paddingCharacter="*" minimumIntegerDigits="1" maximumIntegerDigits="309" maximumFractionDigits="3" decimalSeparator="." groupingSeparator="," currencyDecimalSeparator="." plusSign="+" minusSign="-" notANumberSymbol="NaN" perMillSymbol="‰" percentSymbol="%" exponentSymbol="E" positivePrefix="" positiveSuffix="" negativePrefix="-" negativeSuffix="" id="104004"/>
                             <font key="font" metaFont="smallSystem"/>
                             <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                             <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
@@ -4954,12 +4820,7 @@ IA
                                             <rect key="frame" x="313" y="204" width="99" height="26"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <comboBoxCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" borderStyle="bezel" drawsBackground="YES" completes="NO" numberOfVisibleItems="5" id="101226">
-                                                <numberFormatter key="formatter" formatterBehavior="custom10_4" positiveFormat="#.##" negativeFormat="#.##" usesGroupingSeparator="NO" groupingSize="0" minimumIntegerDigits="0" maximumIntegerDigits="42" minimumFractionDigits="0" maximumFractionDigits="2" id="102127">
-                                                    <real key="roundingIncrement" value="0.0"/>
-                                                    <metadata>
-                                                        <bool key="localizesFormat" value="YES"/>
-                                                    </metadata>
-                                                </numberFormatter>
+                                                <numberFormatter key="formatter" formatterBehavior="custom10_4" positiveFormat="#.##" negativeFormat="#.##" usesGroupingSeparator="NO" paddingCharacter="*" groupingSize="0" minimumIntegerDigits="0" maximumIntegerDigits="42" maximumFractionDigits="2" decimalSeparator="." groupingSeparator="," currencyDecimalSeparator="." plusSign="+" minusSign="-" notANumberSymbol="NaN" perMillSymbol="‰" percentSymbol="%" exponentSymbol="E" positivePrefix="" positiveSuffix="" negativePrefix="-" negativeSuffix="" id="102127"/>
                                                 <font key="font" metaFont="system"/>
                                                 <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                                 <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
@@ -5000,12 +4861,7 @@ IA
                                             <rect key="frame" x="319" y="177" width="99" height="26"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <comboBoxCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" borderStyle="bezel" drawsBackground="YES" completes="NO" numberOfVisibleItems="5" id="101237">
-                                                <numberFormatter key="formatter" formatterBehavior="custom10_4" positiveFormat="#.##" negativeFormat="#.##" usesGroupingSeparator="NO" groupingSize="0" minimumIntegerDigits="0" maximumIntegerDigits="42" minimumFractionDigits="0" maximumFractionDigits="2" id="102128">
-                                                    <real key="roundingIncrement" value="0.0"/>
-                                                    <metadata>
-                                                        <bool key="localizesFormat" value="YES"/>
-                                                    </metadata>
-                                                </numberFormatter>
+                                                <numberFormatter key="formatter" formatterBehavior="custom10_4" positiveFormat="#.##" negativeFormat="#.##" usesGroupingSeparator="NO" paddingCharacter="*" groupingSize="0" minimumIntegerDigits="0" maximumIntegerDigits="42" maximumFractionDigits="2" decimalSeparator="." groupingSeparator="," currencyDecimalSeparator="." plusSign="+" minusSign="-" notANumberSymbol="NaN" perMillSymbol="‰" percentSymbol="%" exponentSymbol="E" positivePrefix="" positiveSuffix="" negativePrefix="-" negativeSuffix="" id="102128"/>
                                                 <font key="font" metaFont="system"/>
                                                 <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                                 <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
@@ -5034,12 +4890,7 @@ IA
                                             <rect key="frame" x="484" y="137" width="99" height="26"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <comboBoxCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" borderStyle="bezel" drawsBackground="YES" completes="NO" numberOfVisibleItems="5" id="101243">
-                                                <numberFormatter key="formatter" formatterBehavior="custom10_4" positiveFormat="#.#" negativeFormat="#.#" usesGroupingSeparator="NO" groupingSize="0" minimumIntegerDigits="0" maximumIntegerDigits="42" minimumFractionDigits="0" maximumFractionDigits="1" id="102129">
-                                                    <real key="roundingIncrement" value="0.0"/>
-                                                    <metadata>
-                                                        <bool key="localizesFormat" value="YES"/>
-                                                    </metadata>
-                                                </numberFormatter>
+                                                <numberFormatter key="formatter" formatterBehavior="custom10_4" positiveFormat="#.#" negativeFormat="#.#" usesGroupingSeparator="NO" paddingCharacter="*" groupingSize="0" minimumIntegerDigits="0" maximumIntegerDigits="42" maximumFractionDigits="1" decimalSeparator="." groupingSeparator="," currencyDecimalSeparator="." plusSign="+" minusSign="-" notANumberSymbol="NaN" perMillSymbol="‰" percentSymbol="%" exponentSymbol="E" positivePrefix="" positiveSuffix="" negativePrefix="-" negativeSuffix="" id="102129"/>
                                                 <font key="font" metaFont="system"/>
                                                 <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                                 <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
@@ -5068,12 +4919,7 @@ IA
                                             <rect key="frame" x="740" y="88" width="99" height="26"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <comboBoxCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" borderStyle="bezel" drawsBackground="YES" completes="NO" numberOfVisibleItems="5" id="102632">
-                                                <numberFormatter key="formatter" formatterBehavior="custom10_4" positiveFormat="#.#" negativeFormat="#.#" usesGroupingSeparator="NO" groupingSize="0" minimumIntegerDigits="0" maximumIntegerDigits="42" minimumFractionDigits="0" maximumFractionDigits="1" id="102633">
-                                                    <real key="roundingIncrement" value="0.0"/>
-                                                    <metadata>
-                                                        <bool key="localizesFormat" value="YES"/>
-                                                    </metadata>
-                                                </numberFormatter>
+                                                <numberFormatter key="formatter" formatterBehavior="custom10_4" positiveFormat="#.#" negativeFormat="#.#" usesGroupingSeparator="NO" paddingCharacter="*" groupingSize="0" minimumIntegerDigits="0" maximumIntegerDigits="42" maximumFractionDigits="1" decimalSeparator="." groupingSeparator="," currencyDecimalSeparator="." plusSign="+" minusSign="-" notANumberSymbol="NaN" perMillSymbol="‰" percentSymbol="%" exponentSymbol="E" positivePrefix="" positiveSuffix="" negativePrefix="-" negativeSuffix="" id="102633"/>
                                                 <font key="font" metaFont="system"/>
                                                 <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                                 <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
@@ -5174,12 +5020,7 @@ IA
                                             <rect key="frame" x="600" y="206" width="53" height="22"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="101314">
-                                                <numberFormatter key="formatter" formatterBehavior="default10_4" positiveFormat="#" negativeFormat="#" usesGroupingSeparator="NO" groupingSize="0" minimumIntegerDigits="0" maximumIntegerDigits="42" minimumFractionDigits="0" maximumFractionDigits="0" id="102062">
-                                                    <real key="roundingIncrement" value="0.0"/>
-                                                    <metadata>
-                                                        <bool key="localizesFormat" value="YES"/>
-                                                    </metadata>
-                                                </numberFormatter>
+                                                <numberFormatter key="formatter" formatterBehavior="default10_4" positiveFormat="#" negativeFormat="#" usesGroupingSeparator="NO" paddingCharacter="*" groupingSize="0" minimumIntegerDigits="0" maximumIntegerDigits="42" decimalSeparator="." groupingSeparator="," currencyDecimalSeparator="." plusSign="+" minusSign="-" notANumberSymbol="NaN" perMillSymbol="‰" percentSymbol="%" exponentSymbol="E" positivePrefix="" positiveSuffix="" negativePrefix="-" negativeSuffix="" id="102062"/>
                                                 <font key="font" metaFont="system"/>
                                                 <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                                                 <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
@@ -5414,12 +5255,7 @@ IA
                                             <rect key="frame" x="491" y="6" width="73" height="22"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" placeholderString="14" drawsBackground="YES" id="103056">
-                                                <numberFormatter key="formatter" formatterBehavior="default10_4" positiveFormat="#" negativeFormat="#" usesGroupingSeparator="NO" groupingSize="0" minimumIntegerDigits="0" maximumIntegerDigits="42" minimumFractionDigits="0" maximumFractionDigits="0" id="103080">
-                                                    <real key="roundingIncrement" value="0.0"/>
-                                                    <metadata>
-                                                        <bool key="localizesFormat" value="YES"/>
-                                                    </metadata>
-                                                </numberFormatter>
+                                                <numberFormatter key="formatter" formatterBehavior="default10_4" positiveFormat="#" negativeFormat="#" usesGroupingSeparator="NO" paddingCharacter="*" groupingSize="0" minimumIntegerDigits="0" maximumIntegerDigits="42" decimalSeparator="." groupingSeparator="," currencyDecimalSeparator="." plusSign="+" minusSign="-" notANumberSymbol="NaN" perMillSymbol="‰" percentSymbol="%" exponentSymbol="E" positivePrefix="" positiveSuffix="" negativePrefix="-" negativeSuffix="" id="103080"/>
                                                 <font key="font" metaFont="system"/>
                                                 <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                                                 <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
@@ -5447,12 +5283,7 @@ IA
                                             <rect key="frame" x="621" y="34" width="52" height="22"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" placeholderString="1000" drawsBackground="YES" id="103049">
-                                                <numberFormatter key="formatter" formatterBehavior="default10_4" positiveFormat="#" negativeFormat="#" usesGroupingSeparator="NO" groupingSize="0" minimumIntegerDigits="0" maximumIntegerDigits="42" minimumFractionDigits="0" maximumFractionDigits="0" id="103081">
-                                                    <real key="roundingIncrement" value="0.0"/>
-                                                    <metadata>
-                                                        <bool key="localizesFormat" value="YES"/>
-                                                    </metadata>
-                                                </numberFormatter>
+                                                <numberFormatter key="formatter" formatterBehavior="default10_4" positiveFormat="#" negativeFormat="#" usesGroupingSeparator="NO" paddingCharacter="*" groupingSize="0" minimumIntegerDigits="0" maximumIntegerDigits="42" decimalSeparator="." groupingSeparator="," currencyDecimalSeparator="." plusSign="+" minusSign="-" notANumberSymbol="NaN" perMillSymbol="‰" percentSymbol="%" exponentSymbol="E" positivePrefix="" positiveSuffix="" negativePrefix="-" negativeSuffix="" id="103081"/>
                                                 <font key="font" metaFont="system"/>
                                                 <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                                                 <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
@@ -5480,12 +5311,7 @@ IA
                                             <rect key="frame" x="811" y="34" width="25" height="22"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" placeholderString="2" drawsBackground="YES" id="103053">
-                                                <numberFormatter key="formatter" formatterBehavior="default10_4" positiveFormat="#" negativeFormat="#" usesGroupingSeparator="NO" groupingSize="0" minimumIntegerDigits="0" maximumIntegerDigits="42" minimumFractionDigits="0" maximumFractionDigits="0" id="103082">
-                                                    <real key="roundingIncrement" value="0.0"/>
-                                                    <metadata>
-                                                        <bool key="localizesFormat" value="YES"/>
-                                                    </metadata>
-                                                </numberFormatter>
+                                                <numberFormatter key="formatter" formatterBehavior="default10_4" positiveFormat="#" negativeFormat="#" usesGroupingSeparator="NO" paddingCharacter="*" groupingSize="0" minimumIntegerDigits="0" maximumIntegerDigits="42" decimalSeparator="." groupingSeparator="," currencyDecimalSeparator="." plusSign="+" minusSign="-" notANumberSymbol="NaN" perMillSymbol="‰" percentSymbol="%" exponentSymbol="E" positivePrefix="" positiveSuffix="" negativePrefix="-" negativeSuffix="" id="103082"/>
                                                 <font key="font" metaFont="system"/>
                                                 <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                                                 <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
@@ -6241,7 +6067,7 @@ To delete a portrait, select it and hit the delete key.</string>
                     </popUpButton>
                     <textField verticalHuggingPriority="750" id="101946">
                         <rect key="frame" x="262" y="545" width="44" height="17"/>
-                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Index:" id="101996">
                             <font key="font" metaFont="system"/>
                             <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -6250,7 +6076,7 @@ To delete a portrait, select it and hit the delete key.</string>
                     </textField>
                     <textField verticalHuggingPriority="750" id="101945">
                         <rect key="frame" x="306" y="545" width="44" height="17"/>
-                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="x" id="101997">
                             <font key="font" metaFont="system"/>
                             <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -6865,12 +6691,7 @@ IA
                         <rect key="frame" x="176" y="315" width="39" height="19"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="103925">
-                            <numberFormatter key="formatter" formatterBehavior="custom10_4" positiveFormat="#" negativeFormat="#" allowsFloats="NO" usesGroupingSeparator="NO" groupingSize="0" minimumIntegerDigits="0" maximumIntegerDigits="42" minimumFractionDigits="0" maximumFractionDigits="0" id="103926">
-                                <real key="roundingIncrement" value="0.0"/>
-                                <metadata>
-                                    <bool key="localizesFormat" value="YES"/>
-                                </metadata>
-                            </numberFormatter>
+                            <numberFormatter key="formatter" formatterBehavior="custom10_4" positiveFormat="#" negativeFormat="#" allowsFloats="NO" usesGroupingSeparator="NO" paddingCharacter="*" groupingSize="0" minimumIntegerDigits="0" maximumIntegerDigits="42" decimalSeparator="." groupingSeparator="," currencyDecimalSeparator="." plusSign="+" minusSign="-" notANumberSymbol="NaN" perMillSymbol="‰" percentSymbol="%" exponentSymbol="E" positivePrefix="" positiveSuffix="" negativePrefix="-" negativeSuffix="" id="103926"/>
                             <font key="font" metaFont="smallSystem"/>
                             <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                             <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
@@ -6883,12 +6704,8 @@ IA
                         <rect key="frame" x="271" y="293" width="39" height="19"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="103928">
-                            <numberFormatter key="formatter" formatterBehavior="custom10_4" positiveFormat="#0.###" negativeFormat="#0.###" numberStyle="decimal" usesGroupingSeparator="NO" minimumIntegerDigits="1" maximumIntegerDigits="309" minimumFractionDigits="0" maximumFractionDigits="3" id="103929">
-                                <real key="roundingIncrement" value="0.0"/>
+                            <numberFormatter key="formatter" formatterBehavior="custom10_4" positiveFormat="#0.###" negativeFormat="#0.###" numberStyle="decimal" usesGroupingSeparator="NO" paddingCharacter="*" minimumIntegerDigits="1" maximumIntegerDigits="309" maximumFractionDigits="3" decimalSeparator="." groupingSeparator="," currencyDecimalSeparator="." plusSign="+" minusSign="-" notANumberSymbol="NaN" perMillSymbol="‰" percentSymbol="%" exponentSymbol="E" positivePrefix="" positiveSuffix="" negativePrefix="-" negativeSuffix="" id="103929">
                                 <real key="minimum" value="1"/>
-                                <metadata>
-                                    <bool key="localizesFormat" value="YES"/>
-                                </metadata>
                             </numberFormatter>
                             <font key="font" metaFont="smallSystem"/>
                             <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
@@ -6902,12 +6719,8 @@ IA
                         <rect key="frame" x="252" y="266" width="39" height="19"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="103931">
-                            <numberFormatter key="formatter" formatterBehavior="custom10_4" positiveFormat="#0.###" negativeFormat="#0.###" numberStyle="decimal" allowsFloats="NO" usesGroupingSeparator="NO" minimumIntegerDigits="1" maximumIntegerDigits="309" minimumFractionDigits="0" maximumFractionDigits="3" id="103932">
-                                <real key="roundingIncrement" value="0.0"/>
+                            <numberFormatter key="formatter" formatterBehavior="custom10_4" positiveFormat="#0.###" negativeFormat="#0.###" numberStyle="decimal" allowsFloats="NO" usesGroupingSeparator="NO" paddingCharacter="*" minimumIntegerDigits="1" maximumIntegerDigits="309" maximumFractionDigits="3" decimalSeparator="." groupingSeparator="," currencyDecimalSeparator="." plusSign="+" minusSign="-" notANumberSymbol="NaN" perMillSymbol="‰" percentSymbol="%" exponentSymbol="E" positivePrefix="" positiveSuffix="" negativePrefix="-" negativeSuffix="" id="103932">
                                 <real key="minimum" value="3"/>
-                                <metadata>
-                                    <bool key="localizesFormat" value="YES"/>
-                                </metadata>
                             </numberFormatter>
                             <font key="font" metaFont="smallSystem"/>
                             <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
@@ -6921,13 +6734,9 @@ IA
                         <rect key="frame" x="251" y="239" width="39" height="19"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="103934">
-                            <numberFormatter key="formatter" formatterBehavior="custom10_4" positiveFormat="#0.###" negativeFormat="#0.###" numberStyle="decimal" usesGroupingSeparator="NO" minimumIntegerDigits="1" maximumIntegerDigits="309" minimumFractionDigits="0" maximumFractionDigits="3" id="103935">
-                                <real key="roundingIncrement" value="0.0"/>
+                            <numberFormatter key="formatter" formatterBehavior="custom10_4" positiveFormat="#0.###" negativeFormat="#0.###" numberStyle="decimal" usesGroupingSeparator="NO" paddingCharacter="*" minimumIntegerDigits="1" maximumIntegerDigits="309" maximumFractionDigits="3" decimalSeparator="." groupingSeparator="," currencyDecimalSeparator="." plusSign="+" minusSign="-" notANumberSymbol="NaN" perMillSymbol="‰" percentSymbol="%" exponentSymbol="E" positivePrefix="" positiveSuffix="" negativePrefix="-" negativeSuffix="" id="103935">
                                 <real key="minimum" value="0.0"/>
                                 <real key="maximum" value="1"/>
-                                <metadata>
-                                    <bool key="localizesFormat" value="YES"/>
-                                </metadata>
                             </numberFormatter>
                             <font key="font" metaFont="smallSystem"/>
                             <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
@@ -6950,13 +6759,9 @@ IA
                         <rect key="frame" x="222" y="339" width="39" height="19"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="103941">
-                            <numberFormatter key="formatter" formatterBehavior="custom10_4" positiveFormat="#0.###" negativeFormat="#0.###" numberStyle="decimal" usesGroupingSeparator="NO" minimumIntegerDigits="1" maximumIntegerDigits="309" minimumFractionDigits="0" maximumFractionDigits="3" id="103942">
-                                <real key="roundingIncrement" value="0.0"/>
+                            <numberFormatter key="formatter" formatterBehavior="custom10_4" positiveFormat="#0.###" negativeFormat="#0.###" numberStyle="decimal" usesGroupingSeparator="NO" paddingCharacter="*" minimumIntegerDigits="1" maximumIntegerDigits="309" maximumFractionDigits="3" decimalSeparator="." groupingSeparator="," currencyDecimalSeparator="." plusSign="+" minusSign="-" notANumberSymbol="NaN" perMillSymbol="‰" percentSymbol="%" exponentSymbol="E" positivePrefix="" positiveSuffix="" negativePrefix="-" negativeSuffix="" id="103942">
                                 <real key="minimum" value="0.0"/>
                                 <real key="maximum" value="1"/>
-                                <metadata>
-                                    <bool key="localizesFormat" value="YES"/>
-                                </metadata>
                             </numberFormatter>
                             <font key="font" metaFont="smallSystem"/>
                             <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
@@ -6970,12 +6775,8 @@ IA
                         <rect key="frame" x="269" y="217" width="39" height="19"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="103937">
-                            <numberFormatter key="formatter" formatterBehavior="custom10_4" positiveFormat="#0.###" negativeFormat="#0.###" numberStyle="decimal" allowsFloats="NO" usesGroupingSeparator="NO" minimumIntegerDigits="1" maximumIntegerDigits="309" minimumFractionDigits="0" maximumFractionDigits="3" id="103938">
-                                <real key="roundingIncrement" value="0.0"/>
+                            <numberFormatter key="formatter" formatterBehavior="custom10_4" positiveFormat="#0.###" negativeFormat="#0.###" numberStyle="decimal" allowsFloats="NO" usesGroupingSeparator="NO" paddingCharacter="*" minimumIntegerDigits="1" maximumIntegerDigits="309" maximumFractionDigits="3" decimalSeparator="." groupingSeparator="," currencyDecimalSeparator="." plusSign="+" minusSign="-" notANumberSymbol="NaN" perMillSymbol="‰" percentSymbol="%" exponentSymbol="E" positivePrefix="" positiveSuffix="" negativePrefix="-" negativeSuffix="" id="103938">
                                 <real key="minimum" value="1"/>
-                                <metadata>
-                                    <bool key="localizesFormat" value="YES"/>
-                                </metadata>
                             </numberFormatter>
                             <font key="font" metaFont="smallSystem"/>
                             <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
@@ -7508,10 +7309,8 @@ Some useful refractive index values are:  1.000 for air, 1.335 for fresh water, 
                         <rect key="frame" x="261" y="244" width="47" height="19"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="104157">
-                            <numberFormatter key="formatter" formatterBehavior="custom10_4" positiveFormat="#,##0.######" negativeFormat="#,##0.######" numberStyle="decimal" minimumIntegerDigits="1" maximumIntegerDigits="309" minimumFractionDigits="0" maximumFractionDigits="6" id="104193">
-                                <real key="roundingIncrement" value="0.0"/>
+                            <numberFormatter key="formatter" formatterBehavior="custom10_4" positiveFormat="#,##0.######" negativeFormat="#,##0.######" numberStyle="decimal" paddingCharacter="*" minimumIntegerDigits="1" maximumIntegerDigits="309" maximumFractionDigits="6" decimalSeparator="." groupingSeparator="," currencyDecimalSeparator="." plusSign="+" minusSign="-" notANumberSymbol="NaN" perMillSymbol="‰" percentSymbol="%" exponentSymbol="E" positivePrefix="" positiveSuffix="" negativePrefix="-" negativeSuffix="" id="104193">
                                 <metadata>
-                                    <bool key="localizesFormat" value="YES"/>
                                     <real key="inspectorSampleValue" value="1.09274"/>
                                 </metadata>
                             </numberFormatter>
@@ -7536,12 +7335,7 @@ Some useful refractive index values are:  1.000 for air, 1.335 for fresh water, 
                         <rect key="frame" x="261" y="218" width="47" height="19"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="104163">
-                            <numberFormatter key="formatter" formatterBehavior="custom10_4" positiveFormat="#0.######" negativeFormat="#0.######" usesGroupingSeparator="NO" groupingSize="0" minimumIntegerDigits="1" maximumIntegerDigits="42" minimumFractionDigits="0" maximumFractionDigits="6" id="104194">
-                                <real key="roundingIncrement" value="0.0"/>
-                                <metadata>
-                                    <bool key="localizesFormat" value="YES"/>
-                                </metadata>
-                            </numberFormatter>
+                            <numberFormatter key="formatter" formatterBehavior="custom10_4" positiveFormat="#0.######" negativeFormat="#0.######" usesGroupingSeparator="NO" paddingCharacter="*" groupingSize="0" minimumIntegerDigits="1" maximumIntegerDigits="42" maximumFractionDigits="6" decimalSeparator="." groupingSeparator="," currencyDecimalSeparator="." plusSign="+" minusSign="-" notANumberSymbol="NaN" perMillSymbol="‰" percentSymbol="%" exponentSymbol="E" positivePrefix="" positiveSuffix="" negativePrefix="-" negativeSuffix="" id="104194"/>
                             <font key="font" metaFont="smallSystem"/>
                             <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                             <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
@@ -7563,12 +7357,7 @@ Some useful refractive index values are:  1.000 for air, 1.335 for fresh water, 
                         <rect key="frame" x="261" y="191" width="47" height="19"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="104169">
-                            <numberFormatter key="formatter" formatterBehavior="custom10_4" positiveFormat="#0.######" negativeFormat="#0.######" usesGroupingSeparator="NO" groupingSize="0" minimumIntegerDigits="1" maximumIntegerDigits="42" minimumFractionDigits="0" maximumFractionDigits="6" id="104195">
-                                <real key="roundingIncrement" value="0.0"/>
-                                <metadata>
-                                    <bool key="localizesFormat" value="YES"/>
-                                </metadata>
-                            </numberFormatter>
+                            <numberFormatter key="formatter" formatterBehavior="custom10_4" positiveFormat="#0.######" negativeFormat="#0.######" usesGroupingSeparator="NO" paddingCharacter="*" groupingSize="0" minimumIntegerDigits="1" maximumIntegerDigits="42" maximumFractionDigits="6" decimalSeparator="." groupingSeparator="," currencyDecimalSeparator="." plusSign="+" minusSign="-" notANumberSymbol="NaN" perMillSymbol="‰" percentSymbol="%" exponentSymbol="E" positivePrefix="" positiveSuffix="" negativePrefix="-" negativeSuffix="" id="104195"/>
                             <font key="font" metaFont="smallSystem"/>
                             <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                             <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
@@ -7599,8 +7388,8 @@ Some useful refractive index values are:  1.000 for air, 1.335 for fresh water, 
                 <binding destination="-2" name="managedObjectContext" keyPath="managedObjectContext" id="A4i-qP-68X"/>
                 <binding destination="101506" name="contentArray" keyPath="selection.portraits" id="Jhg-H1-FIy">
                     <dictionary key="options">
-                        <bool key="NSHandlesContentAsCompoundValue" value="YES"/>
                         <bool key="NSDeletesObjectsOnRemove" value="YES"/>
+                        <bool key="NSHandlesContentAsCompoundValue" value="YES"/>
                         <string key="NSValueTransformerName">OrderedSetArrayValueTransformer</string>
                     </dictionary>
                 </binding>
