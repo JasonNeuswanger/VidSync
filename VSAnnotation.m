@@ -16,6 +16,7 @@
 @dynamic screenY;
 @dynamic startTimecode;
 @dynamic width;
+@dynamic appendsTimer;
 @synthesize tempOpacity;
 
 - (void) awakeFromFetch
@@ -37,6 +38,7 @@
     [self addObserver:self forKeyPath:@"size" options:0 context:NULL];
     [self addObserver:self forKeyPath:@"shape" options:0 context:NULL];
     [self addObserver:self forKeyPath:@"notes" options:0 context:NULL];
+    [self addObserver:self forKeyPath:@"appendsTimer" options:0 context:NULL];
 }
 
 
@@ -57,6 +59,7 @@
     [self carefullyRemoveObserver:self forKeyPath:@"size"];
     [self carefullyRemoveObserver:self forKeyPath:@"shape"];
     [self carefullyRemoveObserver:self forKeyPath:@"notes"];
+    [self carefullyRemoveObserver:self forKeyPath:@"appendsTimer"];
 }
 
 - (void) carefullyRemoveObserver:(NSObject *)observer forKeyPath:(NSString *)keyPath

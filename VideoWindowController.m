@@ -580,6 +580,7 @@
 		newAnnotation.fadeTime = [[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"newAnnotationFadeTime"];
 		newAnnotation.size = [[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"newAnnotationFontSize"];
 		newAnnotation.width = [[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"newAnnotationWidth"];
+        newAnnotation.appendsTimer = [[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"newAnnotationAppendTimer"];
 		newAnnotation.videoClip = self.videoClip;
         [managedObjectContext processPendingChanges];
 		[self.videoClip.project.document.annotationsController setSelectedObjects:[NSArray arrayWithObject:newAnnotation]];

@@ -20,7 +20,9 @@
 @property (strong) NSNumber *screenY;
 @property (strong) NSString *startTimecode;
 @property (strong) NSNumber *width;
+@property (strong) NSNumber *appendsTimer;
 @property (assign) float tempOpacity;
+
 
 - (NSString *) tableGlyphForColor;
 

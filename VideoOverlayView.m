@@ -207,8 +207,15 @@
         [shadow setShadowOffset:CGSizeMake(1.0f,-1.0f)];
         [attrs setObject:shadow forKey:NSShadowAttributeName];
     }
+
+    NSMutableString *annotationText = [[NSMutableString alloc] initWithString:annotation.notes];
     
-	NSMutableAttributedString *annotationString = [[NSMutableAttributedString alloc] initWithString:annotation.notes attributes:attrs];
+    if ([annotation.appendsTimer boolValue] == YES) {
+        CMTime timeElapsed = CMTimeSubtract([vwc.document currentMasterTime], [UtilityFunctions CMTimeFromString:annotation.startTimecode]);
+        [annotationText appendFormat:@"\n%@",[UtilityFunctions CMStringFromTime:timeElapsed]];
+    }
+    
+	NSMutableAttributedString *annotationString = [[NSMutableAttributedString alloc] initWithString:annotationText attributes:attrs];
 
     
     
@@ -224,8 +231,10 @@
 	
 	NSPoint drawOrigin = NSMakePoint(scaledPoint.x - bounds.size.width/2,scaledPoint.y - newHeight/2);
 	NSRect drawingRect = NSMakeRect(drawOrigin.x,drawOrigin.y,bounds.size.width,newHeight);
-	
-	[annotation.notes drawWithRect:drawingRect options:NSStringDrawingTruncatesLastVisibleLine|NSStringDrawingUsesLineFragmentOrigin attributes:attrs];
+
+    [annotationString drawWithRect:drawingRect options:NSStringDrawingTruncatesLastVisibleLine|NSStringDrawingUsesLineFragmentOrigin];
+
+//	[annotation.notes drawWithRect:drawingRect options:NSStringDrawingTruncatesLastVisibleLine|NSStringDrawingUsesLineFragmentOrigin attributes:attrs];
 	
 	if ([[vwc.videoClip.project.document.annotationsController selectedObjects] count] > 0 && [[[vwc.videoClip.project.document.annotationsController selectedObjects] objectAtIndex:0] isEqualTo:annotation]) {
 		NSColor *selectionColor = [UtilityFunctions userDefaultColorForKey:@"pointSelectionIndicatorColor"];

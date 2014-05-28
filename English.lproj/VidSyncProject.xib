@@ -3133,7 +3133,7 @@ IA
                                             </connections>
                                         </colorWell>
                                         <textField verticalHuggingPriority="750" id="102736">
-                                            <rect key="frame" x="23" y="132" width="321" height="17"/>
+                                            <rect key="frame" x="23" y="132" width="131" height="17"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES"/>
                                             <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Text" id="102737">
                                                 <font key="font" metaFont="system"/>
@@ -3354,6 +3354,17 @@ IA
                                                 <autoresizingMask key="autoresizingMask"/>
                                             </scroller>
                                         </scrollView>
+                                        <button id="iex-vy-PsO">
+                                            <rect key="frame" x="446" y="130" width="115" height="18"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                            <buttonCell key="cell" type="check" title="Appends timer" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="9Xe-6H-kN2">
+                                                <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                                <font key="font" metaFont="system"/>
+                                            </buttonCell>
+                                            <connections>
+                                                <binding destination="102264" name="value" keyPath="selection.appendsTimer" id="HYq-lC-iaf"/>
+                                            </connections>
+                                        </button>
                                     </subviews>
                                 </view>
                             </tabViewItem>

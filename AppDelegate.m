@@ -122,6 +122,7 @@
     
 	// initial values for annotation visual settings
 	
+	[initialValueDict setObject:[NSNumber numberWithBool:FALSE] forKey:@"newAnnotationAppendTimer"];
 	[initialValueDict setObject:[NSNumber numberWithInt:5] forKey:@"newAnnotationDuration"];
 	[initialValueDict setObject:[NSNumber numberWithInt:3] forKey:@"newAnnotationFadeTime"];
 	[initialValueDict setObject:[NSNumber numberWithInt:30] forKey:@"newAnnotationFontSize"];
