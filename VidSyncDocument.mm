@@ -269,27 +269,10 @@ static void *AVSPPlayerCurrentTimeContext = &AVSPPlayerCurrentTimeContext;
 #pragma mark
 #pragma mark Event observing
 
-- (void) anyTableViewSelectionIsChanging:(NSNotification *)notification		// Controls what to do when a table view's selection is ABOUT to change but hasn't yet.
+- (void) anyTableViewSelectionIsChanging:(NSNotification *)notification
 {
-	if (self.project.masterClip != nil) {
-		if ([[notification object] isEqualTo:annotationsController.mainTableView]) {
-			if ([[annotationsController selectedObjects] count] > 0) {
-				VSAnnotation *selectedAnnotation = [[annotationsController selectedObjects] objectAtIndex:0];
-				// When an annotation is deselected, remove the observers that are watching to see if its properties change so they can update the overlay.
-				[selectedAnnotation removeObserver:selectedAnnotation.videoClip.windowController forKeyPath:@"width"];
-				[selectedAnnotation removeObserver:selectedAnnotation.videoClip.windowController forKeyPath:@"color"];
-				[selectedAnnotation removeObserver:selectedAnnotation.videoClip.windowController forKeyPath:@"size"];
-				[selectedAnnotation removeObserver:selectedAnnotation.videoClip.windowController forKeyPath:@"shape"];
-				[selectedAnnotation removeObserver:selectedAnnotation.videoClip.windowController forKeyPath:@"notes"];				
-			}
-		} else if ([[notification object] isEqualTo:trackedObjectsController.mainTableView]) {
-			if ([[notification object] isEqualTo:trackedObjectsController.mainTableView]) {
-				if ([[trackedObjectsController selectedObjects] count] > 0) {
-					VSTrackedObject *selectedObject = [[trackedObjectsController selectedObjects] objectAtIndex:0];
-				}
-			}		
-		}
-	}
+    // This would control what to do when a table view's selection is about to change but hasn't changed yet.
+    // I used to have some things here, but removed them when they were no longer needed.
 }
 
 - (void) anyTableViewSelectionDidChange:(NSNotification *)notification	// Controls what to do once a table view's selection HAS changed

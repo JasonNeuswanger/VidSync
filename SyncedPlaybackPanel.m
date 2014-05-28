@@ -67,6 +67,7 @@
     
     if (![theEvent isARepeat]) {
         unichar key = [[theEvent charactersIgnoringModifiers] characterAtIndex: 0];
+        
         if ([theEvent modifierFlags] & NSAlternateKeyMask) {            // Forward option+leftarrow and option+rightarrow keypresses to the appropriate PlayWhilePressedButton
             if (key == NSLeftArrowFunctionKey) {
                 if ([theEvent modifierFlags] & NSControlKeyMask) {
@@ -87,22 +88,25 @@
             }
             return;
         }
+        
         if (key == '1') {
             if ([theEvent modifierFlags] & NSControlKeyMask) {
                 [document advancedPlayAll:document.playBackwardAtRate1Button];
             } else {
                 [document advancedPlayAll:document.playForwardAtRate1Button];
             }
+            return;
         } else if (key == '2') {
             if ([theEvent modifierFlags] & NSControlKeyMask) {
                 [document advancedPlayAll:document.playBackwardAtRate2Button];
             } else {
                 [document advancedPlayAll:document.playForwardAtRate2Button];
             }
+            return;
+        } else {
+            [super keyDown:theEvent];
         }
-        return;
     }
-    [super keyDown:theEvent];
 }
 
 /*
