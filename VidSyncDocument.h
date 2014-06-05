@@ -215,7 +215,7 @@
 
 - (IBAction) advancedPlayAll:(id)sender;
 - (IBAction) advancedStepAll:(id)sender;
-- (void) setStopTimeForDuration:(float)duration atRate:(float)rate;
+- (CMTime) stopTimeForDuration:(float)duration atRate:(float)rate;
 - (void) checkForStopAtCurrentTime;
 - (IBAction) setTimeFromScrubber:(id)sender;
 

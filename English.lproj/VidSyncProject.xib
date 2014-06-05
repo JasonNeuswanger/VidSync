@@ -5793,7 +5793,7 @@ IA
                                         </textField>
                                         <colorWell id="102035">
                                             <rect key="frame" x="290" y="442" width="23" height="23"/>
-                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
                                             <color key="color" red="0.05813049898" green="0.055541899059999997" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                             <connections>
                                                 <binding destination="101506" name="value" keyPath="selection.color" id="102040"/>
@@ -5801,7 +5801,7 @@ IA
                                         </colorWell>
                                         <textField verticalHuggingPriority="750" id="102036">
                                             <rect key="frame" x="246" y="445" width="51" height="17"/>
-                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
                                             <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Color:" id="102037">
                                                 <font key="font" metaFont="system"/>
                                                 <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>

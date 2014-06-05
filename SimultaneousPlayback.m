@@ -20,7 +20,7 @@
 		[eventsPointsController rearrangeObjects];
 		[self updateMasterTimeDisplay];
 		if (!CMTIME_IS_INDEFINITE(stopTime)) [self checkForStopAtCurrentTime];
-	}
+    }
 }
 
 - (void) updateMasterTimeDisplay // also updates the synced playback scrubber
@@ -105,30 +105,36 @@
         whichRate = @"2";
 	}
 	float playRate = rateMultiplier * [[[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:[NSString stringWithFormat:@"advancedPlaybackRate%@",whichRate]] floatValue];
-	[self setAllVideoRates:playRate];
+    CMTime newStopTime;
 	int durationType = [[[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:[NSString stringWithFormat:@"advancedPlaybackMode%@",whichRate]] floatValue];
 	if (durationType == 1) {			// exact duration specified
 		float exactDuration = [[[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:[NSString stringWithFormat:@"advancedPlaybackExactDuration%@",whichRate]] floatValue];
-		[self setStopTimeForDuration:exactDuration atRate:playRate];
+		newStopTime = [self stopTimeForDuration:exactDuration atRate:playRate];
 	} else if (durationType == 2) {		// random duration in range specified
 		float minDuration = [[[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:[NSString stringWithFormat:@"advancedPlaybackMinRandomDuration%@",whichRate]] floatValue];
 		float maxDuration = [[[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:[NSString stringWithFormat:@"advancedPlaybackMaxRandomDuration%@",whichRate]] floatValue];
 		float randomDuration = [UtilityFunctions randomFloatBetween:minDuration and:maxDuration];
-		[self setStopTimeForDuration:randomDuration atRate:playRate];
+		newStopTime = [self stopTimeForDuration:randomDuration atRate:playRate];
 	}
+    [self setAllVideoRates:playRate];   // Because videoRateDidChange wipes stopTime clean, I have to set it after triggering this rate change, but still calculate it above before playback begins
+    if (durationType == 1 || durationType == 2) {
+        stopTime = newStopTime;
+    }
 }
 
-- (void) setStopTimeForDuration:(float)duration atRate:(float)rate
+- (CMTime) stopTimeForDuration:(float)duration atRate:(float)rate
 {
+    CMTime newStopTime;
     int32_t myTimeScale = (int32_t) [[self.project.masterClip timeScale] longValue];
     CMTime durationScaled = CMTimeMakeWithSeconds(duration,myTimeScale);
     if (rate > 0) {
-		stopTime = CMTimeAdd([self currentMasterTime],durationScaled);
+		newStopTime = CMTimeAdd([self currentMasterTime],durationScaled);
 		stopTimeComparison = NSOrderedAscending;		// playing forward; stop when currentMasterTime > stopTime
 	} else {
-		stopTime = CMTimeSubtract([self currentMasterTime],durationScaled);
+		newStopTime = CMTimeSubtract([self currentMasterTime],durationScaled);
 		stopTimeComparison = NSOrderedDescending;		// playing backward; stop when currentMasterTime < stopTime
 	}
+    return newStopTime;
 }
 
 - (void) checkForStopAtCurrentTime		// note: movieRateDidChange notification changes stopTime to nil, so user-generated rate changes interrupt a play-until-stopped command
@@ -136,8 +142,9 @@
 	// Only gets called from playbackLoopActions if video is playing and stopTime is not nil
 	NSComparisonResult currentTimeComparedWithStopTime = CMTimeCompare(stopTime,[self currentMasterTime]);  // Should return ascending if stoptime < masterTime, descending if masterTime > stopTime
     if (currentTimeComparedWithStopTime == stopTimeComparison || currentTimeComparedWithStopTime == NSOrderedSame) {
+        CMTime newStopTime = stopTime;  // save this here because it's set to null by a notification by the rate change in the next line
 		[self setAllVideoRates:0.0];
-		[self goToMasterTime:stopTime];
+		[self goToMasterTime:newStopTime];
 	}
 }
 

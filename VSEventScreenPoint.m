@@ -51,6 +51,47 @@ NSPoint quadratCoords2Dfrom3D(const VSPoint3D *quadratCoords3D, const char axisH
 @dynamic screenPoints;
 @dynamic hintLinesOut;
 @synthesize tempOpacity;
+@synthesize totalTimeRange;
+@synthesize fadingTimeRange;
+@synthesize fadingStartTime;
+@synthesize fadingDuration;
+
+- (void) awakeFromFetch
+{
+    [self addObserver:self forKeyPath:@"point.timecode" options:0 context:NULL];
+    [self updateVisibleTimeRange];
+    [super awakeFromFetch];
+}
+
+- (void) awakeFromInsert
+{
+    [self addObserver:self forKeyPath:@"point.timecode" options:0 context:NULL];
+    [self updateVisibleTimeRange];
+    [super awakeFromFetch];
+}
+
+- (void) observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
+	if ([keyPath isEqual: @"point.timecode"]) [self updateVisibleTimeRange];
+}
+
+- (void) updateVisibleTimeRange
+{
+    if ([[self.videoClip.project.masterClip timeScale] intValue] > 0) {
+        CMTime startTime = [UtilityFunctions CMTimeFromString:self.point.timecode];
+        CMTime solidDuration = CMTimeMakeWithSeconds([self.point.trackedEvent.type.duration doubleValue], [[self.videoClip.project.masterClip timeScale] longValue]);
+        fadingDuration = CMTimeMakeWithSeconds([self.point.trackedEvent.type.fadeTime doubleValue], [[self.videoClip.project.masterClip timeScale] longValue]);
+        CMTime totalDuration = CMTimeAdd(solidDuration,fadingDuration);
+        fadingStartTime = CMTimeAdd(startTime,solidDuration);
+        totalTimeRange = CMTimeRangeMake(startTime,totalDuration);
+        fadingTimeRange = CMTimeRangeMake(fadingStartTime,fadingDuration);
+    } else {    // if the master clip hasn't loaded yet, wait and try again
+        fadingDuration = CMTimeMakeWithSeconds(0,1);
+        fadingStartTime=CMTimeMakeWithSeconds(0,1);
+        totalTimeRange=CMTimeRangeMake(fadingStartTime,fadingDuration);
+        fadingDuration=CMTimeMakeWithSeconds(0,1);
+        [self performSelector:@selector(updateVisibleTimeRange) withObject:nil afterDelay:0.3f];
+    }
+}
 
 - (void) updateCalibrationFrameCoords
 {
@@ -232,6 +273,21 @@ NSPoint quadratCoords2Dfrom3D(const VSPoint3D *quadratCoords3D, const char axisH
 	[mainElement addAttribute:[NSXMLNode attributeWithName:@"frameBackH" stringValue:[nf stringFromNumber:self.backFrameWorldH]]];
 	[mainElement addAttribute:[NSXMLNode attributeWithName:@"frameBackV" stringValue:[nf stringFromNumber:self.backFrameWorldV]]];
 	return mainElement;
+}
+
+- (void) dealloc
+{
+    [self carefullyRemoveObserver:self forKeyPath:@"point.timecode"];
+}
+
+- (void) carefullyRemoveObserver:(NSObject *)observer forKeyPath:(NSString *)keyPath
+{
+    if (observer != nil) {
+        @try {
+            [self removeObserver:observer forKeyPath:keyPath];
+        } @catch (id exception) {
+        }
+    }
 }
 
 @end

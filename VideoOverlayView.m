@@ -106,14 +106,14 @@
 	NSMutableSet *tempVisibleScreenPoints = [NSMutableSet set];
     CMTime now = [vwc.document currentMasterTime];
 	for (VSEventScreenPoint *screenPoint in vwc.videoClip.eventScreenPoints) {
-        CMTime startTime = [UtilityFunctions CMTimeFromString:screenPoint.point.timecode];
-        CMTime solidDuration = CMTimeMakeWithSeconds([screenPoint.point.trackedEvent.type.duration doubleValue], [[vwc.videoClip.project.masterClip timeScale] longValue]);
-        CMTime fadingDuration = CMTimeMakeWithSeconds([screenPoint.point.trackedEvent.type.fadeTime doubleValue], [[vwc.videoClip.project.masterClip timeScale] longValue]);
-        CMTime totalDuration = CMTimeAdd(solidDuration,fadingDuration);
-        CMTimeRange totalTimeRange = CMTimeRangeMake(startTime,totalDuration);
-        if (CMTimeRangeContainsTime(totalTimeRange,now)) [tempVisibleScreenPoints addObject:screenPoint];
+        if (CMTimeRangeContainsTime(screenPoint.totalTimeRange,now)) {
+            [tempVisibleScreenPoints addObject:screenPoint];
+            if ([tempVisibleScreenPoints count] > 2330) {
+                NSLog(@"adding screnpoint from range %@ for current time %@", [NSValue valueWithCMTimeRange:screenPoint.totalTimeRange],[NSValue valueWithCMTime:now]);
+            }
+        }
 	}
-	self.visibleScreenPoints = tempVisibleScreenPoints;
+    self.visibleScreenPoints = tempVisibleScreenPoints;
 }
 
 - (void) calculateVisibleAnnotations;
@@ -234,8 +234,6 @@
 
     [annotationString drawWithRect:drawingRect options:NSStringDrawingTruncatesLastVisibleLine|NSStringDrawingUsesLineFragmentOrigin];
 
-//	[annotation.notes drawWithRect:drawingRect options:NSStringDrawingTruncatesLastVisibleLine|NSStringDrawingUsesLineFragmentOrigin attributes:attrs];
-	
 	if ([[vwc.videoClip.project.document.annotationsController selectedObjects] count] > 0 && [[[vwc.videoClip.project.document.annotationsController selectedObjects] objectAtIndex:0] isEqualTo:annotation]) {
 		NSColor *selectionColor = [UtilityFunctions userDefaultColorForKey:@"pointSelectionIndicatorColor"];
         [[NSColor colorWithDeviceRed:[selectionColor redComponent] green:[selectionColor greenComponent] blue:[selectionColor blueComponent] alpha:annotation.tempOpacity] set];
@@ -436,19 +434,12 @@
 {
 	CMTime now = [vwc.document currentMasterTime];
 	NSSet *trackedEventsNeedingConnectingLinesDrawn = [NSSet set];
-	for (VSEventScreenPoint *screenPoint in vwc.videoClip.eventScreenPoints) {
-        CMTime startTime = [UtilityFunctions CMTimeFromString:screenPoint.point.timecode];
-        CMTime solidDuration = CMTimeMakeWithSeconds([screenPoint.point.trackedEvent.type.duration doubleValue], [[vwc.videoClip timeScale] longValue]);
-        CMTime fadingDuration = CMTimeMakeWithSeconds([screenPoint.point.trackedEvent.type.fadeTime doubleValue], [[vwc.videoClip timeScale] longValue]);
-        CMTime totalDuration = CMTimeAdd(solidDuration,fadingDuration);
-        CMTime fadingStartTime = CMTimeAdd(startTime,solidDuration);
-        CMTimeRange totalTimeRange = CMTimeRangeMake(startTime,totalDuration);
-        CMTimeRange fadingTimeRange = CMTimeRangeMake(fadingStartTime,fadingDuration);
+	for (VSEventScreenPoint *screenPoint in self.visibleScreenPoints) {
 		float currentOpacity = 1.0;
-		if (CMTimeRangeContainsTime(totalTimeRange,now)) {
-			if (CMTimeRangeContainsTime(fadingTimeRange,now)) {
-				CMTime fadingTimeElapsed = CMTimeSubtract(now,fadingStartTime);
-				currentOpacity = 1.0 - ((float) fadingTimeElapsed.value / (float) fadingTimeElapsed.timescale) / ((float) fadingDuration.value / (float) fadingDuration.timescale);
+		if (CMTimeRangeContainsTime(screenPoint.totalTimeRange,now)) {
+			if (CMTimeRangeContainsTime(screenPoint.fadingTimeRange,now)) {
+				CMTime fadingTimeElapsed = CMTimeSubtract(now,screenPoint.fadingStartTime);
+				currentOpacity = 1.0 - ((float) fadingTimeElapsed.value / (float) fadingTimeElapsed.timescale) / ((float) screenPoint.fadingDuration.value / (float) screenPoint.fadingDuration.timescale);
 			}
 			if ([screenPoint.point.trackedEvent.trackedObjects count] == 1) {	// If the event is associated with just one object, draw it.
 				[self drawMeasurementScreenPoint:screenPoint 

@@ -13,6 +13,9 @@
 NSPoint quadratCoords2Dfrom3D(const VSPoint3D *quadratCoords3D, const char axisHorizontal, const char axisVertical);
 
 @interface VSEventScreenPoint : NSManagedObject {
+    
+    CMTimeRange totalTimeRange, fadingTimeRange;
+    CMTime fadingStartTime, fadingDuration;
 	
 }
 
@@ -27,7 +30,12 @@ NSPoint quadratCoords2Dfrom3D(const VSPoint3D *quadratCoords3D, const char axisH
 @property (strong) NSSet *screenPoints;
 @property (strong) NSSet *hintLinesOut;
 @property (assign) float tempOpacity;
+@property (assign) CMTimeRange totalTimeRange;
+@property (assign) CMTimeRange fadingTimeRange;
+@property (assign) CMTime fadingStartTime;
+@property (assign) CMTime fadingDuration;
 
+- (void) updateVisibleTimeRange;
 - (void) updateCalibrationFrameCoords;
 - (VSLine3D) computeLine3D:(BOOL)useReprojectedPoints;
 - (void) calculateHintLines;
@@ -36,5 +44,6 @@ NSPoint quadratCoords2Dfrom3D(const VSPoint3D *quadratCoords3D, const char axisH
 - (NSString *) spreadsheetFormattedScreenPoint;
 - (NSXMLNode *) representationAsXMLNode;
 - (NSPoint) undistortedCoords;
+- (void) carefullyRemoveObserver:(NSObject *)observer forKeyPath:(NSString *)keyPath;
 
 @end

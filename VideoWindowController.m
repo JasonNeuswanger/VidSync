@@ -135,8 +135,12 @@
     
     [self.videoClip.project.document.videoClipArrayController.mainTableView setNeedsDisplay:YES];
     
-    if (self.videoClip.syncIsLocked) [self.videoClip.project.document reSync];                               // synchronizes the document once the new clip is loaded
-
+    // Synchronize the document once the new clip is loaded
+    if (self.videoClip.syncIsLocked) [self.videoClip.project.document reSync];
+    
+    // If the master clip just loaded, wait until all VSEventScreenPoints should have loaded their visible durations (they're on a 0.3s timer waiting for the masterclip) and then refresh the screen
+    [self.document performSelector:@selector(refreshOverlaysOfAllClips:) withObject:self afterDelay:0.6f];
+    
     [[self window] orderFrontRegardless];
 }
 
