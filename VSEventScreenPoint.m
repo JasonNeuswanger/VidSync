@@ -282,7 +282,7 @@ NSPoint quadratCoords2Dfrom3D(const VSPoint3D *quadratCoords3D, const char axisH
 
 - (void) carefullyRemoveObserver:(NSObject *)observer forKeyPath:(NSString *)keyPath
 {
-    if (observer != nil) {
+    if (observer != nil && self.point != nil) { // the point existence check is a quick hack to prevent EXC_BAD_ACCESS when it deallocs the point before the screenpoint
         @try {
             [self removeObserver:observer forKeyPath:keyPath];
         } @catch (id exception) {

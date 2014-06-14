@@ -533,10 +533,15 @@
 	
 	NSString *lengthText = [nf stringFromNumber:distance];
 	NSFont *lengthStrFont = [NSFont fontWithName:@"Helvetica" size:[point.trackedEvent.type.connectingLineLengthLabelFontSize floatValue]];
+    NSShadow *shadow = [NSShadow new];
+    [shadow setShadowBlurRadius:8.0f];
+    [shadow setShadowColor:[NSColor whiteColor]];
+    [shadow setShadowOffset:CGSizeMake(1.0f,-1.0f)];
 	NSDictionary *lengthStrAttributes = [NSDictionary dictionaryWithObjectsAndKeys:lengthStrFont,NSFontAttributeName,
-										 color,NSForegroundColorAttributeName,nil];
+										 color,NSForegroundColorAttributeName,shadow,NSShadowAttributeName,nil];
+
 	NSMutableAttributedString *lengthStr = [[NSMutableAttributedString alloc] initWithString:lengthText attributes:lengthStrAttributes];
-	
+	   
 	// Draw everything
 	
 	float lineAngle;						// the angle the line makes going from the left point to the right point, in radians
