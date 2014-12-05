@@ -10,29 +10,29 @@
 	<string>VidSync</string>
 	<key>IDESourceControlProjectOriginsDictionary</key>
 	<dict>
-		<key>E9C11EE9-6AB5-46FB-96F1-0426A941B1B3</key>
+		<key>E8EF2B3ECE1E84A3C14FC81145C8B014B2487661</key>
 		<string>https://github.com/JasonNeuswanger/VidSync.git</string>
 	</dict>
 	<key>IDESourceControlProjectPath</key>
-	<string>VidSync.xcodeproj/project.xcworkspace</string>
+	<string>VidSync.xcodeproj</string>
 	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
 	<dict>
-		<key>E9C11EE9-6AB5-46FB-96F1-0426A941B1B3</key>
+		<key>E8EF2B3ECE1E84A3C14FC81145C8B014B2487661</key>
 		<string>../..</string>
 	</dict>
 	<key>IDESourceControlProjectURL</key>
 	<string>https://github.com/JasonNeuswanger/VidSync.git</string>
 	<key>IDESourceControlProjectVersion</key>
-	<integer>110</integer>
+	<integer>111</integer>
 	<key>IDESourceControlProjectWCCIdentifier</key>
-	<string>E9C11EE9-6AB5-46FB-96F1-0426A941B1B3</string>
+	<string>E8EF2B3ECE1E84A3C14FC81145C8B014B2487661</string>
 	<key>IDESourceControlProjectWCConfigurations</key>
 	<array>
 		<dict>
 			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
 			<string>public.vcs.git</string>
 			<key>IDESourceControlWCCIdentifierKey</key>
-			<string>E9C11EE9-6AB5-46FB-96F1-0426A941B1B3</string>
+			<string>E8EF2B3ECE1E84A3C14FC81145C8B014B2487661</string>
 			<key>IDESourceControlWCCName</key>
 			<string>VidSync</string>
 		</dict>

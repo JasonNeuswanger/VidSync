@@ -245,7 +245,7 @@ NSPoint quadratCoords2Dfrom3D(const VSPoint3D *quadratCoords3D, const char axisH
 {
 	NSNumberFormatter *nf = self.point.trackedEvent.type.project.document.decimalFormatter;
     NSPoint undistortedScreenPoint = [self undistortedCoords];
-    return [NSString stringWithFormat:@",\"%@: screen={%@,%@} undistorted={%@,%@} calibrationFrameFront={%@,%@} calibrationFrameBack={%@,%@}\"",
+    return [NSString stringWithFormat:@"\"%@: screen={%@,%@} undistorted={%@,%@} calibrationFrameFront={%@,%@} calibrationFrameBack={%@,%@}\"",
             self.videoClip.clipName,
             [nf stringFromNumber:self.screenX],
             [nf stringFromNumber:self.screenY],

@@ -309,10 +309,14 @@ NSPoint project2DPoint(NSPoint pt, double projectionMatrix[9])
 }
 
 
-- (NSString *) spreadsheetFormatted3DPoint
+- (NSString *) spreadsheetFormatted3DPoint:(NSString *)separator
 {	
 	BOOL includeScreenCoords = [[[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"includeScreenCoordsInExports"] boolValue];
 	NSMutableString *objectsString = [NSMutableString new];
+    
+    NSTimeInterval time;	// is a double
+    time = CMTimeGetSeconds([UtilityFunctions CMTimeFromString:self.timecode]);
+    
 	int objectCount = 1;
 	for (VSTrackedObject *trackedObject in self.trackedEvent.trackedObjects) {
 		if (objectCount > 1) [objectsString appendString:@", "];
@@ -331,16 +335,20 @@ NSPoint project2DPoint(NSPoint pt, double projectionMatrix[9])
 	}
     
     NSMutableString *screenCoordsString = [NSMutableString stringWithString:@""];
-    if (includeScreenCoords) for (VSEventScreenPoint *point in self.screenPoints) [screenCoordsString appendString:[point spreadsheetFormattedScreenPoint]];
+    if (includeScreenCoords) {
+        [screenCoordsString appendString:separator];
+        for (VSEventScreenPoint *point in self.screenPoints) [screenCoordsString appendString:[point spreadsheetFormattedScreenPoint]];
+    }
     
-	return [NSString stringWithFormat:@"%@,%@,%@,%f,%f,%f,%f,%f%@\n",
-									  objectsString,
-									  eventString,
-                                      self.timecode,
-									  [[self worldX] floatValue],					  
-									  [[self worldY] floatValue],					  
-									  [[self worldZ] floatValue],
-									  [[self meanPLD] floatValue],
+	return [NSString stringWithFormat:@"%@%@%@%@%@%@%f%@%f%@%f%@%f%@%f%@%f%@\n",
+									  objectsString,separator,
+									  eventString,separator,
+                                      self.timecode,separator,
+                                      [[NSNumber numberWithDouble:time] floatValue],separator,
+									  [[self worldX] floatValue],separator,
+									  [[self worldY] floatValue],separator,
+									  [[self worldZ] floatValue],separator,
+									  [[self meanPLD] floatValue],separator,
                                       [[self reprojectionErrorNorm] floatValue],
                                       screenCoordsString
 	
