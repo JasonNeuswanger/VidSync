@@ -53,7 +53,7 @@ NSPoint project2DPoint(NSPoint pt, double projectionMatrix[9]);
 - (VSPoint3D) calculate3DCoordsLinear;
 - (void) handleScreenPointChange;
 
-- (NSString *) spreadsheetFormatted3DPoint;
+- (NSString *) spreadsheetFormatted3DPoint:(NSString *)separator;
 - (NSXMLNode *) representationAsXMLNode;
 
 @end
