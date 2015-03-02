@@ -45,6 +45,8 @@
             VideoWindowController *__weak oldWindowController = self.windowController;
             VideoWindowController *__strong newWindowController = [[VideoWindowController alloc] initWithVideoClip:self inManagedObjectContext:self.managedObjectContext]; // is self.windowcontroller
             if (newWindowController != nil) {
+                [self.project.document observeWindowControllerVideoRate:newWindowController];
+                [oldWindowController removeObserver:self.project.document forKeyPath:@"playerView.player.rate"];
                 [self.project.document removeWindowController:oldWindowController];
                 [oldWindowController close];
                 [self.project.document addWindowController:newWindowController];

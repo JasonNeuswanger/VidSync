@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="6250" systemVersion="14A389" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="6254" systemVersion="14C109" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="6250"/>
-        <plugIn identifier="com.apple.imagekit.ibplugin" version="6250"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="6254"/>
+        <plugIn identifier="com.apple.imagekit.ibplugin" version="6254"/>
     </dependencies>
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="VidSyncDocument">
@@ -291,7 +291,7 @@
                                         <textField verticalHuggingPriority="750" id="102597">
                                             <rect key="frame" x="137" y="528" width="423" height="22"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                            <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" state="on" title="Wednesday, December 31, 1969 at 6:00:00 PM Central Standard Time" id="102598">
+                                            <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" state="on" title="Wednesday, December 31, 1969 at 2:00:00 PM GMT-10:00" id="102598">
                                                 <dateFormatter key="formatter" dateStyle="full" timeStyle="full" id="102607"/>
                                                 <font key="font" metaFont="system"/>
                                                 <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
@@ -7442,11 +7442,11 @@ Some useful refractive index values are:  1.000 for air, 1.335 for fresh water, 
                             <rect key="frame" x="1" y="1" width="416" height="655"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
-                                <ikImageBrowserView autoresizesSubviews="NO" zoomValue="0.74555903673171997" allowsReordering="YES" id="L8b-Kn-Awl" customClass="PortraitBrowserView">
+                                <ikImageBrowserView autoresizesSubviews="NO" zoomValue="0.72892743349075317" allowsReordering="YES" id="L8b-Kn-Awl" customClass="PortraitBrowserView">
                                     <rect key="frame" x="0.0" y="0.0" width="416" height="655"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <autoresizingMask key="contentResizingMask" heightSizable="YES"/>
-                                    <size key="cellSize" width="248" height="248"/>
+                                    <size key="cellSize" width="239" height="239"/>
                                     <connections>
                                         <binding destination="100045" name="zoomValue" keyPath="values.allPortraitsBrowserZoom" id="5JR-GP-obr"/>
                                         <outlet property="_dataSource" destination="aiC-hm-v6h" id="P1z-i7-E3M"/>

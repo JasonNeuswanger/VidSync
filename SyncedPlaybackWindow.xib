@@ -165,7 +165,7 @@
                                 <rect key="frame" x="7" y="8" width="377" height="60"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <subviews>
-                                    <button toolTip="Play backward at advanced playback rate 1" wantsLayer="YES" verticalHuggingPriority="750" tag="2" id="DvZ-df-tMF" customClass="VideoControlButton">
+                                    <button toolTip="Play backward at advanced playback rate 1 (Command+Ctrl+1)" wantsLayer="YES" verticalHuggingPriority="750" tag="2" id="DvZ-df-tMF" customClass="VideoControlButton">
                                         <rect key="frame" x="79" y="13" width="25" height="35"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                         <contentFilters>
@@ -384,7 +384,7 @@
                                             <outlet property="document" destination="-2" id="nWA-cx-X5m"/>
                                         </connections>
                                     </button>
-                                    <button toolTip="Play forward at advanced playback rate 1" verticalHuggingPriority="750" tag="1" id="UOJ-hU-iuB" customClass="VideoControlButton">
+                                    <button toolTip="Play forward at advanced playback rate 1 (Command+1)" verticalHuggingPriority="750" tag="1" id="UOJ-hU-iuB" customClass="VideoControlButton">
                                         <rect key="frame" x="113" y="13" width="25" height="35"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                         <buttonCell key="cell" type="square" title="→" bezelStyle="shadowlessSquare" alignment="center" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="u2x-h9-oq7">
@@ -410,7 +410,7 @@
                                 <rect key="frame" x="392" y="8" width="377" height="60"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <subviews>
-                                    <button toolTip="Play backward at advanced playback rate 2" wantsLayer="YES" verticalHuggingPriority="750" tag="4" id="WRX-A8-2yg" customClass="VideoControlButton">
+                                    <button toolTip="Play backward at advanced playback rate 2 (Command+Ctrl+2)" wantsLayer="YES" verticalHuggingPriority="750" tag="4" id="WRX-A8-2yg" customClass="VideoControlButton">
                                         <rect key="frame" x="79" y="13" width="25" height="35"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                         <contentFilters>
@@ -633,7 +633,7 @@
                                             <outlet property="document" destination="-2" id="lKy-4B-KsU"/>
                                         </connections>
                                     </button>
-                                    <button toolTip="Play forward at advanced playback rate 2" verticalHuggingPriority="750" tag="3" id="rWK-xJ-flc" customClass="VideoControlButton">
+                                    <button toolTip="Play forward at advanced playback rate 2 (Command+2)" verticalHuggingPriority="750" tag="3" id="rWK-xJ-flc" customClass="VideoControlButton">
                                         <rect key="frame" x="113" y="13" width="25" height="35"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                         <buttonCell key="cell" type="square" title="→" bezelStyle="shadowlessSquare" alignment="center" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="2oi-2k-Rva">

@@ -62,7 +62,7 @@
 - (void)remove:(id)sender
 {
     VSVideoClip *clipToDelete = [[self selectedObjects] objectAtIndex:0];
-    NSInteger alertResult = NSRunAlertPanel(@"Are you sure?",[NSString stringWithFormat:@"Are you sure you want to delete clip %@?",clipToDelete.clipName],@"Yes",@"No",nil);
+    NSInteger alertResult = NSRunAlertPanel(@"Are you sure?",@"Are you sure you want to delete clip %@?",@"Yes",@"No",nil,clipToDelete.clipName);
     if (alertResult == 1) {
         // Close the window before deleting it
         [clipToDelete.windowController removeObserver:document forKeyPath:@"playerView.player.rate"];
