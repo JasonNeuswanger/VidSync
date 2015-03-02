@@ -843,7 +843,7 @@
     if (noNonMasterClipsAreSynced && !(showAdvancedControlsWithOnlyMasterClip && [self.videoClip.isMasterClipOf isEqualTo:self.videoClip.project])) {
         [[[[self document] syncedPlaybackWindowController] window] close];
     } else {
-        [[[[self document] syncedPlaybackWindowController] window] orderFront:self];
+        [[[[self document] syncedPlaybackWindowController] window] makeKeyAndOrderFront:self];
     }
     
 }
