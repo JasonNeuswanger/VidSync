@@ -887,7 +887,7 @@
     [self.videoClip carefullyRemoveObserver:self forKeyPath:@"syncIsLocked"];
     [self.videoClip carefullyRemoveObserver:self forKeyPath:@"syncOffset"];
     [self.videoClip carefullyRemoveObserver:self forKeyPath:@"isMasterClipOf"];
-
+    
     @try {
         if (self.document != nil) {
             [self removeObserver:self.document forKeyPath:@"playerView.player.rate"];

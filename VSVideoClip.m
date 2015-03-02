@@ -46,6 +46,7 @@
             VideoWindowController *__strong newWindowController = [[VideoWindowController alloc] initWithVideoClip:self inManagedObjectContext:self.managedObjectContext]; // is self.windowcontroller
             if (newWindowController != nil) {
                 [self.project.document observeWindowControllerVideoRate:newWindowController];
+                //  seems it's being observed by a keyValueObservance that traces back to the document
                 [oldWindowController removeObserver:self.project.document forKeyPath:@"playerView.player.rate"];
                 [self.project.document removeWindowController:oldWindowController];
                 [oldWindowController close];

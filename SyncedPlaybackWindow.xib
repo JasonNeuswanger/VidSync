@@ -42,14 +42,6 @@
                         <rect key="frame" x="0.0" y="0.0" width="1170" height="120"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <slider toolTip="This slider shows the current timecode relative to the start of the master clip." verticalHuggingPriority="750" id="Rhk-PX-NnY">
-                                <rect key="frame" x="240" y="83" width="760" height="20"/>
-                                <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
-                                <sliderCell key="cell" controlSize="small" continuous="YES" alignment="left" maxValue="100" tickMarkPosition="below" numberOfTickMarks="100" sliderType="linear" id="bX6-nO-u4q"/>
-                                <connections>
-                                    <action selector="setTimeFromScrubber:" target="-2" id="D0f-oB-rAS"/>
-                                </connections>
-                            </slider>
                             <textField toolTip="Current time (measured relative to start of the master clip)" verticalHuggingPriority="750" id="dNN-uS-Zfp">
                                 <rect key="frame" x="1006" y="79" width="159" height="14"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
@@ -806,6 +798,20 @@
                                     <action selector="maximizeSyncedPlaybackPanel:" target="ID5-hV-LOZ" id="adK-zH-6CD"/>
                                 </connections>
                             </button>
+                            <customView id="bi7-LE-QWn" customClass="SyncedPlaybackPanelScrubberBackground">
+                                <rect key="frame" x="240" y="81" width="760" height="33"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
+                                <subviews>
+                                    <slider toolTip="This slider shows the current timecode relative to the start of the master clip." verticalHuggingPriority="750" id="Rhk-PX-NnY">
+                                        <rect key="frame" x="20" y="6" width="720" height="20"/>
+                                        <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
+                                        <sliderCell key="cell" controlSize="small" continuous="YES" alignment="left" maxValue="100" tickMarkPosition="below" numberOfTickMarks="100" sliderType="linear" id="bX6-nO-u4q"/>
+                                        <connections>
+                                            <action selector="setTimeFromScrubber:" target="-2" id="D0f-oB-rAS"/>
+                                        </connections>
+                                    </slider>
+                                </subviews>
+                            </customView>
                         </subviews>
                         <connections>
                             <outlet property="bookmarkGoButton1" destination="sXq-cY-I8w" id="DEx-ly-5ve"/>

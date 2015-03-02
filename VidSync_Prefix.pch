@@ -73,6 +73,7 @@
 #import "PortraitBrowserCell.h"
 #import "PlaybackRateDescriptionTransformer.h"
 #import "SyncedPlaybackPanelControlBox.h"
+#import "SyncedPlaybackPanelScrubberBackground.h"
 #import "MainProjectWindow.h"
 #import "PlaybackDurationTabView.h"
 

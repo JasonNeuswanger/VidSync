@@ -618,7 +618,6 @@ static void *AVSPPlayerCurrentTimeContext = &AVSPPlayerCurrentTimeContext;
 
 - (void) close
 {
-    // I CAN COMMENT OUT THE PLAYBACK TIMER INVALIDATION TO MAKE DOCUMENTS "CLOSE" WITHOUT CRASHING, EXCEPT THEY AREN'T ACTUALLY CLOSED
     [playbackTimer invalidate]; // This prevents the run loop from retaining the document via the timer after it's supposed to be released
 
     // Unregister various observers, or else there are complaints about deallocing objects with observers still attachced
