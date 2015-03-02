@@ -121,7 +121,7 @@ NSPoint project2DPoint(NSPoint pt, double projectionMatrix[9])
 {
     NSMutableSet *calibratedPoints = [NSMutableSet new];
     for (VSEventScreenPoint *screenPoint in self.screenPoints) {
-        if ([screenPoint.videoClip.calibration.matrixQuadratFrontToScreen count] > 0) [calibratedPoints addObject:screenPoint];
+        if ([screenPoint.videoClip.calibration.matrixQuadratFrontToScreen count] > 0 && [screenPoint.videoClip.calibration.matrixQuadratBackToScreen count] > 0) [calibratedPoints addObject:screenPoint];
     }
     return calibratedPoints;
 }
