@@ -50,7 +50,6 @@
     // [super makeKeyAndOrderFront:sender];
 }
 
-
 - (IBAction) maximizeSyncedPlaybackPanel:(id)sender
 {
     NSRect windowFrame = [self frame];
@@ -68,7 +67,7 @@
     if (![theEvent isARepeat]) {
         unichar key = [[theEvent charactersIgnoringModifiers] characterAtIndex: 0];
         
-        if ([theEvent modifierFlags] & NSAlternateKeyMask) {            // Forward option+leftarrow and option+rightarrow keypresses to the appropriate PlayWhilePressedButton
+        if ([theEvent modifierFlags] & NSAlternateKeyMask) {    // Forward option+leftarrow and option+rightarrow keypresses to the appropriate PlayWhilePressedButton
             if (key == NSLeftArrowFunctionKey) {
                 if ([theEvent modifierFlags] & NSControlKeyMask) {
                     [document.playBackwardAtRate1WhilePressedButton startPlaying];
@@ -162,6 +161,11 @@
 }
 
 - (BOOL) canBecomeKeyWindow
+{
+    return YES;
+}
+
+- (BOOL)canBecomeMainWindow
 {
     return YES;
 }

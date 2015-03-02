@@ -29,7 +29,7 @@
 {
     VSTrackedEvent *eventToDelete = (VSTrackedEvent *) [[self selectedObjects] firstObject];
     if ([eventToDelete.points count] > 0) {
-        NSInteger alertResult = NSRunAlertPanel(@"Are you sure?",[NSString stringWithFormat:@"Are you sure you want to delete event %@?",eventToDelete.index],@"Yes",@"No",nil);
+        NSInteger alertResult = NSRunAlertPanel(@"Are you sure?",@"Are you sure you want to delete event %@?",@"Yes",@"No",nil,eventToDelete.index);
         if (alertResult == 1) {
             [super remove:sender];
             [document refreshOverlaysOfAllClips:sender];

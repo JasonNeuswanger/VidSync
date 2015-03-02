@@ -559,23 +559,25 @@ int refractionRootFunc_f(const gsl_vector* x, void* params, gsl_vector* f)
 			pointsBackArray = [pointsBackArray arrayByAddingObject:[NSArray arrayWithObjects:point.screenX,point.screenY,point.worldHcoord,point.worldVcoord,point.index,nil]];
 		}
 		NSNumber *isMasterClip = [NSNumber numberWithBool:[self.videoClip.isMasterClipOf isEqualTo:self.videoClip.project]];	// YES if this is the master clip's calibration, NO otherwise
-		NSArray *fullCalibration = [NSArray arrayWithObjects:
-									[self.quadratNodesFront string],
-									[self.quadratNodesBack string],
-									self.planeCoordFront,
-									self.planeCoordBack,
-									self.axisHorizontal,
-									self.axisVertical,
+        
+        NSArray *fullCalibration = [NSArray arrayWithObjects:
+                                     ([self.quadratNodesFront string] != nil) ? [self.quadratNodesFront string] : @"",
+									([self.quadratNodesBack string] != nil) ? [self.quadratNodesBack string] : @"",
+                                    (self.planeCoordFront != nil) ? self.planeCoordFront : [NSNumber numberWithInt:0],
+                                    (self.planeCoordBack != nil) ? self.planeCoordBack : [NSNumber numberWithInt:0],
+                                    self.axisHorizontal,
+                                    self.axisVertical,
 									pointsFrontArray,
 									pointsBackArray,
 									isMasterClip,
-									self.videoClip.project.calibrationTimecode,
+                                    self.videoClip.project.calibrationTimecode,
                                     self.shouldCorrectRefraction,
                                     self.frontQuadratSurfaceThickness,
                                     self.frontQuadratSurfaceRefractiveIndex,
                                     self.mediumRefractiveIndex,
-									nil];
-		[fullCalibration writeToFile:[[savePanel URL] path] atomically:YES];
+                                    nil
+                                    ];
+		if (![fullCalibration writeToFile:[[savePanel URL] path] atomically:YES]) NSLog(@"Error writing calibration file. Some object in the list was null.");
 	}
 }
 
@@ -593,6 +595,7 @@ int refractionRootFunc_f(const gsl_vector* x, void* params, gsl_vector* f)
 	if ([openPanel runModal]) {
 		filePath = [[[openPanel URLs] objectAtIndex:0] path];
 		NSArray *fullCalibration = [[NSArray alloc] initWithContentsOfFile:filePath];
+        NSLog(@"fullCalibration has %lu entries, which are %@",(unsigned long)[fullCalibration count],fullCalibration);
 		self.quadratNodesFront = [[NSAttributedString alloc] initWithString:[fullCalibration objectAtIndex:0]];
 		self.quadratNodesBack = [[NSAttributedString alloc] initWithString:[fullCalibration objectAtIndex:1]];
 		self.planeCoordFront = [fullCalibration objectAtIndex:2];

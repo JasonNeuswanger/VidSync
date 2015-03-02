@@ -31,7 +31,7 @@
 {
     VSTrackedObject *objectToDelete = (VSTrackedObject *) [[self selectedObjects] firstObject];
     if ([[objectToDelete trackedEvents] count] > 0) {
-        NSInteger alertResult = NSRunAlertPanel(@"Are you sure?",[NSString stringWithFormat:@"Are you sure you want to delete object %@?",objectToDelete.index],@"Yes",@"No",nil);
+        NSInteger alertResult = NSRunAlertPanel(@"Are you sure?",@"Are you sure you want to delete object %@?",@"Yes",@"No",nil,objectToDelete.index);
         if (alertResult == 1) {
             [super remove:sender];
             [document refreshOverlaysOfAllClips:sender];

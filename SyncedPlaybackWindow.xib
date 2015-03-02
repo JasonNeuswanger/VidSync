@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="5056" systemVersion="13C64" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="6254" systemVersion="14C109" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="5056"/>
+        <deployment identifier="macosx"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="6254"/>
     </dependencies>
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="VidSyncDocument">
@@ -25,9 +26,9 @@
             </connections>
         </customObject>
         <customObject id="-1" userLabel="First Responder" customClass="FirstResponder"/>
-        <customObject id="-3" userLabel="Application"/>
+        <customObject id="-3" userLabel="Application" customClass="NSObject"/>
         <window identifier="SyncedPlaybackPanel" title="Synchronized Playback Controls" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" oneShot="NO" releasedWhenClosed="NO" showsToolbarButton="NO" visibleAtLaunch="NO" frameAutosaveName="Synchronized Playback Controls" animationBehavior="default" id="ID5-hV-LOZ" customClass="SyncedPlaybackPanel">
-            <windowStyleMask key="styleMask" resizable="YES"/>
+            <windowStyleMask key="styleMask" titled="YES" resizable="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="61" y="1438" width="1170" height="120"/>
             <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1578"/>
@@ -178,8 +179,8 @@
                                         <buttonCell key="cell" type="square" title="→" bezelStyle="shadowlessSquare" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="69Y-SW-P9r">
                                             <behavior key="behavior" lightByContents="YES"/>
                                             <font key="font" metaFont="system"/>
-                                            <string key="keyEquivalent"></string>
-                                            <modifierMask key="keyEquivalentModifierMask" option="YES" command="YES"/>
+                                            <string key="keyEquivalent">1</string>
+                                            <modifierMask key="keyEquivalentModifierMask" shift="YES" command="YES"/>
                                         </buttonCell>
                                         <connections>
                                             <action selector="advancedPlayAll:" target="-2" id="IZ6-ha-0TN"/>
@@ -389,8 +390,8 @@
                                         <buttonCell key="cell" type="square" title="→" bezelStyle="shadowlessSquare" alignment="center" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="u2x-h9-oq7">
                                             <behavior key="behavior" lightByContents="YES"/>
                                             <font key="font" metaFont="system"/>
-                                            <string key="keyEquivalent"></string>
-                                            <modifierMask key="keyEquivalentModifierMask" option="YES" command="YES"/>
+                                            <string key="keyEquivalent">1</string>
+                                            <modifierMask key="keyEquivalentModifierMask" command="YES"/>
                                         </buttonCell>
                                         <connections>
                                             <action selector="advancedPlayAll:" target="-2" id="yH5-yb-nvY"/>
@@ -423,8 +424,8 @@
                                         <buttonCell key="cell" type="square" title="→" bezelStyle="shadowlessSquare" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="zzh-A7-l6H">
                                             <behavior key="behavior" lightByContents="YES"/>
                                             <font key="font" metaFont="system"/>
-                                            <string key="keyEquivalent"></string>
-                                            <modifierMask key="keyEquivalentModifierMask" option="YES" command="YES"/>
+                                            <string key="keyEquivalent">2</string>
+                                            <modifierMask key="keyEquivalentModifierMask" shift="YES" command="YES"/>
                                         </buttonCell>
                                         <connections>
                                             <action selector="advancedPlayAll:" target="-2" id="S4r-ow-dyS"/>
@@ -612,6 +613,8 @@
                                         <buttonCell key="cell" type="square" title="↣" bezelStyle="shadowlessSquare" alignment="center" continuous="YES" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="peH-aC-Y51">
                                             <behavior key="behavior" lightByContents="YES"/>
                                             <font key="font" metaFont="system"/>
+                                            <string key="keyEquivalent">2</string>
+                                            <modifierMask key="keyEquivalentModifierMask" command="YES"/>
                                         </buttonCell>
                                         <connections>
                                             <outlet property="document" destination="-2" id="mdo-Ly-c9M"/>
@@ -623,6 +626,8 @@
                                         <buttonCell key="cell" type="square" title="↢" bezelStyle="shadowlessSquare" alignment="center" continuous="YES" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="hr4-AD-tcE">
                                             <behavior key="behavior" lightByContents="YES"/>
                                             <font key="font" metaFont="system"/>
+                                            <string key="keyEquivalent">2</string>
+                                            <modifierMask key="keyEquivalentModifierMask" command="YES"/>
                                         </buttonCell>
                                         <connections>
                                             <outlet property="document" destination="-2" id="lKy-4B-KsU"/>
@@ -634,8 +639,8 @@
                                         <buttonCell key="cell" type="square" title="→" bezelStyle="shadowlessSquare" alignment="center" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="2oi-2k-Rva">
                                             <behavior key="behavior" lightByContents="YES"/>
                                             <font key="font" metaFont="system"/>
-                                            <string key="keyEquivalent"></string>
-                                            <modifierMask key="keyEquivalentModifierMask" option="YES" command="YES"/>
+                                            <string key="keyEquivalent">2</string>
+                                            <modifierMask key="keyEquivalentModifierMask" command="YES"/>
                                         </buttonCell>
                                         <connections>
                                             <action selector="advancedPlayAll:" target="-2" id="naT-31-xPo"/>
