@@ -296,6 +296,12 @@
 	return str;
 }
 
++ (NSString *)sanitizeFileNameString:(NSString *)fileName {
+    NSCharacterSet* illegalFileNameCharacters = [NSCharacterSet characterSetWithCharactersInString:@"/\\?%*|\"<>"];
+    return [[fileName componentsSeparatedByCharactersInSet:illegalFileNameCharacters] componentsJoinedByString:@""];
+}
+
+
 #pragma mark Helpers for OpenCV
 #pragma mark
 

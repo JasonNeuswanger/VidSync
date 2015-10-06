@@ -54,6 +54,8 @@ typedef struct {		// Creates a pair of 2D points, which can be used to represent
 + (float) randomFloatBetween:(float)float1 and:(float)float2;
 + (NSString *)stringFromMatrix:(double[])M withRows:(int)numRows andCols:(int)numCols;
 
++ (NSString *)sanitizeFileNameString:(NSString *)fileName;
+
 + (void *)CreateIplImageFromCGImage:(CGImageRef)imageRef;   // returns an IplImage ; can't use that c++ type in a .c header though
 + (CGImageRef)CGImageFromIplImage:(void *)imageAsVoid;
 

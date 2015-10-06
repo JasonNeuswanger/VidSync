@@ -144,10 +144,10 @@
 	BOOL createFolderForProject = [[[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"createFolderForProjectExports"] boolValue];
 	NSString *customText = [[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"exportedFileNameCustomText"];
 	NSMutableString *filePath = [NSMutableString stringWithString:self.project.exportPathForData];
-	if (createFolderForProject) [filePath appendString:[NSString stringWithFormat:@"/%@",self.project.name]];
+    if (createFolderForProject) [filePath appendString:[NSString stringWithFormat:@"/%@",[UtilityFunctions sanitizeFileNameString:self.project.name]]];
 	if (![fm fileExistsAtPath:filePath]) [fm createDirectoryAtPath:filePath withIntermediateDirectories:YES attributes:nil error:NULL];
 	[filePath appendString:@"/"];
-	if (includeProjectName) [filePath appendString:[NSString stringWithFormat:@"%@ - ",self.project.name]];
+	if (includeProjectName) [filePath appendString:[NSString stringWithFormat:@"%@ - ",[UtilityFunctions sanitizeFileNameString:self.project.name]]];
 	NSDate *now = [NSDate dateWithTimeIntervalSinceNow:0.0];
 	if (includeCurrentDate) {
 		NSString *currentDate = [now descriptionWithCalendarFormat:@"%Y-%m-%d - " timeZone:nil locale:[[NSUserDefaults standardUserDefaults] dictionaryRepresentation]];
