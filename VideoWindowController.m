@@ -630,7 +630,7 @@
 	}
 	if (pointToSelect != nil) {
 		if ([[doc.distortionPointsController selectedObjects] count] > 0 && [[[doc.distortionPointsController selectedObjects] objectAtIndex:0] isEqualTo:pointToSelect]) {		// if the point is already selected, deselect it
-			[doc.distortionPointsController setSelectedObjects:nil];
+            [doc.distortionPointsController setSelectionIndexes:[NSIndexSet indexSet]];
 		} else {
 			[doc.distortionLinesController setSelectedObjects:[NSArray arrayWithObject:pointToSelect.distortionLine]];
 			[doc.distortionPointsController setSelectedObjects:[NSArray arrayWithObject:pointToSelect]];		
@@ -672,7 +672,7 @@
 			pointToSelect = [pointsWithScreenCoordinates objectAtIndex:0];
 		}
 		if ([[pointsArrayController selectedObjects] count] > 0 && [[[pointsArrayController selectedObjects] objectAtIndex:0] isEqualTo:pointToSelect]) {		// if the point is already selected, deselect it
-			[pointsArrayController setSelectedObjects:nil];
+			[pointsArrayController setSelectionIndexes:[NSIndexSet indexSet]];
 			[self refreshOverlay];
 		} else {																														// otherwise, select the point
 			[pointsArrayController setSelectedObjects:[NSArray arrayWithObject:pointToSelect]];
@@ -702,7 +702,7 @@
 			pointToSelect = [[overlayView.visibleScreenPoints anyObject] point];
 		}
 		if ([[self.videoClip.project.document.eventsPointsController selectedObjects] count] > 0 && [[[self.videoClip.project.document.eventsPointsController selectedObjects] objectAtIndex:0] isEqualTo:pointToSelect]) {		// if the point is already selected, deselect it
-			[self.videoClip.project.document.eventsPointsController setSelectedObjects:nil];
+			[self.videoClip.project.document.eventsPointsController setSelectionIndexes:[NSIndexSet indexSet]];
 		} else { // otherwise, select the point and its event and object
 			VSTrackedObject *objectToSelect = [pointToSelect.trackedEvent.trackedObjects anyObject];
 			VSTrackedObject *previouslySelectedObject = nil;
@@ -746,7 +746,7 @@
 		}
 		if ([[self.videoClip.project.document.annotationsController selectedObjects] count] > 0 && [[[self.videoClip.project.document.annotationsController selectedObjects] objectAtIndex:0] isEqualTo:annotationToSelect]) {		// if the annotation is already selected, deselect it
 			[[NSNotificationCenter defaultCenter] postNotificationName:NSTableViewSelectionIsChangingNotification object:self.videoClip.project.document.annotationsController.mainTableView];	
-			[self.videoClip.project.document.annotationsController setSelectedObjects:nil];
+			[self.videoClip.project.document.annotationsController setSelectionIndexes:[NSIndexSet indexSet]];
 		} else {																														// otherwise, select the point and its event and object
 			[[NSNotificationCenter defaultCenter] postNotificationName:NSTableViewSelectionIsChangingNotification object:self.videoClip.project.document.annotationsController.mainTableView];
 			[self.videoClip.project.document.annotationsController setSelectedObjects:[NSArray arrayWithObject:annotationToSelect]];
@@ -813,6 +813,7 @@
 
 - (void) processSynchronizationStatus   // Called when loading clips when the file is opened or clip is created, and by observing syncOffset, syncIsLocked, and isMasterClipOf for the video
 {
+    
     BOOL showAdvancedControlsWithOnlyMasterClip = [[[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"showAdvancedControlsWithOnlyMasterClip"] boolValue];
     
     BOOL noNonMasterClipsAreSynced = TRUE;
@@ -882,18 +883,33 @@
     @try {
         [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKeyPath:@"values.showAdvancedControlsWithOnlyMasterClip"];
     } @catch (id exception) {
-        NSLog(@"Error removing windowController as an observer for showAdvancedControlsWithOnlyMasterClip: %@",(NSException *)exception);
+        NSLog(@"Exception removing windowController as an observer for showAdvancedControlsWithOnlyMasterClip: %@",(NSException *)exception);
     }
     [self.videoClip carefullyRemoveObserver:self forKeyPath:@"syncIsLocked"];
     [self.videoClip carefullyRemoveObserver:self forKeyPath:@"syncOffset"];
     [self.videoClip carefullyRemoveObserver:self forKeyPath:@"isMasterClipOf"];
+
+    
+    @try {
+        // This is one of the most nonsensical pieces of code in VidSync. It stops a crash bug and I have no idea why. Basically,
+        // AVPlayer's "rate" property is being observed by something that's still registered as an observer when when the VideoWindowControllers
+        // are deallocated, causing a crash. But the only observers on "rate" that I actually set are being correctly unregistered first.
+        // Querying its observationInfo shows some others that are automatically set, including the one that persists when it's not supposed to,
+        // but I can't tell how it's getting set. Strangely, when I don't set the VidSyncDocument to observe the rate, I don't have this problem.
+        // Even though I know I'm correctly unregistering that observance, the additional one somehow set behind the scenes happens as some
+        // kind of side effect of that one being set. I'm at a loss for how to resolve this problem correctly, but in tinkering with it I found that
+        // this try-catch statement (trying to remove an observer from the player that is not even registered with it, generating an exception)
+        // fixes the problem. This makes absolutely no sense, but at least it works.
+        [self.playerView.player removeObserver:self forKeyPath:@"whateverGoesHereDoesntEvenMatter"];
+    } @catch (id exception) {
+    }
     
     @try {
         if (self.document != nil) {
             [self removeObserver:self.document forKeyPath:@"playerView.player.rate"];
         }
     } @catch (id exception) {
-        NSLog(@"exception trying to remove observer form VideoWindowController: %@",(NSException *)exception);
+        NSLog(@"Exception trying to remove observer form VideoWindowController: %@",(NSException *)exception);
     }
     
 }

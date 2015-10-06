@@ -16,6 +16,7 @@
 		8D15AC320486D014006FF6A4 /* main.mm in Sources */ = {isa = PBXBuildFile; fileRef = 2A37F4B0FDCFA73011CA2CEA /* main.mm */; settings = {ATTRIBUTES = (); }; };
 		96010D4710FCF0A300944387 /* EventsOtherObjectsArrayController.m in Sources */ = {isa = PBXBuildFile; fileRef = 96010D4610FCF0A300944387 /* EventsOtherObjectsArrayController.m */; };
 		96010ED610FE410500944387 /* VSVisibleItemArrayController.m in Sources */ = {isa = PBXBuildFile; fileRef = 96010ED510FE410500944387 /* VSVisibleItemArrayController.m */; };
+		9602D85A1BC2F5F000F25A21 /* libz.1.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 9602D8581BC2F5AD00F25A21 /* libz.1.dylib */; };
 		96070346152A718C00905BCC /* libopencv_calib3d.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 96070339152A718C00905BCC /* libopencv_calib3d.a */; };
 		96070347152A718C00905BCC /* libopencv_contrib.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9607033A152A718C00905BCC /* libopencv_contrib.a */; };
 		96070348152A718C00905BCC /* libopencv_core.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9607033B152A718C00905BCC /* libopencv_core.a */; };
@@ -133,7 +134,6 @@
 		96AE98871165348400118398 /* VidSyncProject.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 96AE98861165348400118398 /* VidSyncProject.xcdatamodeld */; };
 		96AF8EB814C18F8700731DEA /* opencv in Resources */ = {isa = PBXBuildFile; fileRef = 96AF8EB614C18F8700731DEA /* opencv */; };
 		96AF8EB914C18F8700731DEA /* opencv2 in Resources */ = {isa = PBXBuildFile; fileRef = 96AF8EB714C18F8700731DEA /* opencv2 */; };
-		96AF8EBB14C206AF00731DEA /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 96AF8EBA14C206AE00731DEA /* libz.dylib */; };
 		96B766B118BE9928005EB380 /* PlaybackDurationTabView.m in Sources */ = {isa = PBXBuildFile; fileRef = 96B766B018BE9928005EB380 /* PlaybackDurationTabView.m */; };
 		96BBAD60151A93760066E9CC /* VSScientificNotationFormatter.m in Sources */ = {isa = PBXBuildFile; fileRef = 96BBAD5F151A93760066E9CC /* VSScientificNotationFormatter.m */; };
 		96BDA40B117B826100C39399 /* VSDistortionLine.m in Sources */ = {isa = PBXBuildFile; fileRef = 96BDA40A117B826100C39399 /* VSDistortionLine.m */; };
@@ -182,6 +182,7 @@
 		96010D4610FCF0A300944387 /* EventsOtherObjectsArrayController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EventsOtherObjectsArrayController.m; sourceTree = "<group>"; };
 		96010ED410FE410500944387 /* VSVisibleItemArrayController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VSVisibleItemArrayController.h; sourceTree = "<group>"; };
 		96010ED510FE410500944387 /* VSVisibleItemArrayController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VSVisibleItemArrayController.m; sourceTree = "<group>"; };
+		9602D8581BC2F5AD00F25A21 /* libz.1.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.1.dylib; path = ../../../../usr/lib/libz.1.dylib; sourceTree = "<group>"; };
 		96070339152A718C00905BCC /* libopencv_calib3d.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libopencv_calib3d.a; path = OpenCV/libopencv_calib3d.a; sourceTree = "<group>"; };
 		9607033A152A718C00905BCC /* libopencv_contrib.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libopencv_contrib.a; path = OpenCV/libopencv_contrib.a; sourceTree = "<group>"; };
 		9607033B152A718C00905BCC /* libopencv_core.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libopencv_core.a; path = OpenCV/libopencv_core.a; sourceTree = "<group>"; };
@@ -686,7 +687,6 @@
 		96AE97AD1164F92700118398 /* ObjectAddPanel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObjectAddPanel.m; sourceTree = "<group>"; };
 		96AF8EB614C18F8700731DEA /* opencv */ = {isa = PBXFileReference; lastKnownFileType = folder; name = opencv; path = OpenCV/opencv; sourceTree = "<group>"; };
 		96AF8EB714C18F8700731DEA /* opencv2 */ = {isa = PBXFileReference; lastKnownFileType = folder; name = opencv2; path = OpenCV/opencv2; sourceTree = "<group>"; };
-		96AF8EBA14C206AE00731DEA /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
 		96B766AF18BE9928005EB380 /* PlaybackDurationTabView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlaybackDurationTabView.h; sourceTree = "<group>"; };
 		96B766B018BE9928005EB380 /* PlaybackDurationTabView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PlaybackDurationTabView.m; sourceTree = "<group>"; };
 		96BBAD5D151A8C270066E9CC /* VidSyncProject 1.07.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "VidSyncProject 1.07.xcdatamodel"; sourceTree = "<group>"; };
@@ -745,7 +745,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				96AF8EBB14C206AF00731DEA /* libz.dylib in Frameworks */,
+				9602D85A1BC2F5F000F25A21 /* libz.1.dylib in Frameworks */,
 				775DFF38067A968500C5B868 /* Cocoa.framework in Frameworks */,
 				969BEE00183FF42C006E6AAC /* AVFoundation.framework in Frameworks */,
 				969BEE02183FF437006E6AAC /* AVKit.framework in Frameworks */,
@@ -856,7 +856,6 @@
 		2A37F4AAFDCFA73011CA2CEA /* VidSync */ = {
 			isa = PBXGroup;
 			children = (
-				96AF8EBA14C206AE00731DEA /* libz.dylib */,
 				96EF22541095667C001DEF3A /* Model Classes */,
 				96EF24E310967B07001DEF3A /* View Classes */,
 				96EF22571095668F001DEF3A /* Controller Classes */,
@@ -903,6 +902,7 @@
 		2A37F4C3FDCFA73011CA2CEA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				9602D8581BC2F5AD00F25A21 /* libz.1.dylib */,
 				96822E95151333C800F91ED2 /* gsl-1.15_universal */,
 				96AF8E7514C1878100731DEA /* OpenCV library */,
 				1058C7A6FEA54F5311CA2CBB /* Linked Frameworks */,
@@ -1609,7 +1609,7 @@
 		2A37F4A9FDCFA73011CA2CEA /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0500;
+				LastUpgradeCheck = 0700;
 				ORGANIZATIONNAME = "Jason Neuswanger";
 				TargetAttributes = {
 					8D15AC270486D014006FF6A4 = {
@@ -1811,9 +1811,10 @@
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.9;
 				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.jasonneuswanger.VidSyncApp;
 				PRODUCT_NAME = VidSync;
 				PROVISIONING_PROFILE = "686dc4e5-761c-4de7-9df3-2284ff885ab0";
-				SDKROOT = macosx10.9;
+				SDKROOT = macosx;
 				USER_HEADER_SEARCH_PATHS = "$(BUILT_PRODUCTS_DIR)/**";
 				"USER_HEADER_SEARCH_PATHS[arch=*]" = "$(BUILT_PRODUCTS_DIR)/** $(SRCROOT)/**";
 				WRAPPER_EXTENSION = app;
@@ -1853,9 +1854,10 @@
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.9;
 				ONLY_ACTIVE_ARCH = NO;
+				PRODUCT_BUNDLE_IDENTIFIER = com.jasonneuswanger.VidSyncApp;
 				PRODUCT_NAME = VidSync;
 				PROVISIONING_PROFILE = "686dc4e5-761c-4de7-9df3-2284ff885ab0";
-				SDKROOT = macosx10.9;
+				SDKROOT = macosx;
 				USER_HEADER_SEARCH_PATHS = "$(SRCROOT)/** $(BUILT_PRODUCTS_DIR)/**";
 				"USER_HEADER_SEARCH_PATHS[arch=*]" = "$(SRCROOT)/** $(BUILT_PRODUCTS_DIR)/**";
 				WRAPPER_EXTENSION = app;
@@ -1867,6 +1869,7 @@
 			buildSettings = {
 				CLANG_CXX_LIBRARY = "libstdc++";
 				CLANG_ENABLE_OBJC_ARC = YES;
+				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_ENABLE_OBJC_GC = unsupported;
 				GCC_OPTIMIZATION_LEVEL = 0;

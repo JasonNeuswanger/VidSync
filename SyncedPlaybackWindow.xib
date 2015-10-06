@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="6254" systemVersion="14C109" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="8191" systemVersion="15A284" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="6254"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="8191"/>
     </dependencies>
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="VidSyncDocument">
@@ -45,6 +45,7 @@
                             <textField toolTip="Current time (measured relative to start of the master clip)" verticalHuggingPriority="750" id="dNN-uS-Zfp">
                                 <rect key="frame" x="1006" y="79" width="159" height="14"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
+                                <animations/>
                                 <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" placeholderString="-0:00:00:00:1234/2997" id="9XH-7y-a1f">
                                     <font key="font" metaFont="smallSystem"/>
                                     <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
@@ -54,6 +55,7 @@
                             <textField toolTip="Current project's title" verticalHuggingPriority="750" id="hkI-el-fyZ">
                                 <rect key="frame" x="1006" y="98" width="159" height="14"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
+                                <animations/>
                                 <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Project Name" placeholderString="Project Title" id="5DX-G8-Tlj">
                                     <font key="font" metaFont="smallSystem"/>
                                     <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
@@ -66,6 +68,7 @@
                             <button toolTip="Play forward at normal speed while pressed (Option+RightArrow)" verticalHuggingPriority="750" tag="1" id="S3k-Pl-5Yk" customClass="PlayWhilePressedButton">
                                 <rect key="frame" x="54" y="71" width="32" height="44"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                <animations/>
                                 <buttonCell key="cell" type="square" title="↣" bezelStyle="shadowlessSquare" alignment="center" continuous="YES" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="rC5-ar-Hiy">
                                     <behavior key="behavior" lightByContents="YES"/>
                                     <font key="font" metaFont="system"/>
@@ -79,6 +82,7 @@
                             <button toolTip="Play backward at normal speed while pressed (Option+LeftArrow)" verticalHuggingPriority="750" id="ESf-Qx-OgJ" customClass="PlayWhilePressedButton">
                                 <rect key="frame" x="17" y="71" width="30" height="44"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                <animations/>
                                 <buttonCell key="cell" type="square" title="↢" bezelStyle="shadowlessSquare" alignment="center" continuous="YES" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="gE1-Ad-TkF">
                                     <behavior key="behavior" lightByContents="YES"/>
                                     <font key="font" metaFont="system"/>
@@ -92,6 +96,7 @@
                             <button toolTip="Step backward 1 frame (Command+LeftArrow, or scroll mouse wheel up)" verticalHuggingPriority="750" tag="1" id="gU2-s7-anF" customClass="VideoControlButton">
                                 <rect key="frame" x="99" y="71" width="26" height="44"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                <animations/>
                                 <buttonCell key="cell" type="square" title="⇤" bezelStyle="shadowlessSquare" alignment="center" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="VQj-qv-uVm">
                                     <behavior key="behavior" lightByContents="YES"/>
                                     <font key="font" metaFont="system"/>
@@ -114,6 +119,7 @@
                                         </configuration>
                                     </ciFilter>
                                 </contentFilters>
+                                <animations/>
                                 <buttonCell key="cell" type="square" title="►" bezelStyle="shadowlessSquare" alignment="center" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="hYk-gl-eYW">
                                     <behavior key="behavior" lightByContents="YES"/>
                                     <font key="font" metaFont="system"/>
@@ -128,6 +134,7 @@
                             <button toolTip="Step forward 1 frame (Command+RightArrow, or scroll mouse wheel down)" verticalHuggingPriority="750" tag="2" id="AZF-Zk-pea" customClass="VideoControlButton">
                                 <rect key="frame" x="127" y="71" width="27" height="44"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                <animations/>
                                 <buttonCell key="cell" type="square" title="⇥" bezelStyle="shadowlessSquare" alignment="center" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="sLP-AM-uax">
                                     <behavior key="behavior" lightByContents="YES"/>
                                     <font key="font" metaFont="system"/>
@@ -142,6 +149,7 @@
                             <button toolTip="Play forward or Pause (Command+UpArrow)" verticalHuggingPriority="750" id="UCC-eN-gHg" customClass="VideoControlButton">
                                 <rect key="frame" x="197" y="74" width="35" height="44"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                <animations/>
                                 <buttonCell key="cell" type="square" title="►" bezelStyle="shadowlessSquare" alignment="center" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="WcF-5D-RnR">
                                     <behavior key="behavior" lightByContents="YES"/>
                                     <font key="font" metaFont="system"/>
@@ -168,6 +176,7 @@
                                                 </configuration>
                                             </ciFilter>
                                         </contentFilters>
+                                        <animations/>
                                         <buttonCell key="cell" type="square" title="→" bezelStyle="shadowlessSquare" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="69Y-SW-P9r">
                                             <behavior key="behavior" lightByContents="YES"/>
                                             <font key="font" metaFont="system"/>
@@ -182,6 +191,7 @@
                                     <textField verticalHuggingPriority="750" id="iDi-a5-uVI">
                                         <rect key="frame" x="147" y="36" width="63" height="14"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                        <animations/>
                                         <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Play at rate" id="5zi-jN-2Ld">
                                             <font key="font" metaFont="smallSystem"/>
                                             <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
@@ -191,6 +201,7 @@
                                     <popUpButton verticalHuggingPriority="750" id="ZuE-ys-dal">
                                         <rect key="frame" x="247" y="31" width="126" height="22"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                        <animations/>
                                         <popUpButtonCell key="cell" type="push" title="until stopped" bezelStyle="rounded" alignment="left" controlSize="small" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" tag="3" imageScaling="proportionallyDown" inset="2" selectedItem="fqY-An-TFf" id="QVW-Wk-Ri1">
                                             <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
                                             <font key="font" metaFont="smallSystem"/>
@@ -209,6 +220,7 @@
                                     <tabView drawsBackground="NO" type="noTabsNoBorder" initialItem="9fh-fw-tBq" id="JlR-Fi-JFh" customClass="PlaybackDurationTabView">
                                         <rect key="frame" x="147" y="7" width="223" height="20"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <animations/>
                                         <font key="font" metaFont="system"/>
                                         <tabViewItems>
                                             <tabViewItem label="TilStop" identifier="1" id="9fh-fw-tBq">
@@ -219,6 +231,7 @@
                                                         <textField verticalHuggingPriority="750" id="HaI-zs-3uh">
                                                             <rect key="frame" x="53" y="4" width="137" height="14"/>
                                                             <autoresizingMask key="autoresizingMask"/>
+                                                            <animations/>
                                                             <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="center" title="(slow motion)" id="LR6-af-UqY">
                                                                 <font key="font" metaFont="smallSystem"/>
                                                                 <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
@@ -233,6 +246,7 @@
                                                             </connections>
                                                         </textField>
                                                     </subviews>
+                                                    <animations/>
                                                 </view>
                                             </tabViewItem>
                                             <tabViewItem label="ExactDur" identifier="2" id="dFg-a2-WSa">
@@ -243,6 +257,7 @@
                                                         <textField verticalHuggingPriority="750" id="Ict-Rw-OsN">
                                                             <rect key="frame" x="124" y="4" width="47" height="14"/>
                                                             <autoresizingMask key="autoresizingMask"/>
+                                                            <animations/>
                                                             <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="seconds" id="rB0-Jt-cvi">
                                                                 <font key="font" metaFont="smallSystem"/>
                                                                 <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
@@ -252,6 +267,7 @@
                                                         <textField verticalHuggingPriority="750" id="a9h-lr-XIb">
                                                             <rect key="frame" x="91" y="1" width="30" height="19"/>
                                                             <autoresizingMask key="autoresizingMask"/>
+                                                            <animations/>
                                                             <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="lve-74-CoP">
                                                                 <numberFormatter key="formatter" formatterBehavior="custom10_4" positiveFormat="#.##" negativeFormat="#.##" usesGroupingSeparator="NO" paddingCharacter="*" groupingSize="0" minimumIntegerDigits="0" maximumIntegerDigits="42" maximumFractionDigits="2" decimalSeparator="." groupingSeparator="," currencyDecimalSeparator="." plusSign="+" minusSign="-" notANumberSymbol="NaN" perMillSymbol="‰" percentSymbol="%" exponentSymbol="E" positivePrefix="" positiveSuffix="" negativePrefix="-" negativeSuffix="" id="JBM-08-cPH"/>
                                                                 <font key="font" metaFont="smallSystem"/>
@@ -265,6 +281,7 @@
                                                         <textField verticalHuggingPriority="750" id="0NV-L0-LgR">
                                                             <rect key="frame" x="71" y="3" width="20" height="14"/>
                                                             <autoresizingMask key="autoresizingMask"/>
+                                                            <animations/>
                                                             <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="for" id="Sbo-pe-Vfl">
                                                                 <font key="font" metaFont="smallSystem"/>
                                                                 <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
@@ -272,6 +289,7 @@
                                                             </textFieldCell>
                                                         </textField>
                                                     </subviews>
+                                                    <animations/>
                                                 </view>
                                             </tabViewItem>
                                             <tabViewItem label="RanDur" identifier="" id="GWJ-qy-ouz">
@@ -282,6 +300,7 @@
                                                         <textField verticalHuggingPriority="750" id="p5R-jo-673">
                                                             <rect key="frame" x="72" y="1" width="30" height="19"/>
                                                             <autoresizingMask key="autoresizingMask"/>
+                                                            <animations/>
                                                             <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="WSg-B3-Get">
                                                                 <numberFormatter key="formatter" formatterBehavior="custom10_4" positiveFormat="#.##" negativeFormat="#.##" usesGroupingSeparator="NO" paddingCharacter="*" groupingSize="0" minimumIntegerDigits="0" maximumIntegerDigits="42" maximumFractionDigits="2" decimalSeparator="." groupingSeparator="," currencyDecimalSeparator="." plusSign="+" minusSign="-" notANumberSymbol="NaN" perMillSymbol="‰" percentSymbol="%" exponentSymbol="E" positivePrefix="" positiveSuffix="" negativePrefix="-" negativeSuffix="" id="zUa-vJ-uZL"/>
                                                                 <font key="font" metaFont="smallSystem"/>
@@ -295,6 +314,7 @@
                                                         <textField verticalHuggingPriority="750" id="yAG-ZU-diy">
                                                             <rect key="frame" x="130" y="1" width="30" height="19"/>
                                                             <autoresizingMask key="autoresizingMask"/>
+                                                            <animations/>
                                                             <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="5MV-0V-Pv7">
                                                                 <numberFormatter key="formatter" formatterBehavior="custom10_4" positiveFormat="#.##" negativeFormat="#.##" usesGroupingSeparator="NO" paddingCharacter="*" groupingSize="0" minimumIntegerDigits="0" maximumIntegerDigits="42" maximumFractionDigits="2" decimalSeparator="." groupingSeparator="," currencyDecimalSeparator="." plusSign="+" minusSign="-" notANumberSymbol="NaN" perMillSymbol="‰" percentSymbol="%" exponentSymbol="E" positivePrefix="" positiveSuffix="" negativePrefix="-" negativeSuffix="" id="ogN-3I-OyN"/>
                                                                 <font key="font" metaFont="smallSystem"/>
@@ -308,6 +328,7 @@
                                                         <textField verticalHuggingPriority="750" id="7OI-jD-Ip1">
                                                             <rect key="frame" x="104" y="4" width="30" height="14"/>
                                                             <autoresizingMask key="autoresizingMask"/>
+                                                            <animations/>
                                                             <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="and" id="7w5-Rj-s3A">
                                                                 <font key="font" metaFont="smallSystem"/>
                                                                 <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
@@ -317,6 +338,7 @@
                                                         <textField verticalHuggingPriority="750" id="0eY-ln-kZq">
                                                             <rect key="frame" x="22" y="4" width="49" height="14"/>
                                                             <autoresizingMask key="autoresizingMask"/>
+                                                            <animations/>
                                                             <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="between" id="kgT-fN-LhH">
                                                                 <font key="font" metaFont="smallSystem"/>
                                                                 <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
@@ -326,6 +348,7 @@
                                                         <textField verticalHuggingPriority="750" id="761-kX-DTG">
                                                             <rect key="frame" x="162" y="4" width="47" height="14"/>
                                                             <autoresizingMask key="autoresizingMask"/>
+                                                            <animations/>
                                                             <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="seconds" id="qUf-f6-fAG">
                                                                 <font key="font" metaFont="smallSystem"/>
                                                                 <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
@@ -333,6 +356,7 @@
                                                             </textFieldCell>
                                                         </textField>
                                                     </subviews>
+                                                    <animations/>
                                                 </view>
                                             </tabViewItem>
                                         </tabViewItems>
@@ -344,6 +368,7 @@
                                     <textField toolTip="Advanced playback rate 1" verticalHuggingPriority="750" id="YjL-dc-yU8">
                                         <rect key="frame" x="212" y="34" width="30" height="19"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                        <animations/>
                                         <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" allowsUndo="NO" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="bEh-Up-22C">
                                             <numberFormatter key="formatter" formatterBehavior="custom10_4" positiveFormat="#.##" negativeFormat="#.##" usesGroupingSeparator="NO" paddingCharacter="*" groupingSize="0" minimumIntegerDigits="0" maximumIntegerDigits="42" maximumFractionDigits="2" decimalSeparator="." groupingSeparator="," currencyDecimalSeparator="." plusSign="+" minusSign="-" notANumberSymbol="NaN" perMillSymbol="‰" percentSymbol="%" exponentSymbol="E" positivePrefix="" positiveSuffix="" negativePrefix="-" negativeSuffix="" id="9p8-ie-qpC"/>
                                             <font key="font" metaFont="smallSystem"/>
@@ -357,6 +382,7 @@
                                     <button toolTip="Play forward at advanced playback rate 1 while pressed (Option+Control+RightArrow)" verticalHuggingPriority="750" tag="1" id="aP4-YR-y3p" customClass="PlayWhilePressedButton">
                                         <rect key="frame" x="42" y="13" width="27" height="35"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                        <animations/>
                                         <buttonCell key="cell" type="square" title="↣" bezelStyle="shadowlessSquare" alignment="center" continuous="YES" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="XPE-nD-KGU">
                                             <behavior key="behavior" lightByContents="YES"/>
                                             <font key="font" metaFont="system"/>
@@ -368,6 +394,7 @@
                                     <button toolTip="Play backward at advanced playback rate 1 while pressed (Option+Control+LeftArrow)" verticalHuggingPriority="750" id="tgH-z0-0yM" customClass="PlayWhilePressedButton">
                                         <rect key="frame" x="7" y="13" width="25" height="35"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                        <animations/>
                                         <buttonCell key="cell" type="square" title="↢" bezelStyle="shadowlessSquare" alignment="center" continuous="YES" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="tfb-gl-CAm">
                                             <behavior key="behavior" lightByContents="YES"/>
                                             <font key="font" metaFont="system"/>
@@ -379,6 +406,7 @@
                                     <button toolTip="Play forward at advanced playback rate 1 (Command+1)" verticalHuggingPriority="750" tag="1" id="UOJ-hU-iuB" customClass="VideoControlButton">
                                         <rect key="frame" x="113" y="13" width="25" height="35"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                        <animations/>
                                         <buttonCell key="cell" type="square" title="→" bezelStyle="shadowlessSquare" alignment="center" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="u2x-h9-oq7">
                                             <behavior key="behavior" lightByContents="YES"/>
                                             <font key="font" metaFont="system"/>
@@ -391,6 +419,7 @@
                                         </connections>
                                     </button>
                                 </subviews>
+                                <animations/>
                                 <connections>
                                     <outlet property="playBackwardButton" destination="DvZ-df-tMF" id="4CJ-BJ-nAZ"/>
                                     <outlet property="playBackwardWhilePressedButton" destination="tgH-z0-0yM" id="RJ5-cM-nBL"/>
@@ -413,6 +442,7 @@
                                                 </configuration>
                                             </ciFilter>
                                         </contentFilters>
+                                        <animations/>
                                         <buttonCell key="cell" type="square" title="→" bezelStyle="shadowlessSquare" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="zzh-A7-l6H">
                                             <behavior key="behavior" lightByContents="YES"/>
                                             <font key="font" metaFont="system"/>
@@ -427,6 +457,7 @@
                                     <textField verticalHuggingPriority="750" id="Oca-ey-Rsk">
                                         <rect key="frame" x="147" y="36" width="63" height="14"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                        <animations/>
                                         <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Play at rate" id="BM9-My-Tn2">
                                             <font key="font" metaFont="smallSystem"/>
                                             <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
@@ -436,6 +467,7 @@
                                     <popUpButton verticalHuggingPriority="750" id="LuX-vd-VZQ">
                                         <rect key="frame" x="247" y="31" width="126" height="22"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                        <animations/>
                                         <popUpButtonCell key="cell" type="push" title="until stopped" bezelStyle="rounded" alignment="left" controlSize="small" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" tag="3" imageScaling="proportionallyDown" inset="2" selectedItem="KKh-yY-fgh" id="bCL-FG-NWd">
                                             <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
                                             <font key="font" metaFont="smallSystem"/>
@@ -454,6 +486,7 @@
                                     <tabView drawsBackground="NO" type="noTabsNoBorder" initialItem="l3s-Z6-SI3" id="zNf-fQ-2Zj" customClass="PlaybackDurationTabView">
                                         <rect key="frame" x="147" y="8" width="223" height="20"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <animations/>
                                         <font key="font" metaFont="system"/>
                                         <tabViewItems>
                                             <tabViewItem label="TilStop" identifier="1" id="l3s-Z6-SI3">
@@ -464,6 +497,7 @@
                                                         <textField verticalHuggingPriority="750" id="Eoo-AX-1wj">
                                                             <rect key="frame" x="53" y="4" width="137" height="14"/>
                                                             <autoresizingMask key="autoresizingMask"/>
+                                                            <animations/>
                                                             <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="center" title="(slow motion)" id="ebq-fO-N9d">
                                                                 <font key="font" metaFont="smallSystem"/>
                                                                 <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
@@ -478,6 +512,7 @@
                                                             </connections>
                                                         </textField>
                                                     </subviews>
+                                                    <animations/>
                                                 </view>
                                             </tabViewItem>
                                             <tabViewItem label="ExactDur" identifier="2" id="osU-sR-Krn">
@@ -488,6 +523,7 @@
                                                         <textField verticalHuggingPriority="750" id="bkq-Zi-R5J">
                                                             <rect key="frame" x="124" y="4" width="47" height="14"/>
                                                             <autoresizingMask key="autoresizingMask"/>
+                                                            <animations/>
                                                             <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="seconds" id="Dm5-YC-8l6">
                                                                 <font key="font" metaFont="smallSystem"/>
                                                                 <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
@@ -497,6 +533,7 @@
                                                         <textField verticalHuggingPriority="750" id="QAb-Om-9HM">
                                                             <rect key="frame" x="91" y="1" width="30" height="19"/>
                                                             <autoresizingMask key="autoresizingMask"/>
+                                                            <animations/>
                                                             <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="I02-DV-DqL">
                                                                 <numberFormatter key="formatter" formatterBehavior="custom10_4" positiveFormat="#.##" negativeFormat="#.##" usesGroupingSeparator="NO" paddingCharacter="*" groupingSize="0" minimumIntegerDigits="0" maximumIntegerDigits="42" maximumFractionDigits="2" decimalSeparator="." groupingSeparator="," currencyDecimalSeparator="." plusSign="+" minusSign="-" notANumberSymbol="NaN" perMillSymbol="‰" percentSymbol="%" exponentSymbol="E" positivePrefix="" positiveSuffix="" negativePrefix="-" negativeSuffix="" id="1g7-Hm-c5P"/>
                                                                 <font key="font" metaFont="smallSystem"/>
@@ -510,6 +547,7 @@
                                                         <textField verticalHuggingPriority="750" id="sj8-pZ-ACj">
                                                             <rect key="frame" x="71" y="3" width="20" height="14"/>
                                                             <autoresizingMask key="autoresizingMask"/>
+                                                            <animations/>
                                                             <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="for" id="4Ae-dq-dxD">
                                                                 <font key="font" metaFont="smallSystem"/>
                                                                 <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
@@ -517,6 +555,7 @@
                                                             </textFieldCell>
                                                         </textField>
                                                     </subviews>
+                                                    <animations/>
                                                 </view>
                                             </tabViewItem>
                                             <tabViewItem label="RanDur" identifier="" id="IHV-k6-QV3">
@@ -527,6 +566,7 @@
                                                         <textField verticalHuggingPriority="750" id="YnA-DG-oLW">
                                                             <rect key="frame" x="72" y="1" width="30" height="19"/>
                                                             <autoresizingMask key="autoresizingMask"/>
+                                                            <animations/>
                                                             <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="0RW-Zj-yWx">
                                                                 <numberFormatter key="formatter" formatterBehavior="custom10_4" positiveFormat="#.##" negativeFormat="#.##" usesGroupingSeparator="NO" paddingCharacter="*" groupingSize="0" minimumIntegerDigits="0" maximumIntegerDigits="42" maximumFractionDigits="2" decimalSeparator="." groupingSeparator="," currencyDecimalSeparator="." plusSign="+" minusSign="-" notANumberSymbol="NaN" perMillSymbol="‰" percentSymbol="%" exponentSymbol="E" positivePrefix="" positiveSuffix="" negativePrefix="-" negativeSuffix="" id="mNA-ej-nfg"/>
                                                                 <font key="font" metaFont="smallSystem"/>
@@ -540,6 +580,7 @@
                                                         <textField verticalHuggingPriority="750" id="dfP-WX-YRe">
                                                             <rect key="frame" x="130" y="1" width="30" height="19"/>
                                                             <autoresizingMask key="autoresizingMask"/>
+                                                            <animations/>
                                                             <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="P37-ZU-181">
                                                                 <numberFormatter key="formatter" formatterBehavior="custom10_4" positiveFormat="#.##" negativeFormat="#.##" usesGroupingSeparator="NO" paddingCharacter="*" groupingSize="0" minimumIntegerDigits="0" maximumIntegerDigits="42" maximumFractionDigits="2" decimalSeparator="." groupingSeparator="," currencyDecimalSeparator="." plusSign="+" minusSign="-" notANumberSymbol="NaN" perMillSymbol="‰" percentSymbol="%" exponentSymbol="E" positivePrefix="" positiveSuffix="" negativePrefix="-" negativeSuffix="" id="oKh-nv-IUD"/>
                                                                 <font key="font" metaFont="smallSystem"/>
@@ -553,6 +594,7 @@
                                                         <textField verticalHuggingPriority="750" id="5lv-VI-KEI">
                                                             <rect key="frame" x="104" y="4" width="30" height="14"/>
                                                             <autoresizingMask key="autoresizingMask"/>
+                                                            <animations/>
                                                             <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="and" id="uwy-pi-i3s">
                                                                 <font key="font" metaFont="smallSystem"/>
                                                                 <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
@@ -562,6 +604,7 @@
                                                         <textField verticalHuggingPriority="750" id="laX-wQ-gsc">
                                                             <rect key="frame" x="22" y="4" width="49" height="14"/>
                                                             <autoresizingMask key="autoresizingMask"/>
+                                                            <animations/>
                                                             <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="between" id="5LF-Xf-3NM">
                                                                 <font key="font" metaFont="smallSystem"/>
                                                                 <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
@@ -571,6 +614,7 @@
                                                         <textField verticalHuggingPriority="750" id="jzA-Pl-pcR">
                                                             <rect key="frame" x="162" y="4" width="47" height="14"/>
                                                             <autoresizingMask key="autoresizingMask"/>
+                                                            <animations/>
                                                             <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="seconds" id="JFW-5w-P2f">
                                                                 <font key="font" metaFont="smallSystem"/>
                                                                 <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
@@ -578,6 +622,7 @@
                                                             </textFieldCell>
                                                         </textField>
                                                     </subviews>
+                                                    <animations/>
                                                 </view>
                                             </tabViewItem>
                                         </tabViewItems>
@@ -589,6 +634,7 @@
                                     <textField toolTip="Advanced playback rate 2" verticalHuggingPriority="750" id="GQq-fk-Y6d">
                                         <rect key="frame" x="212" y="34" width="30" height="19"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                        <animations/>
                                         <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" allowsUndo="NO" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="r23-jo-tv6">
                                             <numberFormatter key="formatter" formatterBehavior="custom10_4" positiveFormat="#.##" negativeFormat="#.##" usesGroupingSeparator="NO" paddingCharacter="*" groupingSize="0" minimumIntegerDigits="0" maximumIntegerDigits="42" maximumFractionDigits="2" decimalSeparator="." groupingSeparator="," currencyDecimalSeparator="." plusSign="+" minusSign="-" notANumberSymbol="NaN" perMillSymbol="‰" percentSymbol="%" exponentSymbol="E" positivePrefix="" positiveSuffix="" negativePrefix="-" negativeSuffix="" id="w53-Bu-6eY"/>
                                             <font key="font" metaFont="smallSystem"/>
@@ -602,6 +648,7 @@
                                     <button toolTip="Play forward at advanced playback rate 2 while pressed (Option+Shift+RightArrow)" verticalHuggingPriority="750" tag="1" id="4DB-v6-USk" customClass="PlayWhilePressedButton">
                                         <rect key="frame" x="42" y="13" width="27" height="35"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                        <animations/>
                                         <buttonCell key="cell" type="square" title="↣" bezelStyle="shadowlessSquare" alignment="center" continuous="YES" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="peH-aC-Y51">
                                             <behavior key="behavior" lightByContents="YES"/>
                                             <font key="font" metaFont="system"/>
@@ -615,6 +662,7 @@
                                     <button toolTip="Play backward at advanced playback rate 2 while pressed (Option+Shift+LeftArrow)" verticalHuggingPriority="750" id="dqI-9X-qHF" customClass="PlayWhilePressedButton">
                                         <rect key="frame" x="7" y="13" width="25" height="35"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                        <animations/>
                                         <buttonCell key="cell" type="square" title="↢" bezelStyle="shadowlessSquare" alignment="center" continuous="YES" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="hr4-AD-tcE">
                                             <behavior key="behavior" lightByContents="YES"/>
                                             <font key="font" metaFont="system"/>
@@ -628,6 +676,7 @@
                                     <button toolTip="Play forward at advanced playback rate 2 (Command+2)" verticalHuggingPriority="750" tag="3" id="rWK-xJ-flc" customClass="VideoControlButton">
                                         <rect key="frame" x="113" y="13" width="25" height="35"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                        <animations/>
                                         <buttonCell key="cell" type="square" title="→" bezelStyle="shadowlessSquare" alignment="center" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="2oi-2k-Rva">
                                             <behavior key="behavior" lightByContents="YES"/>
                                             <font key="font" metaFont="system"/>
@@ -640,6 +689,7 @@
                                         </connections>
                                     </button>
                                 </subviews>
+                                <animations/>
                                 <connections>
                                     <outlet property="playBackwardButton" destination="WRX-A8-2yg" id="ldb-Az-Wxz"/>
                                     <outlet property="playBackwardWhilePressedButton" destination="dqI-9X-qHF" id="Duz-EU-D3d"/>
@@ -654,6 +704,7 @@
                                     <textField verticalHuggingPriority="750" mirrorLayoutDirectionWhenInternationalizing="never" id="zpI-Gl-Spl">
                                         <rect key="frame" x="12" y="22" width="27" height="14"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                        <animations/>
                                         <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="step" id="Bgo-o4-hPJ">
                                             <font key="font" metaFont="smallSystem"/>
                                             <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -663,6 +714,7 @@
                                     <button toolTip="Step backward by the specified number of step frames" verticalHuggingPriority="750" tag="1" id="OJY-7h-Ugc" customClass="VideoControlButton">
                                         <rect key="frame" x="165" y="14" width="25" height="35"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                        <animations/>
                                         <buttonCell key="cell" type="square" title="⇤" bezelStyle="shadowlessSquare" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="YEz-wT-dx8">
                                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                             <font key="font" metaFont="system"/>
@@ -677,6 +729,7 @@
                                     <textField verticalHuggingPriority="750" id="AMS-Mc-rSa">
                                         <rect key="frame" x="43" y="19" width="30" height="19"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                        <animations/>
                                         <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="ZKy-NQ-jyj">
                                             <numberFormatter key="formatter" formatterBehavior="custom10_4" positiveFormat="#" negativeFormat="#" usesGroupingSeparator="NO" paddingCharacter="*" groupingSize="0" minimumIntegerDigits="0" maximumIntegerDigits="42" maximumFractionDigits="2" decimalSeparator="." groupingSeparator="," currencyDecimalSeparator="." plusSign="+" minusSign="-" notANumberSymbol="NaN" perMillSymbol="‰" percentSymbol="%" exponentSymbol="E" positivePrefix="" positiveSuffix="" negativePrefix="-" negativeSuffix="" id="ume-f8-5kO"/>
                                             <font key="font" metaFont="smallSystem"/>
@@ -690,6 +743,7 @@
                                     <button toolTip="Step forward by the specified number of step frames" verticalHuggingPriority="750" tag="2" id="h1l-LD-6f9" customClass="VideoControlButton">
                                         <rect key="frame" x="192" y="14" width="25" height="35"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                        <animations/>
                                         <buttonCell key="cell" type="square" title="⇥" bezelStyle="shadowlessSquare" alignment="center" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="kpP-iu-HkM">
                                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                             <font key="font" metaFont="system"/>
@@ -704,6 +758,7 @@
                                     <popUpButton verticalHuggingPriority="750" id="Vre-C0-vx5">
                                         <rect key="frame" x="80" y="17" width="76" height="22"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                        <animations/>
                                         <popUpButtonCell key="cell" type="push" title="frames" bezelStyle="rounded" alignment="left" controlSize="small" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" selectedItem="GHr-Kc-DTe" id="iIT-oE-Hdr">
                                             <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
                                             <font key="font" metaFont="smallSystem"/>
@@ -722,6 +777,7 @@
                                         </connections>
                                     </popUpButton>
                                 </subviews>
+                                <animations/>
                                 <connections>
                                     <outlet property="stepBackwardButton" destination="OJY-7h-Ugc" id="v65-wv-yvh"/>
                                     <outlet property="stepForwardButton" destination="h1l-LD-6f9" id="pec-2E-FSM"/>
@@ -735,6 +791,7 @@
                                         <rect key="frame" x="15" y="40" width="124" height="14"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                         <string key="toolTip">These are useful for switching back and forth quickly to compare two time points in the video, for example when deciding which frame to use for calibration. They are reset when you close the file.</string>
+                                        <animations/>
                                         <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Temporary bookmarks" id="icp-Ec-K7g">
                                             <font key="font" metaFont="smallSystem"/>
                                             <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -744,6 +801,7 @@
                                     <button toolTip="Set temporary bookmark 1 (It will reset when the document is closed)." tag="1" id="Dhh-Yr-mHU" customClass="VideoControlButton">
                                         <rect key="frame" x="14" y="10" width="25" height="25"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                        <animations/>
                                         <buttonCell key="cell" type="square" title="S1" bezelStyle="shadowlessSquare" imagePosition="overlaps" alignment="center" controlSize="small" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="WbD-da-w1N">
                                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                             <font key="font" metaFont="smallSystem"/>
@@ -755,6 +813,7 @@
                                     <button toolTip="Go to temporary bookmark 1" tag="1" id="sXq-cY-I8w" customClass="VideoControlButton">
                                         <rect key="frame" x="42" y="10" width="26" height="25"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                        <animations/>
                                         <buttonCell key="cell" type="square" title="G1" bezelStyle="shadowlessSquare" imagePosition="overlaps" alignment="center" controlSize="small" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="x0Q-bS-u6O">
                                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                             <font key="font" metaFont="smallSystem"/>
@@ -766,6 +825,7 @@
                                     <button toolTip="Set temporary bookmark 2 (It will reset when the document is closed)." tag="2" id="U9D-qS-Naa" customClass="VideoControlButton">
                                         <rect key="frame" x="96" y="10" width="25" height="25"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                        <animations/>
                                         <buttonCell key="cell" type="square" title="S2" bezelStyle="shadowlessSquare" imagePosition="overlaps" alignment="center" controlSize="small" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="8vv-qn-nPS">
                                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                             <font key="font" metaFont="smallSystem"/>
@@ -777,6 +837,7 @@
                                     <button toolTip="Go to temporary bookmark 2" tag="2" id="fGb-as-LTH" customClass="VideoControlButton">
                                         <rect key="frame" x="123" y="10" width="26" height="25"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                        <animations/>
                                         <buttonCell key="cell" type="square" title="G2" bezelStyle="shadowlessSquare" imagePosition="overlaps" alignment="center" controlSize="small" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="nET-fX-kf3">
                                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                             <font key="font" metaFont="smallSystem"/>
@@ -786,10 +847,12 @@
                                         </connections>
                                     </button>
                                 </subviews>
+                                <animations/>
                             </customView>
                             <button id="Rjx-Pv-JQl" customClass="VideoControlButton">
                                 <rect key="frame" x="4" y="106" width="13" height="12"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                <animations/>
                                 <buttonCell key="cell" type="square" title="⊕" bezelStyle="shadowlessSquare" imagePosition="overlaps" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="hcf-yS-2v6">
                                     <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                     <font key="font" metaFont="system"/>
@@ -805,14 +868,17 @@
                                     <slider toolTip="This slider shows the current timecode relative to the start of the master clip." verticalHuggingPriority="750" id="Rhk-PX-NnY">
                                         <rect key="frame" x="20" y="6" width="720" height="20"/>
                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
+                                        <animations/>
                                         <sliderCell key="cell" controlSize="small" continuous="YES" alignment="left" maxValue="100" tickMarkPosition="below" numberOfTickMarks="100" sliderType="linear" id="bX6-nO-u4q"/>
                                         <connections>
                                             <action selector="setTimeFromScrubber:" target="-2" id="D0f-oB-rAS"/>
                                         </connections>
                                     </slider>
                                 </subviews>
+                                <animations/>
                             </customView>
                         </subviews>
+                        <animations/>
                         <connections>
                             <outlet property="bookmarkGoButton1" destination="sXq-cY-I8w" id="DEx-ly-5ve"/>
                             <outlet property="bookmarkGoButton2" destination="fGb-as-LTH" id="617-dO-5wB"/>
@@ -829,6 +895,7 @@
                         </connections>
                     </customView>
                 </subviews>
+                <animations/>
             </view>
             <connections>
                 <outlet property="document" destination="-2" id="zLa-w0-OvZ"/>

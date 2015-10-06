@@ -126,7 +126,7 @@
 @property (readonly, weak) IBOutlet VSVisibleItemArrayController *annotationsController;
 @property (readonly, weak) IBOutlet VSVisibleItemArrayController *distortionPointsController;
 @property (readonly, weak) IBOutlet CalibDistortionLineArrayController *distortionLinesController;	
-@property (readonly, weak) IBOutlet NSWindow *mainWindow;
+@property (readonly, weak) IBOutlet MainProjectWindow *mainWindow;
 
 @property (strong) NSWindowController *syncedPlaybackWindowController;
 @property (weak) IBOutlet SyncedPlaybackPanel *syncedPlaybackPanel;

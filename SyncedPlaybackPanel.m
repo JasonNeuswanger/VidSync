@@ -45,9 +45,9 @@
 
 - (IBAction)makeKeyAndOrderFront:(id)sender
 {
-    // I'm basically disabling makeKeyAndOrderFront for this window, because it was being called when creating a new document by [NSDocument showWindows].
-    // It doesn't seem there's a convenient place to disable this except for here.
-    // [super makeKeyAndOrderFront:sender];
+    // This function is called when creating a new document by [NSDocument showWindows], which leads to showing the synced panel when a new
+    // document is created, before loading videos or anything. So we check that this isn't the case before passing along the order-front message.
+    if (![sender isKindOfClass:[VidSyncDocument class]]) [super makeKeyAndOrderFront:sender];
 }
 
 - (IBAction) maximizeSyncedPlaybackPanel:(id)sender

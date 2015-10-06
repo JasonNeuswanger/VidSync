@@ -64,7 +64,6 @@
 @synthesize objectsTableSelectionChangeNotificationCascadeEnabled;
 @synthesize eventsTableSelectionChangeNotificationCascadeEnabled;
 
-static void *AVSPPlayerRateContext = &AVSPPlayerRateContext;
 static void *AVSPPlayerCurrentTimeContext = &AVSPPlayerCurrentTimeContext;
 
 #pragma mark
@@ -139,7 +138,7 @@ static void *AVSPPlayerCurrentTimeContext = &AVSPPlayerCurrentTimeContext;
 
 - (void) observeWindowControllerVideoRate:(VideoWindowController *)vwc  // called from above and also VideoClipArrayController when adding new clips
 {
-    [vwc addObserver:self forKeyPath:@"playerView.player.rate" options:NSKeyValueObservingOptionNew context:AVSPPlayerRateContext];
+    [vwc addObserver:self forKeyPath:@"playerView.player.rate" options:NSKeyValueObservingOptionNew context:NULL];
 }
 
 - (void) windowControllerDidLoadNib:(NSWindowController *)windowController
@@ -629,14 +628,15 @@ static void *AVSPPlayerCurrentTimeContext = &AVSPPlayerCurrentTimeContext;
         if ([windowController class] == [VideoWindowController class]) {
             VideoWindowController *__weak vwc = (VideoWindowController *)windowController;
             @try {
-                [windowController removeObserver:self forKeyPath:@"playerView.player.rate"];
+                [vwc removeObserver:self forKeyPath:@"playerView.player.rate"];
+                // NSLog(@"After removal, observation info is %@",[vwc.playerView.player observationInfo]);
             } @catch (id exception) {
-                NSLog(@"exception when document tries to to remove observer form VideoWindowController: %@",(NSException *)exception);
+                NSLog(@"Exception when document tries to to remove observer form VideoWindowController: %@",(NSException *)exception);
             }
             @try {
                 [self.project carefullyRemoveObserver:vwc.overlayView forKeyPath:@"distortionDisplayMode"];
             } @catch (id exception) {
-                NSLog(@"exception when document tries to to remove observer form VideoOverlayView: %@",(NSException *)exception);
+                NSLog(@"Exception when document tries to to remove observer form VideoOverlayView: %@",(NSException *)exception);
             }
         }
     }
