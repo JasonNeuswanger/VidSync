@@ -73,11 +73,9 @@
 	if ([keyPath isEqualToString:@"values.quadratGridOverlayLineSpacing"] || [keyPath isEqualToString:@"values.quadratGridOverlayLineThickness"]) {
 		[self calculateQuadratCoordinateGrids];
 	}
-	if ([object isEqualTo:[NSUserDefaultsController sharedUserDefaultsController]]) [self display];
-    if ([keyPath isEqualToString:@"distortionDisplayMode"]) {
-        [self drawDistortionCorrections];
-        [self display];
-    }
+    if ([object isEqualTo:[NSUserDefaultsController sharedUserDefaultsController]]) [self setNeedsDisplay:YES];
+    if ([keyPath isEqualToString:@"distortionDisplayMode"]) [self setNeedsDisplay:YES];
+    
 }
 
 #pragma mark
@@ -109,7 +107,7 @@
         if (CMTimeRangeContainsTime(screenPoint.totalTimeRange,now)) {
             [tempVisibleScreenPoints addObject:screenPoint];
             if ([tempVisibleScreenPoints count] > 2330) {
-                NSLog(@"adding screnpoint from range %@ for current time %@", [NSValue valueWithCMTimeRange:screenPoint.totalTimeRange],[NSValue valueWithCMTime:now]);
+                NSLog(@"adding screenpoint from range %@ for current time %@", [NSValue valueWithCMTimeRange:screenPoint.totalTimeRange],[NSValue valueWithCMTime:now]);
             }
         }
 	}
@@ -427,6 +425,7 @@
 		}
 		
 	}
+    
 
 }
 
