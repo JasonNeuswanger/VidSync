@@ -61,7 +61,8 @@
 	float yLimit = self.toVideoClip.windowController.movieSize.height;
     float tempx, tempy;
 	NSMutableArray *distortedPoints = [NSMutableArray new];
-	float padding = 4.0*interval;	// pixel padding to extend the drawn line a bit beyond the bounds of the frame
+	float padding = 100.0*interval;	// pixel padding to extend the drawn line a bit beyond the bounds of the frame
+                                    // a padding value of '4' worked fine for normal lenses but a much higher value is required to accomodate fisheyes
 	for (float x = -padding; x <= xLimit+padding; x += interval) {
         tempy = m*x+b;
         if (tempy >= -padding && tempy <= yLimit + padding) {

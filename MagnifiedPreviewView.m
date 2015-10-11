@@ -49,7 +49,14 @@
 		unsharpMaskFilter.name = @"unsharpMaskFilter";
 		sharpenFilter = [CIFilter filterWithName:@"CISharpenLuminance"];
 		sharpenFilter.name = @"sharpenFilter";
-        [videoFilterContainerLayer setFilters:[NSArray arrayWithObjects:exposureFilter,gammaFilter,unsharpMaskFilter,sharpenFilter,nil]];
+        
+        
+        // Note: I'm currently (as of 10-10-2015) disabling both sharpening filters because they're preventing anything from showing up in the magnified
+        // preview at all in OS X 10.11 (El Capitan). The whole preview just shows as white (except the crosshair/dot). These probably weren't too useful
+        // anyway. I'll keep them in the code to see if things work again in later OS X versions, but for now it's not worth hunting down the bug.
+        // I have also left intact but disabled (unchecked the "Enabled" box in interface builder) the preview panel controls for sharpening.
+        
+        [videoFilterContainerLayer setFilters:[NSArray arrayWithObjects:exposureFilter,gammaFilter,/*unsharpMaskFilter,sharpenFilter,*/nil]];
         [self updateFilterWithUserDefaultsKey:@"previewExposure" andLayerKeyPath:@"filters.exposureFilter.inputEV"];
 		[self updateFilterWithUserDefaultsKey:@"previewGamma" andLayerKeyPath:@"filters.gammaFilter.inputPower"];
 		[self updateFilterWithUserDefaultsKey:@"previewUnsharpMaskRadius" andLayerKeyPath:@"filters.unsharpMaskFilter.inputRadius"];

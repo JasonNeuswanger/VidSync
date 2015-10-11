@@ -346,7 +346,7 @@
                                                             </textFieldCell>
                                                         </textField>
                                                         <textField verticalHuggingPriority="750" id="761-kX-DTG">
-                                                            <rect key="frame" x="162" y="4" width="47" height="14"/>
+                                                            <rect key="frame" x="162" y="4" width="49" height="14"/>
                                                             <autoresizingMask key="autoresizingMask"/>
                                                             <animations/>
                                                             <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="seconds" id="qUf-f6-fAG">

@@ -186,7 +186,7 @@
     
 	NSPoint baseOrigin, screenOrigin;
 	baseOrigin = NSMakePoint([playerView frame].origin.x,[playerView frame].origin.y);
-	screenOrigin = [[playerView window] convertBaseToScreen:baseOrigin];
+    screenOrigin = [[playerView window] convertRectToScreen:NSMakeRect(baseOrigin.x,baseOrigin.y,0.0f,0.0f)].origin;
 	NSRect overlayWindowFrameRect = NSMakeRect(screenOrigin.x + xPosOffset,
 											   screenOrigin.y + yPosOffset,
 											   overlayWidth,

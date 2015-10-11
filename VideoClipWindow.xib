@@ -27,7 +27,7 @@
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <button id="15">
-                        <rect key="frame" x="641" y="479" width="75" height="18"/>
+                        <rect key="frame" x="637" y="476" width="85" height="23"/>
                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
                         <animations/>
                         <buttonCell key="cell" type="check" title="Lock Sync" bezelStyle="regularSquare" imagePosition="left" alignment="left" controlSize="small" inset="2" id="16">
@@ -45,7 +45,7 @@
                         </connections>
                     </button>
                     <button verticalHuggingPriority="750" id="17">
-                        <rect key="frame" x="548" y="478" width="88" height="18"/>
+                        <rect key="frame" x="544" y="478" width="88" height="18"/>
                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
                         <string key="toolTip">All sync offsets and events are recorded relative to the master clip's timecode.  Be very careful about changing the master clip after working on the project for a while, because you'll have to redo all that.</string>
                         <animations/>
