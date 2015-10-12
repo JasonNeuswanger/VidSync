@@ -515,6 +515,7 @@
     NSPoint videoCoords;
     if (([theEvent modifierFlags] & NSCommandKeyMask) || [theEvent buttonNumber] == 3) {    // If clicking with command key held down, or clicking mouse button 4
         videoCoords = [self.videoClip.calibration snapToFeatureNearestToClick:[self convertOverlayToVideoCoords:coords]];
+        [self updateMagnifiedPreviewWithCenter:videoCoords];
     } else {
         videoCoords = [self convertOverlayToVideoCoords:coords];
     }

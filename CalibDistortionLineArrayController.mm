@@ -45,7 +45,7 @@
     for (int i=0; i<number; i++) {
 		newDistortionPoint = [NSEntityDescription insertNewObjectForEntityForName:@"VSDistortionPoint" inManagedObjectContext:[self managedObjectContext]]; 
         newDistortionPoint.screenX = [NSNumber numberWithDouble:cvpoints[i].x];
-		newDistortionPoint.screenY = [NSNumber numberWithFloat:[newLine.calibration.videoClip clipHeight] - cvpoints[i].y];
+		newDistortionPoint.screenY = [NSNumber numberWithFloat:cvpoints[i].y];
 		newDistortionPoint.index = [NSNumber numberWithInt:i];
 		newDistortionPoint.distortionLine = newLine;
     }

@@ -346,6 +346,8 @@ int refractionRootFunc_f(const gsl_vector* x, void* params, gsl_vector* f)
 @dynamic pointsBack;
 @dynamic distortionLines;
 
+@synthesize autodetectedPoints;
+
 @dynamic matrixQuadratFrontToScreen;
 @dynamic matrixQuadratBackToScreen;
 @dynamic matrixScreenToQuadratFront;
@@ -1419,6 +1421,8 @@ int refractionRootFunc_f(const gsl_vector* x, void* params, gsl_vector* f)
     
     linePoints[0] = allPoints[startPointInd];
     linePoints[1] = allPoints[dirPointInd];
+    
+//    NSLog(@"Beginning building a line based on %1.1f,%1.1f and %1.1f,%1.1f",linePoints[0].x,linePoints[0].y,linePoints[1].x,linePoints[1].y);
     double xdiff,ydiff,xcandidate,ycandidate,bestDistance,maxBestDistance;
     int nextIndex;
     int prevIndex = dirPointInd;
@@ -1436,8 +1440,11 @@ int refractionRootFunc_f(const gsl_vector* x, void* params, gsl_vector* f)
             if (bestDistance < maxBestDistance && prevIndex != nextIndex) {
                 foundNext = true;
                 linePoints[i] = allPoints[nextIndex];
+                
+//                NSLog(@"Extending the line to the next point %1.1f,%1.1f.",linePoints[i].x,linePoints[i].y);
+                
                 prevIndex = nextIndex;
-                i++;    // After this loop breaks, i will be 1 greater than the highest index of the highest actual point, equal to the total # of points
+                i++;    // After this loop breaks, 'i' will be 1 greater than the highest index of the highest actual point, equal to the total # of points
             } else {    // No point was found in the expected position of a next point... see if we can find one by jumping a bad point.  Otherwise, end of the line.
                 xcandidate = linePoints[i-1].x + (2.0 * xdiff);
                 ycandidate = linePoints[i-1].y + (2.0 * ydiff);
@@ -1445,13 +1452,18 @@ int refractionRootFunc_f(const gsl_vector* x, void* params, gsl_vector* f)
                 if (bestDistance < maxBestDistance && prevIndex != nextIndex) {
                     foundNext = true;
                     linePoints[i] = allPoints[nextIndex];
+
+//                    NSLog(@"Skipped one point and then extending the line to the next point %1.1f,%1.1f.",linePoints[i].x,linePoints[i].y);
+                    
                     prevIndex = nextIndex;
                     i++;    // After this loop breaks, i will be 1 greater than the highest index of the highest actual point, equal to the total # of points
                 } else {
+//                    NSLog(@"End of line -- tried to skip a point but didn't find anything after skipping.");
                     foundNext = false;
                 }
             }
         } else { // stop if point was too close to edge of screen
+//            NSLog(@"End of line -- point found was too close to edge of screen.");
             foundNext = false;
         }
     }
@@ -1519,7 +1531,7 @@ int refractionRootFunc_f(const gsl_vector* x, void* params, gsl_vector* f)
     const double qualityLevel =  [[[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"chessboardDetectionQualityLevel"] doubleValue]; 
     const int minLineLength = [[[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"chessboardDetectionMinLineLength"] intValue];
     const int cornerSubPixWindowSize = [[[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"chessboardDetectionCornerSubPixwindowSize"] intValue];
-    const bool showDirectOpenCVOutputWindow = [[[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"showDirectOpenCVOutputWindow"] boolValue];
+    // const bool showDirectOpenCVOutputWindow = [[[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"showDirectOpenCVOutputWindow"] boolValue];
     
     // I'm not using these three parameters below, which would have the feature finder use cvCornerHarris instead of cvCornerMinEigenVal for corner detection.
     // I'm sticking with the default (cvCornerMinEigenVal) because it works just fine.  I couldn't find much info on the difference between the two, but I found one
@@ -1548,23 +1560,35 @@ int refractionRootFunc_f(const gsl_vector* x, void* params, gsl_vector* f)
     // Running cvFindCornerSubPix with a high window size like (15,15) corrected some severe mislocations around one of my squares that (5,5) did not.
     cvFindCornerSubPix(videoFrameSingleChannelIpl, foundCorners, numCorners, cvSize(cornerSubPixWindowSize,cornerSubPixWindowSize), cvSize(-1,-1), cvTermCriteria( CV_TERMCRIT_ITER | CV_TERMCRIT_EPS, 20, 0.01 ));
     
-
+    // Since OpenCV flips the y-coordinate (from top left instead of bottom left), flip it back here right away so it doesn't confuse later calculations.
+    for (int i = 0; i < numCorners; i++) foundCorners[i].y = [self.videoClip clipHeight] - foundCorners[i].y;
+    
+    // Store the autodetected corners for temporarly display overlaying the main window.
+    
+    self.autodetectedPoints = [NSMutableSet setWithCapacity:numCorners];
+    for (int i = 0; i < numCorners; i++) {
+        [self.autodetectedPoints addObject:[NSValue valueWithPoint:NSMakePoint(foundCorners[i].x,foundCorners[i].y)]];
+    }
+    
     // Build the first distortion line
     int lineLength, centerIndex, nextIndex;
     double dummyBestDistance;
     CvPoint2D32f *firstLine = (CvPoint2D32f*)malloc((maxLineCorners + 1) * sizeof(CvPoint2D32f));
     // Manually seed the start of the line creation algorithm if the user has entered exactly one line with exactly two points as the seed.
     if ([self.distortionLines count] == 1 && [[[self.distortionLines anyObject] distortionPoints] count] == 2) {
+//        NSLog(@"Running the autodetect section for when there's a seed line.");
         VSDistortionLine *seedLine = [self.distortionLines anyObject];
         NSArray *seedPoints = [[seedLine distortionPoints] allObjects];
         VSDistortionPoint *seedPoint1 = [seedPoints objectAtIndex:0];
         VSDistortionPoint *seedPoint2 = [seedPoints objectAtIndex:1];
         CvPoint2D32f seedPointCv1 = cvPoint2D32f([seedPoint1.screenX doubleValue],[seedPoint1.screenY doubleValue]);
         CvPoint2D32f seedPointCv2 = cvPoint2D32f([seedPoint2.screenX doubleValue],[seedPoint2.screenY doubleValue]);
+//        NSLog(@"The seed line is %1.1f,%1.1f and %1.1f,%1.1f",seedPointCv1.x,seedPointCv1.y,seedPointCv2.x,seedPointCv2.y);
         centerIndex = [self indexOfNearestPointTo:seedPointCv1 inNumber:numCorners ofCvPoints:foundCorners bestDistance:&dummyBestDistance];
         nextIndex = [self indexOfNearestPointTo:seedPointCv2 inNumber:numCorners ofCvPoints:foundCorners bestDistance:&dummyBestDistance];
         [[self managedObjectContext] deleteObject:seedLine];    // Delete the seed after using it
     } else {    // Otherwise, start the line creation algorithm from the center point to the nearest other point
+//        NSLog(@"Running the autodetect section for when there's NO seed line.");
         CvPoint2D32f centroid = [self centroidOfNumber:numCorners ofCvPoints:foundCorners]; // geometrical center of all the detected point (NOT the centermost point)
         centerIndex = [self indexOfNearestPointTo:centroid inNumber:numCorners ofCvPoints:foundCorners bestDistance:&dummyBestDistance];
         nextIndex = [self indexOfNearestPointTo:foundCorners[centerIndex] inNumber:numCorners ofCvPoints:foundCorners bestDistance:&dummyBestDistance];
@@ -1638,16 +1662,18 @@ int refractionRootFunc_f(const gsl_vector* x, void* params, gsl_vector* f)
         free(crossingLine);
     }
     
+    /*
     // If set to show the OpenCV window, show it now with all the corners OpenCV detected, whether VidSync used them or not.
     if (showDirectOpenCVOutputWindow) {
         int maxDimension = 2*round(sqrt(numCorners));
-        cvDrawChessboardCorners(videoFrameIpl, cvSize(maxDimension,maxDimension), foundCorners, numCorners, 0);        
+        for (int i = 0; i < numCorners; i++) foundCorners[i].y = [self.videoClip clipHeight] - foundCorners[i].y; // switch the corners back for OpenCV's drawing
+        cvDrawChessboardCorners(videoFrameIpl, cvSize(maxDimension,maxDimension), foundCorners, numCorners, 0);
         CGImageRef videoFrameResultCG = [UtilityFunctions CGImageFromIplImage:videoFrameIpl];
         NSImage *videoFrameResultNS = [[NSImage alloc] initWithCGImage:videoFrameResultCG size:NSMakeSize([self.videoClip clipWidth],[self.videoClip clipHeight])];
         [self.videoClip.project.document.directOpenCVView setImage:videoFrameResultNS];
         [self.videoClip.project.document.directOpenCVWindow makeKeyAndOrderFront:self];
     }
-    
+    */
     free(midCrossingLine);
     free(foundCorners);
     free(firstLine);

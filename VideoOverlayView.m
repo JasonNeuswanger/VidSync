@@ -299,10 +299,6 @@
         }
 	}
     if (!(showCorrectedOverlay || showUncorrectedOverlay)) return;
-
-    //showUncorrectedOverlay = [[[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"showDistortionOverlay"] boolValue];
-	//showCorrectedOverlay = [[[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"showDistortionCorrectedPoints"] boolValue];
-    
     
 	NSColor *distortedPointColor = [UtilityFunctions userDefaultColorForKey:@"distortionPointsColor"];
 	NSColor *connectingLineColor = [UtilityFunctions userDefaultColorForKey:@"distortionConnectingLinesColor"];
@@ -340,6 +336,23 @@
         [shadow setShadowOffset: NSMakeSize(0.0f,-0.0f)];
         [shadow set];
     }
+    
+    // Show the base points autodetected by OpenCV.
+    
+    NSBezierPath *autodetectedPointDotsPath = [NSBezierPath bezierPath];
+    shapeSize=shapeSize*1.2;
+    NSPoint autopoint;
+    [[NSColor yellowColor] setFill];
+    if ([vwc.videoClip.calibration.autodetectedPoints count] > 0) {
+        for (NSValue *point in vwc.videoClip.calibration.autodetectedPoints) {
+            autopoint = [vwc convertVideoToOverlayCoords:point.pointValue];
+            shapeRect = NSMakeRect(autopoint.x-shapeSize,autopoint.y-shapeSize,2.0*shapeSize,2.0*shapeSize);
+            [autodetectedPointDotsPath appendBezierPathWithOvalInRect:shapeRect];
+        }
+    }
+    [autodetectedPointDotsPath fill];
+    
+    // Now go through and draw the actual lines as arranged.
     
 	for (VSDistortionLine *distortionLine in distortionLines) {
 		
@@ -426,7 +439,6 @@
 		
 	}
     
-
 }
 
 - (void) drawMeasurementScreenPoints

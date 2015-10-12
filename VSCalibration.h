@@ -66,6 +66,8 @@ int redistortionRootFunc_fdf(const gsl_vector* x, void* params, gsl_vector* f, g
 @property (strong) NSSet *pointsBack;
 @property (strong) NSSet *distortionLines;
 
+@property (strong) NSMutableSet *autodetectedPoints;
+
 @property (strong) NSArray *matrixQuadratFrontToScreen;
 @property (strong) NSArray *matrixQuadratBackToScreen;
 @property (strong) NSArray *matrixScreenToQuadratFront;
