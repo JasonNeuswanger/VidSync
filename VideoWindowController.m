@@ -574,12 +574,15 @@
 {	
 	[newAnnotationPanel close];
 	if (![[newAnnotationContents string] isEqualToString:@""]) {
+        
 		VSAnnotation *newAnnotation = [NSEntityDescription insertNewObjectForEntityForName:@"VSAnnotation" inManagedObjectContext:managedObjectContext]; 
 		newAnnotation.screenX = [NSNumber numberWithFloat:newAnnotationCoords.x];
 		newAnnotation.screenY = [NSNumber numberWithFloat:newAnnotationCoords.y];		
 		newAnnotation.startTimecode = newAnnotationStartTimecode;
 		newAnnotation.color = [UtilityFunctions userDefaultColorForKey:@"newAnnotationColor"];
-		newAnnotation.notes = [newAnnotationContents string];
+        // Note: If I don't use stringWithString below and just set it equal to the newAnnotationContents box, it'll update as that box changes
+        // when additional annotations are added, overwriting the previous ones. So that's why the below line looks a bit odd.
+        newAnnotation.notes = [NSString stringWithString:[newAnnotationContents string]];
 		newAnnotation.shape = [[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"newAnnotationFontFace"];
 		newAnnotation.duration = [[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"newAnnotationDuration"];
 		newAnnotation.fadeTime = [[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"newAnnotationFadeTime"];
@@ -589,6 +592,7 @@
 		newAnnotation.videoClip = self.videoClip;
         [managedObjectContext processPendingChanges];
 		[self.videoClip.project.document.annotationsController setSelectedObjects:[NSArray arrayWithObject:newAnnotation]];
+        
 	}
 	[self refreshOverlay];
 }

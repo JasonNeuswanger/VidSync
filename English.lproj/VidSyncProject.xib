@@ -1508,10 +1508,10 @@
                                                                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                                         <animations/>
                                                                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                                                                        <size key="minSize" width="63" height="132"/>
+                                                                                        <size key="minSize" width="78" height="132"/>
                                                                                         <size key="maxSize" width="463" height="10000000"/>
                                                                                         <color key="insertionPointColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
-                                                                                        <size key="minSize" width="63" height="132"/>
+                                                                                        <size key="minSize" width="78" height="132"/>
                                                                                         <size key="maxSize" width="463" height="10000000"/>
                                                                                         <connections>
                                                                                             <binding destination="100325" name="attributedString" keyPath="selection.calibration.quadratNodesBack" id="102404"/>
@@ -1607,10 +1607,10 @@
                                                                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                                         <animations/>
                                                                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                                                                        <size key="minSize" width="63" height="132"/>
+                                                                                        <size key="minSize" width="78" height="132"/>
                                                                                         <size key="maxSize" width="463" height="10000000"/>
                                                                                         <color key="insertionPointColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
-                                                                                        <size key="minSize" width="63" height="132"/>
+                                                                                        <size key="minSize" width="78" height="132"/>
                                                                                         <size key="maxSize" width="463" height="10000000"/>
                                                                                         <connections>
                                                                                             <binding destination="100325" name="attributedString" keyPath="selection.calibration.quadratNodesFront" id="102402"/>
@@ -3560,7 +3560,7 @@ IA
                                             <rect key="frame" x="25" y="6" width="534" height="118"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <clipView key="contentView" id="Osu-NX-Aan">
-                                                <rect key="frame" x="1" y="1" width="517" height="116"/>
+                                                <rect key="frame" x="1" y="1" width="532" height="116"/>
                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                 <subviews>
                                                     <textView importsGraphics="NO" richText="NO" findStyle="panel" allowsUndo="YES" verticallyResizable="YES" allowsNonContiguousLayout="YES" smartInsertDelete="YES" id="FRp-jj-4lM">
@@ -3568,10 +3568,10 @@ IA
                                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                         <animations/>
                                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                                        <size key="minSize" width="517" height="116"/>
+                                                        <size key="minSize" width="532" height="116"/>
                                                         <size key="maxSize" width="535" height="10000000"/>
                                                         <color key="insertionPointColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
-                                                        <size key="minSize" width="517" height="116"/>
+                                                        <size key="minSize" width="532" height="116"/>
                                                         <size key="maxSize" width="535" height="10000000"/>
                                                         <connections>
                                                             <binding destination="102264" name="value" keyPath="selection.notes" id="JLn-zx-JDH">
@@ -3592,7 +3592,7 @@ IA
                                                 <animations/>
                                             </scroller>
                                             <scroller key="verticalScroller" verticalHuggingPriority="750" doubleValue="1" horizontal="NO" id="6Xi-BL-PLR">
-                                                <rect key="frame" x="518" y="1" width="15" height="116"/>
+                                                <rect key="frame" x="517" y="1" width="16" height="116"/>
                                                 <autoresizingMask key="autoresizingMask"/>
                                                 <animations/>
                                             </scroller>
@@ -5045,10 +5045,10 @@ IA
                                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                         <animations/>
                                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                                        <size key="minSize" width="802" height="82"/>
+                                                        <size key="minSize" width="817" height="82"/>
                                                         <size key="maxSize" width="1621" height="10000000"/>
                                                         <color key="insertionPointColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
-                                                        <size key="minSize" width="802" height="82"/>
+                                                        <size key="minSize" width="817" height="82"/>
                                                         <size key="maxSize" width="1621" height="10000000"/>
                                                         <connections>
                                                             <binding destination="101330" name="value" keyPath="selection.notes" id="101436"/>
@@ -5172,10 +5172,10 @@ IA
                                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                         <animations/>
                                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                                        <size key="minSize" width="180" height="169"/>
+                                                        <size key="minSize" width="195" height="169"/>
                                                         <size key="maxSize" width="463" height="10000000"/>
                                                         <color key="insertionPointColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
-                                                        <size key="minSize" width="180" height="169"/>
+                                                        <size key="minSize" width="195" height="169"/>
                                                         <size key="maxSize" width="463" height="10000000"/>
                                                         <connections>
                                                             <binding destination="101331" name="value" keyPath="selection.notes" id="103582"/>
