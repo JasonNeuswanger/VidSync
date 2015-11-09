@@ -1662,18 +1662,6 @@ int refractionRootFunc_f(const gsl_vector* x, void* params, gsl_vector* f)
         free(crossingLine);
     }
     
-    /*
-    // If set to show the OpenCV window, show it now with all the corners OpenCV detected, whether VidSync used them or not.
-    if (showDirectOpenCVOutputWindow) {
-        int maxDimension = 2*round(sqrt(numCorners));
-        for (int i = 0; i < numCorners; i++) foundCorners[i].y = [self.videoClip clipHeight] - foundCorners[i].y; // switch the corners back for OpenCV's drawing
-        cvDrawChessboardCorners(videoFrameIpl, cvSize(maxDimension,maxDimension), foundCorners, numCorners, 0);
-        CGImageRef videoFrameResultCG = [UtilityFunctions CGImageFromIplImage:videoFrameIpl];
-        NSImage *videoFrameResultNS = [[NSImage alloc] initWithCGImage:videoFrameResultCG size:NSMakeSize([self.videoClip clipWidth],[self.videoClip clipHeight])];
-        [self.videoClip.project.document.directOpenCVView setImage:videoFrameResultNS];
-        [self.videoClip.project.document.directOpenCVWindow makeKeyAndOrderFront:self];
-    }
-    */
     free(midCrossingLine);
     free(foundCorners);
     free(firstLine);
@@ -1721,15 +1709,6 @@ int refractionRootFunc_f(const gsl_vector* x, void* params, gsl_vector* f)
     
     NSPoint snappedPoint = NSMakePoint(snapSearchOrigin.x + foundCorners[0].x,([self.videoClip clipHeight] - (snapSearchOrigin.y + foundCorners[0].y)));
 
-    if (false) {    // flip to true for diagnostics
-        int maxDimension = 2*round(sqrt(numCorners));
-        cvDrawChessboardCorners(videoFrameIpl, cvSize(maxDimension,maxDimension), foundCorners, numCorners, 0);        
-        CGImageRef videoFrameResultCG = [UtilityFunctions CGImageFromIplImage:videoFrameIpl];
-        NSImage *videoFrameResultNS = [[NSImage alloc] initWithCGImage:videoFrameResultCG size:NSMakeSize(snapSearchHalfWidth*2.0,snapSearchHalfWidth*2.0)];
-        [self.videoClip.project.document.directOpenCVView setImage:videoFrameResultNS];
-        [self.videoClip.project.document.directOpenCVWindow makeKeyAndOrderFront:self];
-        CFRelease(videoFrameResultCG);
-    }    
     return snappedPoint;
 }
 

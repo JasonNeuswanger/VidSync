@@ -98,9 +98,6 @@
     
 	NSNumberFormatter *__strong decimalFormatter;
     
-    IBOutlet NSImageView *__weak directOpenCVView;
-    IBOutlet NSWindow *__weak directOpenCVWindow;
-    
     VSTrackedObject *__weak portraitSubject;
     
     IBOutlet NSButton *__weak allPortraitBrowserOpenButton;
@@ -145,8 +142,6 @@
 @property (strong) NSNumberFormatter *decimalFormatter;
 @property (weak) VSVideoClip *frontVideoClip;
 
-@property (weak) IBOutlet NSImageView *directOpenCVView;
-@property (weak) IBOutlet NSWindow *directOpenCVWindow;
 @property (weak) IBOutlet MagnifiedPreviewView *magnifiedCalibrationPreview;
 @property (weak) IBOutlet MagnifiedPreviewView *magnifiedMeasurementPreview;
 @property (weak) IBOutlet MagnifiedPreviewView *magnifiedDistortionPreview;

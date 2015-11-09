@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="8191" systemVersion="15A284" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="9059" systemVersion="15A284" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="8191"/>
-        <plugIn identifier="com.apple.imagekit.ibplugin" version="8191"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="9059"/>
+        <plugIn identifier="com.apple.imagekit.ibplugin" version="9059"/>
         <capability name="box content view" minToolsVersion="7.0"/>
     </dependencies>
     <objects>
@@ -16,8 +16,6 @@
                 <outlet property="calibScreenPtFrontArrayController" destination="100779" id="100917"/>
                 <outlet property="calibrationInputTabView" destination="100461" id="100794"/>
                 <outlet property="calibrationSurfaceTabView" destination="100696" id="100793"/>
-                <outlet property="directOpenCVView" destination="103871" id="103999"/>
-                <outlet property="directOpenCVWindow" destination="103867" id="103998"/>
                 <outlet property="distortionLinesController" destination="103703" id="103761"/>
                 <outlet property="distortionPointsController" destination="103704" id="103762"/>
                 <outlet property="eventsObjectsController" destination="101774" id="jwj-OZ-P4x"/>
@@ -7079,35 +7077,17 @@ IA
                 <animations/>
             </view>
         </window>
-        <window title="Direct OpenCV Output" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" oneShot="NO" releasedWhenClosed="NO" showsToolbarButton="NO" visibleAtLaunch="NO" animationBehavior="default" id="103867">
-            <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES"/>
-            <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
-            <rect key="contentRect" x="303" y="852" width="960" height="540"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1578"/>
-            <view key="contentView" id="103868">
-                <rect key="frame" x="0.0" y="0.0" width="960" height="540"/>
-                <autoresizingMask key="autoresizingMask"/>
-                <subviews>
-                    <customView id="103871" customClass="NSImageView">
-                        <rect key="frame" x="0.0" y="0.0" width="960" height="540"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <animations/>
-                    </customView>
-                </subviews>
-                <animations/>
-            </view>
-        </window>
         <window title="Automatic Plumbline Detection" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" hidesOnDeactivate="YES" oneShot="NO" showsToolbarButton="NO" visibleAtLaunch="NO" animationBehavior="default" id="103873" customClass="NSPanel">
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES" utility="YES" texturedBackground="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
-            <rect key="contentRect" x="393" y="773" width="346" height="634"/>
+            <rect key="contentRect" x="393" y="773" width="346" height="573"/>
             <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1578"/>
             <view key="contentView" id="103874">
-                <rect key="frame" x="0.0" y="0.0" width="346" height="634"/>
+                <rect key="frame" x="0.0" y="0.0" width="346" height="573"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <textField verticalHuggingPriority="750" id="103879">
-                        <rect key="frame" x="17" y="516" width="319" height="98"/>
+                        <rect key="frame" x="17" y="455" width="319" height="98"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <animations/>
                         <textFieldCell key="cell" controlSize="small" sendsActionOnEndEditing="YES" id="103880">
@@ -7118,7 +7098,7 @@ IA
                         </textFieldCell>
                     </textField>
                     <textField verticalHuggingPriority="750" id="103883">
-                        <rect key="frame" x="17" y="489" width="63" height="14"/>
+                        <rect key="frame" x="17" y="428" width="63" height="14"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <animations/>
                         <textFieldCell key="cell" controlSize="small" sendsActionOnEndEditing="YES" title="Active clip:" id="103884">
@@ -7128,7 +7108,7 @@ IA
                         </textFieldCell>
                     </textField>
                     <button verticalHuggingPriority="750" id="103881">
-                        <rect key="frame" x="103" y="457" width="146" height="28"/>
+                        <rect key="frame" x="103" y="396" width="146" height="28"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <animations/>
                         <buttonCell key="cell" type="push" title="Autodetect Plumblines" bezelStyle="rounded" alignment="center" controlSize="small" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="103882">
@@ -7144,7 +7124,7 @@ IA
                         </connections>
                     </button>
                     <button verticalHuggingPriority="750" id="103893">
-                        <rect key="frame" x="197" y="13" width="134" height="28"/>
+                        <rect key="frame" x="197" y="12" width="134" height="28"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <animations/>
                         <buttonCell key="cell" type="push" title="Erase All Plumblines" bezelStyle="rounded" alignment="center" controlSize="small" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="103894">
@@ -7160,7 +7140,7 @@ IA
                         </connections>
                     </button>
                     <textField verticalHuggingPriority="750" id="103885">
-                        <rect key="frame" x="82" y="489" width="254" height="14"/>
+                        <rect key="frame" x="82" y="428" width="254" height="14"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <animations/>
                         <textFieldCell key="cell" controlSize="small" sendsActionOnEndEditing="YES" title="clip" id="103886">
@@ -7173,7 +7153,7 @@ IA
                         </connections>
                     </textField>
                     <textField verticalHuggingPriority="750" id="103896">
-                        <rect key="frame" x="17" y="21" width="180" height="14"/>
+                        <rect key="frame" x="17" y="20" width="180" height="14"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <animations/>
                         <textFieldCell key="cell" controlSize="small" sendsActionOnEndEditing="YES" title="Need a fresh start with this clip?" id="103897">
@@ -7183,7 +7163,7 @@ IA
                         </textFieldCell>
                     </textField>
                     <textField verticalHuggingPriority="750" id="103900">
-                        <rect key="frame" x="17" y="317" width="154" height="14"/>
+                        <rect key="frame" x="17" y="256" width="154" height="14"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <animations/>
                         <textFieldCell key="cell" controlSize="small" sendsActionOnEndEditing="YES" title="Max # of corners to detect:" id="103901">
@@ -7193,7 +7173,7 @@ IA
                         </textFieldCell>
                     </textField>
                     <textField verticalHuggingPriority="750" id="103902">
-                        <rect key="frame" x="17" y="295" width="249" height="14"/>
+                        <rect key="frame" x="17" y="234" width="249" height="14"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <animations/>
                         <textFieldCell key="cell" controlSize="small" sendsActionOnEndEditing="YES" title="Min pixel distance between detected corners:" id="103903">
@@ -7203,7 +7183,7 @@ IA
                         </textFieldCell>
                     </textField>
                     <textField verticalHuggingPriority="750" id="103906">
-                        <rect key="frame" x="17" y="241" width="230" height="14"/>
+                        <rect key="frame" x="17" y="180" width="230" height="14"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <animations/>
                         <textFieldCell key="cell" controlSize="small" sendsActionOnEndEditing="YES" title="Minimum quality threshold for detection:" id="103907">
@@ -7213,7 +7193,7 @@ IA
                         </textFieldCell>
                     </textField>
                     <textField verticalHuggingPriority="750" id="103908">
-                        <rect key="frame" x="17" y="268" width="230" height="14"/>
+                        <rect key="frame" x="17" y="207" width="230" height="14"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <animations/>
                         <textFieldCell key="cell" controlSize="small" sendsActionOnEndEditing="YES" title="Minimum plumbline length (# of points):" id="103909">
@@ -7223,7 +7203,7 @@ IA
                         </textFieldCell>
                     </textField>
                     <textField verticalHuggingPriority="750" id="103910">
-                        <rect key="frame" x="17" y="219" width="249" height="14"/>
+                        <rect key="frame" x="17" y="158" width="249" height="14"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <animations/>
                         <textFieldCell key="cell" controlSize="small" sendsActionOnEndEditing="YES" title="Window size for corner subpixel refinement:" id="103911">
@@ -7233,7 +7213,7 @@ IA
                         </textFieldCell>
                     </textField>
                     <textField verticalHuggingPriority="750" id="103922">
-                        <rect key="frame" x="17" y="378" width="319" height="70"/>
+                        <rect key="frame" x="17" y="317" width="319" height="70"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <animations/>
                         <textFieldCell key="cell" controlSize="small" sendsActionOnEndEditing="YES" id="103923">
@@ -7244,7 +7224,7 @@ IA
                         </textFieldCell>
                     </textField>
                     <textField verticalHuggingPriority="750" id="103924">
-                        <rect key="frame" x="176" y="315" width="39" height="19"/>
+                        <rect key="frame" x="176" y="254" width="39" height="19"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <animations/>
                         <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="103925">
@@ -7258,7 +7238,7 @@ IA
                         </connections>
                     </textField>
                     <textField verticalHuggingPriority="750" id="103927">
-                        <rect key="frame" x="271" y="293" width="39" height="19"/>
+                        <rect key="frame" x="271" y="232" width="39" height="19"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <animations/>
                         <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="103928">
@@ -7274,7 +7254,7 @@ IA
                         </connections>
                     </textField>
                     <textField verticalHuggingPriority="750" id="103930">
-                        <rect key="frame" x="252" y="266" width="39" height="19"/>
+                        <rect key="frame" x="252" y="205" width="39" height="19"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <animations/>
                         <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="103931">
@@ -7290,7 +7270,7 @@ IA
                         </connections>
                     </textField>
                     <textField verticalHuggingPriority="750" id="103933">
-                        <rect key="frame" x="251" y="239" width="39" height="19"/>
+                        <rect key="frame" x="251" y="178" width="39" height="19"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <animations/>
                         <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="103934">
@@ -7307,7 +7287,7 @@ IA
                         </connections>
                     </textField>
                     <textField verticalHuggingPriority="750" id="103939">
-                        <rect key="frame" x="17" y="341" width="201" height="14"/>
+                        <rect key="frame" x="17" y="280" width="201" height="14"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <animations/>
                         <textFieldCell key="cell" controlSize="small" sendsActionOnEndEditing="YES" title="Candidate point distance tolerance:" id="103943">
@@ -7317,7 +7297,7 @@ IA
                         </textFieldCell>
                     </textField>
                     <textField verticalHuggingPriority="750" id="103940">
-                        <rect key="frame" x="222" y="339" width="39" height="19"/>
+                        <rect key="frame" x="222" y="278" width="39" height="19"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <animations/>
                         <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="103941">
@@ -7334,7 +7314,7 @@ IA
                         </connections>
                     </textField>
                     <textField verticalHuggingPriority="750" id="103936">
-                        <rect key="frame" x="269" y="217" width="39" height="19"/>
+                        <rect key="frame" x="269" y="156" width="39" height="19"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <animations/>
                         <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="103937">
@@ -7350,31 +7330,20 @@ IA
                         </connections>
                     </textField>
                     <textField verticalHuggingPriority="750" id="103989">
-                        <rect key="frame" x="17" y="91" width="312" height="112"/>
+                        <rect key="frame" x="17" y="44" width="312" height="98"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <animations/>
                         <textFieldCell key="cell" controlSize="small" sendsActionOnEndEditing="YES" id="103990">
                             <font key="font" metaFont="smallSystem"/>
-                            <string key="title">If you're having trouble (like you press "Autodetect Plumblines" and no lines show up), directly viewing OpenCV's corner detection results may help determine what the problem is.  If there are too many or too few corners detected in this image, adjust the settings above.  When the box below is checked, "Autodetect Plumblines" will also pop up a window with the direct OpenCV output (before VidSync tries to arrange the corners into lines).</string>
+                            <string key="title">Yellow points that appear outside your plumblines are corners that were detected by OpenCV but not assigned to plumblines by VidSync. If the grid isn't being represented adequately, seeing these points might help disagnose whether the problem is with the parameters to OpenCV's corner detection or the parameters to VidSync's algorithm for linking corners into an image.</string>
                             <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                     </textField>
-                    <button id="103993">
-                        <rect key="frame" x="18" y="67" width="304" height="18"/>
-                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                        <animations/>
-                        <buttonCell key="cell" type="check" title="Show direct OpenCV output window after Autodetect" bezelStyle="regularSquare" imagePosition="left" alignment="left" controlSize="small" state="on" inset="2" id="103994">
-                            <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                            <font key="font" metaFont="smallSystem"/>
-                            <connections>
-                                <binding destination="100045" name="value" keyPath="values.showDirectOpenCVOutputWindow" id="103997"/>
-                            </connections>
-                        </buttonCell>
-                    </button>
                 </subviews>
                 <animations/>
             </view>
+            <point key="canvasLocation" x="422" y="1128.5"/>
         </window>
         <objectController mode="entity" entityName="VSProject" automaticallyPreparesContent="YES" id="100044" userLabel="Project Controller" customClass="ProjectController">
             <declaredKeys>

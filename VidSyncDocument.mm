@@ -49,9 +49,6 @@
 @synthesize frontVideoClip;
 @synthesize syncedPlaybackPanel;
 
-@synthesize directOpenCVView;
-@synthesize directOpenCVWindow;
-
 @synthesize magnifiedCalibrationPreview;
 @synthesize magnifiedMeasurementPreview;
 @synthesize magnifiedDistortionPreview;
