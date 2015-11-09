@@ -4835,13 +4835,14 @@ Gw
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="173" y="788" width="896" height="475"/>
             <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1578"/>
+            <value key="minSize" type="size" width="896" height="475"/>
             <view key="contentView" id="101168">
                 <rect key="frame" x="0.0" y="0.0" width="896" height="475"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <button verticalHuggingPriority="750" id="101169">
                         <rect key="frame" x="472" y="4" width="153" height="32"/>
-                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <animations/>
                         <buttonCell key="cell" type="push" title="Save Types to File" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="101170">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
@@ -4853,7 +4854,7 @@ Gw
                     </button>
                     <button verticalHuggingPriority="750" id="101171">
                         <rect key="frame" x="312" y="4" width="160" height="32"/>
-                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <animations/>
                         <buttonCell key="cell" type="push" title="Load Types from File" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="101172">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
@@ -4865,7 +4866,7 @@ Gw
                     </button>
                     <button verticalHuggingPriority="750" id="101173">
                         <rect key="frame" x="12" y="4" width="300" height="32"/>
-                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <animations/>
                         <buttonCell key="cell" type="push" title="Load Example Types (Salmonid Foraging)" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="101174">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
@@ -4877,7 +4878,7 @@ Gw
                     </button>
                     <tabView id="101186">
                         <rect key="frame" x="10" y="32" width="873" height="437"/>
-                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <animations/>
                         <font key="font" metaFont="system"/>
                         <tabViewItems>
@@ -4888,7 +4889,7 @@ Gw
                                     <subviews>
                                         <scrollView autohidesScrollers="YES" horizontalLineScroll="19" horizontalPageScroll="10" verticalLineScroll="19" verticalPageScroll="10" usesPredominantAxisScrolling="NO" id="101258">
                                             <rect key="frame" x="17" y="191" width="819" height="197"/>
-                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                             <clipView key="contentView" id="1L2-Cc-iKf">
                                                 <rect key="frame" x="1" y="17" width="817" height="179"/>
                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -4961,7 +4962,7 @@ Gw
                                         </scrollView>
                                         <button verticalHuggingPriority="750" id="101259">
                                             <rect key="frame" x="627" y="159" width="150" height="25"/>
-                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
                                             <animations/>
                                             <buttonCell key="cell" type="roundTextured" title="Add New Object Type" bezelStyle="texturedRounded" alignment="center" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="101302">
                                                 <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
@@ -4973,7 +4974,7 @@ Gw
                                         </button>
                                         <button verticalHuggingPriority="750" id="101836">
                                             <rect key="frame" x="783" y="159" width="53" height="25"/>
-                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
                                             <animations/>
                                             <buttonCell key="cell" type="roundTextured" title="Delete" bezelStyle="texturedRounded" alignment="center" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="101837">
                                                 <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
@@ -4983,18 +4984,9 @@ Gw
                                                 <action selector="remove:" target="101330" id="101839"/>
                                             </connections>
                                         </button>
-                                        <colorWell id="101260">
-                                            <rect key="frame" x="658" y="130" width="23" height="23"/>
-                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                            <animations/>
-                                            <color key="color" red="0.05813049898" green="0.055541899059999997" blue="1" alpha="1" colorSpace="calibratedRGB"/>
-                                            <connections>
-                                                <binding destination="101330" name="value" keyPath="selection.color" id="101405"/>
-                                            </connections>
-                                        </colorWell>
                                         <textField verticalHuggingPriority="750" id="101263">
                                             <rect key="frame" x="14" y="132" width="136" height="17"/>
-                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                             <animations/>
                                             <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Selected type's name" id="101299">
                                                 <font key="font" metaFont="system"/>
@@ -5003,8 +4995,8 @@ Gw
                                             </textFieldCell>
                                         </textField>
                                         <textField verticalHuggingPriority="750" id="101264">
-                                            <rect key="frame" x="160" y="130" width="297" height="22"/>
-                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                            <rect key="frame" x="160" y="130" width="451" height="22"/>
+                                            <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
                                             <animations/>
                                             <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="101298">
                                                 <font key="font" metaFont="system"/>
@@ -5023,7 +5015,7 @@ IA
                                         </textField>
                                         <textField verticalHuggingPriority="750" id="101265">
                                             <rect key="frame" x="14" y="109" width="172" height="17"/>
-                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                             <animations/>
                                             <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Selected type's description" id="101297">
                                                 <font key="font" metaFont="system"/>
@@ -5033,9 +5025,9 @@ IA
                                         </textField>
                                         <scrollView horizontalLineScroll="10" horizontalPageScroll="10" verticalLineScroll="10" verticalPageScroll="10" hasHorizontalScroller="NO" usesPredominantAxisScrolling="NO" id="101266">
                                             <rect key="frame" x="17" y="17" width="819" height="84"/>
-                                            <autoresizingMask key="autoresizingMask"/>
+                                            <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
                                             <clipView key="contentView" id="kCw-HT-ycP">
-                                                <rect key="frame" x="1" y="1" width="802" height="82"/>
+                                                <rect key="frame" x="1" y="1" width="817" height="82"/>
                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                 <subviews>
                                                     <textView importsGraphics="NO" richText="NO" findStyle="panel" continuousSpellChecking="YES" allowsUndo="YES" usesRuler="YES" usesFontPanel="YES" verticallyResizable="YES" allowsNonContiguousLayout="YES" spellingCorrection="YES" smartInsertDelete="YES" id="101294">
@@ -5063,14 +5055,23 @@ IA
                                                 <animations/>
                                             </scroller>
                                             <scroller key="verticalScroller" verticalHuggingPriority="750" horizontal="NO" id="101296">
-                                                <rect key="frame" x="803" y="1" width="15" height="82"/>
+                                                <rect key="frame" x="802" y="1" width="16" height="82"/>
                                                 <autoresizingMask key="autoresizingMask"/>
                                                 <animations/>
                                             </scroller>
                                         </scrollView>
+                                        <colorWell id="101260">
+                                            <rect key="frame" x="813" y="130" width="23" height="23"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
+                                            <animations/>
+                                            <color key="color" red="0.05813049898" green="0.055541899059999997" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                            <connections>
+                                                <binding destination="101330" name="value" keyPath="selection.color" id="101405"/>
+                                            </connections>
+                                        </colorWell>
                                         <textField verticalHuggingPriority="750" id="101268">
-                                            <rect key="frame" x="462" y="133" width="191" height="17"/>
-                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                            <rect key="frame" x="617" y="133" width="191" height="17"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
                                             <animations/>
                                             <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Default color for new objects:" id="101293">
                                                 <font key="font" metaFont="system"/>
@@ -5089,7 +5090,7 @@ IA
                                     <subviews>
                                         <button verticalHuggingPriority="750" id="101202">
                                             <rect key="frame" x="632" y="235" width="143" height="25"/>
-                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
                                             <animations/>
                                             <buttonCell key="cell" type="roundTextured" title="Add New Event Type" bezelStyle="texturedRounded" alignment="center" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="101203">
                                                 <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
@@ -5101,7 +5102,7 @@ IA
                                         </button>
                                         <textField verticalHuggingPriority="750" id="101205">
                                             <rect key="frame" x="14" y="238" width="200" height="17"/>
-                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES"/>
                                             <animations/>
                                             <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Properties of the Selected Type" id="101206">
                                                 <font key="font" metaFont="system"/>
@@ -5111,7 +5112,7 @@ IA
                                         </textField>
                                         <textField verticalHuggingPriority="750" id="102653">
                                             <rect key="frame" x="239" y="238" width="199" height="17"/>
-                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
                                             <animations/>
                                             <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Type's Default Event Attributes" id="102654">
                                                 <font key="font" metaFont="system"/>
@@ -5121,7 +5122,7 @@ IA
                                         </textField>
                                         <textField verticalHuggingPriority="750" id="101207">
                                             <rect key="frame" x="14" y="211" width="41" height="17"/>
-                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES"/>
                                             <animations/>
                                             <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Name" id="101208">
                                                 <font key="font" metaFont="system"/>
@@ -5131,7 +5132,7 @@ IA
                                         </textField>
                                         <textField verticalHuggingPriority="750" id="101209">
                                             <rect key="frame" x="60" y="208" width="151" height="22"/>
-                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                            <autoresizingMask key="autoresizingMask" widthSizable="YES"/>
                                             <animations/>
                                             <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="101210">
                                                 <font key="font" metaFont="system"/>
@@ -5150,7 +5151,7 @@ IA
                                         </textField>
                                         <textField verticalHuggingPriority="750" id="101211">
                                             <rect key="frame" x="14" y="186" width="77" height="17"/>
-                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                             <animations/>
                                             <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Description" id="101212">
                                                 <font key="font" metaFont="system"/>
@@ -5160,9 +5161,9 @@ IA
                                         </textField>
                                         <scrollView horizontalLineScroll="10" horizontalPageScroll="10" verticalLineScroll="10" verticalPageScroll="10" hasHorizontalScroller="NO" usesPredominantAxisScrolling="NO" id="101213">
                                             <rect key="frame" x="17" y="8" width="197" height="171"/>
-                                            <autoresizingMask key="autoresizingMask"/>
+                                            <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
                                             <clipView key="contentView" id="Dn9-QV-L8l">
-                                                <rect key="frame" x="1" y="1" width="180" height="169"/>
+                                                <rect key="frame" x="1" y="1" width="195" height="169"/>
                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                 <subviews>
                                                     <textView importsGraphics="NO" richText="NO" findStyle="panel" continuousSpellChecking="YES" allowsUndo="YES" usesRuler="YES" usesFontPanel="YES" verticallyResizable="YES" allowsNonContiguousLayout="YES" spellingCorrection="YES" smartInsertDelete="YES" id="101216">
@@ -5190,14 +5191,14 @@ IA
                                                 <animations/>
                                             </scroller>
                                             <scroller key="verticalScroller" verticalHuggingPriority="750" horizontal="NO" id="101214">
-                                                <rect key="frame" x="181" y="1" width="15" height="169"/>
+                                                <rect key="frame" x="180" y="1" width="16" height="169"/>
                                                 <autoresizingMask key="autoresizingMask"/>
                                                 <animations/>
                                             </scroller>
                                         </scrollView>
                                         <box horizontalHuggingPriority="750" title="Box" boxType="separator" titlePosition="noTitle" id="101217">
                                             <rect key="frame" x="231" y="9" width="5" height="242"/>
-                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
                                             <animations/>
                                             <color key="borderColor" white="0.0" alpha="0.41999999999999998" colorSpace="calibratedWhite"/>
                                             <color key="fillColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
@@ -5205,7 +5206,7 @@ IA
                                         </box>
                                         <textField verticalHuggingPriority="750" id="101223">
                                             <rect key="frame" x="244" y="210" width="64" height="17"/>
-                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
                                             <animations/>
                                             <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Duration:" id="101224">
                                                 <font key="font" metaFont="system"/>
@@ -5215,7 +5216,7 @@ IA
                                         </textField>
                                         <comboBox verticalHuggingPriority="750" id="101225">
                                             <rect key="frame" x="313" y="204" width="99" height="26"/>
-                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
                                             <animations/>
                                             <comboBoxCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" borderStyle="bezel" drawsBackground="YES" completes="NO" numberOfVisibleItems="5" id="101226">
                                                 <numberFormatter key="formatter" formatterBehavior="custom10_4" positiveFormat="#.##" negativeFormat="#.##" usesGroupingSeparator="NO" paddingCharacter="*" groupingSize="0" minimumIntegerDigits="0" maximumIntegerDigits="42" maximumFractionDigits="2" decimalSeparator="." groupingSeparator="," currencyDecimalSeparator="." plusSign="+" minusSign="-" notANumberSymbol="NaN" perMillSymbol="‰" percentSymbol="%" exponentSymbol="E" positivePrefix="" positiveSuffix="" negativePrefix="-" negativeSuffix="" id="102127"/>
@@ -5239,7 +5240,7 @@ IA
                                         </comboBox>
                                         <textField verticalHuggingPriority="750" id="101227">
                                             <rect key="frame" x="414" y="208" width="61" height="17"/>
-                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
                                             <animations/>
                                             <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="seconds" id="101228">
                                                 <font key="font" metaFont="system"/>
@@ -5249,7 +5250,7 @@ IA
                                         </textField>
                                         <textField verticalHuggingPriority="750" id="101233">
                                             <rect key="frame" x="244" y="183" width="70" height="17"/>
-                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
                                             <animations/>
                                             <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Fade time:" id="101238">
                                                 <font key="font" metaFont="system"/>
@@ -5259,7 +5260,7 @@ IA
                                         </textField>
                                         <comboBox verticalHuggingPriority="750" id="101234">
                                             <rect key="frame" x="319" y="177" width="99" height="26"/>
-                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
                                             <animations/>
                                             <comboBoxCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" borderStyle="bezel" drawsBackground="YES" completes="NO" numberOfVisibleItems="5" id="101237">
                                                 <numberFormatter key="formatter" formatterBehavior="custom10_4" positiveFormat="#.##" negativeFormat="#.##" usesGroupingSeparator="NO" paddingCharacter="*" groupingSize="0" minimumIntegerDigits="0" maximumIntegerDigits="42" maximumFractionDigits="2" decimalSeparator="." groupingSeparator="," currencyDecimalSeparator="." plusSign="+" minusSign="-" notANumberSymbol="NaN" perMillSymbol="‰" percentSymbol="%" exponentSymbol="E" positivePrefix="" positiveSuffix="" negativePrefix="-" negativeSuffix="" id="102128"/>
@@ -5280,7 +5281,7 @@ IA
                                         </comboBox>
                                         <textField verticalHuggingPriority="750" id="101241">
                                             <rect key="frame" x="244" y="142" width="82" height="17"/>
-                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
                                             <animations/>
                                             <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Marker size:" id="101244">
                                                 <font key="font" metaFont="system"/>
@@ -5290,7 +5291,7 @@ IA
                                         </textField>
                                         <comboBox verticalHuggingPriority="750" id="101242">
                                             <rect key="frame" x="484" y="137" width="99" height="26"/>
-                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
                                             <animations/>
                                             <comboBoxCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" borderStyle="bezel" drawsBackground="YES" completes="NO" numberOfVisibleItems="5" id="101243">
                                                 <numberFormatter key="formatter" formatterBehavior="custom10_4" positiveFormat="#.#" negativeFormat="#.#" usesGroupingSeparator="NO" paddingCharacter="*" groupingSize="0" minimumIntegerDigits="0" maximumIntegerDigits="42" maximumFractionDigits="1" decimalSeparator="." groupingSeparator="," currencyDecimalSeparator="." plusSign="+" minusSign="-" notANumberSymbol="NaN" perMillSymbol="‰" percentSymbol="%" exponentSymbol="E" positivePrefix="" positiveSuffix="" negativePrefix="-" negativeSuffix="" id="102129"/>
@@ -5311,7 +5312,7 @@ IA
                                         </comboBox>
                                         <textField verticalHuggingPriority="750" id="102630">
                                             <rect key="frame" x="512" y="94" width="98" height="17"/>
-                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
                                             <animations/>
                                             <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Line thickness:" id="102634">
                                                 <font key="font" metaFont="system"/>
@@ -5321,7 +5322,7 @@ IA
                                         </textField>
                                         <comboBox verticalHuggingPriority="750" id="102631">
                                             <rect key="frame" x="740" y="88" width="99" height="26"/>
-                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
                                             <animations/>
                                             <comboBoxCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" borderStyle="bezel" drawsBackground="YES" completes="NO" numberOfVisibleItems="5" id="102632">
                                                 <numberFormatter key="formatter" formatterBehavior="custom10_4" positiveFormat="#.#" negativeFormat="#.#" usesGroupingSeparator="NO" paddingCharacter="*" groupingSize="0" minimumIntegerDigits="0" maximumIntegerDigits="42" maximumFractionDigits="1" decimalSeparator="." groupingSeparator="," currencyDecimalSeparator="." plusSign="+" minusSign="-" notANumberSymbol="NaN" perMillSymbol="‰" percentSymbol="%" exponentSymbol="E" positivePrefix="" positiveSuffix="" negativePrefix="-" negativeSuffix="" id="102633"/>
@@ -5342,7 +5343,7 @@ IA
                                         </comboBox>
                                         <textField verticalHuggingPriority="750" id="101235">
                                             <rect key="frame" x="420" y="181" width="61" height="17"/>
-                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
                                             <animations/>
                                             <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="seconds" id="101236">
                                                 <font key="font" metaFont="system"/>
@@ -5352,7 +5353,7 @@ IA
                                         </textField>
                                         <textField verticalHuggingPriority="750" id="101245">
                                             <rect key="frame" x="602" y="142" width="46" height="17"/>
-                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
                                             <animations/>
                                             <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Shape:" id="101246">
                                                 <font key="font" metaFont="system"/>
@@ -5362,7 +5363,7 @@ IA
                                         </textField>
                                         <popUpButton verticalHuggingPriority="750" id="101247">
                                             <rect key="frame" x="650" y="137" width="189" height="26"/>
-                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
                                             <animations/>
                                             <popUpButtonCell key="cell" type="push" title="Circle" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" selectedItem="101250" id="101248">
                                                 <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
@@ -5408,7 +5409,7 @@ IA
                                         </popUpButton>
                                         <textField verticalHuggingPriority="750" id="101311">
                                             <rect key="frame" x="488" y="208" width="107" height="17"/>
-                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
                                             <animations/>
                                             <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Max # of Points:" id="101312">
                                                 <font key="font" metaFont="system"/>
@@ -5418,7 +5419,7 @@ IA
                                         </textField>
                                         <textField verticalHuggingPriority="750" id="102060">
                                             <rect key="frame" x="657" y="209" width="121" height="17"/>
-                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
                                             <animations/>
                                             <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="(put 0 for no limit)" id="102061">
                                                 <font key="font" metaFont="system"/>
@@ -5428,7 +5429,7 @@ IA
                                         </textField>
                                         <textField verticalHuggingPriority="750" id="101313">
                                             <rect key="frame" x="600" y="206" width="53" height="22"/>
-                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
                                             <animations/>
                                             <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="101314">
                                                 <numberFormatter key="formatter" formatterBehavior="default10_4" positiveFormat="#" negativeFormat="#" usesGroupingSeparator="NO" paddingCharacter="*" groupingSize="0" minimumIntegerDigits="0" maximumIntegerDigits="42" decimalSeparator="." groupingSeparator="," currencyDecimalSeparator="." plusSign="+" minusSign="-" notANumberSymbol="NaN" perMillSymbol="‰" percentSymbol="%" exponentSymbol="E" positivePrefix="" positiveSuffix="" negativePrefix="-" negativeSuffix="" id="102062"/>
@@ -5448,7 +5449,7 @@ IA
                                         </textField>
                                         <textField verticalHuggingPriority="750" id="101315">
                                             <rect key="frame" x="244" y="94" width="145" height="17"/>
-                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
                                             <animations/>
                                             <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Connecting line type:" id="101316">
                                                 <font key="font" metaFont="system"/>
@@ -5458,7 +5459,7 @@ IA
                                         </textField>
                                         <popUpButton verticalHuggingPriority="750" id="101317">
                                             <rect key="frame" x="385" y="88" width="116" height="26"/>
-                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
                                             <animations/>
                                             <popUpButtonCell key="cell" type="push" title="None" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" selectedItem="101320" id="101318">
                                                 <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
@@ -5477,7 +5478,7 @@ IA
                                         </popUpButton>
                                         <button id="101327">
                                             <rect key="frame" x="489" y="181" width="305" height="18"/>
-                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
                                             <animations/>
                                             <buttonCell key="cell" type="check" title="All points in event must have same timecode" bezelStyle="regularSquare" imagePosition="left" alignment="left" state="on" inset="2" id="101328">
                                                 <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -5489,7 +5490,7 @@ IA
                                         </button>
                                         <scrollView autohidesScrollers="YES" horizontalLineScroll="19" horizontalPageScroll="10" verticalLineScroll="19" verticalPageScroll="10" usesPredominantAxisScrolling="NO" id="101437">
                                             <rect key="frame" x="17" y="263" width="819" height="125"/>
-                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                             <clipView key="contentView" id="KQH-IP-qsf">
                                                 <rect key="frame" x="1" y="17" width="817" height="107"/>
                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -5562,7 +5563,7 @@ IA
                                         </scrollView>
                                         <button verticalHuggingPriority="750" id="101840">
                                             <rect key="frame" x="783" y="235" width="53" height="25"/>
-                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
                                             <animations/>
                                             <buttonCell key="cell" type="roundTextured" title="Delete" bezelStyle="texturedRounded" alignment="center" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="101841">
                                                 <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
@@ -5574,7 +5575,7 @@ IA
                                         </button>
                                         <slider verticalHuggingPriority="750" id="102640">
                                             <rect key="frame" x="331" y="139" width="147" height="21"/>
-                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
                                             <animations/>
                                             <sliderCell key="cell" continuous="YES" state="on" alignment="left" minValue="2" maxValue="100" doubleValue="10" tickMarkPosition="above" sliderType="linear" id="102641"/>
                                             <connections>
@@ -5583,7 +5584,7 @@ IA
                                         </slider>
                                         <slider verticalHuggingPriority="750" id="102645">
                                             <rect key="frame" x="610" y="91" width="124" height="21"/>
-                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
                                             <animations/>
                                             <sliderCell key="cell" continuous="YES" state="on" alignment="left" minValue="0.5" maxValue="10" doubleValue="3" tickMarkPosition="above" sliderType="linear" id="102646"/>
                                             <connections>
@@ -5592,7 +5593,7 @@ IA
                                         </slider>
                                         <box verticalHuggingPriority="750" title="Box" boxType="separator" titlePosition="noTitle" id="102650">
                                             <rect key="frame" x="247" y="123" width="539" height="5"/>
-                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
                                             <animations/>
                                             <color key="borderColor" white="0.0" alpha="0.41999999999999998" colorSpace="calibratedWhite"/>
                                             <color key="fillColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
@@ -5600,7 +5601,7 @@ IA
                                         </box>
                                         <box verticalHuggingPriority="750" title="Box" boxType="separator" titlePosition="noTitle" id="102651">
                                             <rect key="frame" x="247" y="172" width="539" height="5"/>
-                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
                                             <animations/>
                                             <color key="borderColor" white="0.0" alpha="0.41999999999999998" colorSpace="calibratedWhite"/>
                                             <color key="fillColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
@@ -5608,7 +5609,7 @@ IA
                                         </box>
                                         <box horizontalHuggingPriority="750" title="Box" boxType="separator" titlePosition="noTitle" id="102652">
                                             <rect key="frame" x="480" y="183" width="5" height="45"/>
-                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
                                             <animations/>
                                             <color key="borderColor" white="0.0" alpha="0.41999999999999998" colorSpace="calibratedWhite"/>
                                             <color key="fillColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
@@ -5616,7 +5617,7 @@ IA
                                         </box>
                                         <popUpButton verticalHuggingPriority="750" id="103034">
                                             <rect key="frame" x="432" y="60" width="134" height="26"/>
-                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
                                             <animations/>
                                             <popUpButtonCell key="cell" type="push" title="On Master Clip" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" tag="2" imageScaling="proportionallyDown" inset="2" selectedItem="103039" id="103035">
                                                 <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
@@ -5635,7 +5636,7 @@ IA
                                         </popUpButton>
                                         <textField verticalHuggingPriority="750" id="103040">
                                             <rect key="frame" x="244" y="66" width="187" height="17"/>
-                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
                                             <animations/>
                                             <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Show connecting line length:" id="103041">
                                                 <font key="font" metaFont="system"/>
@@ -5645,7 +5646,7 @@ IA
                                         </textField>
                                         <textField verticalHuggingPriority="750" id="103042">
                                             <rect key="frame" x="244" y="36" width="221" height="17"/>
-                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
                                             <animations/>
                                             <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Connecting line length label units:" id="103043">
                                                 <font key="font" metaFont="system"/>
@@ -5655,7 +5656,7 @@ IA
                                         </textField>
                                         <textField verticalHuggingPriority="750" id="103044">
                                             <rect key="frame" x="470" y="34" width="73" height="22"/>
-                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
                                             <animations/>
                                             <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" placeholderString="mm" drawsBackground="YES" id="103045">
                                                 <font key="font" metaFont="system"/>
@@ -5674,7 +5675,7 @@ IA
                                         </textField>
                                         <textField verticalHuggingPriority="750" id="103054">
                                             <rect key="frame" x="244" y="8" width="245" height="17"/>
-                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
                                             <animations/>
                                             <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Connecting line length label font size:" id="103057">
                                                 <font key="font" metaFont="system"/>
@@ -5684,7 +5685,7 @@ IA
                                         </textField>
                                         <textField verticalHuggingPriority="750" id="103055">
                                             <rect key="frame" x="491" y="6" width="73" height="22"/>
-                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
                                             <animations/>
                                             <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" placeholderString="14" drawsBackground="YES" id="103056">
                                                 <numberFormatter key="formatter" formatterBehavior="default10_4" positiveFormat="#" negativeFormat="#" usesGroupingSeparator="NO" paddingCharacter="*" groupingSize="0" minimumIntegerDigits="0" maximumIntegerDigits="42" decimalSeparator="." groupingSeparator="," currencyDecimalSeparator="." plusSign="+" minusSign="-" notANumberSymbol="NaN" perMillSymbol="‰" percentSymbol="%" exponentSymbol="E" positivePrefix="" positiveSuffix="" negativePrefix="-" negativeSuffix="" id="103080"/>
@@ -5704,7 +5705,7 @@ IA
                                         </textField>
                                         <textField verticalHuggingPriority="750" id="103046">
                                             <rect key="frame" x="548" y="36" width="69" height="17"/>
-                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
                                             <animations/>
                                             <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="multiplier:" id="103047">
                                                 <font key="font" metaFont="system"/>
@@ -5714,7 +5715,7 @@ IA
                                         </textField>
                                         <textField verticalHuggingPriority="750" id="103048">
                                             <rect key="frame" x="621" y="34" width="52" height="22"/>
-                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
                                             <animations/>
                                             <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" placeholderString="1000" drawsBackground="YES" id="103049">
                                                 <numberFormatter key="formatter" formatterBehavior="default10_4" positiveFormat="#" negativeFormat="#" usesGroupingSeparator="NO" paddingCharacter="*" groupingSize="0" minimumIntegerDigits="0" maximumIntegerDigits="42" decimalSeparator="." groupingSeparator="," currencyDecimalSeparator="." plusSign="+" minusSign="-" notANumberSymbol="NaN" perMillSymbol="‰" percentSymbol="%" exponentSymbol="E" positivePrefix="" positiveSuffix="" negativePrefix="-" negativeSuffix="" id="103081"/>
@@ -5734,7 +5735,7 @@ IA
                                         </textField>
                                         <textField verticalHuggingPriority="750" id="103050">
                                             <rect key="frame" x="678" y="36" width="128" height="17"/>
-                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
                                             <animations/>
                                             <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="digits past decimal:" id="103051">
                                                 <font key="font" metaFont="system"/>
@@ -5744,7 +5745,7 @@ IA
                                         </textField>
                                         <textField verticalHuggingPriority="750" id="103052">
                                             <rect key="frame" x="811" y="34" width="25" height="22"/>
-                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
                                             <animations/>
                                             <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" placeholderString="2" drawsBackground="YES" id="103053">
                                                 <numberFormatter key="formatter" formatterBehavior="default10_4" positiveFormat="#" negativeFormat="#" usesGroupingSeparator="NO" paddingCharacter="*" groupingSize="0" minimumIntegerDigits="0" maximumIntegerDigits="42" decimalSeparator="." groupingSeparator="," currencyDecimalSeparator="." plusSign="+" minusSign="-" notANumberSymbol="NaN" perMillSymbol="‰" percentSymbol="%" exponentSymbol="E" positivePrefix="" positiveSuffix="" negativePrefix="-" negativeSuffix="" id="103082"/>
@@ -5770,7 +5771,7 @@ IA
                     </tabView>
                     <button verticalHuggingPriority="750" id="101256">
                         <rect key="frame" x="809" y="4" width="73" height="32"/>
-                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
                         <animations/>
                         <buttonCell key="cell" type="push" title="Done" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="101257">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
