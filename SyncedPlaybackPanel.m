@@ -13,10 +13,6 @@
 
 @synthesize initialLocation;
 
-/*
- In Interface Builder, the class for the window is set to this subclass. Overriding the initializer
- provides a mechanism for controlling how objects of this class are created.
- */
 - (id)initWithContentRect:(NSRect)contentRect
                 styleMask:(NSUInteger)aStyle
                   backing:(NSBackingStoreType)bufferingType
@@ -118,14 +114,21 @@
 }
 
 /*
- Once the user starts dragging the mouse, move the window with it. The window has no title bar for
- the user to drag (so we have to implement dragging ourselves)
+ Old note: Once the user starts dragging the mouse, move the window with it. The window has no title bar for
+ the user to drag (so we have to implement dragging ourselves).
+ 
+ New note: In 10.11 El Capitan at least (maybe earlier), the window drags properly without any interference in the mouseDragged method. The 
+ function below just caused the window to jump around in strange ways while being dragged before settling into the correct location when the 
+ mouse is released. I don't know when this changed, but commenting out the whole thing fixes the problems.
+ 
  */
-
+/*
 - (void)mouseDragged:(NSEvent *)theEvent {
     
+     
     NSRect screenVisibleFrame = [[NSScreen mainScreen] visibleFrame];
     NSRect windowFrame = [self frame];
+    NSPoint oldOrigin = windowFrame.origin; // TEMPORARY DIAGNOSTIC
     NSPoint newOrigin = windowFrame.origin;
     
     // Get the mouse location in window coordinates.
@@ -141,9 +144,15 @@
     
     // Move the window to the new location
     
+    // Ok, so the window is dragging effectively only when dragging is the first operation I perform on it, before making it key, in which case it doesn't
+    // even call this function. When it has to call this function, it's messed up.
+    
+    //NSLog(@"Dragging by amount (%1.3f, %1.3f) from (%1.3f, %1.3f) to (%1.3f, %1.3f)", (currentLocation.x - initialLocation.x), (currentLocation.y - initialLocation.y), oldOrigin.x, oldOrigin.y, newOrigin.x, newOrigin.y);
+    
     [self setFrameOrigin:newOrigin];
+ 
 }
-
+*/
 - (void) scrollWheel:(NSEvent *)theEvent
 {
     if ([theEvent deltaY] > 0) {
