@@ -10,7 +10,7 @@
 
 @interface SyncedPlaybackPanelControlBox : NSView {
     
-    IBOutlet VideoControlButton *__weak playForwardButton, *__weak playBackwardButton, *__weak stepForwardButton, *__weak stepBackwardButton;
+    IBOutlet VideoControlButton *__weak playForwardButton, *__weak playBackwardButton, *__weak stepForwardButton, *__weak stepBackwardButton, *__weak replayButton;
 
     IBOutlet PlayWhilePressedButton *__weak playForwardWhilePressedButton, *__weak playBackwardWhilePressedButton;
     

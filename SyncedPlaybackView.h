@@ -23,6 +23,7 @@
     IBOutlet VideoControlButton __weak *bookmarkSetButton2;
     IBOutlet VideoControlButton __weak *bookmarkGoButton1;
     IBOutlet VideoControlButton __weak *bookmarkGoButton2;
+    IBOutlet VideoControlButton __weak *instantReplayButton;
     
     IBOutlet VideoControlButton __weak *maximizeButton;
 

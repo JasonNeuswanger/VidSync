@@ -62,7 +62,6 @@
 	IBOutlet NSTableView *__weak eventsPointsTable;
 	
     IBOutlet NSWindowController *__strong syncedPlaybackWindowController;
-	IBOutlet VideoControlButton *__weak playOrPauseButton;
     IBOutlet SyncedPlaybackPanel *__weak syncedPlaybackPanel;
     IBOutlet SyncedPlaybackView *__weak syncedPlaybackView;
     IBOutlet NSSlider *__weak syncedPlaybackScrubber;
@@ -70,7 +69,7 @@
     
 	IBOutlet PlayWhilePressedButton *__weak playForwardAtRate1WhilePressedButton,*__weak playBackwardAtRate1WhilePressedButton,*__weak playForwardAtRate2WhilePressedButton,*__weak playBackwardAtRate2WhilePressedButton,*__weak playForwardWhilePressedButton, *__weak playBackwardWhilePressedButton;
     
-    IBOutlet VideoControlButton *__weak playForwardAtRate1Button, *__weak playBackwardAtRate1Button, *__weak playForwardAtRate2Button, *__weak playBackwardAtRate2Button;
+    IBOutlet VideoControlButton *__weak playOrPauseButton, *__weak playBackwardButton, *__weak playForwardAtRate1Button, *__weak playBackwardAtRate1Button, *__weak playForwardAtRate2Button, *__weak playBackwardAtRate2Button, *__weak instantReplayButton;
     
 	CMTime bookmarkTime1, bookmarkTime2;
     BOOL bookmarkIsSet1, bookmarkIsSet2;
@@ -210,6 +209,7 @@
 
 - (IBAction) advancedPlayAll:(id)sender;
 - (IBAction) advancedStepAll:(id)sender;
+- (IBAction) instantReplay:(id)sender;
 - (CMTime) stopTimeForDuration:(float)duration atRate:(float)rate;
 - (void) checkForStopAtCurrentTime;
 - (IBAction) setTimeFromScrubber:(id)sender;

@@ -34,7 +34,7 @@
     [playBackwardWhilePressedButton setCustomTitle:@"\uf0a5" withColor:videoButtonColor fontSize:videoButtonFontSize];
     [playForwardButton setCustomTitle:@"\uf04b" withColor:videoButtonColor fontSize:videoButtonFontSize];
     [playBackwardButton setCustomTitle:@"\uf04b" withColor:videoButtonColor fontSize:videoButtonFontSize];
-    
+    [replayButton setCustomTitle:@"\uf0e2" withColor:videoButtonColor fontSize:videoButtonFontSize];
     [stepForwardButton setCustomTitle:@"\uf051" withColor:videoButtonColor fontSize:videoButtonFontSize];
     [stepBackwardButton setCustomTitle:@"\uf048" withColor:videoButtonColor fontSize:videoButtonFontSize];
     

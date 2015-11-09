@@ -28,6 +28,7 @@
     [playBackwardButton setCustomTitle:@"\uf04b" withColor:videoButtonColor fontSize:videoButtonFontSize];
     [mainPlayForwardWhilePressedButton setCustomTitle:@"\uf0a4" withColor:videoButtonColor fontSize:videoButtonFontSize];
     [mainPlayBackwardWhilePressedButton setCustomTitle:@"\uf0a5" withColor:videoButtonColor fontSize:videoButtonFontSize];
+    [instantReplayButton setCustomTitle:@"\uf0e2" withColor:videoButtonColor fontSize:videoButtonFontSize];
     
     NSColor *unpressedBookmarkGoColor = [NSColor colorWithWhite:1.0 alpha:0.15];
     [bookmarkSetButton1 setCustomTitle:@"\uf02e" withColor:videoButtonColor fontSize:bookmarkButtonFontSize];

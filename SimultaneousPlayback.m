@@ -122,6 +122,30 @@
     }
 }
 
+- (IBAction) instantReplay:(id)sender
+{
+    float exactDuration, playRate;
+    if ([sender tag] == 3) {    // Using the main replay button, use rate 1 for 2 seconds.
+        exactDuration = 2.0f;
+        playRate = 1.0f;
+    } else { // Using one of the advanced playback buttons; figure out which on.
+        NSString *whichRate = [NSString stringWithFormat:@"%ld",(long)[sender tag]];
+        [[[NSUserDefaultsController sharedUserDefaultsController] values] setValue:[NSNumber numberWithInt:1] forKey:[NSString stringWithFormat:@"advancedPlaybackMode%@",whichRate]];
+        exactDuration = [[[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:[NSString stringWithFormat:@"advancedPlaybackExactDuration%@",whichRate]] floatValue];
+        playRate = [[[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:[NSString stringWithFormat:@"advancedPlaybackRate%@",whichRate]] floatValue];
+    }
+    CMTime newStopTime = [self currentMasterTime];
+    CMTime stepTime = CMTimeMakeWithSeconds(-exactDuration,newStopTime.timescale);
+    [self goToMasterTime:CMTimeAdd(newStopTime,stepTime)];
+    [self setAllVideoRates:playRate];
+    stopTimeComparison = NSOrderedAscending; // Because we're always playing forward in this case
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (exactDuration/2.0) * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
+        // Setting the video rates resets the stop time to 0, so any user playback input interrupts a "play until time" sequence. Therefore we
+        // set the new stopTime after setting the video rates, and on a bit of a delay, in case the rateDidChange notification doesn't fire immediately.
+        stopTime = newStopTime;
+    });
+}
+
 - (CMTime) stopTimeForDuration:(float)duration atRate:(float)rate
 {
     CMTime newStopTime;
@@ -242,11 +266,20 @@
 	if (fabs(self.project.masterClip.windowController.playerView.player.rate) > 0.0f) {	// masterClip is playing; change simultaneous playback button text and action to "pause"
         [playOrPauseButton setCustomTitle:@"\uf04c"];
 		[playOrPauseButton setAction:@selector(pauseAll:)];
+        [playBackwardButton setAction:@selector(pauseAll:)];
+        [playForwardAtRate1Button setAction:@selector(pauseAll:)];
+        [playBackwardAtRate1Button setAction:@selector(pauseAll:)];
+        [playForwardAtRate2Button setAction:@selector(pauseAll:)];
+        [playBackwardAtRate2Button setAction:@selector(pauseAll:)];
 	} else {	// masterClip is paused; check if all movies are paused, and if so, set simultaneous playback button text and action to "play"
         [playOrPauseButton setCustomTitle:@"\uf04b"];
         [playOrPauseButton setAction:@selector(playAll:)];
-        
-	}
+        [playBackwardButton setAction:@selector(playAllBackward:)];
+        [playForwardAtRate1Button setAction:@selector(advancedPlayAll:)];
+        [playBackwardAtRate1Button setAction:@selector(advancedPlayAll:)];
+        [playForwardAtRate2Button setAction:@selector(advancedPlayAll:)];
+        [playBackwardAtRate2Button setAction:@selector(advancedPlayAll:)];
+    }
     stopTime = kCMTimeIndefinite;	// If the user does anything manually to the video while it's playing, it overrides and wipes out an advanced playback stopTime if one was set.
 }
 
