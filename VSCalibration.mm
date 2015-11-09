@@ -693,11 +693,16 @@ int refractionRootFunc_f(const gsl_vector* x, void* params, gsl_vector* f)
 	if ([openPanel runModal]) {
 		filePath = [[[openPanel URLs] objectAtIndex:0] path];
 		NSArray *fullDistortion = [[NSArray alloc] initWithContentsOfFile:filePath];
-        NSInteger alertResult = NSRunAlertPanel(@"Overwrite current plumblines and parameters?",
-                                                @"You can choose to overwrite any existing plumblines and parameters with new values from the file, or simply add the plumblines from the file to the list above.",
-                                                @"Overwrite Plumblines and Parameters",
-                                                @"Just Add to Existing Plumblines",
-                                                nil);
+        NSInteger alertResult;
+        if ([self.distortionLines count] > 0) {
+            alertResult = NSRunAlertPanel(@"Overwrite current plumblines and parameters?",
+                                                    @"You can choose to overwrite any existing plumblines and parameters with new values from the file, or simply add the plumblines from the file to the list above.",
+                                                    @"Overwrite Plumblines and Parameters",
+                                                    @"Just Add to Existing Plumblines",
+                                                    nil);
+        } else {
+            alertResult = NSAlertDefaultReturn; // If there was nothing to overwrite, simulate the user clicking "Overwrite" without prompting for it.
+        }
         if (alertResult == NSAlertDefaultReturn) { // user clicked overwrite -- delete old distortion lines AND overwrite parameters
             self.distortionCenterX = [fullDistortion objectAtIndex:0];
             self.distortionCenterY = [fullDistortion objectAtIndex:1];
