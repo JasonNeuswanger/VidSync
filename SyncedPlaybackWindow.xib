@@ -32,16 +32,16 @@
         <window identifier="SyncedPlaybackPanel" title="Synchronized Playback Controls" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" oneShot="NO" releasedWhenClosed="NO" showsToolbarButton="NO" visibleAtLaunch="NO" frameAutosaveName="Synchronized Playback Controls" animationBehavior="default" id="ID5-hV-LOZ" customClass="SyncedPlaybackPanel">
             <windowStyleMask key="styleMask" resizable="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" bottomStrut="YES"/>
-            <rect key="contentRect" x="61" y="1438" width="1229" height="120"/>
+            <rect key="contentRect" x="61" y="1438" width="1230" height="120"/>
             <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1578"/>
             <value key="minSize" type="size" width="1229" height="120"/>
             <value key="maxSize" type="size" width="5000" height="120"/>
             <view key="contentView" id="LSu-Eg-rTG">
-                <rect key="frame" x="0.0" y="0.0" width="1229" height="120"/>
+                <rect key="frame" x="0.0" y="0.0" width="1230" height="120"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <customView id="pEg-3k-Wyv" customClass="SyncedPlaybackView">
-                        <rect key="frame" x="0.0" y="0.0" width="1300" height="120"/>
+                        <rect key="frame" x="0.0" y="0.0" width="1230" height="120"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <textField toolTip="Current time (measured relative to start of the master clip)" verticalHuggingPriority="750" id="dNN-uS-Zfp">
@@ -944,7 +944,7 @@
             <connections>
                 <outlet property="document" destination="-2" id="zLa-w0-OvZ"/>
             </connections>
-            <point key="canvasLocation" x="386.5" y="274"/>
+            <point key="canvasLocation" x="387" y="274"/>
         </window>
         <userDefaultsController representsSharedInstance="YES" id="jgZ-eI-gMa"/>
     </objects>
