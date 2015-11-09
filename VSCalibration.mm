@@ -851,14 +851,15 @@ int refractionRootFunc_f(const gsl_vector* x, void* params, gsl_vector* f)
     NSPoint screenPoint, projectedQuadratPoint;
     float xdiff,ydiff;
     float totalResidual = 0.0;
-    for (VSCalibrationPoint *point in self.pointsFront) {
+    NSSet *points = ([whichSurface isEqualToString:@"Front"]) ? self.pointsFront : self.pointsBack;
+    for (VSCalibrationPoint *point in points) {
         screenPoint = NSMakePoint([point.screenX floatValue],[point.screenY floatValue]);
         projectedQuadratPoint = [self projectScreenPoint:screenPoint toQuadratSurface:whichSurface];
         xdiff = projectedQuadratPoint.x - [point.apparentWorldHcoord floatValue];
         ydiff = projectedQuadratPoint.y - [point.apparentWorldVcoord floatValue];
         totalResidual += sqrt(xdiff*xdiff + ydiff*ydiff);
     }
-    int numPoints = ([whichSurface isEqualToString:@"Front"]) ? [self.pointsFront count] : [self.pointsBack count];
+    int numPoints = [points count];
     NSNumber *residualPerPoint = [NSNumber numberWithFloat:(totalResidual / numPoints)];
     ([whichSurface isEqualToString:@"Front"]) ? self.residualFrontWorld = residualPerPoint : self.residualBackWorld = residualPerPoint;
 }
