@@ -63,6 +63,7 @@
     NSNumberFormatter *nf = self.videoClip.project.document.decimalFormatter;
     NSXMLElement *mainElement = [[NSXMLElement alloc] initWithName:@"annotation"];
     [mainElement addAttribute:[NSXMLNode attributeWithName:@"notes" stringValue:self.notes]];
+    [mainElement addAttribute:[NSXMLNode attributeWithName:@"videoClipName" stringValue:self.videoClip.clipName]];
     [mainElement addAttribute:[NSXMLNode attributeWithName:@"observer" stringValue:self.observer]];
     [mainElement addAttribute:[NSXMLNode attributeWithName:@"colorR" stringValue:[NSString stringWithFormat:@"%1.4f",[self.color redComponent]]]];
     [mainElement addAttribute:[NSXMLNode attributeWithName:@"colorG" stringValue:[NSString stringWithFormat:@"%1.4f",[self.color greenComponent]]]];

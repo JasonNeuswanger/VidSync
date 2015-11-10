@@ -118,16 +118,29 @@
 
 - (IBAction) exportXMLFile:(id)sender
 {
-	NSXMLElement *root = (NSXMLElement *) [NSXMLNode elementWithName:@"objects"];
+	NSXMLElement *root = (NSXMLElement *) [NSXMLNode elementWithName:@"project"];
 	NSXMLDocument *xmlDoc = [[NSXMLDocument alloc] initWithRootElement:root];
 	[xmlDoc setVersion:@"1.0"];
 	[xmlDoc setCharacterEncoding:@"UTF-8"];
+    
+    [root addAttribute:[NSXMLNode attributeWithName:@"name" stringValue:self.project.name]];
+    [root addAttribute:[NSXMLNode attributeWithName:@"notes" stringValue:self.project.notes]];
+    [root addAttribute:[NSXMLNode attributeWithName:@"calibrationTimecode" stringValue:self.project.calibrationTimecode]];
+    [root addAttribute:[NSXMLNode attributeWithName:@"dateCreated" stringValue:self.project.dateCreated]];
+    [root addAttribute:[NSXMLNode attributeWithName:@"dateLastSaved" stringValue:self.project.dateLastSaved]];
+    
+    NSXMLElement *trackedObjects = (NSXMLElement *) [NSXMLNode elementWithName:@"objects"];
 	for (VSTrackedObject *trackedObject in self.project.trackedObjects) {
-		[root addChild:[trackedObject representationAsXMLNode]];
+		[trackedObjects addChild:[trackedObject representationAsXMLNode]];
 	}
-	for (VSVideoClip *videoClip in self.project.videoClips) {
-		[root addChild:[videoClip representationAsXMLNode]];
+    [root addChild:trackedObjects];
+    
+    NSXMLElement *videoClips = (NSXMLElement *) [NSXMLNode elementWithName:@"videoClips"];
+    for (VSVideoClip *videoClip in self.project.videoClips) {
+		[videoClips addChild:[videoClip representationAsXMLNode]];
 	}
+    [root addChild:videoClips];
+    
 	NSData *xmlData = [xmlDoc XMLDataWithOptions:NSXMLNodePrettyPrint];
 	if ([xmlData writeToFile:[self fileNameForExportedFile:@".xml"] atomically:YES]) {
 		[shutterClick play];
