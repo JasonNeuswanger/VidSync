@@ -161,19 +161,16 @@
     if (createFolderForProject) [filePath appendString:[NSString stringWithFormat:@"/%@",[UtilityFunctions sanitizeFileNameString:self.project.name]]];
 	if (![fm fileExistsAtPath:filePath]) [fm createDirectoryAtPath:filePath withIntermediateDirectories:YES attributes:nil error:NULL];
 	[filePath appendString:@"/"];
-	if (includeProjectName) [filePath appendString:[NSString stringWithFormat:@"%@ - ",[UtilityFunctions sanitizeFileNameString:self.project.name]]];
-	NSDate *now = [NSDate dateWithTimeIntervalSinceNow:0.0];
-	if (includeCurrentDate) {
-		NSString *currentDate = [now descriptionWithCalendarFormat:@"%Y-%m-%d - " timeZone:nil locale:[[NSUserDefaults standardUserDefaults] dictionaryRepresentation]];
-		[filePath appendString:currentDate];
-	}
-	if (includeCurrentTime) {
-		NSString *currentTime = [now descriptionWithCalendarFormat:@"%H:%M:%S - " timeZone:nil locale:[[NSUserDefaults standardUserDefaults] dictionaryRepresentation]];
-		[filePath appendString:currentTime];
-	}
-	if (![customText isEqualToString:@""]) [filePath appendString:customText];
-	if ([filePath isEqualToString:@""]) [filePath appendString:@"Untitled"];	// give it a default if all naming values are turned off
-	[filePath appendString:extension];
+    NSDate *now = [NSDate dateWithTimeIntervalSinceNow:0.0];
+    NSMutableArray *pathStrings = [NSMutableArray new];
+    if (includeProjectName) [pathStrings addObject:[UtilityFunctions sanitizeFileNameString:self.project.name]];
+    if (includeCurrentDate) [pathStrings addObject:[now descriptionWithCalendarFormat:@"%Y-%m-%d" timeZone:nil locale:[[NSUserDefaults standardUserDefaults] dictionaryRepresentation]]];
+    if (includeCurrentTime) [pathStrings addObject:[now descriptionWithCalendarFormat:@"%H:%M:%S" timeZone:nil locale:[[NSUserDefaults standardUserDefaults] dictionaryRepresentation]]];
+    if (![customText isEqualToString:@""]) [pathStrings addObject:customText];
+    NSString *fileName = [pathStrings componentsJoinedByString:@" - "]; // doing this from an array avoids annoying trailing dashes etc
+    if ([fileName isEqualToString:@""]) fileName = @"Untitled";	// give it a default if all naming values are turned off
+    [filePath appendString:fileName];
+    [filePath appendString:extension];
 	return filePath;
 }
 
