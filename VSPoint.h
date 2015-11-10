@@ -47,6 +47,7 @@ NSPoint project2DPoint(NSPoint pt, double projectionMatrix[9]);
 - (NSString *) calibrationFramePointsString;
 - (BOOL) has3Dcoords;
 - (NSNumber *) distanceToVSPoint:(VSPoint *)otherPoint;
+- (NSNumber *) speedToVSPoint:(VSPoint *)otherPoint; // magnitude of the velocity vector from this point to the otherPoint
 - (VSEventScreenPoint *) screenPointForVideoClip:(VSVideoClip *)videoClip;
 - (NSSet *) calibratedScreenPoints;
 - (void) calculate3DCoords;

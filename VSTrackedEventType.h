@@ -25,6 +25,8 @@
 @property (strong) NSNumber *connectingLineLengthLabelFractionDigits;
 @property (strong) NSNumber *connectingLineLengthLabelUnitMultiplier;
 @property (strong) NSString *connectingLineLengthLabelUnits;
+@property (strong) NSNumber *connectingLineLabelShowLength;
+@property (strong) NSNumber *connectingLineLabelShowSpeed;
 
 @property (strong) NSSet *trackedEvents;
 

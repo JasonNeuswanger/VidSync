@@ -291,8 +291,7 @@ NSPoint project2DPoint(NSPoint pt, double projectionMatrix[9])
 }
 
 - (NSNumber *) distanceToVSPoint:(VSPoint *)otherPoint
-{	
-    
+{
 	if (!pointToPointDistanceCache) {	// If there is no cache for point-to-point distances, create one.  
 		pointToPointDistanceCache = [NSMapTable strongToStrongObjectsMapTable];	// The Objects are the NSNumbers returned from this function; the keys are the otherPoints.
 		// Will put the NSNumber resulting from the current calculation into this cache at the end of the function.
@@ -308,6 +307,19 @@ NSPoint project2DPoint(NSPoint pt, double projectionMatrix[9])
 	return [NSNumber numberWithFloat:distance];
 }
 
+- (NSNumber *) speedToVSPoint:(VSPoint *)otherPoint // magnitude of the velocity vector from this point to the otherPoint
+{
+    float distance = [[self distanceToVSPoint:otherPoint] floatValue];
+    float thisTime = (float) CMTimeGetSeconds([UtilityFunctions CMTimeFromString:self.timecode]);
+    float otherTime = (float) CMTimeGetSeconds([UtilityFunctions CMTimeFromString:otherPoint.timecode]);
+    NSNumber *speed;
+    if (thisTime == otherTime) {
+        speed = [NSDecimalNumber notANumber];
+    } else {
+        speed = [NSNumber numberWithFloat:distance/fabs(thisTime - otherTime)];
+    }
+    return speed;
+}
 
 - (NSString *) spreadsheetFormatted3DPoint:(NSString *)separator
 {	

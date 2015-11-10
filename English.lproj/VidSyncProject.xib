@@ -5488,6 +5488,18 @@ IA
                                                 <binding destination="101331" name="value" keyPath="selection.requiresSameTimecode" id="101486"/>
                                             </connections>
                                         </button>
+                                        <button id="Nq3-VW-u6Q">
+                                            <rect key="frame" x="535" y="66" width="104" height="18"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
+                                            <animations/>
+                                            <buttonCell key="cell" type="check" title="Label length" bezelStyle="regularSquare" imagePosition="left" alignment="left" state="on" inset="2" id="9Yy-gd-OfO">
+                                                <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                                <font key="font" metaFont="system"/>
+                                            </buttonCell>
+                                            <connections>
+                                                <binding destination="101331" name="value" keyPath="selection.connectingLineLabelShowLength" id="Llb-9y-HC7"/>
+                                            </connections>
+                                        </button>
                                         <scrollView autohidesScrollers="YES" horizontalLineScroll="19" horizontalPageScroll="10" verticalLineScroll="19" verticalPageScroll="10" usesPredominantAxisScrolling="NO" id="101437">
                                             <rect key="frame" x="17" y="263" width="819" height="125"/>
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -5616,7 +5628,7 @@ IA
                                             <font key="titleFont" metaFont="system"/>
                                         </box>
                                         <popUpButton verticalHuggingPriority="750" id="103034">
-                                            <rect key="frame" x="432" y="60" width="134" height="26"/>
+                                            <rect key="frame" x="394" y="61" width="134" height="26"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
                                             <animations/>
                                             <popUpButtonCell key="cell" type="push" title="On Master Clip" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" tag="2" imageScaling="proportionallyDown" inset="2" selectedItem="103039" id="103035">
@@ -5635,10 +5647,10 @@ IA
                                             </connections>
                                         </popUpButton>
                                         <textField verticalHuggingPriority="750" id="103040">
-                                            <rect key="frame" x="244" y="66" width="187" height="17"/>
+                                            <rect key="frame" x="244" y="66" width="151" height="17"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
                                             <animations/>
-                                            <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Show connecting line length:" id="103041">
+                                            <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Label connecting lines:" id="103041">
                                                 <font key="font" metaFont="system"/>
                                                 <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                                 <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
@@ -5648,14 +5660,14 @@ IA
                                             <rect key="frame" x="244" y="36" width="221" height="17"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
                                             <animations/>
-                                            <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Connecting line length label units:" id="103043">
+                                            <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Connecting line label length units:" id="103043">
                                                 <font key="font" metaFont="system"/>
                                                 <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                                 <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                             </textFieldCell>
                                         </textField>
                                         <textField verticalHuggingPriority="750" id="103044">
-                                            <rect key="frame" x="470" y="34" width="73" height="22"/>
+                                            <rect key="frame" x="463" y="33" width="73" height="22"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
                                             <animations/>
                                             <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" placeholderString="mm" drawsBackground="YES" id="103045">
@@ -5674,17 +5686,17 @@ IA
                                             </connections>
                                         </textField>
                                         <textField verticalHuggingPriority="750" id="103054">
-                                            <rect key="frame" x="244" y="8" width="245" height="17"/>
+                                            <rect key="frame" x="244" y="8" width="199" height="17"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
                                             <animations/>
-                                            <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Connecting line length label font size:" id="103057">
+                                            <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Connecting line label font size:" id="103057">
                                                 <font key="font" metaFont="system"/>
                                                 <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                                 <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                             </textFieldCell>
                                         </textField>
                                         <textField verticalHuggingPriority="750" id="103055">
-                                            <rect key="frame" x="491" y="6" width="73" height="22"/>
+                                            <rect key="frame" x="444" y="6" width="73" height="22"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
                                             <animations/>
                                             <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" placeholderString="14" drawsBackground="YES" id="103056">
@@ -5763,6 +5775,18 @@ IA
                                                 </binding>
                                             </connections>
                                         </textField>
+                                        <button id="xuo-kx-tvZ">
+                                            <rect key="frame" x="643" y="66" width="104" height="18"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
+                                            <animations/>
+                                            <buttonCell key="cell" type="check" title="Label speed" bezelStyle="regularSquare" imagePosition="left" alignment="left" state="on" inset="2" id="WE0-5W-aRa">
+                                                <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                                <font key="font" metaFont="system"/>
+                                            </buttonCell>
+                                            <connections>
+                                                <binding destination="101331" name="value" keyPath="selection.connectingLineLabelShowSpeed" id="hBz-TS-HI2"/>
+                                            </connections>
+                                        </button>
                                     </subviews>
                                     <animations/>
                                 </view>

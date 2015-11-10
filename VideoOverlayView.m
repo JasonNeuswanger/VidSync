@@ -514,7 +514,11 @@
                     [path stroke];
                     if ([trackedEvent.type.connectingLineLengthLabeled intValue] > 0) { // if "Show connecting line length" is not "No"
                         if ([trackedEvent.type.connectingLineLengthLabeled intValue] == 1 || (currentScreenPoint.videoClip.isMasterClipOf != nil)) {	// Show line if it's "On All Clips"
-                            [self drawConnectingLinesLengthLabelFromVSPoint:point toVSPoint:previousPoint onLine:line inColor:lineColor];	// or if it's "On Master Clip" and this is one.
+                            BOOL do_distance = [trackedEvent.type.connectingLineLabelShowLength boolValue];
+                            BOOL do_speed = [trackedEvent.type.connectingLineLabelShowSpeed boolValue];
+                            if (do_distance || do_speed) {
+                                [self drawConnectingLinesLabelFromVSPoint:point toVSPoint:previousPoint onLine:line inColor:lineColor do_distance:do_distance do_speed:do_speed];	// or if it's "On Master Clip" and this is one.
+                            }
                         }
                     }
                 }
@@ -525,33 +529,55 @@
 	
 }
 
-- (void) drawConnectingLinesLengthLabelFromVSPoint:(VSPoint *)point toVSPoint:(VSPoint *)otherPoint onLine:(NSPoint[2])line inColor:(NSColor *)color
+- (void) drawConnectingLinesLabelFromVSPoint:(VSPoint *)point toVSPoint:(VSPoint *)otherPoint onLine:(NSPoint[2])line inColor:(NSColor *)color do_distance:(BOOL)do_distance do_speed:(BOOL)do_speed
 {
-	// Calculate the connecting line length, CI, and midPoint
+	// Calculate the connecting line length and midPoint
+    
+    NSNumber *distance, *speed;
+    NSNumberFormatter *dnf, *snf;
+
+    if (do_distance) {
+        distance = [point distanceToVSPoint:otherPoint];
+        dnf = [[NSNumberFormatter alloc] init];
+        [dnf setFormatterBehavior:NSNumberFormatterBehavior10_4];
+        [dnf setMultiplier:point.trackedEvent.type.connectingLineLengthLabelUnitMultiplier];
+        [dnf setMaximumFractionDigits:[point.trackedEvent.type.connectingLineLengthLabelFractionDigits intValue]];
+        [dnf setPositiveSuffix:point.trackedEvent.type.connectingLineLengthLabelUnits];
+    }
 	
-	NSNumber *distance = [point distanceToVSPoint:otherPoint];
-	
+    if (do_speed) {
+        speed = [point speedToVSPoint:otherPoint];
+        snf = [[NSNumberFormatter alloc] init];
+        [snf setFormatterBehavior:NSNumberFormatterBehavior10_4];
+        [snf setMultiplier:point.trackedEvent.type.connectingLineLengthLabelUnitMultiplier];
+        [snf setMaximumFractionDigits:[point.trackedEvent.type.connectingLineLengthLabelFractionDigits intValue]];
+        [snf setPositiveSuffix:[point.trackedEvent.type.connectingLineLengthLabelUnits stringByAppendingString:@"/s"]];
+    }
+    
     NSPoint midPoint = NSMakePoint(((line[0].x + line[1].x) / 2.0), ((line[0].y + line[1].y) / 2.0));
 	
-	// Format the text
 	
-	NSNumberFormatter *nf = [[NSNumberFormatter alloc] init];
-	[nf setFormatterBehavior:NSNumberFormatterBehavior10_4];
-	[nf setMultiplier:point.trackedEvent.type.connectingLineLengthLabelUnitMultiplier];
-	[nf setMaximumFractionDigits:[point.trackedEvent.type.connectingLineLengthLabelFractionDigits intValue]];
-
-	[nf setPositiveSuffix:point.trackedEvent.type.connectingLineLengthLabelUnits];
-	
-	NSString *lengthText = [nf stringFromNumber:distance];
-	NSFont *lengthStrFont = [NSFont fontWithName:@"Helvetica" size:[point.trackedEvent.type.connectingLineLengthLabelFontSize floatValue]];
+    NSString *labelText;
+    
+    if (do_speed && do_distance) {
+        labelText = [NSString stringWithFormat:@"%@ at %@",[dnf stringFromNumber:distance],[snf stringFromNumber:speed]];
+    } else if (do_speed) {
+        labelText = [snf stringFromNumber:speed];
+    } else if (do_distance) {
+        labelText = [dnf stringFromNumber:distance];
+    } else {
+        labelText = @"Label error"; // Should never happen
+    }
+    
+	NSFont *labelStrFont = [NSFont fontWithName:@"Helvetica" size:[point.trackedEvent.type.connectingLineLengthLabelFontSize floatValue]];
     NSShadow *shadow = [NSShadow new];
     [shadow setShadowBlurRadius:8.0f];
     [shadow setShadowColor:[NSColor whiteColor]];
     [shadow setShadowOffset:CGSizeMake(1.0f,-1.0f)];
-	NSDictionary *lengthStrAttributes = [NSDictionary dictionaryWithObjectsAndKeys:lengthStrFont,NSFontAttributeName,
+	NSDictionary *labelStrAttributes = [NSDictionary dictionaryWithObjectsAndKeys:labelStrFont,NSFontAttributeName,
 										 color,NSForegroundColorAttributeName,shadow,NSShadowAttributeName,nil];
 
-	NSMutableAttributedString *lengthStr = [[NSMutableAttributedString alloc] initWithString:lengthText attributes:lengthStrAttributes];
+	NSMutableAttributedString *labelStr = [[NSMutableAttributedString alloc] initWithString:labelText attributes:labelStrAttributes];
 	   
 	// Draw everything
 	
@@ -576,11 +602,11 @@
 	[NSGraphicsContext saveGraphicsState];	// save state from before affine transform is applied
 	[transform concat];						// apply the transform to everything that comes after, until restoreGraphicsState
 	[color setStroke];
-	NSRect lengthStrBounds = [lengthStr boundingRectWithSize:NSMakeSize(1000.0,1000.0) options:NSStringDrawingTruncatesLastVisibleLine|NSStringDrawingUsesLineFragmentOrigin];
-	NSRect lengthStrRect = NSMakeRect(midPoint.x - lengthStrBounds.size.width/2,midPoint.y-lengthStrBounds.size.height/2,lengthStrBounds.size.width,lengthStrBounds.size.height);
+	NSRect labelStrBounds = [labelStr boundingRectWithSize:NSMakeSize(1000.0,1000.0) options:NSStringDrawingTruncatesLastVisibleLine|NSStringDrawingUsesLineFragmentOrigin];
+	NSRect labelStrRect = NSMakeRect(midPoint.x - labelStrBounds.size.width/2,midPoint.y-labelStrBounds.size.height/2,labelStrBounds.size.width,labelStrBounds.size.height);
 	float h = 5.0;	// horizontal padding amount for the backing rect
 	float v = 1.5;	// vertical padding amount for the backing rect
-	NSBezierPath *lengthLabelBorder = [NSBezierPath bezierPathWithRect:NSMakeRect(lengthStrRect.origin.x-h,lengthStrRect.origin.y-2*v,lengthStrRect.size.width+2*h,lengthStrRect.size.height+3*v)];
+	NSBezierPath *labelBorder = [NSBezierPath bezierPathWithRect:NSMakeRect(labelStrRect.origin.x-h,labelStrRect.origin.y-2*v,labelStrRect.size.width+2*h,labelStrRect.size.height+3*v)];
 	float backgroundAlpha;
 	if ([color alphaComponent] < 0.7) {
 		backgroundAlpha = [color alphaComponent];
@@ -588,10 +614,10 @@
 		backgroundAlpha = 0.7;
 	}
 	[[[NSColor blackColor] colorWithAlphaComponent:backgroundAlpha] setFill];
-	[lengthLabelBorder fill];
-	[lengthLabelBorder setLineWidth:0.7*[point.trackedEvent.type.connectingLineThickness floatValue]];
-	[lengthLabelBorder stroke];
-	[lengthStr drawWithRect:lengthStrRect options:NSStringDrawingTruncatesLastVisibleLine|NSStringDrawingUsesLineFragmentOrigin];
+	[labelBorder fill];
+	[labelBorder setLineWidth:0.7*[point.trackedEvent.type.connectingLineThickness floatValue]];
+	[labelBorder stroke];
+	[labelStr drawWithRect:labelStrRect options:NSStringDrawingTruncatesLastVisibleLine|NSStringDrawingUsesLineFragmentOrigin];
 	[NSGraphicsContext restoreGraphicsState];	// restore to state before affine transform
 }
 

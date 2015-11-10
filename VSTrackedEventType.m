@@ -22,6 +22,8 @@
 @dynamic connectingLineLengthLabelFractionDigits;
 @dynamic connectingLineLengthLabelUnitMultiplier;
 @dynamic connectingLineLengthLabelUnits;
+@dynamic connectingLineLabelShowLength;
+@dynamic connectingLineLabelShowSpeed;
 
 @dynamic trackedEvents;
 
@@ -45,6 +47,8 @@
 	[self addObserver:self forKeyPath:@"shape" options:NSKeyValueObservingOptionNew context:NULL];
 	[self addObserver:self forKeyPath:@"size" options:NSKeyValueObservingOptionNew context:NULL];
 	[self addObserver:self forKeyPath:@"connectingLineLengthLabeled" options:NSKeyValueObservingOptionNew context:NULL];
+    [self addObserver:self forKeyPath:@"connectingLineLabelShowLength" options:NSKeyValueObservingOptionNew context:NULL];
+    [self addObserver:self forKeyPath:@"connectingLineLabelShowSpeed" options:NSKeyValueObservingOptionNew context:NULL];
 	[self addObserver:self forKeyPath:@"connectingLineThickness" options:NSKeyValueObservingOptionNew context:NULL];
 	[self addObserver:self forKeyPath:@"connectingLineType" options:NSKeyValueObservingOptionNew context:NULL];
 	[self addObserver:self forKeyPath:@"connectingLineLengthLabelFontSize" options:NSKeyValueObservingOptionNew context:NULL];
@@ -75,6 +79,8 @@
             oldType.requiresSameTimecode = [eventTypeDictionary objectForKey:@"requiresSameTimecode"];
             oldType.connectingLineLengthLabeled = [eventTypeDictionary objectForKey:@"connectingLineLengthLabeled"];
             oldType.connectingLineThickness = [eventTypeDictionary objectForKey:@"connectingLineThickness"];
+            oldType.connectingLineLabelShowLength = [eventTypeDictionary objectForKey:@"connectingLineLabelShowLength"];
+            oldType.connectingLineLabelShowSpeed = [eventTypeDictionary objectForKey:@"connectingLineLabelShowSpeed"];
             oldType.connectingLineLengthLabelFontSize = [eventTypeDictionary objectForKey:@"connectingLineLengthLabelFontSize"];
             oldType.connectingLineLengthLabelFractionDigits = [eventTypeDictionary objectForKey:@"connectingLineLengthLabelFractionDigits"];
             oldType.connectingLineLengthLabelUnitMultiplier = [eventTypeDictionary objectForKey:@"connectingLineLengthLabelUnitMultiplier"];
@@ -92,6 +98,8 @@
         newType.requiresSameTimecode = [eventTypeDictionary objectForKey:@"requiresSameTimecode"];
         newType.connectingLineLengthLabeled = [eventTypeDictionary objectForKey:@"connectingLineLengthLabeled"];
         newType.connectingLineThickness = [eventTypeDictionary objectForKey:@"connectingLineThickness"];
+        newType.connectingLineLabelShowLength = [eventTypeDictionary objectForKey:@"connectingLineLabelShowLength"];
+        newType.connectingLineLabelShowSpeed = [eventTypeDictionary objectForKey:@"connectingLineLabelShowSpeed"];
         newType.connectingLineLengthLabelFontSize = [eventTypeDictionary objectForKey:@"connectingLineLengthLabelFontSize"];
         newType.connectingLineLengthLabelFractionDigits = [eventTypeDictionary objectForKey:@"connectingLineLengthLabelFractionDigits"];
         newType.connectingLineLengthLabelUnitMultiplier = [eventTypeDictionary objectForKey:@"connectingLineLengthLabelUnitMultiplier"];
@@ -110,7 +118,9 @@
 	[superDict setObject:self.connectingLineType forKey:@"connectingLineType"];
 	[superDict setObject:self.connectingLineLengthLabeled forKey:@"connectingLineLengthLabeled"];	
 	[superDict setObject:self.connectingLineThickness forKey:@"connectingLineThickness"];
-	[superDict setObject:self.connectingLineLengthLabelFontSize forKey:@"connectingLineLengthLabelFontSize"];	
+    [superDict setObject:self.connectingLineLabelShowLength forKey:@"connectingLineLabelShowLength"];
+    [superDict setObject:self.connectingLineLabelShowSpeed forKey:@"connectingLineLabelShowSpeed"];
+	[superDict setObject:self.connectingLineLengthLabelFontSize forKey:@"connectingLineLengthLabelFontSize"];
 	[superDict setObject:self.connectingLineLengthLabelFractionDigits forKey:@"connectingLineLengthLabelFractionDigits"];	
 	[superDict setObject:self.connectingLineLengthLabelUnitMultiplier forKey:@"connectingLineLengthLabelUnitMultiplier"];	
 	[superDict setObject:self.connectingLineLengthLabelUnits forKey:@"connectingLineLengthLabelUnits"];	
@@ -125,7 +135,9 @@
 	[self carefullyRemoveObserver:self forKeyPath:@"size"];
 	[self carefullyRemoveObserver:self forKeyPath:@"connectingLineLengthLabeled"];
 	[self carefullyRemoveObserver:self forKeyPath:@"connectingLineThickness"];
-	[self carefullyRemoveObserver:self forKeyPath:@"connectingLineType"];
+	[self carefullyRemoveObserver:self forKeyPath:@"connectingLineLabelShowLength"];
+    [self carefullyRemoveObserver:self forKeyPath:@"connectingLineLabelShowSpeed"];
+    [self carefullyRemoveObserver:self forKeyPath:@"connectingLineType"];
 	[self carefullyRemoveObserver:self forKeyPath:@"connectingLineLengthLabelFontSize"];
 	[self carefullyRemoveObserver:self forKeyPath:@"connectingLineLengthLabelFractionDigits"];
 	[self carefullyRemoveObserver:self forKeyPath:@"connectingLineLengthLabelUnitMultiplier"];
