@@ -59,7 +59,7 @@
                 NSMutableString *filePath = [NSMutableString new];
                 [filePath appendString:self.project.capturePathForStills];
                 NSString *nameString = ([portrait.trackedObject.name isEqualToString:@""]) ? @"" : [NSString stringWithFormat:@" (%@)",portrait.trackedObject.name];
-                NSString *fileSafeTimecode = [[[self currentMasterTimeString] stringByReplacingOccurrencesOfString:@":" withString:@"-"] stringByReplacingOccurrencesOfString:@"/" withString:@"+"];
+                NSString *fileSafeTimecode = [[portrait.timecode stringByReplacingOccurrencesOfString:@":" withString:@"-"] stringByReplacingOccurrencesOfString:@"/" withString:@"+"];
                 [filePath appendFormat:@"/%@ Portraits/%@ %@%@ from %@ (%@) at %@.jpg",fileSafeProjectName,portrait.trackedObject.type.name,portrait.trackedObject.index,nameString,fileSafeProjectName,portrait.sourceVideoClip.clipName,fileSafeTimecode];
                 [self saveNSImageAsJpeg:portraitImage destination:filePath overwriteWarnings:NO];
             }
