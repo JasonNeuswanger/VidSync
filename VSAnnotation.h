@@ -25,7 +25,7 @@
 @property (assign) float tempOpacity;
 
 
-- (NSString *) tableGlyphForColor;
+- (NSAttributedString *) tableGlyphForColor;
 
 - (void) carefullyRemoveObserver:(NSObject *)observer forKeyPath:(NSString *)keyPath;
 

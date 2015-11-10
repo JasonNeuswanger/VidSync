@@ -26,7 +26,7 @@
 + (int) highestObjectIndexInProject:(VSProject *)project;
 
 - (NSNumber *) numEvents;
-- (NSString *) tableGlyphForColor;
+- (NSAttributedString *) tableGlyphForColor;
 - (NSAttributedString *) tableGlyphForPortrait;
 
 - (NSXMLNode *) representationAsXMLNode;

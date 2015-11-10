@@ -50,9 +50,12 @@
 	return [NSNumber numberWithInt:[self.trackedEvents count]];
 }
 
-- (NSString *) tableGlyphForColor
+- (NSAttributedString *) tableGlyphForColor
 {
-	return @"█";
+    NSMutableAttributedString *glyph = [[NSMutableAttributedString alloc] initWithString:@"\uf0c8"];
+    NSRange glyphRange = NSMakeRange(0, [glyph length]);
+    [glyph addAttribute:NSFontAttributeName value:[NSFont fontWithName:@"FontAwesome" size:9.0f] range:glyphRange];
+    return glyph;
 }
 
 - (NSAttributedString *) tableGlyphForPortrait
