@@ -1684,7 +1684,7 @@ int refractionRootFunc_f(const gsl_vector* x, void* params, gsl_vector* f)
     const double minDistance =  1920.0; // Minimum Euclidean distance between detected corners
     const double qualityLevel =  0.999999;
     // New parameters for this function
-    const int cornerSubPixWindowSize = 15;   // was 3 originally; experimenting with bigger values
+    const int cornerSubPixWindowSize = 10;   // was 3 originally; experimenting with bigger values
     const double snapSearchHalfWidth = (double) cornerSubPixWindowSize + 3.0;   // Search image any smaller than this and OpenCV gives errors in subpixel refinement
     
     CGImageRef videoFrameCG = [self.videoClip.project.document highQualityStillFromVSVideoClip:self.videoClip atMasterTime:[self.videoClip.project.document currentMasterTime]];
@@ -1711,7 +1711,13 @@ int refractionRootFunc_f(const gsl_vector* x, void* params, gsl_vector* f)
     cvGoodFeaturesToTrack(videoFrameSingleChannelIpl, eigImage, tempImage, foundCorners, &numCorners, qualityLevel, minDistance, NULL, 3, 0, 0.04);
     
     // Running cvFindCornerSubPix with a high window size like (15,15) corrected some severe mislocations around one of my squares that (5,5) did not.
-    cvFindCornerSubPix(videoFrameSingleChannelIpl, foundCorners, numCorners, cvSize(cornerSubPixWindowSize,cornerSubPixWindowSize), cvSize(-1,-1), cvTermCriteria( CV_TERMCRIT_ITER | CV_TERMCRIT_EPS, 20, 0.01 ));
+    // But (15,15) has some trouble getting drawn off to other things. So trying (10, 10).
+    // Only run the subpixel refinement if we're not right on the edge of the image; otherwise it crashes the program from an array size mismatch.
+
+    if (clickedPoint.x > snapSearchHalfWidth && clickedPoint.y > snapSearchHalfWidth && clickedPoint.x < ([self.videoClip clipWidth] - snapSearchHalfWidth) && clickedPoint.y < ([self.videoClip clipWidth] - snapSearchHalfWidth)) {
+        cvFindCornerSubPix(videoFrameSingleChannelIpl, foundCorners, numCorners, cvSize(cornerSubPixWindowSize,cornerSubPixWindowSize), cvSize(-1,-1), cvTermCriteria( CV_TERMCRIT_ITER | CV_TERMCRIT_EPS, 20, 0.01 ));
+    }
+
     
     NSPoint snappedPoint = NSMakePoint(snapSearchOrigin.x + foundCorners[0].x,([self.videoClip clipHeight] - (snapSearchOrigin.y + foundCorners[0].y)));
 
