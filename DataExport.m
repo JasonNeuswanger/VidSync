@@ -127,7 +127,7 @@
 	}
 	for (VSVideoClip *videoClip in self.project.videoClips) {
 		[root addChild:[videoClip representationAsXMLNode]];
-	}	
+	}
 	NSData *xmlData = [xmlDoc XMLDataWithOptions:NSXMLNodePrettyPrint];
 	if ([xmlData writeToFile:[self fileNameForExportedFile:@".xml"] atomically:YES]) {
 		[shutterClick play];

@@ -56,6 +56,24 @@
     return glyph;
 }
 
+- (NSXMLNode *) representationAsXMLNode
+{
+    NSTimeInterval time;	// is a double
+    time = CMTimeGetSeconds([UtilityFunctions CMTimeFromString:self.startTimecode]);
+    NSNumberFormatter *nf = self.videoClip.project.document.decimalFormatter;
+    NSXMLElement *mainElement = [[NSXMLElement alloc] initWithName:@"annotation"];
+    [mainElement addAttribute:[NSXMLNode attributeWithName:@"notes" stringValue:self.notes]];
+    [mainElement addAttribute:[NSXMLNode attributeWithName:@"observer" stringValue:self.observer]];
+    [mainElement addAttribute:[NSXMLNode attributeWithName:@"colorR" stringValue:[NSString stringWithFormat:@"%1.4f",[self.color redComponent]]]];
+    [mainElement addAttribute:[NSXMLNode attributeWithName:@"colorG" stringValue:[NSString stringWithFormat:@"%1.4f",[self.color greenComponent]]]];
+    [mainElement addAttribute:[NSXMLNode attributeWithName:@"colorB" stringValue:[NSString stringWithFormat:@"%1.4f",[self.color blueComponent]]]];
+    [mainElement addAttribute:[NSXMLNode attributeWithName:@"timecode" stringValue:self.startTimecode]];
+    [mainElement addAttribute:[NSXMLNode attributeWithName:@"time" stringValue:[nf stringFromNumber:[NSNumber numberWithDouble:time]]]];
+    [mainElement addAttribute:[NSXMLNode attributeWithName:@"screenX" stringValue:[nf stringFromNumber:self.screenX]]];
+    [mainElement addAttribute:[NSXMLNode attributeWithName:@"screenY" stringValue:[nf stringFromNumber:self.screenY]]];
+    return mainElement;
+}
+
 - (void) dealloc
 {
     [self carefullyRemoveObserver:self forKeyPath:@"width"];

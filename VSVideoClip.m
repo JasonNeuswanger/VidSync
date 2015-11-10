@@ -123,6 +123,7 @@
 	NSXMLElement *mainElement = [[NSXMLElement alloc] initWithName:@"videoClip"];
 	[mainElement addAttribute:[NSXMLNode attributeWithName:@"name" stringValue:self.clipName]];	
     [mainElement addChild:[self.calibration representationAsXMLNode]];
+    for (VSAnnotation *annotation in self.annotations) [mainElement addChild:[annotation representationAsXMLNode]];
 	return mainElement;
 }
 

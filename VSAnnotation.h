@@ -27,6 +27,8 @@
 
 - (NSAttributedString *) tableGlyphForColor;
 
+- (NSXMLNode *) representationAsXMLNode;
+
 - (void) carefullyRemoveObserver:(NSObject *)observer forKeyPath:(NSString *)keyPath;
 
 @end
