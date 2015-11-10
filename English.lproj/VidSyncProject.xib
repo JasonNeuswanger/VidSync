@@ -4288,7 +4288,7 @@ IA
                                                                 </connections>
                                                             </button>
                                                             <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" setsMaxLayoutWidthAtFirstLayout="YES" id="FOs-xo-LBW">
-                                                                <rect key="frame" x="15" y="22" width="496" height="271.9999989572417"/>
+                                                                <rect key="frame" x="15" y="22" width="496" height="272"/>
                                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES" heightSizable="YES"/>
                                                                 <animations/>
                                                                 <textFieldCell key="cell" sendsActionOnEndEditing="YES" id="lgm-WD-SgD">
@@ -4312,10 +4312,10 @@ An XML file stores information using custom markup tags. It more thoroughly refl
                                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                         <subviews>
                                                             <button verticalHuggingPriority="750" id="arV-mB-mO3">
-                                                                <rect key="frame" x="57" y="276" width="197" height="25"/>
+                                                                <rect key="frame" x="47" y="276" width="264" height="25"/>
                                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                                 <animations/>
-                                                                <buttonCell key="cell" type="roundTextured" title="Copy connecting line lengths" bezelStyle="texturedRounded" alignment="center" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="GBc-f4-g3r">
+                                                                <buttonCell key="cell" type="roundTextured" title="Copy connecting line lengths and speeds" bezelStyle="texturedRounded" alignment="center" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="GBc-f4-g3r">
                                                                     <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                                                     <font key="font" metaFont="system"/>
                                                                 </buttonCell>
@@ -4324,7 +4324,7 @@ An XML file stores information using custom markup tags. It more thoroughly refl
                                                                 </connections>
                                                             </button>
                                                             <button verticalHuggingPriority="750" id="Vp9-tN-h4V">
-                                                                <rect key="frame" x="350" y="276" width="119" height="25"/>
+                                                                <rect key="frame" x="363" y="276" width="119" height="25"/>
                                                                 <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
                                                                 <animations/>
                                                                 <buttonCell key="cell" type="roundTextured" title="Copy 3-D points" bezelStyle="texturedRounded" alignment="center" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="nWB-6D-8Pq">

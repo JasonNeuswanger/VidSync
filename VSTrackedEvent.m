@@ -129,7 +129,8 @@
 				eventString = [NSString stringWithFormat:@"%@ %@ (%@)",self.type.name,self.index,self.name];				
 			}			
 			NSNumber *distance = [point distanceToVSPoint:previousPoint];
-			[connectingLineStrings addObject:[NSString stringWithFormat:@"%@\t%@\t%@\n",objectString,eventString,distance]];
+            NSNumber *speed = [point speedToVSPoint:previousPoint];
+			[connectingLineStrings addObject:[NSString stringWithFormat:@"%@\t%@\t%@\t%@\n",objectString,eventString,distance,speed]];
 		}
 		previousPoint = point;
 	}

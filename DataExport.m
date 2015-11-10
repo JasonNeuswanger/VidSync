@@ -100,11 +100,12 @@
 			}
 		}
 		if (![totalString isEqualToString:@""]) {	// if there are some connecting lines to paste
-			NSString *titleString = [NSString stringWithFormat:@"%@ Connecting Line Lengths\n%@\t%@\t%@\n",
+			NSString *titleString = [NSString stringWithFormat:@"%@ Connecting Line Lengths\n%@\t%@\t%@\t%@\n",
 									 self.project.name,
 									 @"Object",
 									 @"Event",
-									 @"Length"
+									 @"Length",
+                                     @"Speed"
 									 ];
 			NSPasteboard *pb = [NSPasteboard generalPasteboard];
 			[pb declareTypes:[NSArray arrayWithObjects:NSStringPboardType, nil] owner:self];
