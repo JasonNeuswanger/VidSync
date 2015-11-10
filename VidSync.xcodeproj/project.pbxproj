@@ -243,6 +243,8 @@
 		964D6EAE18C7D9B4005D812E /* VidSyncProject 1.17.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "VidSyncProject 1.17.xcdatamodel"; sourceTree = "<group>"; };
 		964D6EAF18C7FE03005D812E /* VidSyncIcon.iconset */ = {isa = PBXFileReference; lastKnownFileType = folder.iconset; path = VidSyncIcon.iconset; sourceTree = "<group>"; };
 		964DE4631BF1785A008B4D83 /* VidSyncProject 1.19.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "VidSyncProject 1.19.xcdatamodel"; sourceTree = "<group>"; };
+		964DE4641BF182FD008B4D83 /* VidSyncProject 1.20.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "VidSyncProject 1.20.xcdatamodel"; sourceTree = "<group>"; };
+		964DE4651BF18696008B4D83 /* VidSyncProject 1.21.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "VidSyncProject 1.21.xcdatamodel"; sourceTree = "<group>"; };
 		965510C214B2BE7000A4D9E3 /* VidSyncProject 1.04.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "VidSyncProject 1.04.xcdatamodel"; sourceTree = "<group>"; };
 		9655B9811AA4EED2009D8D40 /* SyncedPlaybackPanelScrubberBackground.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SyncedPlaybackPanelScrubberBackground.h; sourceTree = "<group>"; };
 		9655B9821AA4EED2009D8D40 /* SyncedPlaybackPanelScrubberBackground.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SyncedPlaybackPanelScrubberBackground.m; sourceTree = "<group>"; };
@@ -1925,6 +1927,8 @@
 		96AE98861165348400118398 /* VidSyncProject.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
+				964DE4651BF18696008B4D83 /* VidSyncProject 1.21.xcdatamodel */,
+				964DE4641BF182FD008B4D83 /* VidSyncProject 1.20.xcdatamodel */,
 				964DE4631BF1785A008B4D83 /* VidSyncProject 1.19.xcdatamodel */,
 				969DEFC91936A72000846D21 /* VidSyncProject 1.18.xcdatamodel */,
 				964D6EAE18C7D9B4005D812E /* VidSyncProject 1.17.xcdatamodel */,

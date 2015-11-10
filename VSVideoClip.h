@@ -28,6 +28,7 @@
 @property (strong) NSSet *eventScreenPoints;
 @property (strong) NSSet *hintLines;
 @property (strong) NSSet *annotations;
+@property (strong) NSNumber *muted;
 
 @property (weak) VideoWindowController *windowController;
 @property (strong) NSString *masterButtonText;

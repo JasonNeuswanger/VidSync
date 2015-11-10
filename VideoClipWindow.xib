@@ -169,7 +169,7 @@
                             <font key="font" metaFont="smallSystem"/>
                         </buttonCell>
                         <connections>
-                            <binding destination="-2" name="value" keyPath="playerView.player.muted" id="wOF-m5-Md6"/>
+                            <binding destination="-2" name="value" keyPath="videoClip.muted" id="hfU-3V-4N8"/>
                         </connections>
                     </button>
                 </subviews>

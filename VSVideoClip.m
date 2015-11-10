@@ -21,6 +21,7 @@
 @dynamic eventScreenPoints;
 @dynamic hintLines;
 @dynamic annotations;
+@dynamic muted;
 
 @synthesize windowController;
 @synthesize masterButtonText;

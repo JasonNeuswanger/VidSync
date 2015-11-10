@@ -52,6 +52,7 @@
         managedObjectContext = moc;
         if (self.videoClip.windowFrame != nil) [[self window] setFrameFromString:self.videoClip.windowFrame];
         
+        [self.videoClip addObserver:self forKeyPath:@"muted" options:NSKeyValueObservingOptionNew context:NULL];
         [self.videoClip addObserver:self forKeyPath:@"syncIsLocked" options:NSKeyValueObservingOptionNew context:NULL];
         [self.videoClip addObserver:self forKeyPath:@"syncOffset" options:NSKeyValueObservingOptionNew context:NULL];
         [self.videoClip addObserver:self forKeyPath:@"isMasterClipOf" options:NSKeyValueObservingOptionNew context:NULL];
@@ -109,6 +110,7 @@
     playerItem = [AVPlayerItem playerItemWithAsset:asset];
     playerView.player = [AVPlayer playerWithPlayerItem:playerItem];
     playerLayer = [AVPlayerLayer playerLayerWithPlayer:playerView.player];
+    playerView.player.muted = [self.videoClip.muted boolValue];
     
     movieSize = videoTrack.naturalSize;
     if (self.videoClip.windowFrame == nil) [self resizeVideoToFactor:1.0];  // Load new videos at full size
@@ -243,6 +245,7 @@
 {
     if ([keyPath isEqual:@"width"] || [keyPath isEqual:@"color"] || [keyPath isEqual:@"size"] || [keyPath isEqual:@"shape"] || [keyPath isEqual:@"notes"]) [self refreshOverlay];
     if ([object isEqualTo:self.videoClip] && ([keyPath isEqual:@"syncIsLocked"] || [keyPath isEqual:@"syncOffset"] || [keyPath isEqual:@"isMasterClipOf"])) [self processSynchronizationStatus];
+    if ([object isEqualTo:self.videoClip] && [keyPath isEqual:@"muted"]) playerView.player.muted = [self.videoClip.muted boolValue];
     if ([keyPath isEqual:@"isMasterClipOf"]) {
         [self updateMasterTimeScrubberTicks];
         for (VSVideoClip *clip in self.videoClip.project.videoClips) clip.syncIsLocked = [NSNumber numberWithBool:NO];  // When master clip changes, unlock all syncs
@@ -890,6 +893,7 @@
     } @catch (id exception) {
         NSLog(@"Exception removing windowController as an observer for showAdvancedControlsWithOnlyMasterClip: %@",(NSException *)exception);
     }
+    [self.videoClip carefullyRemoveObserver:self forKeyPath:@"muted"];
     [self.videoClip carefullyRemoveObserver:self forKeyPath:@"syncIsLocked"];
     [self.videoClip carefullyRemoveObserver:self forKeyPath:@"syncOffset"];
     [self.videoClip carefullyRemoveObserver:self forKeyPath:@"isMasterClipOf"];
