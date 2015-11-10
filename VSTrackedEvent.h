@@ -16,6 +16,7 @@
 }
 
 @property (strong) NSNumber *index;
+@property (strong) NSString *observer;
 @property (strong) NSString *name;
 @property (strong) VSTrackedEventType *type;
 @property (strong) NSSet *trackedObjects;

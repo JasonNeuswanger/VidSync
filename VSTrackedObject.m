@@ -12,6 +12,7 @@
 @implementation VSTrackedObject
 
 @dynamic index;
+@dynamic observer;
 @dynamic name;
 @dynamic type;
 @dynamic project;
@@ -93,6 +94,7 @@
 	[mainElement addAttribute:[NSXMLNode attributeWithName:@"colorG" stringValue:[NSString stringWithFormat:@"%1.4f",[self.color greenComponent]]]];
 	[mainElement addAttribute:[NSXMLNode attributeWithName:@"colorB" stringValue:[NSString stringWithFormat:@"%1.4f",[self.color blueComponent]]]];
 	[mainElement addAttribute:[NSXMLNode attributeWithName:@"notes" stringValue:self.notes]];
+    [mainElement addAttribute:[NSXMLNode attributeWithName:@"observer" stringValue:self.observer]];
 	for (VSTrackedEvent *trackedEvent in self.trackedEvents) [mainElement addChild:[trackedEvent representationAsXMLNode]];
 	return mainElement;
 }
@@ -117,6 +119,7 @@
 	newObj.type = self.type;
 	newObj.color = self.color;
 	newObj.index = [NSNumber numberWithInt:[VSTrackedObject highestObjectIndexInProject:self.project]+1];
+    newObj.observer = [[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"currentObserverName"];
 	
 	
 	NSMutableSet *eventsObjects;

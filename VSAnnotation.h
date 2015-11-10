@@ -16,6 +16,7 @@
 }
 
 @property (strong) VSVideoClip *videoClip;
+@property (strong) NSString *observer;
 @property (strong) NSNumber *screenX;
 @property (strong) NSNumber *screenY;
 @property (strong) NSString *startTimecode;

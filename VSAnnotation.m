@@ -12,6 +12,7 @@
 @implementation VSAnnotation
 
 @dynamic videoClip;
+@dynamic observer;
 @dynamic screenX;
 @dynamic screenY;
 @dynamic startTimecode;

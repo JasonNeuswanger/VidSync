@@ -18,6 +18,7 @@
         VSTrackedEvent *newEvent = [NSEntityDescription insertNewObjectForEntityForName:@"VSTrackedEvent" inManagedObjectContext:[self managedObjectContext]];
         newEvent.name = [newEventName stringValue];
         newEvent.type = [[newEventType selectedItem] representedObject];
+        newEvent.observer = [[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"currentObserverName"];
         [self addObject:newEvent];
         newEvent.index = [NSNumber numberWithInt:[VSTrackedEvent highestEventIndexInProject:document.project]+1];
         [newEventName setStringValue:@""];

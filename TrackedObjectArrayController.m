@@ -19,7 +19,8 @@
         VSTrackedObject *newObj = [NSEntityDescription insertNewObjectForEntityForName:@"VSTrackedObject" inManagedObjectContext:[self managedObjectContext]];
         newObj.name = [newObjectName stringValue];
         newObj.type = [[newObjectType selectedItem] representedObject];
-        [self addObject:newObj];	// Adding the object to the project before setting its index.  Convenient -- but is it harmless?  We'll see.
+        newObj.observer = [[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"currentObserverName"];
+        [self addObject:newObj];	// Adding the object to the project before setting its index.  Convenient, and seemingly harmless.
         newObj.index = [NSNumber numberWithInt:[VSTrackedObject highestObjectIndexInProject:newObj.project]+1];
         newObj.color = [newTypeColorWell color];
         [newObjectName setStringValue:@""];

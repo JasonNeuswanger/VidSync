@@ -12,6 +12,7 @@
 @implementation VSTrackedEvent
 
 @dynamic index;
+@dynamic observer;
 @dynamic name;
 @dynamic type;
 @dynamic trackedObjects;
@@ -85,6 +86,7 @@
 	if (currentEventIsAtMaxNumPoints || pointsRequireDifferentTimecode) {
 		eventForNewPoint = [NSEntityDescription insertNewObjectForEntityForName:@"VSTrackedEvent" inManagedObjectContext:[self managedObjectContext]]; 
 		eventForNewPoint.trackedObjects = self.trackedObjects;
+        eventForNewPoint.observer = [[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"currentObserverName"];
 		eventForNewPoint.type = self.type;
 		eventForNewPoint.index = [NSNumber numberWithInt:[VSTrackedEvent highestEventIndexInProject:self.type.project]+1];
 		[self.type.project.document.trackedEventsController rearrangeObjects];  // Re-sort the events to put the newly inserted one in the correct spot in the list
@@ -144,7 +146,8 @@
 	[mainElement addAttribute:[NSXMLNode attributeWithName:@"index" stringValue:[self.index stringValue]]];
 	[mainElement addAttribute:[NSXMLNode attributeWithName:@"name" stringValue:self.name]];
 	[mainElement addAttribute:[NSXMLNode attributeWithName:@"notes" stringValue:self.notes]];
-	NSSortDescriptor *indexDescriptor = [[NSSortDescriptor alloc] initWithKey:@"index" ascending:YES];	
+    [mainElement addAttribute:[NSXMLNode attributeWithName:@"observer" stringValue:self.observer]];
+	NSSortDescriptor *indexDescriptor = [[NSSortDescriptor alloc] initWithKey:@"index" ascending:YES];
 	NSArray *sortedPoints = [[self.points allObjects] sortedArrayUsingDescriptors:[NSArray arrayWithObjects:indexDescriptor,nil]];
 	for (VSPoint *point in sortedPoints) [mainElement addChild:[point representationAsXMLNode]];
 	for (VSTrackedObject *object in self.trackedObjects) [mainElement addChild:[object representationAsXMLChildOfEvent]];

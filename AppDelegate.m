@@ -47,6 +47,7 @@
     [initialValueDict setObject:[NSNumber numberWithBool:1.0] forKey:@"screenItemDropShadowBlurRadius"];
     [initialValueDict setObject:@"Floating" forKey:@"unsyncedAVPlayerViewControlsStyle"];
     [initialValueDict setObject:[NSNumber numberWithBool:NO] forKey:@"showAdvancedControlsWithOnlyMasterClip"];
+    [initialValueDict setObject:NSUserName() forKey:@"currentObserverName"];
     
 	// initial values for advanced playback controls
 	
