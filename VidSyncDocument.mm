@@ -497,6 +497,7 @@ static void *AVSPPlayerCurrentTimeContext = &AVSPPlayerCurrentTimeContext;
 
 - (void) updatePreviewImageWithPlayerLayer:(AVPlayerLayer *)playerLayer atPoint:(NSPoint)point;
 {
+    NSLog(@"Updating magnified preview for point (x,y) = (%1.2f,%1.2f)",point.x,point.y);
 	if ([[[mainTabView selectedTabViewItem] label] isEqualToString:@"Measurement"]) {
 		[magnifiedMeasurementPreview setPlayerLayer:playerLayer];
 		[magnifiedMeasurementPreview setCenterPoint:point];

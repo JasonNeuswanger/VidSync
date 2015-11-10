@@ -55,13 +55,14 @@
         // preview at all in OS X 10.11 (El Capitan). The whole preview just shows as white (except the crosshair/dot). These probably weren't too useful
         // anyway. I'll keep them in the code to see if things work again in later OS X versions, but for now it's not worth hunting down the bug.
         // I have also left intact but disabled (unchecked the "Enabled" box in interface builder) the preview panel controls for sharpening.
+        // Everything pertaining to sharpening filters is also commented out farther down this file.
         
         [videoFilterContainerLayer setFilters:[NSArray arrayWithObjects:exposureFilter,gammaFilter,/*unsharpMaskFilter,sharpenFilter,*/nil]];
         [self updateFilterWithUserDefaultsKey:@"previewExposure" andLayerKeyPath:@"filters.exposureFilter.inputEV"];
 		[self updateFilterWithUserDefaultsKey:@"previewGamma" andLayerKeyPath:@"filters.gammaFilter.inputPower"];
-		[self updateFilterWithUserDefaultsKey:@"previewUnsharpMaskRadius" andLayerKeyPath:@"filters.unsharpMaskFilter.inputRadius"];
-		[self updateFilterWithUserDefaultsKey:@"previewUnsharpMaskIntensity" andLayerKeyPath:@"filters.unsharpMaskFilter.inputIntensity"];
-		[self updateFilterWithUserDefaultsKey:@"previewSharpness" andLayerKeyPath:@"filters.sharpenFilter.inputSharpness"];
+		//[self updateFilterWithUserDefaultsKey:@"previewUnsharpMaskRadius" andLayerKeyPath:@"filters.unsharpMaskFilter.inputRadius"];
+		//[self updateFilterWithUserDefaultsKey:@"previewUnsharpMaskIntensity" andLayerKeyPath:@"filters.unsharpMaskFilter.inputIntensity"];
+		//[self updateFilterWithUserDefaultsKey:@"previewSharpness" andLayerKeyPath:@"filters.sharpenFilter.inputSharpness"];
         
 		[self setDocumentView:previewMovieView];
 		
@@ -86,12 +87,13 @@
 	} else if ([keyPath isEqual: @"values.previewGamma"]) {		
 		[self updateFilterWithUserDefaultsKey:@"previewGamma" andLayerKeyPath:@"filters.gammaFilter.inputPower"];
 	} else if ([keyPath isEqual: @"values.previewUnsharpMaskRadius"]){
-		[self updateFilterWithUserDefaultsKey:@"previewUnsharpMaskRadius" andLayerKeyPath:@"filters.unsharpMaskFilter.inputRadius"];
+		//[self updateFilterWithUserDefaultsKey:@"previewUnsharpMaskRadius" andLayerKeyPath:@"filters.unsharpMaskFilter.inputRadius"];
 	} else if ([keyPath isEqual: @"values.previewUnsharpMaskIntensity"]) {
-		[self updateFilterWithUserDefaultsKey:@"previewUnsharpMaskIntensity" andLayerKeyPath:@"filters.unsharpMaskFilter.inputIntensity"];
+		//[self updateFilterWithUserDefaultsKey:@"previewUnsharpMaskIntensity" andLayerKeyPath:@"filters.unsharpMaskFilter.inputIntensity"];
 	} else if ([keyPath isEqual: @"values.previewSharpness"]){
-		[self updateFilterWithUserDefaultsKey:@"previewSharpness" andLayerKeyPath:@"filters.sharpenFilter.inputSharpness"];
+		//[self updateFilterWithUserDefaultsKey:@"previewSharpness" andLayerKeyPath:@"filters.sharpenFilter.inputSharpness"];
 	} else if ([keyPath isEqual: @"values.previewMagnification"]) {
+        //NSLog(@"Should be updating preview magnification with item %@ to last mouse point (%1.3f,%1.3f) and layer %@",lastPlayerItem,lastMousePoint.x,lastMousePoint.y,previewMovieLayer);
 		[self updatePreviewFrameFromPlayerItem:lastPlayerItem];
 		[self setCenterPoint:lastMousePoint];
         [self setPlayerLayer:previewMovieLayer];
