@@ -661,14 +661,59 @@
 		NSRect centerPoint = NSMakeRect(point.x-1.5, point.y-1.5, 3.0, 3.0);
 		NSRectFill(centerPoint);
 	} else if ([screenPoint.point.trackedEvent.type.shape isEqualToString:@"Pacman"]) {
-		NSPoint mouthPoints[2];
-		mouthPoints[0] = point;
-		mouthPoints[1] = NSMakePoint(point.x+shapeSize*0.92388,point.y+shapeSize*0.382683);	// uses cos and sin of half the total mouth angle
-		NSBezierPath *pacMan = [NSBezierPath bezierPath];
-		[pacMan appendBezierPathWithArcWithCenter:point radius:shapeSize startAngle:22.5 endAngle:342.5];	// total mouth angle 45 degrees
-		[pacMan appendBezierPathWithPoints:mouthPoints count:2];
-		[pacMan setLineWidth:2.0];
-		[pacMan stroke];
+        NSPoint mouthPoints[2];
+        mouthPoints[0] = point;
+        mouthPoints[1] = NSMakePoint(point.x+shapeSize*0.92388,point.y+shapeSize*0.382683);	// uses cos and sin of half the total mouth angle
+        NSBezierPath *pacMan = [NSBezierPath bezierPath];
+        [pacMan appendBezierPathWithArcWithCenter:point radius:shapeSize startAngle:22.5 endAngle:342.5];	// total mouth angle 45 degrees
+        [pacMan appendBezierPathWithPoints:mouthPoints count:2];
+        [pacMan setLineWidth:2.0];
+        [pacMan stroke];
+    } else if ([[NSArray arrayWithObjects:@"Anchor",@"Bed",@"Beer",@"Bell",@"Binoculars",@"Bug",@"Cutlery",@"Diamond",@"Fighter Jet",@"Frown",@"Gavel",@"Heart",@"Home",@"Leaf",@"Lock",@"Music",@"Scale",@"Smile",@"Star",@"Tachometer",@"Thumbs Up",@"Thumbs Down",@"Trash",@"Tree",@"Unlock",@"Warning",nil] containsObject:screenPoint.point.trackedEvent.type.shape]) { // FontAwesome glyphs
+        NSDictionary *fontAwesomeCodes = [NSDictionary dictionaryWithObjectsAndKeys:
+                                          @"\uf13d",@"Anchor",
+                                          @"\uf236",@"Bed",
+                                          @"\uf0fc",@"Beer",
+                                          @"\uf0f3",@"Bell",
+                                          @"\uf1e5",@"Binoculars",
+                                          @"\uf188",@"Bug",
+                                          @"\uf0f5",@"Cutlery",
+                                          @"\uf219",@"Diamond",
+                                          @"\uf0fb",@"Fighter Jet",
+                                          @"\uf119",@"Frown",
+                                          @"\uf0e3",@"Gavel",
+                                          @"\uf004",@"Heart",
+                                          @"\uf015",@"Home",
+                                          @"\uf06c",@"Leaf",
+                                          @"\uf023",@"Lock",
+                                          @"\uf001",@"Music",
+                                          @"\uf24e",@"Scale",
+                                          @"\uf118",@"Smile",
+                                          @"\uf006",@"Star",
+                                          @"\uf0e4",@"Tachometer",
+                                          @"\uf164",@"Thumbs Up",
+                                          @"\uf165",@"Thumbs Down",
+                                          @"\uf1f8",@"Trash",
+                                          @"\uf1bb",@"Tree",
+                                          @"\uf09c",@"Unlock",
+                                          @"\uf071",@"Warning",
+                                          nil];
+        NSString *glyphText = [fontAwesomeCodes objectForKey:screenPoint.point.trackedEvent.type.shape];
+        
+        
+        
+        
+        NSFont *glyphStrFont = [NSFont fontWithName:@"FontAwesome" size:shapeSize*2.5];
+        NSShadow *shadow = [NSShadow new];
+        [shadow setShadowBlurRadius:3.0f];
+        [shadow setShadowColor:[NSColor grayColor]];
+        [shadow setShadowOffset:CGSizeMake(1.0f,-1.0f)];
+        NSDictionary *glyphStrAttributes = [NSDictionary dictionaryWithObjectsAndKeys:glyphStrFont,NSFontAttributeName,
+                                            pointColor,NSForegroundColorAttributeName,shadow,NSShadowAttributeName,nil];
+        NSMutableAttributedString *glyphStr = [[NSMutableAttributedString alloc] initWithString:glyphText attributes:glyphStrAttributes];
+        NSRect glyphStrBounds = [glyphStr boundingRectWithSize:NSMakeSize(1000.0,1000.0) options:NSStringDrawingTruncatesLastVisibleLine|NSStringDrawingUsesLineFragmentOrigin];
+        NSRect glyphStrRect = NSMakeRect(point.x - glyphStrBounds.size.width/2,point.y-glyphStrBounds.size.height/2,glyphStrBounds.size.width,glyphStrBounds.size.height);
+        [glyphStr drawWithRect:glyphStrRect options:NSStringDrawingTruncatesLastVisibleLine|NSStringDrawingUsesLineFragmentOrigin];
 	} else if ([screenPoint.point.trackedEvent.type.shape isEqualToString:@"Square"]) {
 		NSBezierPath *square = [NSBezierPath bezierPathWithRect:shapeRect];
 		[square setLineWidth:3.0];

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="9059" systemVersion="15A284" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="9060" systemVersion="15B42" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="9059"/>
-        <plugIn identifier="com.apple.imagekit.ibplugin" version="9059"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="9060"/>
+        <plugIn identifier="com.apple.imagekit.ibplugin" version="9060"/>
         <capability name="box content view" minToolsVersion="7.0"/>
     </dependencies>
     <objects>
@@ -347,10 +347,10 @@
                                                         <animations/>
                                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                                         <size key="minSize" width="532" height="275"/>
-                                                        <size key="maxSize" width="532" height="10000000"/>
+                                                        <size key="maxSize" width="534" height="10000000"/>
                                                         <color key="insertionPointColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                                                         <size key="minSize" width="532" height="275"/>
-                                                        <size key="maxSize" width="532" height="10000000"/>
+                                                        <size key="maxSize" width="534" height="10000000"/>
                                                         <connections>
                                                             <binding destination="100044" name="value" keyPath="selection.notes" id="PKw-vQ-n4R"/>
                                                         </connections>
@@ -1079,14 +1079,14 @@
                                                                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                                         <subviews>
                                                                                             <tableView identifier="FrontFrameTableView" verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnReordering="NO" multipleSelection="NO" autosaveColumns="NO" rowHeight="14" headerView="100745" id="100744" customClass="EventAwareTableView">
-                                                                                                <rect key="frame" x="0.0" y="0.0" width="232" height="336"/>
+                                                                                                <rect key="frame" x="0.0" y="0.0" width="232" height="16"/>
                                                                                                 <autoresizingMask key="autoresizingMask"/>
                                                                                                 <animations/>
                                                                                                 <size key="intercellSpacing" width="3" height="2"/>
                                                                                                 <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                                                                                                 <color key="gridColor" name="gridColor" catalog="System" colorSpace="catalog"/>
                                                                                                 <tableColumns>
-                                                                                                    <tableColumn width="44" minWidth="40" maxWidth="1000" id="100746">
+                                                                                                    <tableColumn width="40" minWidth="40" maxWidth="1000" id="100746">
                                                                                                         <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left">
                                                                                                             <font key="font" metaFont="smallSystem"/>
                                                                                                             <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
@@ -1103,7 +1103,7 @@
                                                                                                             <binding destination="100325" name="headerTitle" keyPath="selection.calibration.axisHorizontal" id="100754"/>
                                                                                                         </connections>
                                                                                                     </tableColumn>
-                                                                                                    <tableColumn width="44" minWidth="40" maxWidth="1000" id="100747">
+                                                                                                    <tableColumn width="40" minWidth="40" maxWidth="1000" id="100747">
                                                                                                         <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left">
                                                                                                             <font key="font" metaFont="smallSystem"/>
                                                                                                             <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
@@ -1120,7 +1120,7 @@
                                                                                                             <binding destination="100325" name="headerTitle" keyPath="selection.calibration.axisVertical" id="100757"/>
                                                                                                         </connections>
                                                                                                     </tableColumn>
-                                                                                                    <tableColumn width="67" minWidth="10" maxWidth="3.4028234663852886e+38" id="100868">
+                                                                                                    <tableColumn width="63" minWidth="10" maxWidth="3.4028234663852886e+38" id="100868">
                                                                                                         <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left" title="screen x">
                                                                                                             <font key="font" metaFont="smallSystem"/>
                                                                                                             <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
@@ -1136,7 +1136,7 @@
                                                                                                             <binding destination="100779" name="value" keyPath="arrangedObjects.screenX" id="100874"/>
                                                                                                         </connections>
                                                                                                     </tableColumn>
-                                                                                                    <tableColumn width="65" minWidth="10" maxWidth="3.4028234663852886e+38" id="100870">
+                                                                                                    <tableColumn width="61" minWidth="10" maxWidth="3.4028234663852886e+38" id="100870">
                                                                                                         <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left" title="screen y">
                                                                                                             <font key="font" metaFont="smallSystem"/>
                                                                                                             <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
@@ -1207,14 +1207,14 @@
                                                                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                                         <subviews>
                                                                                             <tableView identifier="BackFrameTableView" verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnReordering="NO" multipleSelection="NO" autosaveColumns="NO" rowHeight="14" headerView="100880" id="100881" customClass="EventAwareTableView">
-                                                                                                <rect key="frame" x="0.0" y="0.0" width="232" height="327"/>
+                                                                                                <rect key="frame" x="0.0" y="0.0" width="232" height="16"/>
                                                                                                 <autoresizingMask key="autoresizingMask"/>
                                                                                                 <animations/>
                                                                                                 <size key="intercellSpacing" width="3" height="2"/>
                                                                                                 <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                                                                                                 <color key="gridColor" name="gridColor" catalog="System" colorSpace="catalog"/>
                                                                                                 <tableColumns>
-                                                                                                    <tableColumn width="44" minWidth="40" maxWidth="1000" id="100887">
+                                                                                                    <tableColumn width="40" minWidth="40" maxWidth="1000" id="100887">
                                                                                                         <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left">
                                                                                                             <font key="font" metaFont="smallSystem"/>
                                                                                                             <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
@@ -1231,7 +1231,7 @@
                                                                                                             <binding destination="100325" name="headerTitle" keyPath="selection.calibration.axisHorizontal" id="100894"/>
                                                                                                         </connections>
                                                                                                     </tableColumn>
-                                                                                                    <tableColumn width="44" minWidth="40" maxWidth="1000" id="100886">
+                                                                                                    <tableColumn width="40" minWidth="40" maxWidth="1000" id="100886">
                                                                                                         <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left">
                                                                                                             <font key="font" metaFont="smallSystem"/>
                                                                                                             <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
@@ -1248,7 +1248,7 @@
                                                                                                             <binding destination="100325" name="headerTitle" keyPath="selection.calibration.axisVertical" id="100892"/>
                                                                                                         </connections>
                                                                                                     </tableColumn>
-                                                                                                    <tableColumn width="67" minWidth="10" maxWidth="3.4028234663852886e+38" id="100885">
+                                                                                                    <tableColumn width="63" minWidth="10" maxWidth="3.4028234663852886e+38" id="100885">
                                                                                                         <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left" title="screen x">
                                                                                                             <font key="font" metaFont="smallSystem"/>
                                                                                                             <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
@@ -1264,7 +1264,7 @@
                                                                                                             <binding destination="100898" name="value" keyPath="arrangedObjects.screenX" id="100904"/>
                                                                                                         </connections>
                                                                                                     </tableColumn>
-                                                                                                    <tableColumn width="65" minWidth="10" maxWidth="3.4028234663852886e+38" id="100884">
+                                                                                                    <tableColumn width="61" minWidth="10" maxWidth="3.4028234663852886e+38" id="100884">
                                                                                                         <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left" title="screen y">
                                                                                                             <font key="font" metaFont="smallSystem"/>
                                                                                                             <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
@@ -2437,7 +2437,7 @@ IA
                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                 <subviews>
                                                     <tableView identifier="MeasurementEventsTableView" verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnSelection="YES" multipleSelection="NO" autosaveColumns="NO" rowHeight="14" headerView="101109" id="101110" customClass="EventAwareTableView">
-                                                        <rect key="frame" x="0.0" y="0.0" width="1046" height="136"/>
+                                                        <rect key="frame" x="0.0" y="0.0" width="1046" height="16"/>
                                                         <autoresizingMask key="autoresizingMask"/>
                                                         <animations/>
                                                         <size key="intercellSpacing" width="3" height="2"/>
@@ -2867,7 +2867,7 @@ IA
                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                 <subviews>
                                                     <tableView identifier="MeasurementObjectsTableView" verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnSelection="YES" multipleSelection="NO" autosaveColumns="NO" rowHeight="14" headerView="101138" id="101137" customClass="EventAwareTableView">
-                                                        <rect key="frame" x="0.0" y="0.0" width="661" height="192"/>
+                                                        <rect key="frame" x="0.0" y="0.0" width="661" height="16"/>
                                                         <autoresizingMask key="autoresizingMask"/>
                                                         <animations/>
                                                         <size key="intercellSpacing" width="3" height="2"/>
@@ -3582,7 +3582,7 @@ IA
                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                 <subviews>
                                                     <tableView identifier="AnnotationsTableView" verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnReordering="NO" columnSelection="YES" multipleSelection="NO" autosaveColumns="NO" rowHeight="22" headerView="102201" id="102200" customClass="EventAwareTableView">
-                                                        <rect key="frame" x="0.0" y="0.0" width="589" height="303"/>
+                                                        <rect key="frame" x="0.0" y="0.0" width="589" height="24"/>
                                                         <autoresizingMask key="autoresizingMask"/>
                                                         <animations/>
                                                         <size key="intercellSpacing" width="3" height="2"/>
@@ -5372,6 +5372,84 @@ IA
                                                             <modifierMask key="keyEquivalentModifierMask"/>
                                                         </menuItem>
                                                         <menuItem title="Right Arrow" id="102111">
+                                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                                        </menuItem>
+                                                        <menuItem title="Anchor" id="w33-y9-32a">
+                                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                                        </menuItem>
+                                                        <menuItem title="Bed" id="y7c-eh-ULz">
+                                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                                        </menuItem>
+                                                        <menuItem title="Beer" id="3DO-wC-G5b">
+                                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                                        </menuItem>
+                                                        <menuItem title="Bell" id="2et-jM-Tsz">
+                                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                                        </menuItem>
+                                                        <menuItem title="Binoculars" id="jmm-4g-TAn">
+                                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                                        </menuItem>
+                                                        <menuItem title="Bug" id="Y1S-rs-aBT">
+                                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                                        </menuItem>
+                                                        <menuItem title="Cutlery" id="WPx-vo-G8d">
+                                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                                        </menuItem>
+                                                        <menuItem title="Diamond" id="G69-Ht-RLD">
+                                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                                        </menuItem>
+                                                        <menuItem title="Fighter Jet" id="wLG-Vm-6jg">
+                                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                                        </menuItem>
+                                                        <menuItem title="Frown" id="7d9-0o-1up">
+                                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                                        </menuItem>
+                                                        <menuItem title="Gavel" id="Phg-wx-o6f">
+                                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                                        </menuItem>
+                                                        <menuItem title="Heart" id="69n-rh-NYc">
+                                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                                        </menuItem>
+                                                        <menuItem title="Home" id="iHx-5e-f96">
+                                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                                        </menuItem>
+                                                        <menuItem title="Leaf" id="iFd-xI-Wag">
+                                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                                        </menuItem>
+                                                        <menuItem title="Lock" id="UrL-iY-f2K">
+                                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                                        </menuItem>
+                                                        <menuItem title="Music" id="jdO-4W-pfC">
+                                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                                        </menuItem>
+                                                        <menuItem title="Scale" id="Ygu-If-c4V">
+                                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                                        </menuItem>
+                                                        <menuItem title="Smile" id="Gap-bP-dAA">
+                                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                                        </menuItem>
+                                                        <menuItem title="Star" id="Ccr-Aa-6qu">
+                                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                                        </menuItem>
+                                                        <menuItem title="Tachometer" id="5mN-0D-jOt">
+                                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                                        </menuItem>
+                                                        <menuItem title="Thumbs Up" id="n7l-YM-2bF">
+                                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                                        </menuItem>
+                                                        <menuItem title="Thumbs Down" id="WmV-CX-ted">
+                                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                                        </menuItem>
+                                                        <menuItem title="Trash" id="gwX-VU-xJj">
+                                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                                        </menuItem>
+                                                        <menuItem title="Tree" id="OD3-1y-Xaj">
+                                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                                        </menuItem>
+                                                        <menuItem title="Unlock" id="9eM-8p-Y8d">
+                                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                                        </menuItem>
+                                                        <menuItem title="Warning" id="VlA-i9-k3R">
                                                             <modifierMask key="keyEquivalentModifierMask"/>
                                                         </menuItem>
                                                     </items>
