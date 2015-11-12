@@ -669,7 +669,7 @@
         [pacMan appendBezierPathWithPoints:mouthPoints count:2];
         [pacMan setLineWidth:2.0];
         [pacMan stroke];
-    } else if ([[NSArray arrayWithObjects:@"Anchor",@"Bed",@"Beer",@"Bell",@"Binoculars",@"Bug",@"Cutlery",@"Diamond",@"Fighter Jet",@"Frown",@"Gavel",@"Heart",@"Home",@"Leaf",@"Lock",@"Music",@"Scale",@"Smile",@"Star",@"Tachometer",@"Thumbs Up",@"Thumbs Down",@"Trash",@"Tree",@"Unlock",@"Warning",nil] containsObject:screenPoint.point.trackedEvent.type.shape]) { // FontAwesome glyphs
+    } else if ([[NSArray arrayWithObjects:@"Anchor",@"Bed",@"Beer",@"Bell",@"Binoculars",@"Bug",@"Cutlery",@"Diamond",@"Fighter Jet",@"Flag",@"Frown",@"Gavel",@"Heart",@"Home",@"Leaf",@"Lock",@"Music",@"Scale",@"Smile",@"Star",@"Tachometer",@"Thumbs Up",@"Thumbs Down",@"Trash",@"Tree",@"Unlock",@"Warning",nil] containsObject:screenPoint.point.trackedEvent.type.shape]) { // FontAwesome glyphs
         NSDictionary *fontAwesomeCodes = [NSDictionary dictionaryWithObjectsAndKeys:
                                           @"\uf13d",@"Anchor",
                                           @"\uf236",@"Bed",
@@ -680,6 +680,7 @@
                                           @"\uf0f5",@"Cutlery",
                                           @"\uf219",@"Diamond",
                                           @"\uf0fb",@"Fighter Jet",
+                                          @"\uf024",@"Flag",
                                           @"\uf119",@"Frown",
                                           @"\uf0e3",@"Gavel",
                                           @"\uf004",@"Heart",

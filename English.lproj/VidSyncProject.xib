@@ -5467,12 +5467,12 @@ IA
                                             <rect key="frame" x="650" y="137" width="189" height="26"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
                                             <animations/>
-                                            <popUpButtonCell key="cell" type="push" title="Circle" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" selectedItem="101250" id="101248">
+                                            <popUpButtonCell key="cell" type="push" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" id="101248">
                                                 <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
                                                 <font key="font" metaFont="menu"/>
                                                 <menu key="menu" title="OtherViews" id="101249">
                                                     <items>
-                                                        <menuItem title="Circle" state="on" id="101250"/>
+                                                        <menuItem title="Circle" id="101250"/>
                                                         <menuItem title="Double Circle" id="101251"/>
                                                         <menuItem title="Pacman" id="101252"/>
                                                         <menuItem title="Square" id="102106">
@@ -5527,6 +5527,9 @@ IA
                                                             <modifierMask key="keyEquivalentModifierMask"/>
                                                         </menuItem>
                                                         <menuItem title="Fighter Jet" id="wLG-Vm-6jg">
+                                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                                        </menuItem>
+                                                        <menuItem title="Flag" id="7TY-b5-nQS">
                                                             <modifierMask key="keyEquivalentModifierMask"/>
                                                         </menuItem>
                                                         <menuItem title="Frown" id="7d9-0o-1up">
