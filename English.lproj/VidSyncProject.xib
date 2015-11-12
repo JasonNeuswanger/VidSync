@@ -1075,18 +1075,18 @@
                                                                                     <rect key="frame" x="7" y="23" width="234" height="354"/>
                                                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                                     <clipView key="contentView" id="zSj-hg-g4T">
-                                                                                        <rect key="frame" x="1" y="0.0" width="232" height="353"/>
+                                                                                        <rect key="frame" x="1" y="0.0" width="232" height="349"/>
                                                                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                                         <subviews>
                                                                                             <tableView identifier="FrontFrameTableView" verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnReordering="NO" multipleSelection="NO" autosaveColumns="NO" rowHeight="14" headerView="100745" id="100744" customClass="EventAwareTableView">
-                                                                                                <rect key="frame" x="0.0" y="0.0" width="232" height="16"/>
+                                                                                                <rect key="frame" x="0.0" y="0.0" width="232" height="332"/>
                                                                                                 <autoresizingMask key="autoresizingMask"/>
                                                                                                 <animations/>
                                                                                                 <size key="intercellSpacing" width="3" height="2"/>
                                                                                                 <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                                                                                                 <color key="gridColor" name="gridColor" catalog="System" colorSpace="catalog"/>
                                                                                                 <tableColumns>
-                                                                                                    <tableColumn width="40" minWidth="40" maxWidth="1000" id="100746">
+                                                                                                    <tableColumn width="44" minWidth="40" maxWidth="1000" id="100746">
                                                                                                         <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left">
                                                                                                             <font key="font" metaFont="smallSystem"/>
                                                                                                             <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
@@ -1103,7 +1103,7 @@
                                                                                                             <binding destination="100325" name="headerTitle" keyPath="selection.calibration.axisHorizontal" id="100754"/>
                                                                                                         </connections>
                                                                                                     </tableColumn>
-                                                                                                    <tableColumn width="40" minWidth="40" maxWidth="1000" id="100747">
+                                                                                                    <tableColumn width="44" minWidth="40" maxWidth="1000" id="100747">
                                                                                                         <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left">
                                                                                                             <font key="font" metaFont="smallSystem"/>
                                                                                                             <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
@@ -1120,7 +1120,7 @@
                                                                                                             <binding destination="100325" name="headerTitle" keyPath="selection.calibration.axisVertical" id="100757"/>
                                                                                                         </connections>
                                                                                                     </tableColumn>
-                                                                                                    <tableColumn width="63" minWidth="10" maxWidth="3.4028234663852886e+38" id="100868">
+                                                                                                    <tableColumn width="67" minWidth="10" maxWidth="3.4028234663852886e+38" id="100868">
                                                                                                         <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left" title="screen x">
                                                                                                             <font key="font" metaFont="smallSystem"/>
                                                                                                             <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
@@ -1136,7 +1136,7 @@
                                                                                                             <binding destination="100779" name="value" keyPath="arrangedObjects.screenX" id="100874"/>
                                                                                                         </connections>
                                                                                                     </tableColumn>
-                                                                                                    <tableColumn width="61" minWidth="10" maxWidth="3.4028234663852886e+38" id="100870">
+                                                                                                    <tableColumn width="65" minWidth="10" maxWidth="3.4028234663852886e+38" id="100870">
                                                                                                         <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left" title="screen y">
                                                                                                             <font key="font" metaFont="smallSystem"/>
                                                                                                             <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
@@ -2437,7 +2437,7 @@ IA
                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                 <subviews>
                                                     <tableView identifier="MeasurementEventsTableView" verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnSelection="YES" multipleSelection="NO" autosaveColumns="NO" rowHeight="14" headerView="101109" id="101110" customClass="EventAwareTableView">
-                                                        <rect key="frame" x="0.0" y="0.0" width="1046" height="16"/>
+                                                        <rect key="frame" x="0.0" y="0.0" width="924" height="136"/>
                                                         <autoresizingMask key="autoresizingMask"/>
                                                         <animations/>
                                                         <size key="intercellSpacing" width="3" height="2"/>
@@ -2528,7 +2528,7 @@ IA
                                                                     </binding>
                                                                 </connections>
                                                             </tableColumn>
-                                                            <tableColumn width="500" minWidth="500" maxWidth="3.4028234663852886e+38" id="101503">
+                                                            <tableColumn width="250" minWidth="250" maxWidth="3.4028234663852886e+38" id="101503">
                                                                 <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left" title="Object(s)">
                                                                     <font key="font" metaFont="smallSystem"/>
                                                                     <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
@@ -2560,6 +2560,22 @@ IA
                                                                     <binding destination="101602" name="value" keyPath="arrangedObjects.observer" id="JPq-c8-4xu"/>
                                                                 </connections>
                                                             </tableColumn>
+                                                            <tableColumn identifier="" width="125" minWidth="125" maxWidth="3.4028234663852886e+38" id="Fx2-oh-CmD">
+                                                                <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left" title="Earliest Timecode">
+                                                                    <font key="font" metaFont="smallSystem"/>
+                                                                    <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
+                                                                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                                                </tableHeaderCell>
+                                                                <textFieldCell key="dataCell" controlSize="small" lineBreakMode="truncatingTail" selectable="YES" editable="YES" alignment="left" title="Text Cell" id="wb7-eS-zXg">
+                                                                    <font key="font" metaFont="smallSystem"/>
+                                                                    <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                                                    <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                                                </textFieldCell>
+                                                                <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
+                                                                <connections>
+                                                                    <binding destination="101602" name="value" keyPath="arrangedObjects.earliestPointTimecode" id="JAm-2e-3uK"/>
+                                                                </connections>
+                                                            </tableColumn>
                                                         </tableColumns>
                                                         <connections>
                                                             <outlet property="delegate" destination="101793" id="101811"/>
@@ -2582,7 +2598,7 @@ IA
                                                 <animations/>
                                             </scroller>
                                             <tableHeaderView key="headerView" id="101109">
-                                                <rect key="frame" x="0.0" y="0.0" width="1046" height="17"/>
+                                                <rect key="frame" x="0.0" y="0.0" width="924" height="17"/>
                                                 <autoresizingMask key="autoresizingMask"/>
                                                 <animations/>
                                             </tableHeaderView>
@@ -3141,10 +3157,10 @@ IA
                                             </connections>
                                         </button>
                                         <button toolTip="Sorts events ascending by type, then by index, then by name" verticalHuggingPriority="750" id="103816">
-                                            <rect key="frame" x="390" y="294" width="34" height="19"/>
+                                            <rect key="frame" x="218" y="294" width="87" height="19"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
                                             <animations/>
-                                            <buttonCell key="cell" type="roundTextured" title="Sort" bezelStyle="texturedRounded" alignment="center" controlSize="small" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="103817">
+                                            <buttonCell key="cell" type="roundTextured" title="Sort (by Type)" bezelStyle="texturedRounded" alignment="center" controlSize="small" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="103817">
                                                 <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                                 <font key="font" metaFont="smallSystem"/>
                                             </buttonCell>
@@ -3153,7 +3169,7 @@ IA
                                             </connections>
                                         </button>
                                         <button verticalHuggingPriority="750" id="103824">
-                                            <rect key="frame" x="136" y="296" width="36" height="18"/>
+                                            <rect key="frame" x="136" y="295" width="36" height="18"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <string key="toolTip">Splits the events in the current object into two identical objects, one of them with a new index.  The existing object keeps events whose first point has a timecode before the current time, and the new object gets events with later point timecodes.</string>
                                             <animations/>
@@ -3195,6 +3211,18 @@ IA
                                             </buttonCell>
                                             <connections>
                                                 <action selector="makeKeyAndOrderFront:" target="Yrt-uM-HMq" id="Bjk-ZV-PlL"/>
+                                            </connections>
+                                        </button>
+                                        <button toolTip="Sorts events ascending by type, then by index, then by name" verticalHuggingPriority="750" id="SCd-RG-1nt">
+                                            <rect key="frame" x="313" y="294" width="87" height="19"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
+                                            <animations/>
+                                            <buttonCell key="cell" type="roundTextured" title="Sort (by Time)" bezelStyle="texturedRounded" alignment="center" controlSize="small" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="a8e-WU-YFq">
+                                                <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                                <font key="font" metaFont="smallSystem"/>
+                                            </buttonCell>
+                                            <connections>
+                                                <action selector="sortByEarliestTimecode:" target="101602" id="iWx-65-IcO"/>
                                             </connections>
                                         </button>
                                     </subviews>

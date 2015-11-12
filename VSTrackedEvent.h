@@ -29,6 +29,7 @@
 - (NSString *) otherObjectsString;
 - (VSPoint *) pointToTakeScreenPointFromClip:(VSVideoClip *)videoClip atTime:(CMTime)currentTime;
 - (NSArray *) spreadsheetFormattedConnectingLines;
+- (NSString *) earliestPointTimecode;
 
 - (NSXMLNode *) representationAsXMLNode;
 

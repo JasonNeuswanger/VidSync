@@ -41,4 +41,11 @@
     }
 }
 
+- (IBAction) sortByEarliestTimecode:(id)sender
+{
+    [self rearrangeObjects];
+    NSSortDescriptor *timeDescriptor = [[NSSortDescriptor alloc] initWithKey:@"earliestPointTimecode" ascending:YES];
+    [self.mainTableView setSortDescriptors:[NSArray arrayWithObjects:timeDescriptor,nil]];
+}
+
 @end

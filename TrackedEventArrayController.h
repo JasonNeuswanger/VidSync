@@ -21,4 +21,6 @@
 - (IBAction) add:(id)sender;
 - (void)remove:(id)sender;
 
+- (IBAction) sortByEarliestTimecode:(id)sender;
+
 @end

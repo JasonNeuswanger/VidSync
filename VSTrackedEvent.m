@@ -154,4 +154,19 @@
 	return mainElement;	
 }
 
+- (NSString *) earliestPointTimecode
+{
+    if ([self.points count] == 0) {
+        return @"None";
+    } else if ([self.points count] == 1) {
+        return [[self.points anyObject] timecode];
+    } else {
+        NSSortDescriptor *byTimecode = [NSSortDescriptor sortDescriptorWithKey:@"timecode" ascending:YES];
+        NSArray *sortablePoints = [self.points allObjects];
+        NSArray *sortedPoints = [sortablePoints sortedArrayUsingDescriptors:[NSArray arrayWithObject:byTimecode]];
+        return [[sortedPoints firstObject] timecode];
+    }
+    
+}
+
 @end
