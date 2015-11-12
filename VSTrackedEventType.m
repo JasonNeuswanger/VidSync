@@ -79,8 +79,16 @@
             oldType.requiresSameTimecode = [eventTypeDictionary objectForKey:@"requiresSameTimecode"];
             oldType.connectingLineLengthLabeled = [eventTypeDictionary objectForKey:@"connectingLineLengthLabeled"];
             oldType.connectingLineThickness = [eventTypeDictionary objectForKey:@"connectingLineThickness"];
-            oldType.connectingLineLabelShowLength = [eventTypeDictionary objectForKey:@"connectingLineLabelShowLength"];
-            oldType.connectingLineLabelShowSpeed = [eventTypeDictionary objectForKey:@"connectingLineLabelShowSpeed"];
+            if ([eventTypeDictionary objectForKey:@"connectingLineLabelShowLength"] != nil) { // preserve compatibility with older files
+                oldType.connectingLineLabelShowLength = [eventTypeDictionary objectForKey:@"connectingLineLabelShowLength"];
+            } else {
+                oldType.connectingLineLabelShowLength = [NSNumber numberWithBool:NO];
+            }
+            if ([eventTypeDictionary objectForKey:@"connectingLineLabelShowSpeed"] != nil) { // preserve compatibility with older files
+                oldType.connectingLineLabelShowSpeed = [eventTypeDictionary objectForKey:@"connectingLineLabelShowSpeed"];
+            } else {
+                oldType.connectingLineLabelShowSpeed = [NSNumber numberWithBool:NO];
+            }
             oldType.connectingLineLengthLabelFontSize = [eventTypeDictionary objectForKey:@"connectingLineLengthLabelFontSize"];
             oldType.connectingLineLengthLabelFractionDigits = [eventTypeDictionary objectForKey:@"connectingLineLengthLabelFractionDigits"];
             oldType.connectingLineLengthLabelUnitMultiplier = [eventTypeDictionary objectForKey:@"connectingLineLengthLabelUnitMultiplier"];
@@ -98,8 +106,16 @@
         newType.requiresSameTimecode = [eventTypeDictionary objectForKey:@"requiresSameTimecode"];
         newType.connectingLineLengthLabeled = [eventTypeDictionary objectForKey:@"connectingLineLengthLabeled"];
         newType.connectingLineThickness = [eventTypeDictionary objectForKey:@"connectingLineThickness"];
-        newType.connectingLineLabelShowLength = [eventTypeDictionary objectForKey:@"connectingLineLabelShowLength"];
-        newType.connectingLineLabelShowSpeed = [eventTypeDictionary objectForKey:@"connectingLineLabelShowSpeed"];
+        if ([eventTypeDictionary objectForKey:@"connectingLineLabelShowLength"] != nil) { // preserve compatibility with older files
+            newType.connectingLineLabelShowLength = [eventTypeDictionary objectForKey:@"connectingLineLabelShowLength"];
+        } else {
+            newType.connectingLineLabelShowLength = [NSNumber numberWithBool:NO];
+        }
+        if ([eventTypeDictionary objectForKey:@"connectingLineLabelShowSpeed"] != nil) { // preserve compatibility with older files
+            newType.connectingLineLabelShowSpeed = [eventTypeDictionary objectForKey:@"connectingLineLabelShowSpeed"];
+        } else {
+            newType.connectingLineLabelShowSpeed = [NSNumber numberWithBool:NO];
+        }
         newType.connectingLineLengthLabelFontSize = [eventTypeDictionary objectForKey:@"connectingLineLengthLabelFontSize"];
         newType.connectingLineLengthLabelFractionDigits = [eventTypeDictionary objectForKey:@"connectingLineLengthLabelFractionDigits"];
         newType.connectingLineLengthLabelUnitMultiplier = [eventTypeDictionary objectForKey:@"connectingLineLengthLabelUnitMultiplier"];

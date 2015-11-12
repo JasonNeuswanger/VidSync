@@ -608,7 +608,7 @@ int refractionRootFunc_f(const gsl_vector* x, void* params, gsl_vector* f)
 	if ([openPanel runModal]) {
 		filePath = [[[openPanel URLs] objectAtIndex:0] path];
 		NSArray *fullCalibration = [[NSArray alloc] initWithContentsOfFile:filePath];
-        NSLog(@"fullCalibration has %lu entries, which are %@",(unsigned long)[fullCalibration count],fullCalibration);
+        // NSLog(@"fullCalibration has %lu entries, which are %@",(unsigned long)[fullCalibration count],fullCalibration);
 		self.quadratNodesFront = [[NSAttributedString alloc] initWithString:[fullCalibration objectAtIndex:0]];
 		self.quadratNodesBack = [[NSAttributedString alloc] initWithString:[fullCalibration objectAtIndex:1]];
 		self.planeCoordFront = [fullCalibration objectAtIndex:2];
