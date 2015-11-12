@@ -273,6 +273,7 @@ static void *AVSPPlayerCurrentTimeContext = &AVSPPlayerCurrentTimeContext;
 
 - (void) anyTableViewSelectionDidChange:(NSNotification *)notification	// Controls what to do once a table view's selection HAS changed
 {
+    // NSLog(@"Processing a change to selection from tableView %@",[[notification object] identifier]);
 	if (self.project.masterClip != nil) {
 		
 		if ([[notification object] isEqualTo:eventsPointsTable]) {
@@ -497,19 +498,20 @@ static void *AVSPPlayerCurrentTimeContext = &AVSPPlayerCurrentTimeContext;
 
 - (void) updatePreviewImageWithPlayerLayer:(AVPlayerLayer *)playerLayer atPoint:(NSPoint)point;
 {
-    NSLog(@"Updating magnified preview for point (x,y) = (%1.2f,%1.2f)",point.x,point.y);
-	if ([[[mainTabView selectedTabViewItem] label] isEqualToString:@"Measurement"]) {
-		[magnifiedMeasurementPreview setPlayerLayer:playerLayer];
-		[magnifiedMeasurementPreview setCenterPoint:point];
-	} else if ([[[mainTabView selectedTabViewItem] label] isEqualToString:@"Calibration"]) {
-		if ([[[calibrationInputTabView selectedTabViewItem] label] isEqualToString:@"3D Calibration Frame Input"]) {
-			[magnifiedCalibrationPreview setPlayerLayer:playerLayer];
-			[magnifiedCalibrationPreview setCenterPoint:point];
-		} else if ([[[calibrationInputTabView selectedTabViewItem] label] isEqualToString:@"Lens Distortion"]) {
-			[magnifiedDistortionPreview setPlayerLayer:playerLayer];
-			[magnifiedDistortionPreview setCenterPoint:point];
-		}
-	}
+    if (playerLayer != nil) {
+        if ([[[mainTabView selectedTabViewItem] label] isEqualToString:@"Measurement"]) {
+            [magnifiedMeasurementPreview setPlayerLayer:playerLayer];
+            [magnifiedMeasurementPreview setCenterPoint:point];
+        } else if ([[[mainTabView selectedTabViewItem] label] isEqualToString:@"Calibration"]) {
+            if ([[[calibrationInputTabView selectedTabViewItem] label] isEqualToString:@"3D Calibration Frame Input"]) {
+                [magnifiedCalibrationPreview setPlayerLayer:playerLayer];
+                [magnifiedCalibrationPreview setCenterPoint:point];
+            } else if ([[[calibrationInputTabView selectedTabViewItem] label] isEqualToString:@"Lens Distortion"]) {
+                [magnifiedDistortionPreview setPlayerLayer:playerLayer];
+                [magnifiedDistortionPreview setCenterPoint:point];
+            }
+        }
+    }
 }
 
 - (IBAction) resetPreviewMagnification:(id)sender

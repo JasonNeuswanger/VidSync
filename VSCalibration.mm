@@ -132,7 +132,18 @@ NSPoint redistortPoint(const NSPoint* pt, const double x0, const double y0, cons
         if (status) break;
         status = gsl_multiroot_test_residual (s->f, 1e-7);
     } while (status == GSL_CONTINUE && iter < 1000);
+    
     NSPoint result = NSMakePoint(x0 + gsl_vector_get(s->x, 0), y0 + gsl_vector_get(s->x, 1));
+    /*
+     This code shows a bit of what's going on when this solver finds the wrong solution for one of the y-coordinates in seemingly random (but repeatable)
+     locations... it's probably convering on some other solution. Not sure how to fix this. Only happens in 9/4/2015 video for now with the widest fisheye.
+     
+    if (fabs(pt->y - result.y) > 2000) {
+        NSLog(@"VERY ODDLY REDISTORTED POINT (%1.1f, %1.1f) TO POINT (%1.1f, %1.1f)",pt->x,pt->y,result.x,result.y);
+    } else {
+        NSLog(@"redistorted (%1.1f, %1.1f) to point (%1.1f, %1.1f)",pt->x,pt->y,result.x,result.y);
+    }
+    */
     gsl_multiroot_fdfsolver_free (s);
     gsl_vector_free (x);
     return result;

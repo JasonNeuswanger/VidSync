@@ -151,7 +151,7 @@
                                                 <rect key="frame" x="1" y="0.0" width="531" height="127"/>
                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                 <subviews>
-                                                    <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" autosaveColumns="NO" headerView="100375" id="100374">
+                                                    <tableView identifier="VideoClipsTableView" verticalHuggingPriority="750" allowsExpansionToolTips="YES" autosaveColumns="NO" headerView="100375" id="100374">
                                                         <rect key="frame" x="0.0" y="0.0" width="2349" height="110"/>
                                                         <autoresizingMask key="autoresizingMask"/>
                                                         <animations/>
@@ -416,7 +416,7 @@
                                                         <rect key="frame" x="10" y="33" width="523" height="546"/>
                                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                         <subviews>
-                                                            <customView focusRingType="none" id="103628" customClass="MagnifiedPreviewView">
+                                                            <customView identifier="Distortion" focusRingType="none" id="103628" customClass="MagnifiedPreviewView">
                                                                 <rect key="frame" x="17" y="301" width="258" height="208"/>
                                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                 <animations/>
@@ -448,7 +448,7 @@
                                                                     <rect key="frame" x="1" y="17" width="232" height="126"/>
                                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                     <subviews>
-                                                                        <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnSelection="YES" multipleSelection="NO" autosaveColumns="NO" rowHeight="14" headerView="103637" id="103636" customClass="EventAwareTableView">
+                                                                        <tableView identifier="PlumblinesTableView" verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnSelection="YES" multipleSelection="NO" autosaveColumns="NO" rowHeight="14" headerView="103637" id="103636" customClass="EventAwareTableView">
                                                                             <rect key="frame" x="0.0" y="0.0" width="232" height="126"/>
                                                                             <autoresizingMask key="autoresizingMask"/>
                                                                             <animations/>
@@ -732,7 +732,7 @@
                                                                     <rect key="frame" x="1" y="17" width="232" height="240"/>
                                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                     <subviews>
-                                                                        <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnSelection="YES" multipleSelection="NO" autosaveColumns="NO" rowHeight="14" headerView="103690" id="103689" customClass="EventAwareTableView">
+                                                                        <tableView identifier="PlumblinePointsTableView" verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnSelection="YES" multipleSelection="NO" autosaveColumns="NO" rowHeight="14" headerView="103690" id="103689" customClass="EventAwareTableView">
                                                                             <rect key="frame" x="0.0" y="0.0" width="232" height="240"/>
                                                                             <autoresizingMask key="autoresizingMask"/>
                                                                             <animations/>
@@ -1044,8 +1044,8 @@
                                                         <rect key="frame" x="10" y="33" width="523" height="546"/>
                                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                         <subviews>
-                                                            <customView focusRingType="none" id="100469" customClass="MagnifiedPreviewView">
-                                                                <rect key="frame" x="9" y="274.99999721429742" width="252" height="204"/>
+                                                            <customView identifier="Calibration" focusRingType="none" id="100469" customClass="MagnifiedPreviewView">
+                                                                <rect key="frame" x="9" y="275" width="252" height="204"/>
                                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES" heightSizable="YES"/>
                                                                 <animations/>
                                                             </customView>
@@ -1068,25 +1068,25 @@
                                                                 <tabViewItems>
                                                                     <tabViewItem label="Front Frame Surface" identifier="1" id="100697">
                                                                         <view key="view" id="100700">
-                                                                            <rect key="frame" x="10" y="29" width="246" height="378"/>
+                                                                            <rect key="frame" x="10" y="25" width="246" height="382"/>
                                                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                             <subviews>
                                                                                 <scrollView horizontalLineScroll="16" horizontalPageScroll="10" verticalLineScroll="16" verticalPageScroll="10" hasHorizontalScroller="NO" usesPredominantAxisScrolling="NO" id="100741">
-                                                                                    <rect key="frame" x="7" y="23" width="234" height="350"/>
+                                                                                    <rect key="frame" x="7" y="23" width="234" height="354"/>
                                                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                                     <clipView key="contentView" id="zSj-hg-g4T">
-                                                                                        <rect key="frame" x="1" y="17" width="217" height="332"/>
+                                                                                        <rect key="frame" x="1" y="0.0" width="232" height="353"/>
                                                                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                                         <subviews>
-                                                                                            <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnReordering="NO" multipleSelection="NO" autosaveColumns="NO" rowHeight="14" headerView="100745" id="100744" customClass="EventAwareTableView">
-                                                                                                <rect key="frame" x="0.0" y="0.0" width="216" height="16"/>
+                                                                                            <tableView identifier="FrontFrameTableView" verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnReordering="NO" multipleSelection="NO" autosaveColumns="NO" rowHeight="14" headerView="100745" id="100744" customClass="EventAwareTableView">
+                                                                                                <rect key="frame" x="0.0" y="0.0" width="232" height="336"/>
                                                                                                 <autoresizingMask key="autoresizingMask"/>
                                                                                                 <animations/>
                                                                                                 <size key="intercellSpacing" width="3" height="2"/>
                                                                                                 <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                                                                                                 <color key="gridColor" name="gridColor" catalog="System" colorSpace="catalog"/>
                                                                                                 <tableColumns>
-                                                                                                    <tableColumn width="40" minWidth="40" maxWidth="1000" id="100746">
+                                                                                                    <tableColumn width="44" minWidth="40" maxWidth="1000" id="100746">
                                                                                                         <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left">
                                                                                                             <font key="font" metaFont="smallSystem"/>
                                                                                                             <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
@@ -1103,7 +1103,7 @@
                                                                                                             <binding destination="100325" name="headerTitle" keyPath="selection.calibration.axisHorizontal" id="100754"/>
                                                                                                         </connections>
                                                                                                     </tableColumn>
-                                                                                                    <tableColumn width="40" minWidth="40" maxWidth="1000" id="100747">
+                                                                                                    <tableColumn width="44" minWidth="40" maxWidth="1000" id="100747">
                                                                                                         <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left">
                                                                                                             <font key="font" metaFont="smallSystem"/>
                                                                                                             <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
@@ -1120,7 +1120,7 @@
                                                                                                             <binding destination="100325" name="headerTitle" keyPath="selection.calibration.axisVertical" id="100757"/>
                                                                                                         </connections>
                                                                                                     </tableColumn>
-                                                                                                    <tableColumn width="63" minWidth="10" maxWidth="3.4028234663852886e+38" id="100868">
+                                                                                                    <tableColumn width="67" minWidth="10" maxWidth="3.4028234663852886e+38" id="100868">
                                                                                                         <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left" title="screen x">
                                                                                                             <font key="font" metaFont="smallSystem"/>
                                                                                                             <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
@@ -1136,7 +1136,7 @@
                                                                                                             <binding destination="100779" name="value" keyPath="arrangedObjects.screenX" id="100874"/>
                                                                                                         </connections>
                                                                                                     </tableColumn>
-                                                                                                    <tableColumn width="61" minWidth="10" maxWidth="3.4028234663852886e+38" id="100870">
+                                                                                                    <tableColumn width="65" minWidth="10" maxWidth="3.4028234663852886e+38" id="100870">
                                                                                                         <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left" title="screen y">
                                                                                                             <font key="font" metaFont="smallSystem"/>
                                                                                                             <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
@@ -1168,12 +1168,12 @@
                                                                                         <animations/>
                                                                                     </scroller>
                                                                                     <scroller key="verticalScroller" verticalHuggingPriority="750" doubleValue="1" horizontal="NO" id="100742">
-                                                                                        <rect key="frame" x="218" y="17" width="15" height="332"/>
+                                                                                        <rect key="frame" x="217" y="17" width="16" height="336"/>
                                                                                         <autoresizingMask key="autoresizingMask"/>
                                                                                         <animations/>
                                                                                     </scroller>
                                                                                     <tableHeaderView key="headerView" id="100745">
-                                                                                        <rect key="frame" x="0.0" y="0.0" width="217" height="17"/>
+                                                                                        <rect key="frame" x="0.0" y="0.0" width="232" height="17"/>
                                                                                         <autoresizingMask key="autoresizingMask"/>
                                                                                         <animations/>
                                                                                     </tableHeaderView>
@@ -1203,18 +1203,18 @@
                                                                                     <rect key="frame" x="7" y="32" width="234" height="345"/>
                                                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                                     <clipView key="contentView" id="87G-im-XEN">
-                                                                                        <rect key="frame" x="1" y="17" width="217" height="327"/>
+                                                                                        <rect key="frame" x="1" y="0.0" width="232" height="344"/>
                                                                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                                         <subviews>
-                                                                                            <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnReordering="NO" multipleSelection="NO" autosaveColumns="NO" rowHeight="14" headerView="100880" id="100881" customClass="EventAwareTableView">
-                                                                                                <rect key="frame" x="0.0" y="0.0" width="216" height="16"/>
+                                                                                            <tableView identifier="BackFrameTableView" verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnReordering="NO" multipleSelection="NO" autosaveColumns="NO" rowHeight="14" headerView="100880" id="100881" customClass="EventAwareTableView">
+                                                                                                <rect key="frame" x="0.0" y="0.0" width="232" height="327"/>
                                                                                                 <autoresizingMask key="autoresizingMask"/>
                                                                                                 <animations/>
                                                                                                 <size key="intercellSpacing" width="3" height="2"/>
                                                                                                 <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                                                                                                 <color key="gridColor" name="gridColor" catalog="System" colorSpace="catalog"/>
                                                                                                 <tableColumns>
-                                                                                                    <tableColumn width="40" minWidth="40" maxWidth="1000" id="100887">
+                                                                                                    <tableColumn width="44" minWidth="40" maxWidth="1000" id="100887">
                                                                                                         <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left">
                                                                                                             <font key="font" metaFont="smallSystem"/>
                                                                                                             <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
@@ -1231,7 +1231,7 @@
                                                                                                             <binding destination="100325" name="headerTitle" keyPath="selection.calibration.axisHorizontal" id="100894"/>
                                                                                                         </connections>
                                                                                                     </tableColumn>
-                                                                                                    <tableColumn width="40" minWidth="40" maxWidth="1000" id="100886">
+                                                                                                    <tableColumn width="44" minWidth="40" maxWidth="1000" id="100886">
                                                                                                         <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left">
                                                                                                             <font key="font" metaFont="smallSystem"/>
                                                                                                             <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
@@ -1248,7 +1248,7 @@
                                                                                                             <binding destination="100325" name="headerTitle" keyPath="selection.calibration.axisVertical" id="100892"/>
                                                                                                         </connections>
                                                                                                     </tableColumn>
-                                                                                                    <tableColumn width="63" minWidth="10" maxWidth="3.4028234663852886e+38" id="100885">
+                                                                                                    <tableColumn width="67" minWidth="10" maxWidth="3.4028234663852886e+38" id="100885">
                                                                                                         <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left" title="screen x">
                                                                                                             <font key="font" metaFont="smallSystem"/>
                                                                                                             <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
@@ -1264,7 +1264,7 @@
                                                                                                             <binding destination="100898" name="value" keyPath="arrangedObjects.screenX" id="100904"/>
                                                                                                         </connections>
                                                                                                     </tableColumn>
-                                                                                                    <tableColumn width="61" minWidth="10" maxWidth="3.4028234663852886e+38" id="100884">
+                                                                                                    <tableColumn width="65" minWidth="10" maxWidth="3.4028234663852886e+38" id="100884">
                                                                                                         <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left" title="screen y">
                                                                                                             <font key="font" metaFont="smallSystem"/>
                                                                                                             <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
@@ -1301,7 +1301,7 @@
                                                                                         <animations/>
                                                                                     </scroller>
                                                                                     <tableHeaderView key="headerView" id="100880">
-                                                                                        <rect key="frame" x="0.0" y="0.0" width="217" height="17"/>
+                                                                                        <rect key="frame" x="0.0" y="0.0" width="232" height="17"/>
                                                                                         <autoresizingMask key="autoresizingMask"/>
                                                                                         <animations/>
                                                                                     </tableHeaderView>
@@ -2402,7 +2402,7 @@ IA
                                                 </binding>
                                             </connections>
                                         </button>
-                                        <customView focusRingType="none" id="101086" customClass="MagnifiedPreviewView">
+                                        <customView identifier="Measurement" focusRingType="none" id="101086" customClass="MagnifiedPreviewView">
                                             <rect key="frame" x="3" y="331" width="256" height="252"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <animations/>
@@ -2436,7 +2436,7 @@ IA
                                                 <rect key="frame" x="1" y="17" width="555" height="121"/>
                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                 <subviews>
-                                                    <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnSelection="YES" multipleSelection="NO" autosaveColumns="NO" rowHeight="14" headerView="101109" id="101110" customClass="EventAwareTableView">
+                                                    <tableView identifier="MeasurementEventsTableView" verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnSelection="YES" multipleSelection="NO" autosaveColumns="NO" rowHeight="14" headerView="101109" id="101110" customClass="EventAwareTableView">
                                                         <rect key="frame" x="0.0" y="0.0" width="1046" height="136"/>
                                                         <autoresizingMask key="autoresizingMask"/>
                                                         <animations/>
@@ -2655,7 +2655,7 @@ IA
                                                 <rect key="frame" x="1" y="17" width="555" height="49"/>
                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                 <subviews>
-                                                    <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnSelection="YES" multipleSelection="NO" autosaveColumns="NO" rowHeight="14" headerView="101123" id="101122" customClass="EventAwareTableView">
+                                                    <tableView identifier="MeasurementPointsTableView" verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnSelection="YES" multipleSelection="NO" autosaveColumns="NO" rowHeight="14" headerView="101123" id="101122" customClass="EventAwareTableView">
                                                         <rect key="frame" x="0.0" y="0.0" width="997" height="16"/>
                                                         <autoresizingMask key="autoresizingMask"/>
                                                         <animations/>
@@ -2866,7 +2866,7 @@ IA
                                                 <rect key="frame" x="1" y="0.0" width="291" height="209"/>
                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                 <subviews>
-                                                    <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnSelection="YES" multipleSelection="NO" autosaveColumns="NO" rowHeight="14" headerView="101138" id="101137" customClass="EventAwareTableView">
+                                                    <tableView identifier="MeasurementObjectsTableView" verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnSelection="YES" multipleSelection="NO" autosaveColumns="NO" rowHeight="14" headerView="101138" id="101137" customClass="EventAwareTableView">
                                                         <rect key="frame" x="0.0" y="0.0" width="661" height="192"/>
                                                         <autoresizingMask key="autoresizingMask"/>
                                                         <animations/>
@@ -3581,7 +3581,7 @@ IA
                                                 <rect key="frame" x="1" y="17" width="531" height="303"/>
                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                 <subviews>
-                                                    <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnReordering="NO" columnSelection="YES" multipleSelection="NO" autosaveColumns="NO" rowHeight="22" headerView="102201" id="102200" customClass="EventAwareTableView">
+                                                    <tableView identifier="AnnotationsTableView" verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnReordering="NO" columnSelection="YES" multipleSelection="NO" autosaveColumns="NO" rowHeight="22" headerView="102201" id="102200" customClass="EventAwareTableView">
                                                         <rect key="frame" x="0.0" y="0.0" width="589" height="303"/>
                                                         <autoresizingMask key="autoresizingMask"/>
                                                         <animations/>
@@ -4868,7 +4868,7 @@ Gw
                                                 <rect key="frame" x="1" y="17" width="817" height="179"/>
                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                 <subviews>
-                                                    <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnSelection="YES" multipleSelection="NO" autosaveColumns="NO" headerView="101303" id="101304" customClass="EventAwareTableView">
+                                                    <tableView identifier="ObjectTypesTableView" verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnSelection="YES" multipleSelection="NO" autosaveColumns="NO" headerView="101303" id="101304" customClass="EventAwareTableView">
                                                         <rect key="frame" x="0.0" y="0.0" width="817" height="179"/>
                                                         <autoresizingMask key="autoresizingMask"/>
                                                         <animations/>
@@ -5481,7 +5481,7 @@ IA
                                                 <rect key="frame" x="1" y="17" width="817" height="107"/>
                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                 <subviews>
-                                                    <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnSelection="YES" multipleSelection="NO" autosaveColumns="NO" headerView="101441" id="101440" customClass="EventAwareTableView">
+                                                    <tableView identifier="EventTypesTableView" verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnSelection="YES" multipleSelection="NO" autosaveColumns="NO" headerView="101441" id="101440" customClass="EventAwareTableView">
                                                         <rect key="frame" x="0.0" y="0.0" width="817" height="107"/>
                                                         <autoresizingMask key="autoresizingMask"/>
                                                         <animations/>
@@ -6129,7 +6129,7 @@ IA
                                                 <rect key="frame" x="1" y="17" width="300" height="190"/>
                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                 <subviews>
-                                                    <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnSelection="YES" multipleSelection="NO" autosaveColumns="NO" headerView="101970" id="101971">
+                                                    <tableView identifier="ObjectEditPanelEventsListTableView" verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnSelection="YES" multipleSelection="NO" autosaveColumns="NO" headerView="101970" id="101971">
                                                         <rect key="frame" x="0.0" y="0.0" width="300" height="190"/>
                                                         <autoresizingMask key="autoresizingMask"/>
                                                         <animations/>
@@ -6808,7 +6808,7 @@ IA
                             <rect key="frame" x="1" y="17" width="351" height="94"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
-                                <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnSelection="YES" multipleSelection="NO" autosaveColumns="NO" headerView="101714" id="101713">
+                                <tableView identifier="EventsInvolvedObjectsTableView" verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnSelection="YES" multipleSelection="NO" autosaveColumns="NO" headerView="101714" id="101713">
                                     <rect key="frame" x="0.0" y="0.0" width="351" height="94"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <animations/>
@@ -6894,7 +6894,7 @@ IA
                             <rect key="frame" x="1" y="17" width="351" height="143"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
-                                <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnSelection="YES" multipleSelection="NO" autosaveColumns="NO" headerView="101743" id="101744">
+                                <tableView identifier="EventsOtherObjectsToAddTableView" verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnSelection="YES" multipleSelection="NO" autosaveColumns="NO" headerView="101743" id="101744">
                                     <rect key="frame" x="0.0" y="0.0" width="351" height="143"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <animations/>

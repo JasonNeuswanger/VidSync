@@ -93,8 +93,7 @@
 	} else if ([keyPath isEqual: @"values.previewSharpness"]){
 		//[self updateFilterWithUserDefaultsKey:@"previewSharpness" andLayerKeyPath:@"filters.sharpenFilter.inputSharpness"];
 	} else if ([keyPath isEqual: @"values.previewMagnification"]) {
-        //NSLog(@"Should be updating preview magnification with item %@ to last mouse point (%1.3f,%1.3f) and layer %@",lastPlayerItem,lastMousePoint.x,lastMousePoint.y,previewMovieLayer);
-		[self updatePreviewFrameFromPlayerItem:lastPlayerItem];
+        [self updatePreviewFrameFromPlayerItem:lastPlayerItem];
 		[self setCenterPoint:lastMousePoint];
         [self setPlayerLayer:previewMovieLayer];
 	} else if ([keyPath isEqual: @"values.previewDotSize"] || [keyPath isEqual: @"values.previewDotColor"] || [keyPath isEqual:@"values.previewUseReticle"] || [keyPath isEqual: @"values.previewReticleSize"]) {
@@ -119,18 +118,27 @@
 - (void) setPlayerLayer:(AVPlayerLayer*)playerLayer
 {
 	if (![previewMovieLayer isEqualTo:playerLayer]) {
+        // NSLog(@"Setting magnified %@ preview's playerLayer to %@",self.identifier, playerLayer);
         previewMovieLayer = playerLayer;    // Necessary for checking whether we're already on the given layer (the above "if") and also for adjusting the magnified preview
+        // NSLog(@"previewMovieLayer's timecode is %@",[UtilityFunctions CMStringFromTime:previewMovieLayer.player.currentTime]);
         if ([[videoFilterContainerLayer sublayers] count] == 0) {
             [videoFilterContainerLayer addSublayer:previewMovieLayer];
         } else {
             [videoFilterContainerLayer replaceSublayer:[[videoFilterContainerLayer sublayers] objectAtIndex:0] with:previewMovieLayer];
         }
         [self updatePreviewFrameFromPlayerItem:playerLayer.player.currentItem];
-	}
+    } else {
+        // This is an attempt to emulate the effect of the below function that's only called when switching between windows, which fixes a strange problem
+        // in which the preview would occasionally show only the first frame of the video instead of the current frame. Not sure why this would work, but
+        // something fixes the bug when switching between videos, and this seems like the most likely line.
+        lastPlayerItem = playerLayer.player.currentItem;
+    }
 }
 
 - (void) updatePreviewFrameFromPlayerItem:(AVPlayerItem*)playerItem
 {
+//    NSLog(@"in updatePreviewFrameFromPlayerItem, previewMovieLayer's timecode is %@",[UtilityFunctions CMStringFromTime:previewMovieLayer.player.currentTime]);
+    lastPlayerItem = playerItem;
     CGSize movieSize = [[[playerItem.asset tracksWithMediaType:AVMediaTypeVideo] firstObject] naturalSize];
 	float mag = [[[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"previewMagnification"] floatValue];
 	[previewMovieView setFrame:NSMakeRect(0.0,0.0,movieSize.width*mag,movieSize.height*mag)];
@@ -248,11 +256,6 @@
 	
     lastMousePoint = mousePoint;	// Used to call this function when the magnification slider is changed
 	float mag = [[[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"previewMagnification"] floatValue];
-    
-    // the problem is happening in both of these variables (previewCenterPoint and crosshairsCenterPoint because the preview is centered+crosshaired on the wrong position
-    // yet the input mousePoint variable shows the right position
-    // and it happens even when "mag" = 1 so that should have no effect
-    // in other words I can't find a problem here... maybe the display of the layer itself is messed up?
     
 	previewCenterPoint.x = mag * mousePoint.x - [self documentVisibleRect].size.width/2;
 	previewCenterPoint.y = mag * mousePoint.y - [self documentVisibleRect].size.height/2;

@@ -22,7 +22,7 @@
 	NSPoint previewCenterPoint;
 	CGPoint crosshairsCenterPoint;
 	NSPoint lastMousePoint;
-	AVPlayerItem *__strong lastPlayerItem;
+	AVPlayerItem *__weak lastPlayerItem;
 	
 	CIFilter *__strong exposureFilter, *__strong gammaFilter, *__strong unsharpMaskFilter, *__strong sharpenFilter;
 

@@ -109,8 +109,9 @@
     videoAsset = asset;
     playerItem = [AVPlayerItem playerItemWithAsset:asset];
     playerView.player = [AVPlayer playerWithPlayerItem:playerItem];
-    playerLayer = [AVPlayerLayer playerLayerWithPlayer:playerView.player];
     playerView.player.muted = [self.videoClip.muted boolValue];
+    
+    playerLayer = [AVPlayerLayer playerLayerWithPlayer:playerView.player];
     
     movieSize = videoTrack.naturalSize;
     if (self.videoClip.windowFrame == nil) [self resizeVideoToFactor:1.0];  // Load new videos at full size
@@ -144,11 +145,13 @@
     [self.document performSelector:@selector(refreshOverlaysOfAllClips:) withObject:self afterDelay:0.6f];
     
     [[self window] orderFrontRegardless];
+    [self makeOverlayKeyWindow];
 }
 
 - (void) windowDidLoad
 {
     [[self window] orderFrontRegardless];
+    [self makeOverlayKeyWindow];
 }
 
 - (NSString *)windowTitleForDocumentDisplayName:(NSString *)displayName
