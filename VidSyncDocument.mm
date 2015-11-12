@@ -604,6 +604,15 @@ static void *AVSPPlayerCurrentTimeContext = &AVSPPlayerCurrentTimeContext;
 }
 
 #pragma mark
+#pragma mark Help
+
+- (IBAction) openHelpWebpage:(id)sender
+{
+    VSWebHelpButton *whb = (VSWebHelpButton *) sender;
+    [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:whb.helpURL]];
+}
+
+#pragma mark
 #pragma mark Document-closing cleanup behavior
 
 /*

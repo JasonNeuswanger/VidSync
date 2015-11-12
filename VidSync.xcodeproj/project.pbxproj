@@ -54,6 +54,7 @@
 		9655B9831AA4EED2009D8D40 /* SyncedPlaybackPanelScrubberBackground.m in Sources */ = {isa = PBXBuildFile; fileRef = 9655B9821AA4EED2009D8D40 /* SyncedPlaybackPanelScrubberBackground.m */; };
 		9658610511738CA700BC99D5 /* Example Quadrat.VidSyncQuadrat in Resources */ = {isa = PBXBuildFile; fileRef = 9658610311738CA700BC99D5 /* Example Quadrat.VidSyncQuadrat */; };
 		9658610611738CA700BC99D5 /* Example Types.VidSyncTypes in Resources */ = {isa = PBXBuildFile; fileRef = 9658610411738CA700BC99D5 /* Example Types.VidSyncTypes */; };
+		966839911BF46F28000F5AEB /* VSWebHelpButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 966839901BF46F28000F5AEB /* VSWebHelpButton.m */; };
 		96823015151333C900F91ED2 /* libgsl.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 96822FE6151333C800F91ED2 /* libgsl.a */; };
 		96823016151333C900F91ED2 /* libgslblas.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 96822FE7151333C800F91ED2 /* libgslblas.a */; };
 		96823017151333C900F91ED2 /* libgslblock.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 96822FE8151333C800F91ED2 /* libgslblock.a */; };
@@ -250,6 +251,8 @@
 		9655B9821AA4EED2009D8D40 /* SyncedPlaybackPanelScrubberBackground.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SyncedPlaybackPanelScrubberBackground.m; sourceTree = "<group>"; };
 		9658610311738CA700BC99D5 /* Example Quadrat.VidSyncQuadrat */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = "Example Quadrat.VidSyncQuadrat"; sourceTree = "<group>"; };
 		9658610411738CA700BC99D5 /* Example Types.VidSyncTypes */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = "Example Types.VidSyncTypes"; sourceTree = "<group>"; };
+		9668398F1BF46F28000F5AEB /* VSWebHelpButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VSWebHelpButton.h; sourceTree = "<group>"; };
+		966839901BF46F28000F5AEB /* VSWebHelpButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VSWebHelpButton.m; sourceTree = "<group>"; };
 		966E155018C512F900FAFAAB /* VidSyncIcon.psd */ = {isa = PBXFileReference; lastKnownFileType = file; path = VidSyncIcon.psd; sourceTree = "<group>"; };
 		966E155318C5731900FAFAAB /* Web */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Web; sourceTree = "<group>"; };
 		96822E97151333C800F91ED2 /* bessel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = bessel.h; sourceTree = "<group>"; };
@@ -1569,6 +1572,8 @@
 				96AE95801162ED6600118398 /* EventAwareTableView.m */,
 				96AE97AC1164F92700118398 /* ObjectAddPanel.h */,
 				96AE97AD1164F92700118398 /* ObjectAddPanel.m */,
+				9668398F1BF46F28000F5AEB /* VSWebHelpButton.h */,
+				966839901BF46F28000F5AEB /* VSWebHelpButton.m */,
 				96A8734918BFD44E000D1B75 /* Video Window */,
 				96B766B918BEB26D005EB380 /* Synced Playback Panel Views */,
 				96B766BA18BEB2A4005EB380 /* Portrait Views */,
@@ -1712,6 +1717,7 @@
 				969D6CE8115C079700A6D5A3 /* VSHintLine.m in Sources */,
 				964A49E218C29B030051EAFB /* AppDelegate.m in Sources */,
 				9612EC2E18B9744700BBED62 /* CalibDistortionPtArrayController.m in Sources */,
+				966839911BF46F28000F5AEB /* VSWebHelpButton.m in Sources */,
 				96A5DEBD1162501500D58616 /* VideoOverlayWindow.m in Sources */,
 				96AE94431162B65A00118398 /* CalibScreenPtArrayController.m in Sources */,
 				96AE95811162ED6600118398 /* EventAwareTableView.m in Sources */,

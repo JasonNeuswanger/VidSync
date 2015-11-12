@@ -22,6 +22,7 @@
 #import "UtilityFunctions.h"
 #import "VideoWindowController.h"
 #import "VSProject.h"
+#import "VSWebHelpButton.h"
 #import "ProjectController.h"
 #import "VSVideoClip.h"
 #import "VSCalibration.h"

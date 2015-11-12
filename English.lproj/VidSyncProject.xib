@@ -101,7 +101,7 @@
                                             </textFieldCell>
                                         </textField>
                                         <textField verticalHuggingPriority="750" id="100313">
-                                            <rect key="frame" x="24" y="500" width="76" height="17"/>
+                                            <rect key="frame" x="25" y="504" width="76" height="17"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <animations/>
                                             <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Video Clips" id="100314">
@@ -145,10 +145,10 @@
                                             </connections>
                                         </button>
                                         <scrollView horizontalLineScroll="19" horizontalPageScroll="10" verticalLineScroll="19" verticalPageScroll="10" usesPredominantAxisScrolling="NO" id="100371">
-                                            <rect key="frame" x="27" y="368" width="533" height="128"/>
+                                            <rect key="frame" x="26" y="368" width="532" height="128"/>
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                             <clipView key="contentView" id="PfJ-SW-XVv">
-                                                <rect key="frame" x="1" y="0.0" width="531" height="127"/>
+                                                <rect key="frame" x="1" y="0.0" width="530" height="127"/>
                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                 <subviews>
                                                     <tableView identifier="VideoClipsTableView" verticalHuggingPriority="750" allowsExpansionToolTips="YES" autosaveColumns="NO" headerView="100375" id="100374">
@@ -239,12 +239,12 @@
                                             </clipView>
                                             <animations/>
                                             <scroller key="horizontalScroller" verticalHuggingPriority="750" horizontal="YES" id="100373">
-                                                <rect key="frame" x="1" y="112" width="516" height="15"/>
+                                                <rect key="frame" x="1" y="111" width="530" height="16"/>
                                                 <autoresizingMask key="autoresizingMask"/>
                                                 <animations/>
                                             </scroller>
                                             <scroller key="verticalScroller" verticalHuggingPriority="750" horizontal="NO" id="100372">
-                                                <rect key="frame" x="517" y="17" width="15" height="95"/>
+                                                <rect key="frame" x="515" y="17" width="16" height="110"/>
                                                 <autoresizingMask key="autoresizingMask"/>
                                                 <animations/>
                                             </scroller>
@@ -323,7 +323,7 @@
                                             </connections>
                                         </textField>
                                         <button id="104199">
-                                            <rect key="frame" x="24" y="4" width="527" height="18"/>
+                                            <rect key="frame" x="24" y="7" width="506" height="18"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <animations/>
                                             <buttonCell key="cell" type="check" title="Use iterative triangulation?  Uncheck this box if filming through aquarium walls." bezelStyle="regularSquare" imagePosition="left" alignment="left" state="on" inset="2" id="104200">
@@ -372,7 +372,7 @@
                                             </scroller>
                                         </scrollView>
                                         <textField verticalHuggingPriority="750" id="bUC-55-I0f">
-                                            <rect key="frame" x="167" y="28" width="393" height="22"/>
+                                            <rect key="frame" x="178" y="28" width="382" height="22"/>
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                             <string key="toolTip">The observer name will be recorded with each new object, event, and annotation, so it's possible in multi-user projects to tell who digitized which data.</string>
                                             <animations/>
@@ -386,7 +386,7 @@
                                             </connections>
                                         </textField>
                                         <textField verticalHuggingPriority="750" id="xyR-Oh-Cll">
-                                            <rect key="frame" x="13" y="31" width="148" height="17"/>
+                                            <rect key="frame" x="24" y="31" width="148" height="17"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <string key="toolTip">The observer name will be recorded with each new object, event, and annotation, so it's possible in multi-user projects to tell who digitized which data.</string>
                                             <animations/>
@@ -396,6 +396,36 @@
                                                 <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                             </textFieldCell>
                                         </textField>
+                                        <button toolTip="Open the webpage explaining iterative triangulation and whether you need to use it" horizontalHuggingPriority="750" verticalHuggingPriority="750" id="7qF-Pr-A0s" customClass="VSWebHelpButton">
+                                            <rect key="frame" x="535" y="2" width="25" height="25"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                            <animations/>
+                                            <buttonCell key="cell" type="help" bezelStyle="helpButton" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="yio-0l-TNf">
+                                                <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                                <font key="font" metaFont="system"/>
+                                            </buttonCell>
+                                            <userDefinedRuntimeAttributes>
+                                                <userDefinedRuntimeAttribute type="string" keyPath="helpURL" value="http://www.vidsync.org/Iterative+triangulation"/>
+                                            </userDefinedRuntimeAttributes>
+                                            <connections>
+                                                <action selector="openHelpWebpage:" target="-2" id="WzV-kl-D7J"/>
+                                            </connections>
+                                        </button>
+                                        <button toolTip="Open the help page on managing video clips" horizontalHuggingPriority="750" verticalHuggingPriority="750" id="qPS-6I-rbv" customClass="VSWebHelpButton">
+                                            <rect key="frame" x="121" y="501" width="25" height="25"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                            <animations/>
+                                            <buttonCell key="cell" type="help" bezelStyle="helpButton" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="8xV-d9-mrq">
+                                                <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                                <font key="font" metaFont="system"/>
+                                            </buttonCell>
+                                            <userDefinedRuntimeAttributes>
+                                                <userDefinedRuntimeAttribute type="string" keyPath="helpURL" value="http://www.vidsync.org/Managing+video+clips+in+VidSync"/>
+                                            </userDefinedRuntimeAttributes>
+                                            <connections>
+                                                <action selector="openHelpWebpage:" target="-2" id="M3L-yK-zHm"/>
+                                            </connections>
+                                        </button>
                                     </subviews>
                                     <animations/>
                                 </view>
@@ -1035,6 +1065,21 @@
                                                                     <binding destination="100044" name="selectedValue" keyPath="selection.distortionDisplayMode" id="3q3-kC-bbz"/>
                                                                 </connections>
                                                             </popUpButton>
+                                                            <button toolTip="Open the webpage for help on lens distortion correction" horizontalHuggingPriority="750" verticalHuggingPriority="750" id="2Ni-gH-vvV" customClass="VSWebHelpButton">
+                                                                <rect key="frame" x="251" y="514" width="25" height="25"/>
+                                                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                                <animations/>
+                                                                <buttonCell key="cell" type="help" bezelStyle="helpButton" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="Bwk-FU-XAA">
+                                                                    <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                                                    <font key="font" metaFont="system"/>
+                                                                </buttonCell>
+                                                                <userDefinedRuntimeAttributes>
+                                                                    <userDefinedRuntimeAttribute type="string" keyPath="helpURL" value="http://www.vidsync.org/Distortion+correction"/>
+                                                                </userDefinedRuntimeAttributes>
+                                                                <connections>
+                                                                    <action selector="openHelpWebpage:" target="-2" id="1yx-cb-oah"/>
+                                                                </connections>
+                                                            </button>
                                                         </subviews>
                                                         <animations/>
                                                     </view>
@@ -1774,6 +1819,21 @@
                                                                             <string key="NSSelectorName">import3DCalibrationFromFile:</string>
                                                                         </dictionary>
                                                                     </binding>
+                                                                </connections>
+                                                            </button>
+                                                            <button toolTip="Open the webpage for help on 2-D or 3-D calibration" horizontalHuggingPriority="750" verticalHuggingPriority="750" id="byg-Nc-HNj" customClass="VSWebHelpButton">
+                                                                <rect key="frame" x="256" y="509" width="25" height="25"/>
+                                                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                                <animations/>
+                                                                <buttonCell key="cell" type="help" bezelStyle="helpButton" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="uRT-Y6-5HD">
+                                                                    <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                                                    <font key="font" metaFont="system"/>
+                                                                </buttonCell>
+                                                                <userDefinedRuntimeAttributes>
+                                                                    <userDefinedRuntimeAttribute type="string" keyPath="helpURL" value="http://www.vidsync.org/Calibration"/>
+                                                                </userDefinedRuntimeAttributes>
+                                                                <connections>
+                                                                    <action selector="openHelpWebpage:" target="-2" id="tZY-mx-Dap"/>
                                                                 </connections>
                                                             </button>
                                                         </subviews>
@@ -3168,6 +3228,18 @@ IA
                                                 <action selector="reSort:" target="101602" id="103823"/>
                                             </connections>
                                         </button>
+                                        <button toolTip="Sorts events ascending by type, then by index, then by name" verticalHuggingPriority="750" id="SCd-RG-1nt">
+                                            <rect key="frame" x="313" y="294" width="87" height="19"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
+                                            <animations/>
+                                            <buttonCell key="cell" type="roundTextured" title="Sort (by Time)" bezelStyle="texturedRounded" alignment="center" controlSize="small" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="a8e-WU-YFq">
+                                                <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                                <font key="font" metaFont="smallSystem"/>
+                                            </buttonCell>
+                                            <connections>
+                                                <action selector="sortByEarliestTimecode:" target="101602" id="iWx-65-IcO"/>
+                                            </connections>
+                                        </button>
                                         <button verticalHuggingPriority="750" id="103824">
                                             <rect key="frame" x="136" y="295" width="36" height="18"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
@@ -3213,16 +3285,19 @@ IA
                                                 <action selector="makeKeyAndOrderFront:" target="Yrt-uM-HMq" id="Bjk-ZV-PlL"/>
                                             </connections>
                                         </button>
-                                        <button toolTip="Sorts events ascending by type, then by index, then by name" verticalHuggingPriority="750" id="SCd-RG-1nt">
-                                            <rect key="frame" x="313" y="294" width="87" height="19"/>
-                                            <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
+                                        <button toolTip="Open the help page on measuring objects and events in VidSync" horizontalHuggingPriority="750" verticalHuggingPriority="750" id="PWD-sQ-Kq8" customClass="VSWebHelpButton">
+                                            <rect key="frame" x="385" y="583" width="25" height="25"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <animations/>
-                                            <buttonCell key="cell" type="roundTextured" title="Sort (by Time)" bezelStyle="texturedRounded" alignment="center" controlSize="small" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="a8e-WU-YFq">
+                                            <buttonCell key="cell" type="help" bezelStyle="helpButton" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="pOi-QJ-r3d">
                                                 <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                                                <font key="font" metaFont="smallSystem"/>
+                                                <font key="font" metaFont="system"/>
                                             </buttonCell>
+                                            <userDefinedRuntimeAttributes>
+                                                <userDefinedRuntimeAttribute type="string" keyPath="helpURL" value="http://www.vidsync.org/Measuring+objects+and+events+in+VidSync"/>
+                                            </userDefinedRuntimeAttributes>
                                             <connections>
-                                                <action selector="sortByEarliestTimecode:" target="101602" id="iWx-65-IcO"/>
+                                                <action selector="openHelpWebpage:" target="-2" id="BlA-fG-ROR"/>
                                             </connections>
                                         </button>
                                     </subviews>
@@ -3603,14 +3678,14 @@ IA
                                             </connections>
                                         </button>
                                         <scrollView autohidesScrollers="YES" horizontalLineScroll="24" horizontalPageScroll="10" verticalLineScroll="24" verticalPageScroll="10" usesPredominantAxisScrolling="NO" id="102197">
-                                            <rect key="frame" x="27" y="286" width="533" height="321"/>
+                                            <rect key="frame" x="27" y="286" width="533" height="297"/>
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                             <clipView key="contentView" id="7ne-qF-ayi">
-                                                <rect key="frame" x="1" y="17" width="531" height="303"/>
+                                                <rect key="frame" x="1" y="0.0" width="531" height="296"/>
                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                 <subviews>
                                                     <tableView identifier="AnnotationsTableView" verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnReordering="NO" columnSelection="YES" multipleSelection="NO" autosaveColumns="NO" rowHeight="22" headerView="102201" id="102200" customClass="EventAwareTableView">
-                                                        <rect key="frame" x="0.0" y="0.0" width="589" height="24"/>
+                                                        <rect key="frame" x="0.0" y="0.0" width="589" height="279"/>
                                                         <autoresizingMask key="autoresizingMask"/>
                                                         <animations/>
                                                         <size key="intercellSpacing" width="3" height="2"/>
@@ -3693,7 +3768,7 @@ IA
                                             </clipView>
                                             <animations/>
                                             <scroller key="horizontalScroller" verticalHuggingPriority="750" horizontal="YES" id="102199">
-                                                <rect key="frame" x="1" y="304" width="531" height="16"/>
+                                                <rect key="frame" x="1" y="280" width="531" height="16"/>
                                                 <autoresizingMask key="autoresizingMask"/>
                                                 <animations/>
                                             </scroller>
@@ -3708,6 +3783,31 @@ IA
                                                 <animations/>
                                             </tableHeaderView>
                                         </scrollView>
+                                        <textField verticalHuggingPriority="750" id="fkl-V6-bdC">
+                                            <rect key="frame" x="55" y="590" width="506" height="17"/>
+                                            <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
+                                            <animations/>
+                                            <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Annotations are miscellaneous text notes overlaying the video in noteworthy spots." id="THf-Ak-pO6">
+                                                <font key="font" metaFont="system"/>
+                                                <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                                <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                            </textFieldCell>
+                                        </textField>
+                                        <button toolTip="Open the help page on annotations" horizontalHuggingPriority="750" verticalHuggingPriority="750" id="HtY-iR-74w" customClass="VSWebHelpButton">
+                                            <rect key="frame" x="26" y="583" width="25" height="25"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                            <animations/>
+                                            <buttonCell key="cell" type="help" bezelStyle="helpButton" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="OW3-F8-nnO">
+                                                <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                                <font key="font" metaFont="system"/>
+                                            </buttonCell>
+                                            <userDefinedRuntimeAttributes>
+                                                <userDefinedRuntimeAttribute type="string" keyPath="helpURL" value="http://www.vidsync.org/Annotations"/>
+                                            </userDefinedRuntimeAttributes>
+                                            <connections>
+                                                <action selector="openHelpWebpage:" target="-2" id="IuJ-gg-s6x"/>
+                                            </connections>
+                                        </button>
                                     </subviews>
                                     <animations/>
                                 </view>
@@ -4394,11 +4494,11 @@ IA
                                                                 <animations/>
                                                                 <textFieldCell key="cell" sendsActionOnEndEditing="YES" id="lgm-WD-SgD">
                                                                     <font key="font" metaFont="system"/>
-                                                                    <string key="title">CSV files are easier to work with, but XML files contain more details.
+                                                                    <mutableString key="title">CSV files are easier to work with, but XML files contain more details.
 
 An exported CSV is a spreadsheet with one row for each measured point, including its 3-D coordinates (if applicable) and information about the event and object it belongs to. If you are making simple position or distance measurements, you should probably export in CSV.
 
-An XML file stores information using custom markup tags. It more thoroughly reflects the information in VidSync, especially the Object → Event → Point hierarchy. It also includes information about the project and calibration. Unlike CSV output, the XML file can represent many-to-many relationships (such as a "conflict" event between multiple "fish" objects, each of which may be involved in multiple conflicts). To analyze a VidSync XML file, you need to import it using a program with XML import capabilities (such as Mathematica, Matlab, or R) and write your own code to extract and organize the exact information you want. This is recommended for very complex analyses.</string>
+An XML file stores information using custom markup tags. It more thoroughly reflects the information in VidSync, especially the Object → Event → Point hierarchy. It also includes information about the project and calibration. Unlike CSV output, the XML file can represent many-to-many relationships (such as a "conflict" event between multiple "fish" objects, each of which may be involved in multiple conflicts). To analyze a VidSync XML file, you need to import it using a program with XML import capabilities (such as Mathematica, Matlab, R, or Python) and write your own code to extract and organize the exact information you want. This is recommended for very complex analyses.</mutableString>
                                                                     <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                                                     <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                                                 </textFieldCell>
@@ -7213,7 +7313,7 @@ IA
                         </textFieldCell>
                     </textField>
                     <button verticalHuggingPriority="750" id="103881">
-                        <rect key="frame" x="103" y="396" width="146" height="28"/>
+                        <rect key="frame" x="112" y="396" width="146" height="28"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <animations/>
                         <buttonCell key="cell" type="push" title="Autodetect Plumblines" bezelStyle="rounded" alignment="center" controlSize="small" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="103882">
@@ -7445,6 +7545,21 @@ IA
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                     </textField>
+                    <button toolTip="Open the help page explaining automatic plumbline detection" horizontalHuggingPriority="750" verticalHuggingPriority="750" id="V8N-z7-S5w" customClass="VSWebHelpButton">
+                        <rect key="frame" x="90" y="397" width="25" height="25"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                        <animations/>
+                        <buttonCell key="cell" type="help" bezelStyle="helpButton" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="05B-2o-Uyy">
+                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                            <font key="font" metaFont="system"/>
+                        </buttonCell>
+                        <userDefinedRuntimeAttributes>
+                            <userDefinedRuntimeAttribute type="string" keyPath="helpURL" value="http://www.vidsync.org/Automatic+plumbline+detection"/>
+                        </userDefinedRuntimeAttributes>
+                        <connections>
+                            <action selector="openHelpWebpage:" target="-2" id="X4e-yP-7vR"/>
+                        </connections>
+                    </button>
                 </subviews>
                 <animations/>
             </view>
