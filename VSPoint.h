@@ -57,6 +57,7 @@ NSPoint project2DPoint(NSPoint pt, double projectionMatrix[9]);
 @property (strong) NSNumber *meanPLD;
 @property (strong) NSSet *screenPoints;
 @property (strong) NSNumber *reprojectionErrorNorm;
+@property (strong) NSNumber *nearestCameraDistance;
 @property (strong) VSTrackedEvent *trackedEvent;
 
 - (void) clearPointToPointDistanceCache;

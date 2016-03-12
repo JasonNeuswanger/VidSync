@@ -2619,7 +2619,7 @@ IA
                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                 <subviews>
                                                     <tableView identifier="MeasurementPointsTableView" verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnSelection="YES" multipleSelection="NO" autosaveColumns="NO" rowHeight="14" headerView="101123" id="101122" customClass="EventAwareTableView">
-                                                        <rect key="frame" x="0.0" y="0.0" width="997" height="16"/>
+                                                        <rect key="frame" x="0.0" y="0.0" width="1142" height="49"/>
                                                         <autoresizingMask key="autoresizingMask"/>
                                                         <size key="intercellSpacing" width="3" height="2"/>
                                                         <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
@@ -2744,6 +2744,22 @@ IA
                                                                     <binding destination="102065" name="value" keyPath="arrangedObjects.reprojectionErrorNorm" id="104191"/>
                                                                 </connections>
                                                             </tableColumn>
+                                                            <tableColumn identifier="" width="142" minWidth="10" maxWidth="3.4028234663852886e+38" id="SBS-Dl-b8g">
+                                                                <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left" title="Nearest Camera Distance">
+                                                                    <font key="font" metaFont="smallSystem"/>
+                                                                    <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
+                                                                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                                                </tableHeaderCell>
+                                                                <textFieldCell key="dataCell" controlSize="small" lineBreakMode="truncatingTail" selectable="YES" editable="YES" alignment="left" title="Text Cell" id="Oqt-aI-BqN">
+                                                                    <font key="font" metaFont="smallSystem"/>
+                                                                    <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                                                    <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                                                </textFieldCell>
+                                                                <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
+                                                                <connections>
+                                                                    <binding destination="102065" name="value" keyPath="arrangedObjects.nearestCameraDistance" id="3Bk-ls-Drp"/>
+                                                                </connections>
+                                                            </tableColumn>
                                                             <tableColumn editable="NO" width="250" minWidth="250" maxWidth="3.4028234663852886e+38" id="101161">
                                                                 <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left" title="Screen Coords">
                                                                     <font key="font" metaFont="smallSystem"/>
@@ -2802,7 +2818,7 @@ IA
                                                 <autoresizingMask key="autoresizingMask"/>
                                             </scroller>
                                             <tableHeaderView key="headerView" id="101123">
-                                                <rect key="frame" x="0.0" y="0.0" width="997" height="17"/>
+                                                <rect key="frame" x="0.0" y="0.0" width="1142" height="17"/>
                                                 <autoresizingMask key="autoresizingMask"/>
                                             </tableHeaderView>
                                         </scrollView>

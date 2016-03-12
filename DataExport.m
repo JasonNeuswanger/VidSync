@@ -39,7 +39,7 @@
             [totalString appendString:[point spreadsheetFormatted3DPoint:@"\t"]];
 		}
 		if (![totalString isEqualToString:@""]) {	// if there are some connecting lines to paste
-			NSString *titleString = [NSString stringWithFormat:@"%@ 3D Points\n%@\t%@\t%@\t%@\t%@\t%@\t%@\t%@\t%@\t%@\n",
+			NSString *titleString = [NSString stringWithFormat:@"%@ 3D Points\n%@\t%@\t%@\t%@\t%@\t%@\t%@\t%@\t%@\t%@\t%@\n",
 									 self.project.name,
 									 @"Object(s)",
 									 @"Event",
@@ -50,6 +50,7 @@
 									 @"Z",
 									 @"PLD Error",
                                      @"Re-projection Error",
+                                     @"Nearest Camera Distance",
                                      @"Screen coordinates (may be multiple columns)"
 									 ];
 			NSPasteboard *pb = [NSPasteboard generalPasteboard];
@@ -73,7 +74,7 @@
             [totalString appendString:[point spreadsheetFormatted3DPoint:@","]];
 		}
 		if (![totalString isEqualToString:@""]) {	// if there are some connecting lines to paste
-			NSString *titleString = [NSString stringWithFormat:@"All measured points in VidSync project %@\n%@,%@,%@,%@,%@,%@,%@,%@,%@,%@\n",
+			NSString *titleString = [NSString stringWithFormat:@"All measured points in VidSync project %@\n%@,%@,%@,%@,%@,%@,%@,%@,%@,%@,%@\n",
 									 self.project.name,
 									 @"Object(s)",
 									 @"Event",
@@ -84,7 +85,8 @@
 									 @"Z",
 									 @"PLD Error",
                                      @"Re-projection Error",
-									 @"Screen coordinates (may be multiple columns)"
+                                     @"Nearest Camera Distance",
+                                     @"Screen coordinates (may be multiple columns)"
 									 ];
             [totalString insertString:titleString atIndex:0];
             NSError *error;

@@ -115,6 +115,7 @@ NSPoint project2DPoint(NSPoint pt, double projectionMatrix[9])
 @dynamic meanPLD;
 @dynamic screenPoints;
 @dynamic reprojectionErrorNorm;
+@dynamic nearestCameraDistance;
 @dynamic trackedEvent;
 
 #pragma mark
@@ -234,6 +235,23 @@ NSPoint project2DPoint(NSPoint pt, double projectionMatrix[9])
             self.worldY = [NSNumber numberWithDouble:linearIntersectionPoint.y];
             self.worldZ = [NSNumber numberWithDouble:linearIntersectionPoint.z];
         }
+
+        // Now calculate the distance from the point to the nearest camera
+        
+        bool isFirstCameraDistance = YES;
+        for (VSEventScreenPoint *screenPoint in calibratedScreenPoints) {
+            VSPoint3D cameraPoint;
+            cameraPoint.x = [screenPoint.videoClip.calibration.cameraX floatValue];
+            cameraPoint.y = [screenPoint.videoClip.calibration.cameraY floatValue];
+            cameraPoint.z = [screenPoint.videoClip.calibration.cameraZ floatValue];
+            float lineDiff[3] = {[self.worldX floatValue]-cameraPoint.x,[self.worldY floatValue]-cameraPoint.y,[self.worldZ floatValue]-cameraPoint.z};
+            float distance = cblas_snrm2(3, lineDiff, 1);
+            if (isFirstCameraDistance || distance < [self.nearestCameraDistance floatValue]) {
+                self.nearestCameraDistance = [NSNumber numberWithFloat:distance];
+            }
+            isFirstCameraDistance = NO;
+        }
+        
     } else {
 		self.worldX = nil;
 		self.worldY = nil;
@@ -369,7 +387,7 @@ NSPoint project2DPoint(NSPoint pt, double projectionMatrix[9])
         for (VSEventScreenPoint *point in self.screenPoints) [screenCoordsString appendString:[point spreadsheetFormattedScreenPoint]];
     }
     
-	return [NSString stringWithFormat:@"%@%@%@%@%@%@%f%@%f%@%f%@%f%@%f%@%f%@\n",
+	return [NSString stringWithFormat:@"%@%@%@%@%@%@%f%@%f%@%f%@%f%@%f%@%f%@%f%@\n",
 									  objectsString,separator,
 									  eventString,separator,
                                       self.timecode,separator,
@@ -378,7 +396,8 @@ NSPoint project2DPoint(NSPoint pt, double projectionMatrix[9])
 									  [[self worldY] floatValue],separator,
 									  [[self worldZ] floatValue],separator,
 									  [[self meanPLD] floatValue],separator,
-                                      [[self reprojectionErrorNorm] floatValue],
+                                      [[self reprojectionErrorNorm] floatValue],separator,
+                                      [[self nearestCameraDistance] floatValue],
                                       screenCoordsString
 	
         ];
@@ -400,7 +419,7 @@ NSPoint project2DPoint(NSPoint pt, double projectionMatrix[9])
 	[mainElement addAttribute:[NSXMLNode attributeWithName:@"time" stringValue:[nf stringFromNumber:[NSNumber numberWithDouble:time]]]];
 	[mainElement addAttribute:[NSXMLNode attributeWithName:@"meanPLD" stringValue:[nf stringFromNumber:self.meanPLD]]];
 	[mainElement addAttribute:[NSXMLNode attributeWithName:@"reprojectionErrorNorm" stringValue:[nf stringFromNumber:self.reprojectionErrorNorm]]];
-    
+    [mainElement addAttribute:[NSXMLNode attributeWithName:@"nearestCameraDistance" stringValue:[nf stringFromNumber:self.nearestCameraDistance]]];
 	if (includeScreenCoords) for (VSEventScreenPoint *point in self.screenPoints) [mainElement addChild:[point representationAsXMLNode]];
 	return mainElement;		
 }
