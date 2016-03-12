@@ -1992,7 +1992,9 @@ int refractionRootFunc_f(const gsl_vector* x, void* params, gsl_vector* f)
     [mainElement addAttribute:[NSXMLNode attributeWithName:@"residualFrontPixel" stringValue:[nf stringFromNumber:self.residualFrontPixel]]];
     [mainElement addAttribute:[NSXMLNode attributeWithName:@"residualBackPixel" stringValue:[nf stringFromNumber:self.residualBackPixel]]];
     [mainElement addAttribute:[NSXMLNode attributeWithName:@"residualFrontWorld" stringValue:[nf stringFromNumber:self.residualFrontWorld]]];
-    [mainElement addAttribute:[NSXMLNode attributeWithName:@"residualBackWorld" stringValue:[nf stringFromNumber:self.residualBackWorld]]];	
+    [mainElement addAttribute:[NSXMLNode attributeWithName:@"residualBackWorld" stringValue:[nf stringFromNumber:self.residualBackWorld]]];
+    [mainElement addAttribute:[NSXMLNode attributeWithName:@"distortionReductionAchieved" stringValue:[nf stringFromNumber:self.distortionReductionAchieved]]];
+    [mainElement addAttribute:[NSXMLNode attributeWithName:@"distortionRemainingPerPoint" stringValue:[nf stringFromNumber:self.distortionRemainingPerPoint]]];
     if (includeScreenCoords) {
         NSXMLElement *distortionLines = [[NSXMLElement alloc] initWithName:@"distortionLines"];
         NSXMLElement *frontCalibrationPoints = [[NSXMLElement alloc] initWithName:@"frontCalibrationPoints"];
