@@ -113,6 +113,7 @@
 		969BEE00183FF42C006E6AAC /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 969BEDFF183FF42C006E6AAC /* AVFoundation.framework */; };
 		969BEE02183FF437006E6AAC /* AVKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 969BEE01183FF437006E6AAC /* AVKit.framework */; };
 		969BEE04183FF5FB006E6AAC /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 969BEE03183FF5FB006E6AAC /* CoreMedia.framework */; };
+		969CFCA71C9430C6006C9904 /* ObjectsEventTypeCountsArrayController.m in Sources */ = {isa = PBXBuildFile; fileRef = 969CFCA61C9430C6006C9904 /* ObjectsEventTypeCountsArrayController.m */; };
 		969D6CE8115C079700A6D5A3 /* VSHintLine.m in Sources */ = {isa = PBXBuildFile; fileRef = 969D6CE7115C079700A6D5A3 /* VSHintLine.m */; };
 		969DB353116FF3AF00DBA9F4 /* TypesArrayController.m in Sources */ = {isa = PBXBuildFile; fileRef = 969DB352116FF3AF00DBA9F4 /* TypesArrayController.m */; };
 		96A0CB5B1165D22200845DCD /* VSAnnotationArrayController.m in Sources */ = {isa = PBXBuildFile; fileRef = 96A0CB5A1165D22200845DCD /* VSAnnotationArrayController.m */; };
@@ -656,6 +657,8 @@
 		969BEDFF183FF42C006E6AAC /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		969BEE01183FF437006E6AAC /* AVKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVKit.framework; path = System/Library/Frameworks/AVKit.framework; sourceTree = SDKROOT; };
 		969BEE03183FF5FB006E6AAC /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = System/Library/Frameworks/CoreMedia.framework; sourceTree = SDKROOT; };
+		969CFCA51C9430C6006C9904 /* ObjectsEventTypeCountsArrayController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ObjectsEventTypeCountsArrayController.h; sourceTree = "<group>"; };
+		969CFCA61C9430C6006C9904 /* ObjectsEventTypeCountsArrayController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObjectsEventTypeCountsArrayController.m; sourceTree = "<group>"; };
 		969D6CE6115C079700A6D5A3 /* VSHintLine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VSHintLine.h; sourceTree = "<group>"; };
 		969D6CE7115C079700A6D5A3 /* VSHintLine.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VSHintLine.m; sourceTree = "<group>"; };
 		969DB351116FF3AF00DBA9F4 /* TypesArrayController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TypesArrayController.h; sourceTree = "<group>"; };
@@ -1367,6 +1370,8 @@
 				96BDA420117B84D900C39399 /* CalibDistortionLineArrayController.mm */,
 				96A0CB591165D22200845DCD /* VSAnnotationArrayController.h */,
 				96A0CB5A1165D22200845DCD /* VSAnnotationArrayController.m */,
+				969CFCA51C9430C6006C9904 /* ObjectsEventTypeCountsArrayController.h */,
+				969CFCA61C9430C6006C9904 /* ObjectsEventTypeCountsArrayController.m */,
 			);
 			name = "Visible Item Array Controllers";
 			sourceTree = "<group>";
@@ -1685,6 +1690,7 @@
 				8D15AC320486D014006FF6A4 /* main.mm in Sources */,
 				96AE98871165348400118398 /* VidSyncProject.xcdatamodeld in Sources */,
 				96EF21001092567A001DEF3A /* VSVideoClip.m in Sources */,
+				969CFCA71C9430C6006C9904 /* ObjectsEventTypeCountsArrayController.m in Sources */,
 				96EF21A31095432A001DEF3A /* VSProject.m in Sources */,
 				96EF23021096305B001DEF3A /* VideoWindowController.m in Sources */,
 				96EF247F10966F60001DEF3A /* VideoClipArrayController.m in Sources */,

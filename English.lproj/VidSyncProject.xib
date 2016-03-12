@@ -1127,7 +1127,7 @@
                                                                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                                         <subviews>
                                                                                             <tableView identifier="FrontFrameTableView" verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnReordering="NO" multipleSelection="NO" autosaveColumns="NO" rowHeight="14" headerView="100745" id="100744" customClass="EventAwareTableView">
-                                                                                                <rect key="frame" x="0.0" y="0.0" width="217" height="340"/>
+                                                                                                <rect key="frame" x="0.0" y="0.0" width="217" height="16"/>
                                                                                                 <autoresizingMask key="autoresizingMask"/>
                                                                                                 <size key="intercellSpacing" width="3" height="2"/>
                                                                                                 <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
@@ -1262,7 +1262,7 @@
                                                                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                                         <subviews>
                                                                                             <tableView identifier="BackFrameTableView" verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnReordering="NO" multipleSelection="NO" autosaveColumns="NO" rowHeight="14" headerView="100880" id="100881" customClass="EventAwareTableView">
-                                                                                                <rect key="frame" x="0.0" y="0.0" width="217" height="320"/>
+                                                                                                <rect key="frame" x="0.0" y="0.0" width="216" height="16"/>
                                                                                                 <autoresizingMask key="autoresizingMask"/>
                                                                                                 <size key="intercellSpacing" width="3" height="2"/>
                                                                                                 <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
@@ -2585,7 +2585,7 @@ IA
                                             </tableHeaderView>
                                         </scrollView>
                                         <button verticalHuggingPriority="750" id="101099">
-                                            <rect key="frame" x="438" y="295" width="34" height="18"/>
+                                            <rect key="frame" x="438" y="294" width="34" height="18"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
                                             <buttonCell key="cell" type="roundTextured" title="Add" bezelStyle="texturedRounded" alignment="center" controlSize="small" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="101108">
                                                 <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
@@ -2601,7 +2601,7 @@ IA
                                             </connections>
                                         </button>
                                         <button verticalHuggingPriority="750" id="101501">
-                                            <rect key="frame" x="476" y="295" width="33" height="18"/>
+                                            <rect key="frame" x="476" y="294" width="33" height="18"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
                                             <buttonCell key="cell" type="roundTextured" title="Edit" bezelStyle="texturedRounded" alignment="center" controlSize="small" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="101502">
                                                 <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
@@ -2617,7 +2617,7 @@ IA
                                             </connections>
                                         </button>
                                         <button verticalHuggingPriority="750" id="101619">
-                                            <rect key="frame" x="513" y="295" width="46" height="18"/>
+                                            <rect key="frame" x="513" y="294" width="46" height="18"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
                                             <buttonCell key="cell" type="roundTextured" title="Delete" bezelStyle="texturedRounded" alignment="center" controlSize="small" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="101620">
                                                 <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
@@ -2649,7 +2649,7 @@ IA
                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                 <subviews>
                                                     <tableView identifier="MeasurementPointsTableView" verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnSelection="YES" multipleSelection="NO" autosaveColumns="NO" rowHeight="14" headerView="101123" id="101122" customClass="EventAwareTableView">
-                                                        <rect key="frame" x="0.0" y="0.0" width="1142" height="49"/>
+                                                        <rect key="frame" x="0.0" y="0.0" width="1142" height="16"/>
                                                         <autoresizingMask key="autoresizingMask"/>
                                                         <size key="intercellSpacing" width="3" height="2"/>
                                                         <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
@@ -3026,7 +3026,7 @@ IA
                                                 <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                                             </clipView>
                                             <scroller key="horizontalScroller" verticalHuggingPriority="750" horizontal="YES" id="101136">
-                                                <rect key="frame" x="1" y="193" width="291" height="16"/>
+                                                <rect key="frame" x="1" y="194" width="291" height="15"/>
                                                 <autoresizingMask key="autoresizingMask"/>
                                             </scroller>
                                             <scroller key="verticalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="NO" id="101135">
@@ -3065,7 +3065,7 @@ IA
                                             </connections>
                                         </popUpButton>
                                         <button verticalHuggingPriority="750" id="101153">
-                                            <rect key="frame" x="434" y="98" width="75" height="18"/>
+                                            <rect key="frame" x="434" y="96" width="75" height="18"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
                                             <buttonCell key="cell" type="roundTextured" title="Go To Point" bezelStyle="texturedRounded" alignment="center" controlSize="small" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="101154">
                                                 <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
@@ -3097,7 +3097,7 @@ IA
                                             </connections>
                                         </segmentedControl>
                                         <button verticalHuggingPriority="750" id="102130">
-                                            <rect key="frame" x="514" y="98" width="46" height="18"/>
+                                            <rect key="frame" x="514" y="96" width="46" height="18"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
                                             <buttonCell key="cell" type="roundTextured" title="Delete" bezelStyle="texturedRounded" alignment="center" controlSize="small" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="102131">
                                                 <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
@@ -3131,7 +3131,7 @@ IA
                                             </connections>
                                         </button>
                                         <button toolTip="Sorts events ascending by type, then by index, then by name" verticalHuggingPriority="750" id="103816">
-                                            <rect key="frame" x="218" y="294" width="87" height="19"/>
+                                            <rect key="frame" x="188" y="294" width="87" height="19"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
                                             <buttonCell key="cell" type="roundTextured" title="Sort (by Type)" bezelStyle="texturedRounded" alignment="center" controlSize="small" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="103817">
                                                 <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
@@ -3142,7 +3142,7 @@ IA
                                             </connections>
                                         </button>
                                         <button toolTip="Sorts events ascending by type, then by index, then by name" verticalHuggingPriority="750" id="SCd-RG-1nt">
-                                            <rect key="frame" x="313" y="294" width="87" height="19"/>
+                                            <rect key="frame" x="283" y="294" width="87" height="19"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
                                             <buttonCell key="cell" type="roundTextured" title="Sort (by Time)" bezelStyle="texturedRounded" alignment="center" controlSize="small" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="a8e-WU-YFq">
                                                 <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
@@ -3152,8 +3152,19 @@ IA
                                                 <action selector="sortByEarliestTimecode:" target="101602" id="iWx-65-IcO"/>
                                             </connections>
                                         </button>
+                                        <button toolTip="Open a window with a running total of events per event type for the current object (number of length measurements, etc)." verticalHuggingPriority="750" id="3Bv-aJ-yc4">
+                                            <rect key="frame" x="382" y="294" width="37" height="19"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
+                                            <buttonCell key="cell" type="roundTextured" title="Tally" bezelStyle="texturedRounded" alignment="center" controlSize="small" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="p5G-eg-JEk">
+                                                <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                                <font key="font" metaFont="smallSystem"/>
+                                            </buttonCell>
+                                            <connections>
+                                                <action selector="orderFront:" target="wOb-e9-o8n" id="Myb-H4-CVy"/>
+                                            </connections>
+                                        </button>
                                         <button verticalHuggingPriority="750" id="103824">
-                                            <rect key="frame" x="136" y="295" width="36" height="18"/>
+                                            <rect key="frame" x="136" y="294" width="36" height="18"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <string key="toolTip">Splits the events in the current object into two identical objects, one of them with a new index.  The existing object keeps events whose first point has a timecode before the current time, and the new object gets events with later point timecodes.</string>
                                             <buttonCell key="cell" type="roundTextured" title="Split" bezelStyle="texturedRounded" alignment="center" controlSize="small" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="103825">
@@ -7787,6 +7798,125 @@ Some useful refractive index values are:  1.000 for air, 1.335 for fresh water, 
                 <outlet property="portraitBrowserView" destination="L8b-Kn-Awl" id="goG-A7-xz1"/>
             </connections>
         </arrayController>
+        <arrayController mode="entity" entityName="VSTrackedEvent" editable="NO" automaticallyPreparesContent="YES" avoidsEmptySelection="NO" id="bUa-uf-h6x" userLabel="ObjectsEventTypeCountsArrayController" customClass="ObjectsEventTypeCountsArrayController">
+            <connections>
+                <binding destination="101506" name="contentSet" keyPath="selection.trackedEvents" id="eCa-o7-53W">
+                    <dictionary key="options">
+                        <bool key="NSConditionallySetsEditable" value="NO"/>
+                    </dictionary>
+                </binding>
+            </connections>
+        </arrayController>
         <userDefaultsController id="K6s-xO-Bah"/>
+        <window title="Event Tally by Type" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" oneShot="NO" releasedWhenClosed="NO" showsToolbarButton="NO" visibleAtLaunch="NO" frameAutosaveName="EventTallyByType" animationBehavior="default" id="wOb-e9-o8n">
+            <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES" texturedBackground="YES"/>
+            <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
+            <rect key="contentRect" x="82" y="639" width="308" height="240"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1680" height="1027"/>
+            <value key="minSize" type="size" width="308" height="240"/>
+            <view key="contentView" id="taG-Qj-Oy4">
+                <rect key="frame" x="0.0" y="0.0" width="308" height="240"/>
+                <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" id="55o-fX-Hj1">
+                        <rect key="frame" x="18" y="201" width="286" height="39"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
+                        <textFieldCell key="cell" controlSize="mini" sendsActionOnEndEditing="YES" title="This table displays the number of events of each type created under the current object." id="bt2-rr-qbV">
+                            <font key="font" metaFont="system"/>
+                            <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                        </textFieldCell>
+                    </textField>
+                    <scrollView autohidesScrollers="YES" horizontalLineScroll="16" horizontalPageScroll="10" verticalLineScroll="16" verticalPageScroll="10" usesPredominantAxisScrolling="NO" id="jSI-bt-PV0">
+                        <rect key="frame" x="20" y="36" width="268" height="162"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <clipView key="contentView" id="6ly-25-7vE">
+                            <rect key="frame" x="1" y="17" width="266" height="144"/>
+                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                            <subviews>
+                                <tableView identifier="MeasurementEventsTableView" verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnSelection="YES" multipleSelection="NO" autosaveColumns="NO" rowHeight="14" headerView="jWy-11-fKI" id="nGU-Yz-oLA" customClass="EventAwareTableView">
+                                    <rect key="frame" x="0.0" y="0.0" width="266" height="144"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <size key="intercellSpacing" width="3" height="2"/>
+                                    <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                    <color key="gridColor" name="gridColor" catalog="System" colorSpace="catalog"/>
+                                    <tableColumns>
+                                        <tableColumn editable="NO" width="201" minWidth="10" maxWidth="3.4028234663852886e+38" id="EoW-cD-oki">
+                                            <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left" title="Type">
+                                                <font key="font" metaFont="smallSystem"/>
+                                                <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
+                                                <color key="backgroundColor" name="headerColor" catalog="System" colorSpace="catalog"/>
+                                            </tableHeaderCell>
+                                            <textFieldCell key="dataCell" controlSize="small" lineBreakMode="truncatingTail" selectable="YES" editable="YES" alignment="left" title="Text Cell" id="F0a-NI-4V2">
+                                                <font key="font" metaFont="smallSystem"/>
+                                                <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                                <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                            </textFieldCell>
+                                            <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
+                                            <connections>
+                                                <binding destination="bUa-uf-h6x" name="value" keyPath="arrangedObjects.type.name" id="OgQ-sh-D3d">
+                                                    <dictionary key="options">
+                                                        <bool key="NSConditionallySetsEditable" value="YES"/>
+                                                    </dictionary>
+                                                </binding>
+                                            </connections>
+                                        </tableColumn>
+                                        <tableColumn editable="NO" width="59" minWidth="40" maxWidth="1000" id="2Tu-3d-V44">
+                                            <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left" title="Count">
+                                                <font key="font" metaFont="smallSystem"/>
+                                                <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
+                                                <color key="backgroundColor" white="0.33333298560000002" alpha="1" colorSpace="calibratedWhite"/>
+                                            </tableHeaderCell>
+                                            <textFieldCell key="dataCell" controlSize="small" lineBreakMode="truncatingTail" selectable="YES" editable="YES" alignment="left" title="Text Cell" id="eCh-7M-eky">
+                                                <font key="font" metaFont="smallSystem"/>
+                                                <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                                <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                            </textFieldCell>
+                                            <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
+                                            <connections>
+                                                <binding destination="bUa-uf-h6x" name="value" keyPath="arrangedObjects.countOfType" id="Tjc-fR-bg3">
+                                                    <dictionary key="options">
+                                                        <bool key="NSConditionallySetsEditable" value="YES"/>
+                                                    </dictionary>
+                                                </binding>
+                                            </connections>
+                                        </tableColumn>
+                                    </tableColumns>
+                                    <connections>
+                                        <outlet property="delegate" destination="101793" id="m24-hT-j34"/>
+                                        <outlet property="deleteButton" destination="101619" id="x92-Bm-aFU"/>
+                                    </connections>
+                                </tableView>
+                            </subviews>
+                            <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
+                        </clipView>
+                        <scroller key="horizontalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="YES" id="o30-3T-5Ze">
+                            <rect key="frame" x="1" y="138" width="555" height="15"/>
+                            <autoresizingMask key="autoresizingMask"/>
+                        </scroller>
+                        <scroller key="verticalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="NO" id="vr6-97-YRb">
+                            <rect key="frame" x="277" y="17" width="15" height="76"/>
+                            <autoresizingMask key="autoresizingMask"/>
+                        </scroller>
+                        <tableHeaderView key="headerView" id="jWy-11-fKI">
+                            <rect key="frame" x="0.0" y="0.0" width="266" height="17"/>
+                            <autoresizingMask key="autoresizingMask"/>
+                        </tableHeaderView>
+                    </scrollView>
+                    <button verticalHuggingPriority="750" id="xxH-F9-5CR">
+                        <rect key="frame" x="122" y="1" width="64" height="32"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxY="YES"/>
+                        <buttonCell key="cell" type="push" title="Close" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="qgz-p0-cro">
+                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                            <font key="font" metaFont="system"/>
+                        </buttonCell>
+                        <connections>
+                            <action selector="performClose:" target="wOb-e9-o8n" id="d7k-VF-DZL"/>
+                        </connections>
+                    </button>
+                </subviews>
+            </view>
+            <point key="canvasLocation" x="238" y="964"/>
+        </window>
     </objects>
 </document>

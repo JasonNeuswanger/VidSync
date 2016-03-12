@@ -35,6 +35,7 @@
 @dynamic trackedObjects;
 @dynamic points;
 @synthesize tempOpacity;
+@synthesize countOfType;
 
 + (int) highestEventIndexInProject:(VSProject *)project
 {
@@ -47,7 +48,6 @@
 {
 	return [NSNumber numberWithInt:[self.points count]];
 }
-
 
 - (NSString *) otherObjectsString
 {
