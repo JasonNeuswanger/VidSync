@@ -93,6 +93,8 @@ int redistortionRootFunc_fdf(const gsl_vector* x, void* params, gsl_vector* f, g
 @property (strong) NSNumber *distortionP1;
 @property (strong) NSNumber *distortionP2;
 @property (strong) NSNumber *distortionP3;
+@property (strong) NSNumber *distortionReductionAchieved;
+@property (strong) NSNumber *distortionRemainingPerPoint;
 
 @property (strong) NSNumber *shouldCorrectRefraction;
 @property (strong) NSNumber *frontQuadratSurfaceThickness;

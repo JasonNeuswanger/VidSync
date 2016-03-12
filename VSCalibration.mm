@@ -52,7 +52,7 @@ double orthogonalRegressionLineCostFunction(NSPoint line[], const size_t numLine
     endpointsvec[0] = line[numLinePoints-1].x - line[0].x;
     endpointsvec[1] = line[numLinePoints-1].y - line[0].y;
     *linePixelLength += cblas_dnrm2(2,endpointsvec,1);
-    // Return the smallest ssq divided by the length of the line
+    // Return the smallest ssq
     const double minssq = (ssq1 > ssq2) ? ssq2 : ssq1;
     return minssq;
 }
@@ -95,7 +95,12 @@ double orthogonalRegressionTotalCostFunction(const gsl_vector *v, void *params){
     for (int i = 0; i < up.numLines; i++) free(up.lines[i]);
     free(up.lines);
     free(up.lineLengths);
-    return totalSSQRCost / totalLinePixelLength;
+    // According to Sourceforge records, sometime between February 6 and April 4, 2012, I updated VidSync from the single-parameter division model being parameterized  the method of
+    // Wang et al (2009; Journal of Mathematical Imaging and Vision 35(3):165-172) to the Brown-Conrady distortion model in use today. At some point I thought dividing by length was
+    // necessary to avoid shrinking all the coordinates to the origin. First I divided each line by its length, then switched to dividing by the length of all lines to avoid weighting
+    // some more than others. But this division by totalPixelLength doesn't actually seem to be necessary for the current model, which, being additive, does not offer any way to shrink
+    // the coordinates to zero so we don't have to worry about preventing that unruly solution.
+    return totalSSQRCost;// / totalLinePixelLength;
 }
 
 NSPoint undistortPoint(const NSPoint* pt, const double x0, const double y0, const double k1, const double k2, const double k3, const double p1, const double p2, const double p3){
@@ -384,6 +389,8 @@ int refractionRootFunc_f(const gsl_vector* x, void* params, gsl_vector* f)
 @dynamic distortionP1;
 @dynamic distortionP2;
 @dynamic distortionP3;
+@dynamic distortionReductionAchieved;
+@dynamic distortionRemainingPerPoint;
 
 @dynamic shouldCorrectRefraction;
 @dynamic frontQuadratSurfaceThickness;
@@ -1746,9 +1753,12 @@ int refractionRootFunc_f(const gsl_vector* x, void* params, gsl_vector* f)
     p.numLines = [plumbLines count];
     p.lines = (NSPoint **) malloc(p.numLines*sizeof(NSPoint *));
     p.lineLengths = (size_t *) malloc(p.numLines*sizeof(size_t *));
+    int totalPointCount = 0; // Total # of points on all plumblines, for use calculating the average remaining distortion per point.
+                             // This will double-count screen points used in both horizontal and vertical lines. That is by design.
     for (int i = 0; i < p.numLines; i++) {		
 		NSArray *pointsInLine = [[[[plumbLines objectAtIndex:i] distortionPoints] allObjects] sortedArrayUsingDescriptors:[NSArray arrayWithObject:pointIndexSortDescriptor]];
         p.lineLengths[i] = [pointsInLine count];
+        totalPointCount += p.lineLengths[i];
         p.lines[i] = (NSPoint *) malloc(p.lineLengths[i]*sizeof(NSPoint));
         for (int j = 0; j < p.lineLengths[i]; j++) p.lines[i][j] = NSMakePoint([[[pointsInLine objectAtIndex:j] screenX] floatValue],[[[pointsInLine objectAtIndex:j] screenY] floatValue]);
     }
@@ -1787,22 +1797,29 @@ int refractionRootFunc_f(const gsl_vector* x, void* params, gsl_vector* f)
     s = gsl_multimin_fminimizer_alloc(T, 8);
     gsl_multimin_fminimizer_set(s, &minex_func, x, ss);
     
+    double initial_cost_function_value, final_cost_function_value = 0.0;
+    
     do {
         iter++;
         status = gsl_multimin_fminimizer_iterate(s);
         if (status) break;
         size = gsl_multimin_fminimizer_size(s);
         status = gsl_multimin_test_size(size, 1e-10);                        // Here we set the minimum characteristic size of the simplex as a possible stopping criterion
-        /*
+        
         // Diagnostic code within the loop -- leave here, commented, in case the function ever gives me problems
          if (status == GSL_SUCCESS || status == GSL_CONTINUE)
          {
-         NSLog(@"Iteration step: %5d %.3f %.3f %10.5e %10.5e %10.5e %10.5e %10.5e %10.5e Cost Function f() = %7.10f size = %.20f\n", 
-         (int) iter, gsl_vector_get(s->x, 0) * SCALE_FACTOR_X0, gsl_vector_get(s->x, 1) * SCALE_FACTOR_Y0,gsl_vector_get(s->x, 2) * SCALE_FACTOR_K1,
-         gsl_vector_get(s->x, 3) * SCALE_FACTOR_K2,gsl_vector_get(s->x, 4) * SCALE_FACTOR_K3,gsl_vector_get(s->x, 5) * SCALE_FACTOR_P1,gsl_vector_get(s->x, 6) * SCALE_FACTOR_P2,gsl_vector_get(s->x, 7) * SCALE_FACTOR_P3,s->fval,size);
+             if (iter == 1) initial_cost_function_value = s->fval;
+             /*
+             NSLog(@"Iteration step: %5d %.3f %.3f %10.5e %10.5e %10.5e %10.5e %10.5e %10.5e Cost Function f() = %7.10f size = %.20f\n",
+             (int) iter, gsl_vector_get(s->x, 0) * SCALE_FACTOR_X0, gsl_vector_get(s->x, 1) * SCALE_FACTOR_Y0,gsl_vector_get(s->x, 2) * SCALE_FACTOR_K1,
+             gsl_vector_get(s->x, 3) * SCALE_FACTOR_K2,gsl_vector_get(s->x, 4) * SCALE_FACTOR_K3,gsl_vector_get(s->x, 5) * SCALE_FACTOR_P1,gsl_vector_get(s->x, 6) * SCALE_FACTOR_P2,gsl_vector_get(s->x, 7) * SCALE_FACTOR_P3,s->fval,size);
+              */
          }
-         */
+        
     } while (status == GSL_CONTINUE && iter < 2000);                         // Here we set the max # of iterations
+    
+    final_cost_function_value = s->fval;
     
 	self.distortionCenterX = [NSNumber numberWithDouble:gsl_vector_get(s->x, 0) * SCALE_FACTOR_X0];
 	self.distortionCenterY = [NSNumber numberWithDouble:gsl_vector_get(s->x, 1) * SCALE_FACTOR_Y0];
@@ -1813,6 +1830,12 @@ int refractionRootFunc_f(const gsl_vector* x, void* params, gsl_vector* f)
     self.distortionP2 = [NSNumber numberWithDouble:gsl_vector_get(s->x, 6) * SCALE_FACTOR_P2];
     self.distortionP3 = [NSNumber numberWithDouble:gsl_vector_get(s->x, 7) * SCALE_FACTOR_P3];
     
+    self.distortionReductionAchieved = [NSNumber numberWithDouble:(initial_cost_function_value - final_cost_function_value) / initial_cost_function_value];
+    self.distortionRemainingPerPoint = [NSNumber numberWithDouble:final_cost_function_value / (double) totalPointCount];
+    
+    /*
+    NSLog(@"Initial cost function value was %1.3f, final is %1.3f, reduction of %1.5f percent. Remaining mean per-point residual is %1.6f pixels.",initial_cost_function_value,final_cost_function_value,100.0*(initial_cost_function_value - final_cost_function_value) / initial_cost_function_value, final_cost_function_value / (double) totalPointCount);
+    */
     gsl_vector_free(x);
     gsl_vector_free(ss);
     gsl_multimin_fminimizer_free (s);

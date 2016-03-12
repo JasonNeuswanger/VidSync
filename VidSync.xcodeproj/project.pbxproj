@@ -255,6 +255,8 @@
 		966839901BF46F28000F5AEB /* VSWebHelpButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VSWebHelpButton.m; sourceTree = "<group>"; };
 		966E155018C512F900FAFAAB /* VidSyncIcon.psd */ = {isa = PBXFileReference; lastKnownFileType = file; path = VidSyncIcon.psd; sourceTree = "<group>"; };
 		966E155318C5731900FAFAAB /* Web */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Web; sourceTree = "<group>"; };
+		967D3B0D1C93AEAF00B9D835 /* VidSyncProject 1.22.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "VidSyncProject 1.22.xcdatamodel"; sourceTree = "<group>"; };
+		967D3B0E1C93B01700B9D835 /* VidSyncProject 1.23.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "VidSyncProject 1.23.xcdatamodel"; sourceTree = "<group>"; };
 		96822E97151333C800F91ED2 /* bessel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = bessel.h; sourceTree = "<group>"; };
 		96822E98151333C800F91ED2 /* bessel_amp_phase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = bessel_amp_phase.h; sourceTree = "<group>"; };
 		96822E99151333C800F91ED2 /* bessel_olver.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = bessel_olver.h; sourceTree = "<group>"; };
@@ -1791,7 +1793,7 @@
 			buildSettings = {
 				CLANG_CXX_LIBRARY = "libstdc++";
 				CLANG_ENABLE_OBJC_ARC = YES;
-				CODE_SIGN_IDENTITY = "Mac Developer";
+				CODE_SIGN_IDENTITY = "Developer ID Application";
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Mac Developer";
 				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
@@ -1835,7 +1837,7 @@
 			buildSettings = {
 				CLANG_CXX_LIBRARY = "libstdc++";
 				CLANG_ENABLE_OBJC_ARC = YES;
-				CODE_SIGN_IDENTITY = "Mac Developer";
+				CODE_SIGN_IDENTITY = "Developer ID Application";
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Mac Developer";
 				COMBINE_HIDPI_IMAGES = YES;
 				DEBUG_INFORMATION_FORMAT = dwarf;
@@ -1933,6 +1935,8 @@
 		96AE98861165348400118398 /* VidSyncProject.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
+				967D3B0E1C93B01700B9D835 /* VidSyncProject 1.23.xcdatamodel */,
+				967D3B0D1C93AEAF00B9D835 /* VidSyncProject 1.22.xcdatamodel */,
 				964DE4651BF18696008B4D83 /* VidSyncProject 1.21.xcdatamodel */,
 				964DE4641BF182FD008B4D83 /* VidSyncProject 1.20.xcdatamodel */,
 				964DE4631BF1785A008B4D83 /* VidSyncProject 1.19.xcdatamodel */,

@@ -314,7 +314,7 @@
 	NSSet *distortionLines = vwc.videoClip.calibration.distortionLines;
 	NSSortDescriptor *indexDescriptor = [[NSSortDescriptor alloc] initWithKey:@"index" ascending:YES];
 	NSRect shapeRect;
-	NSPoint point,uPoint,undistortedVideoCoords;
+	NSPoint point,uPoint,undistortedVideoCoords,firstPoint;
 	NSArray *distortionPoints;
 	VSDistortionPoint *distortionPoint;
 	
@@ -323,9 +323,11 @@
 	NSBezierPath *connectingLinesPath = [NSBezierPath bezierPath];
 	NSBezierPath *tipsToTipsPath = [NSBezierPath bezierPath];
 	NSBezierPath *correctedTipsToTipsPath = [NSBezierPath bezierPath];
+    NSBezierPath *correctedLinesPath = [NSBezierPath bezierPath];
 	[connectingLinesPath setLineWidth:lineWidth];
 	[tipsToTipsPath setLineWidth:lineWidth];
 	[correctedTipsToTipsPath setLineWidth:lineWidth];
+    [correctedLinesPath setLineWidth:lineWidth];
 	
 	[distortedPointColor setFill];
     
@@ -363,11 +365,20 @@
 			
 			point = [vwc convertVideoToOverlayCoords:NSMakePoint([distortionPoint.screenX floatValue],[distortionPoint.screenY floatValue])];
 			
-			if (i == 0) [tipsToTipsPath moveToPoint:point];
-			if ([vwc.videoClip.calibration hasDistortionCorrection] && i == 0 && [distortionPoints count] >= 2) {
+            if (i == 0) [tipsToTipsPath moveToPoint:point];
+			if ([vwc.videoClip.calibration hasDistortionCorrection] && [distortionPoints count] >= 2) {
                 undistortedVideoCoords = [vwc.videoClip.calibration undistortPoint:NSMakePoint([distortionPoint.screenX floatValue],[distortionPoint.screenY floatValue])];
                 uPoint = [vwc convertVideoToOverlayCoords:undistortedVideoCoords];
-                [correctedTipsToTipsPath moveToPoint:uPoint];
+                if (i == 0) {
+                    firstPoint = uPoint;
+                    [correctedLinesPath moveToPoint:uPoint];
+                    [correctedTipsToTipsPath moveToPoint:uPoint];
+                } else {
+                    [correctedLinesPath lineToPoint:uPoint];
+                }
+                if (i == [distortionPoints count] - 1) {
+                    [correctedTipsToTipsPath lineToPoint:uPoint]; // Connect the end of the line straight back to its beginning in one segment, so any curvature is easily observed.
+                }
 			}
 			shapeRect = NSMakeRect(point.x-shapeSize,point.y-shapeSize,2.0*shapeSize,2.0*shapeSize);	
 			[pointDotsPath appendBezierPathWithOvalInRect:shapeRect];
@@ -424,9 +435,11 @@
     [pointDotsPath fill];    
     if (showCorrectedOverlay) {
         [correctedPointColor setFill];
-        [correctedPointDotsPath fill];			
-        [correctedLineColor setStroke];
+        [correctedPointDotsPath fill];
+        [tipToTipLineColor setStroke];
         [correctedTipsToTipsPath stroke];
+        [correctedLineColor setStroke];
+        [correctedLinesPath stroke];
     }
     
 	// Draw the selection indicator if we're drawing a clip with a current selection

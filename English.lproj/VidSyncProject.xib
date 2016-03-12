@@ -563,7 +563,7 @@
                                                                 </connections>
                                                             </button>
                                                             <textField verticalHuggingPriority="750" id="103662">
-                                                                <rect key="frame" x="7" y="236" width="142" height="17"/>
+                                                                <rect key="frame" x="38" y="241" width="142" height="17"/>
                                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                                 <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Distortion parameters" id="103663">
                                                                     <font key="font" metaFont="system"/>
@@ -572,36 +572,43 @@
                                                                 </textFieldCell>
                                                             </textField>
                                                             <box verticalHuggingPriority="750" title="Box" boxType="separator" titlePosition="noTitle" id="103664">
-                                                                <rect key="frame" x="9" y="222" width="258" height="5"/>
+                                                                <rect key="frame" x="9" y="227" width="258" height="5"/>
+                                                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                                <color key="borderColor" white="0.0" alpha="0.41999999999999998" colorSpace="calibratedWhite"/>
+                                                                <color key="fillColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                                                <font key="titleFont" metaFont="system"/>
+                                                            </box>
+                                                            <box verticalHuggingPriority="750" title="Box" boxType="separator" titlePosition="noTitle" id="KCs-qC-Gfj">
+                                                                <rect key="frame" x="9" y="117" width="258" height="5"/>
                                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                                 <color key="borderColor" white="0.0" alpha="0.41999999999999998" colorSpace="calibratedWhite"/>
                                                                 <color key="fillColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                                                 <font key="titleFont" metaFont="system"/>
                                                             </box>
                                                             <textField verticalHuggingPriority="750" id="103665">
-                                                                <rect key="frame" x="14" y="113" width="237" height="17"/>
+                                                                <rect key="frame" x="7" y="147" width="237" height="11"/>
                                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                                                <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="center of distortion / principal point:" id="103669">
-                                                                    <font key="font" metaFont="system"/>
+                                                                <textFieldCell key="cell" controlSize="mini" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Center of distortion:" id="103669">
+                                                                    <font key="font" metaFont="miniSystem"/>
                                                                     <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                                                     <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                                                 </textFieldCell>
                                                             </textField>
                                                             <textField verticalHuggingPriority="750" id="103677">
-                                                                <rect key="frame" x="7" y="197" width="35" height="17"/>
+                                                                <rect key="frame" x="7" y="208" width="25" height="11"/>
                                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                                                <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="k1 =" id="103681">
-                                                                    <font key="font" metaFont="system"/>
+                                                                <textFieldCell key="cell" controlSize="mini" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="k1 =" id="103681">
+                                                                    <font key="font" metaFont="miniSystem"/>
                                                                     <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                                                     <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                                                 </textFieldCell>
                                                             </textField>
                                                             <textField verticalHuggingPriority="750" id="103678">
-                                                                <rect key="frame" x="47" y="194" width="80" height="22"/>
+                                                                <rect key="frame" x="31" y="205" width="100" height="16"/>
                                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                                                <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="103679">
+                                                                <textFieldCell key="cell" controlSize="mini" scrollable="YES" lineBreakMode="clipping" selectable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="103679">
                                                                     <numberFormatter key="formatter" formatterBehavior="custom10_4" positiveFormat="#0.###############" negativeFormat="#0.###############" usesGroupingSeparator="NO" paddingCharacter="*" groupingSize="0" minimumIntegerDigits="1" maximumIntegerDigits="42" maximumFractionDigits="15" decimalSeparator="." groupingSeparator="," currencyDecimalSeparator="." plusSign="+" minusSign="-" notANumberSymbol="NaN" perMillSymbol="‰" percentSymbol="%" exponentSymbol="E" positivePrefix="" positiveSuffix="" negativePrefix="-" negativeSuffix="" id="103680" customClass="VSScientificNotationFormatter"/>
-                                                                    <font key="font" metaFont="smallSystem"/>
+                                                                    <font key="font" metaFont="miniSystem"/>
                                                                     <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                                                                     <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                                                 </textFieldCell>
@@ -615,20 +622,20 @@
                                                                 </connections>
                                                             </textField>
                                                             <textField verticalHuggingPriority="750" id="104037">
-                                                                <rect key="frame" x="7" y="172" width="35" height="17"/>
+                                                                <rect key="frame" x="7" y="187" width="25" height="11"/>
                                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                                                <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="k2 =" id="104041">
-                                                                    <font key="font" metaFont="system"/>
+                                                                <textFieldCell key="cell" controlSize="mini" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="k2 =" id="104041">
+                                                                    <font key="font" metaFont="miniSystem"/>
                                                                     <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                                                     <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                                                 </textFieldCell>
                                                             </textField>
                                                             <textField verticalHuggingPriority="750" id="104038">
-                                                                <rect key="frame" x="47" y="169" width="80" height="22"/>
+                                                                <rect key="frame" x="31" y="184" width="100" height="16"/>
                                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                                                <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="104039">
+                                                                <textFieldCell key="cell" controlSize="mini" scrollable="YES" lineBreakMode="clipping" selectable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="104039">
                                                                     <numberFormatter key="formatter" formatterBehavior="custom10_4" positiveFormat="#0.###############" negativeFormat="#0.###############" usesGroupingSeparator="NO" paddingCharacter="*" groupingSize="0" minimumIntegerDigits="1" maximumIntegerDigits="42" maximumFractionDigits="15" decimalSeparator="." groupingSeparator="," currencyDecimalSeparator="." plusSign="+" minusSign="-" notANumberSymbol="NaN" perMillSymbol="‰" percentSymbol="%" exponentSymbol="E" positivePrefix="" positiveSuffix="" negativePrefix="-" negativeSuffix="" id="104040" customClass="VSScientificNotationFormatter"/>
-                                                                    <font key="font" metaFont="smallSystem"/>
+                                                                    <font key="font" metaFont="miniSystem"/>
                                                                     <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                                                                     <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                                                 </textFieldCell>
@@ -642,20 +649,20 @@
                                                                 </connections>
                                                             </textField>
                                                             <textField verticalHuggingPriority="750" id="104043">
-                                                                <rect key="frame" x="7" y="147" width="35" height="17"/>
+                                                                <rect key="frame" x="7" y="166" width="25" height="11"/>
                                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                                                <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="k3 =" id="104047">
-                                                                    <font key="font" metaFont="system"/>
+                                                                <textFieldCell key="cell" controlSize="mini" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="k3 =" id="104047">
+                                                                    <font key="font" metaFont="miniSystem"/>
                                                                     <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                                                     <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                                                 </textFieldCell>
                                                             </textField>
                                                             <textField verticalHuggingPriority="750" id="104044">
-                                                                <rect key="frame" x="47" y="144" width="80" height="22"/>
+                                                                <rect key="frame" x="31" y="163" width="100" height="16"/>
                                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                                                <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="104045">
+                                                                <textFieldCell key="cell" controlSize="mini" scrollable="YES" lineBreakMode="clipping" selectable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="104045">
                                                                     <numberFormatter key="formatter" formatterBehavior="custom10_4" positiveFormat="#0.###############" negativeFormat="#0.###############" usesGroupingSeparator="NO" paddingCharacter="*" groupingSize="0" minimumIntegerDigits="1" maximumIntegerDigits="42" maximumFractionDigits="15" decimalSeparator="." groupingSeparator="," currencyDecimalSeparator="." plusSign="+" minusSign="-" notANumberSymbol="NaN" perMillSymbol="‰" percentSymbol="%" exponentSymbol="E" positivePrefix="" positiveSuffix="" negativePrefix="-" negativeSuffix="" id="104046" customClass="VSScientificNotationFormatter"/>
-                                                                    <font key="font" metaFont="smallSystem"/>
+                                                                    <font key="font" metaFont="miniSystem"/>
                                                                     <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                                                                     <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                                                 </textFieldCell>
@@ -669,11 +676,11 @@
                                                                 </connections>
                                                             </textField>
                                                             <textField verticalHuggingPriority="750" id="103671">
-                                                                <rect key="frame" x="176" y="83" width="74" height="22"/>
+                                                                <rect key="frame" x="167" y="126" width="100" height="16"/>
                                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                                                <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="103672">
+                                                                <textFieldCell key="cell" controlSize="mini" scrollable="YES" lineBreakMode="clipping" selectable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="103672">
                                                                     <numberFormatter key="formatter" formatterBehavior="custom10_4" positiveFormat="#.##" negativeFormat="#.##" usesGroupingSeparator="NO" paddingCharacter="*" groupingSize="0" minimumIntegerDigits="0" maximumIntegerDigits="42" maximumFractionDigits="2" decimalSeparator="." groupingSeparator="," currencyDecimalSeparator="." plusSign="+" minusSign="-" notANumberSymbol="NaN" perMillSymbol="‰" percentSymbol="%" exponentSymbol="E" positivePrefix="" positiveSuffix="" negativePrefix="-" negativeSuffix="" id="103673"/>
-                                                                    <font key="font" metaFont="smallSystem"/>
+                                                                    <font key="font" metaFont="miniSystem"/>
                                                                     <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                                                                     <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                                                 </textFieldCell>
@@ -686,8 +693,27 @@
                                                                     </binding>
                                                                 </connections>
                                                             </textField>
+                                                            <textField verticalHuggingPriority="750" id="6KV-p1-tsz">
+                                                                <rect key="frame" x="176" y="95" width="91" height="19"/>
+                                                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                                <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="HG0-st-uul">
+                                                                    <numberFormatter key="formatter" formatterBehavior="custom10_4" positiveFormat="#,##0.000 %" numberStyle="percent" minimumIntegerDigits="1" maximumIntegerDigits="2000000000" minimumFractionDigits="4" maximumFractionDigits="4" id="NHN-7U-Wz9">
+                                                                        <integer key="multiplier" value="100"/>
+                                                                    </numberFormatter>
+                                                                    <font key="font" metaFont="smallSystem"/>
+                                                                    <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                                                                    <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                                                </textFieldCell>
+                                                                <connections>
+                                                                    <binding destination="100325" name="value" keyPath="selection.calibration.distortionReductionAchieved" id="8xW-Y1-dla">
+                                                                        <dictionary key="options">
+                                                                            <bool key="NSAllowsEditingMultipleValuesSelection" value="NO"/>
+                                                                        </dictionary>
+                                                                    </binding>
+                                                                </connections>
+                                                            </textField>
                                                             <button verticalHuggingPriority="750" id="103675">
-                                                                <rect key="frame" x="186" y="231" width="72" height="25"/>
+                                                                <rect key="frame" x="186" y="236" width="72" height="25"/>
                                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                                 <buttonCell key="cell" type="roundTextured" title="Calculate" bezelStyle="texturedRounded" alignment="center" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="103676">
                                                                     <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
@@ -793,20 +819,20 @@
                                                                 </connections>
                                                             </button>
                                                             <textField verticalHuggingPriority="750" id="104028">
-                                                                <rect key="frame" x="14" y="86" width="39" height="17"/>
+                                                                <rect key="frame" x="7" y="128" width="25" height="11"/>
                                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                                                <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="x0 = " id="104032">
-                                                                    <font key="font" metaFont="system"/>
+                                                                <textFieldCell key="cell" controlSize="mini" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="x0 = " id="104032">
+                                                                    <font key="font" metaFont="miniSystem"/>
                                                                     <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                                                     <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                                                 </textFieldCell>
                                                             </textField>
                                                             <textField verticalHuggingPriority="750" id="104029">
-                                                                <rect key="frame" x="51" y="83" width="74" height="22"/>
+                                                                <rect key="frame" x="31" y="126" width="100" height="16"/>
                                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                                                <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="104030">
+                                                                <textFieldCell key="cell" controlSize="mini" scrollable="YES" lineBreakMode="clipping" selectable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="104030">
                                                                     <numberFormatter key="formatter" formatterBehavior="custom10_4" positiveFormat="#.##" negativeFormat="#.##" usesGroupingSeparator="NO" paddingCharacter="*" groupingSize="0" minimumIntegerDigits="0" maximumIntegerDigits="42" maximumFractionDigits="2" decimalSeparator="." groupingSeparator="," currencyDecimalSeparator="." plusSign="+" minusSign="-" notANumberSymbol="NaN" perMillSymbol="‰" percentSymbol="%" exponentSymbol="E" positivePrefix="" positiveSuffix="" negativePrefix="-" negativeSuffix="" id="104031"/>
-                                                                    <font key="font" metaFont="smallSystem"/>
+                                                                    <font key="font" metaFont="miniSystem"/>
                                                                     <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                                                                     <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                                                 </textFieldCell>
@@ -820,10 +846,10 @@
                                                                 </connections>
                                                             </textField>
                                                             <textField verticalHuggingPriority="750" id="104034">
-                                                                <rect key="frame" x="139" y="86" width="38" height="17"/>
+                                                                <rect key="frame" x="142" y="128" width="25" height="11"/>
                                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                                                <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="y0 = " id="104035">
-                                                                    <font key="font" metaFont="system"/>
+                                                                <textFieldCell key="cell" controlSize="mini" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="y0 = " id="104035">
+                                                                    <font key="font" metaFont="miniSystem"/>
                                                                     <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                                                     <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                                                 </textFieldCell>
@@ -838,20 +864,20 @@
                                                                 </textFieldCell>
                                                             </textField>
                                                             <textField verticalHuggingPriority="750" id="104068">
-                                                                <rect key="frame" x="138" y="197" width="35" height="17"/>
+                                                                <rect key="frame" x="142" y="208" width="25" height="11"/>
                                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                                                <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="p1 =" id="104082">
-                                                                    <font key="font" metaFont="system"/>
+                                                                <textFieldCell key="cell" controlSize="mini" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="p1 =" id="104082">
+                                                                    <font key="font" metaFont="miniSystem"/>
                                                                     <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                                                     <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                                                 </textFieldCell>
                                                             </textField>
                                                             <textField verticalHuggingPriority="750" id="104069">
-                                                                <rect key="frame" x="178" y="194" width="80" height="22"/>
+                                                                <rect key="frame" x="167" y="206" width="100" height="16"/>
                                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                                                <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="104080">
+                                                                <textFieldCell key="cell" controlSize="mini" scrollable="YES" lineBreakMode="clipping" selectable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="104080">
                                                                     <numberFormatter key="formatter" formatterBehavior="custom10_4" positiveFormat="#0.###############" negativeFormat="#0.###############" usesGroupingSeparator="NO" paddingCharacter="*" groupingSize="0" minimumIntegerDigits="1" maximumIntegerDigits="42" maximumFractionDigits="15" decimalSeparator="." groupingSeparator="," currencyDecimalSeparator="." plusSign="+" minusSign="-" notANumberSymbol="NaN" perMillSymbol="‰" percentSymbol="%" exponentSymbol="E" positivePrefix="" positiveSuffix="" negativePrefix="-" negativeSuffix="" id="104081" customClass="VSScientificNotationFormatter"/>
-                                                                    <font key="font" metaFont="smallSystem"/>
+                                                                    <font key="font" metaFont="miniSystem"/>
                                                                     <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                                                                     <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                                                 </textFieldCell>
@@ -864,20 +890,20 @@
                                                                 </connections>
                                                             </textField>
                                                             <textField verticalHuggingPriority="750" id="104070">
-                                                                <rect key="frame" x="138" y="172" width="35" height="17"/>
+                                                                <rect key="frame" x="142" y="187" width="25" height="11"/>
                                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                                                <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="p2 =" id="104079">
-                                                                    <font key="font" metaFont="system"/>
+                                                                <textFieldCell key="cell" controlSize="mini" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="p2 =" id="104079">
+                                                                    <font key="font" metaFont="miniSystem"/>
                                                                     <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                                                     <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                                                 </textFieldCell>
                                                             </textField>
                                                             <textField verticalHuggingPriority="750" id="104071">
-                                                                <rect key="frame" x="178" y="169" width="80" height="22"/>
+                                                                <rect key="frame" x="167" y="184" width="100" height="16"/>
                                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                                                <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="104077">
+                                                                <textFieldCell key="cell" controlSize="mini" scrollable="YES" lineBreakMode="clipping" selectable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="104077">
                                                                     <numberFormatter key="formatter" formatterBehavior="custom10_4" positiveFormat="#0.###############" negativeFormat="#0.###############" usesGroupingSeparator="NO" paddingCharacter="*" groupingSize="0" minimumIntegerDigits="1" maximumIntegerDigits="42" maximumFractionDigits="15" decimalSeparator="." groupingSeparator="," currencyDecimalSeparator="." plusSign="+" minusSign="-" notANumberSymbol="NaN" perMillSymbol="‰" percentSymbol="%" exponentSymbol="E" positivePrefix="" positiveSuffix="" negativePrefix="-" negativeSuffix="" id="104078" customClass="VSScientificNotationFormatter"/>
-                                                                    <font key="font" metaFont="smallSystem"/>
+                                                                    <font key="font" metaFont="miniSystem"/>
                                                                     <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                                                                     <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                                                 </textFieldCell>
@@ -890,20 +916,20 @@
                                                                 </connections>
                                                             </textField>
                                                             <textField verticalHuggingPriority="750" id="104072">
-                                                                <rect key="frame" x="138" y="147" width="35" height="17"/>
+                                                                <rect key="frame" x="142" y="166" width="25" height="11"/>
                                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                                                <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="p3 =" id="104076">
-                                                                    <font key="font" metaFont="system"/>
+                                                                <textFieldCell key="cell" controlSize="mini" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="p3 =" id="104076">
+                                                                    <font key="font" metaFont="miniSystem"/>
                                                                     <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                                                     <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                                                 </textFieldCell>
                                                             </textField>
                                                             <textField verticalHuggingPriority="750" id="104073">
-                                                                <rect key="frame" x="178" y="144" width="80" height="22"/>
+                                                                <rect key="frame" x="167" y="163" width="100" height="16"/>
                                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                                                <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="104074">
+                                                                <textFieldCell key="cell" controlSize="mini" scrollable="YES" lineBreakMode="clipping" selectable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="104074">
                                                                     <numberFormatter key="formatter" formatterBehavior="custom10_4" positiveFormat="#0.###############" negativeFormat="#0.###############" usesGroupingSeparator="NO" paddingCharacter="*" groupingSize="0" minimumIntegerDigits="1" maximumIntegerDigits="42" maximumFractionDigits="15" decimalSeparator="." groupingSeparator="," currencyDecimalSeparator="." plusSign="+" minusSign="-" notANumberSymbol="NaN" perMillSymbol="‰" percentSymbol="%" exponentSymbol="E" positivePrefix="" positiveSuffix="" negativePrefix="-" negativeSuffix="" id="104075" customClass="VSScientificNotationFormatter"/>
-                                                                    <font key="font" metaFont="smallSystem"/>
+                                                                    <font key="font" metaFont="miniSystem"/>
                                                                     <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                                                                     <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                                                 </textFieldCell>
@@ -1003,6 +1029,64 @@
                                                                     <action selector="openHelpWebpage:" target="-2" id="1yx-cb-oah"/>
                                                                 </connections>
                                                             </button>
+                                                            <button toolTip="Open the webpage for help on lens distortion correction" horizontalHuggingPriority="750" verticalHuggingPriority="750" id="3ew-na-IBn" customClass="VSWebHelpButton">
+                                                                <rect key="frame" x="7" y="235" width="25" height="25"/>
+                                                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                                <buttonCell key="cell" type="help" bezelStyle="helpButton" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="g3v-Sd-4ot">
+                                                                    <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                                                    <font key="font" metaFont="system"/>
+                                                                </buttonCell>
+                                                                <userDefinedRuntimeAttributes>
+                                                                    <userDefinedRuntimeAttribute type="string" keyPath="helpURL" value="http://www.vidsync.org/Distortion+model"/>
+                                                                </userDefinedRuntimeAttributes>
+                                                                <connections>
+                                                                    <action selector="openHelpWebpage:" target="-2" id="HDK-Jg-Cfl"/>
+                                                                </connections>
+                                                            </button>
+                                                            <textField verticalHuggingPriority="750" id="Y8b-uH-lko">
+                                                                <rect key="frame" x="7" y="97" width="173" height="14"/>
+                                                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                                <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Distortion reduction achieved:" id="jQC-xa-qCd">
+                                                                    <font key="font" metaFont="smallSystem"/>
+                                                                    <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                                                    <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                                                </textFieldCell>
+                                                            </textField>
+                                                            <textField verticalHuggingPriority="750" id="lwp-eJ-cIK">
+                                                                <rect key="frame" x="7" y="75" width="166" height="14"/>
+                                                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                                <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Remaining distortion per point:" id="Soq-V5-3N4">
+                                                                    <font key="font" metaFont="smallSystem"/>
+                                                                    <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                                                    <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                                                </textFieldCell>
+                                                            </textField>
+                                                            <textField verticalHuggingPriority="750" id="fe2-EK-x69">
+                                                                <rect key="frame" x="234" y="75" width="35" height="14"/>
+                                                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                                <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="pixels" id="0t8-fC-fwl">
+                                                                    <font key="font" metaFont="smallSystem"/>
+                                                                    <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                                                    <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                                                </textFieldCell>
+                                                            </textField>
+                                                            <textField verticalHuggingPriority="750" id="bCI-eq-Skd">
+                                                                <rect key="frame" x="176" y="73" width="54" height="19"/>
+                                                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                                <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="hcn-Sd-rgq">
+                                                                    <numberFormatter key="formatter" formatterBehavior="custom10_4" numberStyle="decimal" minimumIntegerDigits="1" maximumIntegerDigits="2000000000" minimumFractionDigits="5" maximumFractionDigits="5" id="Y1E-2a-4TN"/>
+                                                                    <font key="font" metaFont="smallSystem"/>
+                                                                    <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                                                                    <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                                                </textFieldCell>
+                                                                <connections>
+                                                                    <binding destination="100325" name="value" keyPath="selection.calibration.distortionRemainingPerPoint" id="4P2-ew-F2n">
+                                                                        <dictionary key="options">
+                                                                            <bool key="NSAllowsEditingMultipleValuesSelection" value="NO"/>
+                                                                        </dictionary>
+                                                                    </binding>
+                                                                </connections>
+                                                            </textField>
                                                         </subviews>
                                                     </view>
                                                 </tabViewItem>
@@ -1039,11 +1123,11 @@
                                                                                     <rect key="frame" x="7" y="23" width="234" height="354"/>
                                                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                                     <clipView key="contentView" id="zSj-hg-g4T">
-                                                                                        <rect key="frame" x="1" y="0.0" width="232" height="349"/>
+                                                                                        <rect key="frame" x="1" y="0.0" width="217" height="353"/>
                                                                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                                         <subviews>
                                                                                             <tableView identifier="FrontFrameTableView" verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnReordering="NO" multipleSelection="NO" autosaveColumns="NO" rowHeight="14" headerView="100745" id="100744" customClass="EventAwareTableView">
-                                                                                                <rect key="frame" x="0.0" y="0.0" width="232" height="16"/>
+                                                                                                <rect key="frame" x="0.0" y="0.0" width="217" height="16"/>
                                                                                                 <autoresizingMask key="autoresizingMask"/>
                                                                                                 <size key="intercellSpacing" width="3" height="2"/>
                                                                                                 <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
@@ -1055,7 +1139,7 @@
                                                                                                             <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
                                                                                                             <color key="backgroundColor" white="0.33333298560000002" alpha="1" colorSpace="calibratedWhite"/>
                                                                                                         </tableHeaderCell>
-                                                                                                        <textFieldCell key="dataCell" controlSize="small" lineBreakMode="truncatingTail" selectable="YES" editable="YES" alignment="left" title="Text Cell" id="100749">
+                                                                                                        <textFieldCell key="dataCell" controlSize="small" lineBreakMode="truncatingTail" selectable="YES" alignment="left" title="Text Cell" id="100749">
                                                                                                             <font key="font" metaFont="smallSystem"/>
                                                                                                             <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                                                                                             <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
@@ -1072,7 +1156,7 @@
                                                                                                             <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
                                                                                                             <color key="backgroundColor" white="0.33333298560000002" alpha="1" colorSpace="calibratedWhite"/>
                                                                                                         </tableHeaderCell>
-                                                                                                        <textFieldCell key="dataCell" controlSize="small" lineBreakMode="truncatingTail" selectable="YES" editable="YES" alignment="left" title="Text Cell" id="100748">
+                                                                                                        <textFieldCell key="dataCell" controlSize="small" lineBreakMode="truncatingTail" selectable="YES" alignment="left" title="Text Cell" id="100748">
                                                                                                             <font key="font" metaFont="smallSystem"/>
                                                                                                             <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                                                                                             <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
@@ -1089,7 +1173,7 @@
                                                                                                             <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
                                                                                                             <color key="backgroundColor" name="headerColor" catalog="System" colorSpace="catalog"/>
                                                                                                         </tableHeaderCell>
-                                                                                                        <textFieldCell key="dataCell" controlSize="small" lineBreakMode="truncatingTail" selectable="YES" editable="YES" alignment="left" title="Text Cell" id="100869">
+                                                                                                        <textFieldCell key="dataCell" controlSize="small" lineBreakMode="truncatingTail" selectable="YES" alignment="left" title="Text Cell" id="100869">
                                                                                                             <font key="font" metaFont="smallSystem"/>
                                                                                                             <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                                                                                             <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
@@ -1105,7 +1189,7 @@
                                                                                                             <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
                                                                                                             <color key="backgroundColor" name="headerColor" catalog="System" colorSpace="catalog"/>
                                                                                                         </tableHeaderCell>
-                                                                                                        <textFieldCell key="dataCell" controlSize="small" lineBreakMode="truncatingTail" selectable="YES" editable="YES" alignment="left" title="Text Cell" id="100871">
+                                                                                                        <textFieldCell key="dataCell" controlSize="small" lineBreakMode="truncatingTail" selectable="YES" alignment="left" title="Text Cell" id="100871">
                                                                                                             <font key="font" metaFont="smallSystem"/>
                                                                                                             <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                                                                                             <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
@@ -1128,7 +1212,7 @@
                                                                                         <autoresizingMask key="autoresizingMask"/>
                                                                                     </scroller>
                                                                                     <scroller key="verticalScroller" verticalHuggingPriority="750" doubleValue="1" horizontal="NO" id="100742">
-                                                                                        <rect key="frame" x="217" y="17" width="16" height="336"/>
+                                                                                        <rect key="frame" x="218" y="17" width="15" height="336"/>
                                                                                         <autoresizingMask key="autoresizingMask"/>
                                                                                     </scroller>
                                                                                     <tableHeaderView key="headerView" id="100745">
@@ -1175,7 +1259,7 @@
                                                                                                             <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
                                                                                                             <color key="backgroundColor" white="0.33333298560000002" alpha="1" colorSpace="calibratedWhite"/>
                                                                                                         </tableHeaderCell>
-                                                                                                        <textFieldCell key="dataCell" controlSize="small" lineBreakMode="truncatingTail" selectable="YES" editable="YES" alignment="left" title="Text Cell" id="100888">
+                                                                                                        <textFieldCell key="dataCell" controlSize="small" lineBreakMode="truncatingTail" selectable="YES" alignment="left" title="Text Cell" id="100888">
                                                                                                             <font key="font" metaFont="smallSystem"/>
                                                                                                             <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                                                                                             <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
@@ -1192,7 +1276,7 @@
                                                                                                             <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
                                                                                                             <color key="backgroundColor" white="0.33333298560000002" alpha="1" colorSpace="calibratedWhite"/>
                                                                                                         </tableHeaderCell>
-                                                                                                        <textFieldCell key="dataCell" controlSize="small" lineBreakMode="truncatingTail" selectable="YES" editable="YES" alignment="left" title="Text Cell" id="100889">
+                                                                                                        <textFieldCell key="dataCell" controlSize="small" lineBreakMode="truncatingTail" selectable="YES" alignment="left" title="Text Cell" id="100889">
                                                                                                             <font key="font" metaFont="smallSystem"/>
                                                                                                             <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                                                                                             <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
@@ -1209,7 +1293,7 @@
                                                                                                             <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
                                                                                                             <color key="backgroundColor" name="headerColor" catalog="System" colorSpace="catalog"/>
                                                                                                         </tableHeaderCell>
-                                                                                                        <textFieldCell key="dataCell" controlSize="small" lineBreakMode="truncatingTail" selectable="YES" editable="YES" alignment="left" title="Text Cell" id="100890">
+                                                                                                        <textFieldCell key="dataCell" controlSize="small" lineBreakMode="truncatingTail" selectable="YES" alignment="left" title="Text Cell" id="100890">
                                                                                                             <font key="font" metaFont="smallSystem"/>
                                                                                                             <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                                                                                             <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
@@ -1225,7 +1309,7 @@
                                                                                                             <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
                                                                                                             <color key="backgroundColor" name="headerColor" catalog="System" colorSpace="catalog"/>
                                                                                                         </tableHeaderCell>
-                                                                                                        <textFieldCell key="dataCell" controlSize="small" lineBreakMode="truncatingTail" selectable="YES" editable="YES" alignment="left" title="Text Cell" id="100891">
+                                                                                                        <textFieldCell key="dataCell" controlSize="small" lineBreakMode="truncatingTail" selectable="YES" alignment="left" title="Text Cell" id="100891">
                                                                                                             <font key="font" metaFont="smallSystem"/>
                                                                                                             <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                                                                                             <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
