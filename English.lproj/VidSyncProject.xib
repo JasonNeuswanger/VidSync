@@ -1120,14 +1120,14 @@
                                                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                             <subviews>
                                                                                 <scrollView horizontalLineScroll="16" horizontalPageScroll="10" verticalLineScroll="16" verticalPageScroll="10" hasHorizontalScroller="NO" usesPredominantAxisScrolling="NO" id="100741">
-                                                                                    <rect key="frame" x="7" y="23" width="234" height="354"/>
+                                                                                    <rect key="frame" x="7" y="23" width="234" height="358"/>
                                                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                                     <clipView key="contentView" id="zSj-hg-g4T">
-                                                                                        <rect key="frame" x="1" y="0.0" width="217" height="353"/>
+                                                                                        <rect key="frame" x="1" y="0.0" width="217" height="357"/>
                                                                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                                         <subviews>
                                                                                             <tableView identifier="FrontFrameTableView" verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnReordering="NO" multipleSelection="NO" autosaveColumns="NO" rowHeight="14" headerView="100745" id="100744" customClass="EventAwareTableView">
-                                                                                                <rect key="frame" x="0.0" y="0.0" width="217" height="16"/>
+                                                                                                <rect key="frame" x="0.0" y="0.0" width="217" height="340"/>
                                                                                                 <autoresizingMask key="autoresizingMask"/>
                                                                                                 <size key="intercellSpacing" width="3" height="2"/>
                                                                                                 <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
@@ -1212,7 +1212,7 @@
                                                                                         <autoresizingMask key="autoresizingMask"/>
                                                                                     </scroller>
                                                                                     <scroller key="verticalScroller" verticalHuggingPriority="750" doubleValue="1" horizontal="NO" id="100742">
-                                                                                        <rect key="frame" x="218" y="17" width="15" height="336"/>
+                                                                                        <rect key="frame" x="218" y="17" width="15" height="340"/>
                                                                                         <autoresizingMask key="autoresizingMask"/>
                                                                                     </scroller>
                                                                                     <tableHeaderView key="headerView" id="100745">
@@ -1221,14 +1221,29 @@
                                                                                     </tableHeaderView>
                                                                                 </scrollView>
                                                                                 <button verticalHuggingPriority="750" id="102575">
-                                                                                    <rect key="frame" x="165" y="-1" width="78" height="19"/>
+                                                                                    <rect key="frame" x="165" y="-1" width="76" height="19"/>
                                                                                     <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
-                                                                                    <buttonCell key="cell" type="roundTextured" title="Delete Node" bezelStyle="texturedRounded" alignment="center" controlSize="small" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="102576">
+                                                                                    <buttonCell key="cell" type="roundTextured" title="Delete Point" bezelStyle="texturedRounded" alignment="center" controlSize="small" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="102576">
                                                                                         <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                                                                         <font key="font" metaFont="smallSystem"/>
                                                                                     </buttonCell>
                                                                                     <connections>
                                                                                         <action selector="remove:" target="100779" id="102579"/>
+                                                                                    </connections>
+                                                                                </button>
+                                                                                <button verticalHuggingPriority="750" id="2zI-Sb-9No">
+                                                                                    <rect key="frame" x="7" y="-1" width="117" height="19"/>
+                                                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                                                    <buttonCell key="cell" type="roundTextured" title="Reset Front Surface" bezelStyle="texturedRounded" alignment="center" controlSize="small" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="2CZ-mk-5L1">
+                                                                                        <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                                                                        <font key="font" metaFont="smallSystem"/>
+                                                                                    </buttonCell>
+                                                                                    <connections>
+                                                                                        <binding destination="100325" name="target" keyPath="selection.calibration" id="PQJ-tb-QtC">
+                                                                                            <dictionary key="options">
+                                                                                                <string key="NSSelectorName">resetFrontFrameOnly</string>
+                                                                                            </dictionary>
+                                                                                        </binding>
                                                                                     </connections>
                                                                                 </button>
                                                                             </subviews>
@@ -1240,14 +1255,14 @@
                                                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                             <subviews>
                                                                                 <scrollView horizontalLineScroll="16" horizontalPageScroll="10" verticalLineScroll="16" verticalPageScroll="10" hasHorizontalScroller="NO" usesPredominantAxisScrolling="NO" id="100879">
-                                                                                    <rect key="frame" x="7" y="32" width="234" height="345"/>
+                                                                                    <rect key="frame" x="7" y="43" width="234" height="338"/>
                                                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                                     <clipView key="contentView" id="87G-im-XEN">
-                                                                                        <rect key="frame" x="1" y="0.0" width="232" height="344"/>
+                                                                                        <rect key="frame" x="1" y="0.0" width="217" height="337"/>
                                                                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                                         <subviews>
                                                                                             <tableView identifier="BackFrameTableView" verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnReordering="NO" multipleSelection="NO" autosaveColumns="NO" rowHeight="14" headerView="100880" id="100881" customClass="EventAwareTableView">
-                                                                                                <rect key="frame" x="0.0" y="0.0" width="216" height="16"/>
+                                                                                                <rect key="frame" x="0.0" y="0.0" width="217" height="320"/>
                                                                                                 <autoresizingMask key="autoresizingMask"/>
                                                                                                 <size key="intercellSpacing" width="3" height="2"/>
                                                                                                 <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
@@ -1332,16 +1347,16 @@
                                                                                         <autoresizingMask key="autoresizingMask"/>
                                                                                     </scroller>
                                                                                     <scroller key="verticalScroller" verticalHuggingPriority="750" doubleValue="1" horizontal="NO" id="100883">
-                                                                                        <rect key="frame" x="218" y="17" width="15" height="327"/>
+                                                                                        <rect key="frame" x="218" y="17" width="15" height="320"/>
                                                                                         <autoresizingMask key="autoresizingMask"/>
                                                                                     </scroller>
                                                                                     <tableHeaderView key="headerView" id="100880">
-                                                                                        <rect key="frame" x="0.0" y="0.0" width="232" height="17"/>
+                                                                                        <rect key="frame" x="0.0" y="0.0" width="217" height="17"/>
                                                                                         <autoresizingMask key="autoresizingMask"/>
                                                                                     </tableHeaderView>
                                                                                 </scrollView>
                                                                                 <button verticalHuggingPriority="750" id="102577">
-                                                                                    <rect key="frame" x="164" y="6" width="77" height="18"/>
+                                                                                    <rect key="frame" x="165" y="-1" width="77" height="18"/>
                                                                                     <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
                                                                                     <buttonCell key="cell" type="roundTextured" title="Delete Point" bezelStyle="texturedRounded" alignment="center" controlSize="small" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="102578">
                                                                                         <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
@@ -1352,14 +1367,29 @@
                                                                                     </connections>
                                                                                 </button>
                                                                                 <button verticalHuggingPriority="750" id="104140">
-                                                                                    <rect key="frame" x="7" y="5" width="126" height="19"/>
-                                                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                                                    <rect key="frame" x="7" y="18" width="235" height="19"/>
+                                                                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
                                                                                     <buttonCell key="cell" type="roundTextured" title="Refraction Correction" bezelStyle="texturedRounded" alignment="center" controlSize="small" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="104141">
                                                                                         <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                                                                         <font key="font" metaFont="smallSystem"/>
                                                                                     </buttonCell>
                                                                                     <connections>
                                                                                         <action selector="makeKeyAndOrderFront:" target="104142" id="104144"/>
+                                                                                    </connections>
+                                                                                </button>
+                                                                                <button verticalHuggingPriority="750" id="kYE-7J-NFi">
+                                                                                    <rect key="frame" x="7" y="-2" width="115" height="19"/>
+                                                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                                                    <buttonCell key="cell" type="roundTextured" title="Reset Back Surface" bezelStyle="texturedRounded" alignment="center" controlSize="small" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="ZER-Ng-5yO">
+                                                                                        <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                                                                        <font key="font" metaFont="smallSystem"/>
+                                                                                    </buttonCell>
+                                                                                    <connections>
+                                                                                        <binding destination="100325" name="target" keyPath="selection.calibration" id="eHk-AW-xVO">
+                                                                                            <dictionary key="options">
+                                                                                                <string key="NSSelectorName">resetBackFrameOnly</string>
+                                                                                            </dictionary>
+                                                                                        </binding>
                                                                                     </connections>
                                                                                 </button>
                                                                             </subviews>
@@ -1674,9 +1704,9 @@
                                                                                 <font key="font" metaFont="system"/>
                                                                             </buttonCell>
                                                                             <connections>
-                                                                                <binding destination="100325" name="target" keyPath="selection.calibration" id="100910">
+                                                                                <binding destination="100325" name="target" keyPath="selection.calibration" id="HtW-yI-Q2P">
                                                                                     <dictionary key="options">
-                                                                                        <string key="NSSelectorName">createPointsFromQuadratDescription</string>
+                                                                                        <string key="NSSelectorName">resetFrameAndBeginCalibration</string>
                                                                                     </dictionary>
                                                                                 </binding>
                                                                             </connections>

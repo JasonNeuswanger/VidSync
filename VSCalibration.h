@@ -124,7 +124,11 @@ int redistortionRootFunc_fdf(const gsl_vector* x, void* params, gsl_vector* f, g
 - (BOOL) frontIsCalibrated;
 - (BOOL) backIsCalibrated;
 
-- (void) createPointsFromQuadratDescription;
+- (void) resetFrameAndBeginCalibration;
+- (void) resetFrontFrameOnly;
+- (void) resetBackFrameOnly;
+- (void) createPointsFromQuadratDescription:(NSString *)whichSurface;
+
 - (void) saveQuadratDescriptionToFile;
 - (void) loadQuadratDescriptionFromFile;
 - (void) loadQuadratDescriptionExample;

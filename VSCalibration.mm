@@ -446,44 +446,74 @@ int refractionRootFunc_f(const gsl_vector* x, void* params, gsl_vector* f)
 	}
 }
 
-- (void) createPointsFromQuadratDescription
+- (void) resetFrameAndBeginCalibration
 {
-	NSScanner *frontScanner = [NSScanner scannerWithString:[self.quadratNodesFront string]];
-	NSScanner *backScanner = [NSScanner scannerWithString:[self.quadratNodesBack string]];
+    [self createPointsFromQuadratDescription:@"Both"];
+}
+
+- (void) resetFrontFrameOnly
+{
+    [self createPointsFromQuadratDescription:@"Front"];
+}
+
+- (void) resetBackFrameOnly
+{
+    [self createPointsFromQuadratDescription:@"Back"];
+}
+
+- (void) createPointsFromQuadratDescription:(NSString *)whichSurface
+{
+    bool doFront, doBack;
+    if ([whichSurface isEqualToString:@"Front"]) {
+        doFront = YES;
+        doBack = NO;
+    } else if ([whichSurface isEqualToString:@"Back"]) {
+        doFront = NO;
+        doBack = YES;
+    } else {
+        doFront = YES;
+        doBack = YES;
+    }
 	NSScanner *lineScanner;
 	NSCharacterSet *lineBreak = [NSCharacterSet newlineCharacterSet];
 	NSString *currentLine;
 	VSCalibrationPoint *newPoint;
-	int frontIndex = 1;
-	int backIndex = 1;
-	self.pointsFront = nil;
-	self.pointsBack = nil;
-	while ([frontScanner scanUpToCharactersFromSet:lineBreak intoString:&currentLine]){
-		lineScanner = [NSScanner scannerWithString:currentLine];
-		[lineScanner setCharactersToBeSkipped:[NSCharacterSet characterSetWithCharactersInString:@", "]];
-		float hCoord,vCoord;
-		if ([lineScanner scanFloat:&hCoord] && [lineScanner scanFloat:&vCoord]) {
-			newPoint = [NSEntityDescription insertNewObjectForEntityForName:@"VSCalibrationPointFront" inManagedObjectContext:[self managedObjectContext]]; 
-			newPoint.calibration = self;
-			newPoint.index = [NSNumber numberWithInt:frontIndex];
-			newPoint.worldHcoord = [NSNumber numberWithFloat:hCoord];
-			newPoint.worldVcoord = [NSNumber numberWithFloat:vCoord];			
-			frontIndex += 1;
-		}
-	}
-	while ([backScanner scanUpToCharactersFromSet:lineBreak intoString:&currentLine]){
-		lineScanner = [NSScanner scannerWithString:currentLine];
-		[lineScanner setCharactersToBeSkipped:[NSCharacterSet characterSetWithCharactersInString:@", "]];
-		float hCoord,vCoord;
-		if ([lineScanner scanFloat:&hCoord] && [lineScanner scanFloat:&vCoord]) {
-			newPoint = [NSEntityDescription insertNewObjectForEntityForName:@"VSCalibrationPointBack" inManagedObjectContext:[self managedObjectContext]]; 
-			newPoint.calibration = self;
-			newPoint.index = [NSNumber numberWithInt:backIndex];
-			newPoint.worldHcoord = [NSNumber numberWithFloat:hCoord];
-			newPoint.worldVcoord = [NSNumber numberWithFloat:vCoord];			
-			backIndex += 1;
-		}
-	}
+    if (doFront) {
+        int frontIndex = 1;
+        self.pointsFront = nil;
+        NSScanner *frontScanner = [NSScanner scannerWithString:[self.quadratNodesFront string]];
+        while ([frontScanner scanUpToCharactersFromSet:lineBreak intoString:&currentLine]){
+            lineScanner = [NSScanner scannerWithString:currentLine];
+            [lineScanner setCharactersToBeSkipped:[NSCharacterSet characterSetWithCharactersInString:@", "]];
+            float hCoord,vCoord;
+            if ([lineScanner scanFloat:&hCoord] && [lineScanner scanFloat:&vCoord]) {
+                newPoint = [NSEntityDescription insertNewObjectForEntityForName:@"VSCalibrationPointFront" inManagedObjectContext:[self managedObjectContext]]; 
+                newPoint.calibration = self;
+                newPoint.index = [NSNumber numberWithInt:frontIndex];
+                newPoint.worldHcoord = [NSNumber numberWithFloat:hCoord];
+                newPoint.worldVcoord = [NSNumber numberWithFloat:vCoord];			
+                frontIndex += 1;
+            }
+        }
+    }
+    if (doBack) {
+        int backIndex = 1;
+        self.pointsBack = nil;
+        NSScanner *backScanner = [NSScanner scannerWithString:[self.quadratNodesBack string]];
+        while ([backScanner scanUpToCharactersFromSet:lineBreak intoString:&currentLine]){
+            lineScanner = [NSScanner scannerWithString:currentLine];
+            [lineScanner setCharactersToBeSkipped:[NSCharacterSet characterSetWithCharactersInString:@", "]];
+            float hCoord,vCoord;
+            if ([lineScanner scanFloat:&hCoord] && [lineScanner scanFloat:&vCoord]) {
+                newPoint = [NSEntityDescription insertNewObjectForEntityForName:@"VSCalibrationPointBack" inManagedObjectContext:[self managedObjectContext]]; 
+                newPoint.calibration = self;
+                newPoint.index = [NSNumber numberWithInt:backIndex];
+                newPoint.worldHcoord = [NSNumber numberWithFloat:hCoord];
+                newPoint.worldVcoord = [NSNumber numberWithFloat:vCoord];			
+                backIndex += 1;
+            }
+        }
+    }
 	[self.videoClip.windowController refreshOverlay];
 }
 
