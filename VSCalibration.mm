@@ -1825,12 +1825,12 @@ int refractionRootFunc_f(const gsl_vector* x, void* params, gsl_vector* f)
     x = gsl_vector_alloc(8);             
     gsl_vector_set(x, 0, ([self.videoClip clipWidth]/2.0) / SCALE_FACTOR_X0);       // Initialize the distortion center to be
     gsl_vector_set(x, 1, ([self.videoClip clipHeight]/2.0) / SCALE_FACTOR_Y0);      // at the center of the screen as a first guess
-    gsl_vector_set(x, 2, 1.0);
-    gsl_vector_set(x, 3, 1.0);
-    gsl_vector_set(x, 4, 1.0);
-    gsl_vector_set(x, 5, 1.0);
-    gsl_vector_set(x, 6, 1.0);    
-    gsl_vector_set(x, 7, 1.0);    
+    gsl_vector_set(x, 2, 0.0);  // Note: All the parameters need to have initial default values of zero
+    gsl_vector_set(x, 3, 0.0);  // for the cost function's first iteration to be "no distortion correction at all"
+    gsl_vector_set(x, 4, 0.0);  // and therefore provide an initial_cost_function_value corresponding to no correction
+    gsl_vector_set(x, 5, 0.0);  // instead of an incorrect correction.
+    gsl_vector_set(x, 6, 0.0);
+    gsl_vector_set(x, 7, 0.0);
     
     /* Set initial step sizes to 1 */
     ss = gsl_vector_alloc(8);            // ss is short for "step sizes"
@@ -1845,7 +1845,6 @@ int refractionRootFunc_f(const gsl_vector* x, void* params, gsl_vector* f)
     gsl_multimin_fminimizer_set(s, &minex_func, x, ss);
     
     double initial_cost_function_value, final_cost_function_value = 0.0;
-    
     do {
         iter++;
         status = gsl_multimin_fminimizer_iterate(s);
@@ -1879,7 +1878,6 @@ int refractionRootFunc_f(const gsl_vector* x, void* params, gsl_vector* f)
     
     self.distortionReductionAchieved = [NSNumber numberWithDouble:(initial_cost_function_value - final_cost_function_value) / initial_cost_function_value];
     self.distortionRemainingPerPoint = [NSNumber numberWithDouble:final_cost_function_value / (double) totalPointCount];
-    
     /*
     NSLog(@"Initial cost function value was %1.3f, final is %1.3f, reduction of %1.5f percent. Remaining mean per-point residual is %1.6f pixels.",initial_cost_function_value,final_cost_function_value,100.0*(initial_cost_function_value - final_cost_function_value) / initial_cost_function_value, final_cost_function_value / (double) totalPointCount);
     */
@@ -2003,7 +2001,13 @@ int refractionRootFunc_f(const gsl_vector* x, void* params, gsl_vector* f)
 - (NSXMLNode *) representationAsXMLNode	
 {
     const BOOL includeScreenCoords = [[[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"includeScreenCoordsInExports"] boolValue];
-	NSNumberFormatter *nf = self.videoClip.project.document.decimalFormatter;
+    
+	NSNumberFormatter *nf = [[NSNumberFormatter alloc] init];
+    [nf setFormatterBehavior:NSNumberFormatterBehavior10_4];
+    [nf setNumberStyle:NSNumberFormatterDecimalStyle];
+    [nf setGroupingSeparator:@""];      // Custom number formatter here with a much higher precision for important parameters
+    [nf setMinimumFractionDigits:50];   // especially the higher-order distortionK3 that begins out beyond 15 decimal places
+    
 	NSXMLElement *mainElement = [[NSXMLElement alloc] initWithName:@"calibration"];
 	[mainElement addAttribute:[NSXMLNode attributeWithName:@"cameraX" stringValue:[nf stringFromNumber:self.cameraX]]];
 	[mainElement addAttribute:[NSXMLNode attributeWithName:@"cameraY" stringValue:[nf stringFromNumber:self.cameraY]]];
