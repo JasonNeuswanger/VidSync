@@ -2013,6 +2013,9 @@ int refractionRootFunc_f(const gsl_vector* x, void* params, gsl_vector* f)
 	[mainElement addAttribute:[NSXMLNode attributeWithName:@"distortionK1" stringValue:[nf stringFromNumber:self.distortionK1]]];
 	[mainElement addAttribute:[NSXMLNode attributeWithName:@"distortionK2" stringValue:[nf stringFromNumber:self.distortionK2]]];
 	[mainElement addAttribute:[NSXMLNode attributeWithName:@"distortionK3" stringValue:[nf stringFromNumber:self.distortionK3]]];
+    [mainElement addAttribute:[NSXMLNode attributeWithName:@"distortionP1" stringValue:[nf stringFromNumber:self.distortionP1]]];
+    [mainElement addAttribute:[NSXMLNode attributeWithName:@"distortionP2" stringValue:[nf stringFromNumber:self.distortionP2]]];
+    [mainElement addAttribute:[NSXMLNode attributeWithName:@"distortionP3" stringValue:[nf stringFromNumber:self.distortionP3]]];
 	[mainElement addAttribute:[NSXMLNode attributeWithName:@"matrixScreenToQuadratFront" stringValue:[self matrixAsOutputString:self.matrixScreenToQuadratFront]]];
 	[mainElement addAttribute:[NSXMLNode attributeWithName:@"matrixScreenToQuadratBack" stringValue:[self matrixAsOutputString:self.matrixScreenToQuadratBack]]];
 	[mainElement addAttribute:[NSXMLNode attributeWithName:@"matrixQuadratFrontToScreen" stringValue:[self matrixAsOutputString:self.matrixQuadratFrontToScreen]]];
