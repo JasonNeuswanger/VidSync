@@ -124,9 +124,9 @@ NSPoint undistortPoint(const NSPoint* pt, const double x0, const double y0, cons
     double xd = pt->x - x0;
     double yd = pt->y - y0;
     double rs = xd*xd + yd*yd; 
-    const double xu = xd + xd*(k1*rs + k2*rs*rs + k3*rs*rs*rs) + (p1*(rs + 2*xd*xd) + 2*p2*xd*yd)*(1 + p3*rs);
-    const double yu = yd + yd*(k1*rs + k2*rs*rs + k3*rs*rs*rs) + (2*p1*xd*yd + p2*(rs + 2*yd*yd))*(1 + p3*rs);    
-    return NSMakePoint(xu + x0, yu + y0);
+    const double xu = x0 + xd*(1 + k1*rs + k2*rs*rs + k3*rs*rs*rs) + (p1*(rs + 2*xd*xd) + 2*p2*xd*yd)*(1 + p3*rs);
+    const double yu = y0 + yd*(1 + k1*rs + k2*rs*rs + k3*rs*rs*rs) + (2*p1*xd*yd + p2*(rs + 2*yd*yd))*(1 + p3*rs);
+    return NSMakePoint(xu, yu);
 }
 
 NSPoint redistortPoint(const NSPoint* pt, const double x0, const double y0, const double k1, const double k2, const double k3, const double p1, const double p2, const double p3){
