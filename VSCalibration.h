@@ -41,23 +41,10 @@
 #define SCALE_FACTOR_K5 1.0e-34
 #define SCALE_FACTOR_K6 1.0e-40
 #define SCALE_FACTOR_K7 1.0e-43
-#define SCALE_FACTOR_P1 1.0e-06
-#define SCALE_FACTOR_P2 1.0e-09
+#define SCALE_FACTOR_P1 1.0e-7
+#define SCALE_FACTOR_P2 1.0e-7
 #define SCALE_FACTOR_P3 1.0e-7
-/*
-#define SCALE_FACTOR_X0 1.0e3
-#define SCALE_FACTOR_Y0 1.0e3
-#define SCALE_FACTOR_K1 1.0e-7
-#define SCALE_FACTOR_K2 1.0e-12
-#define SCALE_FACTOR_K3 1.0e-18
-#define SCALE_FACTOR_K4 1.0e-25
-#define SCALE_FACTOR_K5 1.0e-30
-#define SCALE_FACTOR_K6 1.0e-36
-#define SCALE_FACTOR_K7 1.0e-42
-#define SCALE_FACTOR_P1 1.0e-06
-#define SCALE_FACTOR_P2 1.0e-09
-#define SCALE_FACTOR_P3 1.0e-7
-*/
+
 typedef struct
 {
     NSPoint** lines;

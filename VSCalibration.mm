@@ -1882,6 +1882,8 @@ int refractionRootFunc_f(const gsl_vector* x, void* params, gsl_vector* f)
     /* Set initial step sizes to 1 */
     ss = gsl_vector_alloc(12);            // ss is short for "step sizes"
     gsl_vector_set_all(ss,25);        // I was doing well with 0.25 before; now, 25 seems better.
+    gsl_vector_set(ss, 0, 0.001);
+    gsl_vector_set(ss, 1, 0.001);
 
     /* Initialize method and iterate */
     minex_func.n = 12;                                          // Number of variables being adjusted for the minimization (distortion parameters)
