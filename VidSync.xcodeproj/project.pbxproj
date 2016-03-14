@@ -659,6 +659,8 @@
 		969BEE03183FF5FB006E6AAC /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = System/Library/Frameworks/CoreMedia.framework; sourceTree = SDKROOT; };
 		969CFCA51C9430C6006C9904 /* ObjectsEventTypeCountsArrayController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ObjectsEventTypeCountsArrayController.h; sourceTree = "<group>"; };
 		969CFCA61C9430C6006C9904 /* ObjectsEventTypeCountsArrayController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObjectsEventTypeCountsArrayController.m; sourceTree = "<group>"; };
+		969CFCA81C9547FD006C9904 /* VidSyncProject 1.24.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "VidSyncProject 1.24.xcdatamodel"; sourceTree = "<group>"; };
+		969CFCA91C9548BD006C9904 /* VidSyncProject 1.25.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "VidSyncProject 1.25.xcdatamodel"; sourceTree = "<group>"; };
 		969D6CE6115C079700A6D5A3 /* VSHintLine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VSHintLine.h; sourceTree = "<group>"; };
 		969D6CE7115C079700A6D5A3 /* VSHintLine.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VSHintLine.m; sourceTree = "<group>"; };
 		969DB351116FF3AF00DBA9F4 /* TypesArrayController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TypesArrayController.h; sourceTree = "<group>"; };
@@ -1941,6 +1943,8 @@
 		96AE98861165348400118398 /* VidSyncProject.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
+				969CFCA91C9548BD006C9904 /* VidSyncProject 1.25.xcdatamodel */,
+				969CFCA81C9547FD006C9904 /* VidSyncProject 1.24.xcdatamodel */,
 				967D3B0E1C93B01700B9D835 /* VidSyncProject 1.23.xcdatamodel */,
 				967D3B0D1C93AEAF00B9D835 /* VidSyncProject 1.22.xcdatamodel */,
 				964DE4651BF18696008B4D83 /* VidSyncProject 1.21.xcdatamodel */,

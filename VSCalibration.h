@@ -37,10 +37,27 @@
 #define SCALE_FACTOR_K1 5.0e-8
 #define SCALE_FACTOR_K2 1.0e-14
 #define SCALE_FACTOR_K3 1.0e-21
-#define SCALE_FACTOR_P1 1.0e-06 // -06
-#define SCALE_FACTOR_P2 1.0e-09 // -09
+#define SCALE_FACTOR_K4 1.0e-27
+#define SCALE_FACTOR_K5 1.0e-34
+#define SCALE_FACTOR_K6 1.0e-40
+#define SCALE_FACTOR_K7 1.0e-43
+#define SCALE_FACTOR_P1 1.0e-06
+#define SCALE_FACTOR_P2 1.0e-09
 #define SCALE_FACTOR_P3 1.0e-7
-
+/*
+#define SCALE_FACTOR_X0 1.0e3
+#define SCALE_FACTOR_Y0 1.0e3
+#define SCALE_FACTOR_K1 1.0e-7
+#define SCALE_FACTOR_K2 1.0e-12
+#define SCALE_FACTOR_K3 1.0e-18
+#define SCALE_FACTOR_K4 1.0e-25
+#define SCALE_FACTOR_K5 1.0e-30
+#define SCALE_FACTOR_K6 1.0e-36
+#define SCALE_FACTOR_K7 1.0e-42
+#define SCALE_FACTOR_P1 1.0e-06
+#define SCALE_FACTOR_P2 1.0e-09
+#define SCALE_FACTOR_P3 1.0e-7
+*/
 typedef struct
 {
     NSPoint** lines;
@@ -48,10 +65,10 @@ typedef struct
     size_t numLines;
 } Plumblines;
 
-double orthogonalRegressionLineCostFunction(NSPoint line[], const size_t numLinePoints, double *linePixelLength);
+double orthogonalRegressionLineCostFunction(NSPoint line[], const size_t numLinePoints);
 double orthogonalRegressionTotalCostFunction(const gsl_vector *v, void *params);
-NSPoint undistortPoint(const NSPoint* pt, const double x0, const double y0, const double k1, const double k2, const double k3, const double p1, const double p2, const double p3);
-NSPoint redistortPoint(const NSPoint* pt, const double x0, const double y0, const double k1, const double k2, const double k3, const double p1, const double p2, const double p3);
+NSPoint undistortPoint(const NSPoint* pt, const double x0, const double y0, const double k1, const double k2, const double k3, const double k4, const double k5, const double k6, const double k7, const double p1, const double p2, const double p3);
+NSPoint redistortPoint(const NSPoint* pt, const double x0, const double y0, const double k1, const double k2, const double k3, const double k4, const double k5, const double k6, const double k7, const double p1, const double p2, const double p3);
 int redistortionRootFunc_f(const gsl_vector* x, void* params, gsl_vector* f);
 int redistortionRootFunc_df(const gsl_vector* x, void* params, gsl_matrix* J);
 int redistortionRootFunc_fdf(const gsl_vector* x, void* params, gsl_vector* f, gsl_matrix* J);
@@ -107,6 +124,10 @@ int redistortionRootFunc_fdf(const gsl_vector* x, void* params, gsl_vector* f, g
 @property (strong) NSNumber *distortionK1;
 @property (strong) NSNumber *distortionK2;
 @property (strong) NSNumber *distortionK3;
+@property (strong) NSNumber *distortionK4;
+@property (strong) NSNumber *distortionK5;
+@property (strong) NSNumber *distortionK6;
+@property (strong) NSNumber *distortionK7;
 @property (strong) NSNumber *distortionP1;
 @property (strong) NSNumber *distortionP2;
 @property (strong) NSNumber *distortionP3;
