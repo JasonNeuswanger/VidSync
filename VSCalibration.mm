@@ -755,6 +755,10 @@ int refractionRootFunc_f(const gsl_vector* x, void* params, gsl_vector* f)
                                     self.distortionK1,
                                     self.distortionK2,
                                     self.distortionK3,
+                                    self.distortionK4,
+                                    self.distortionK5,
+                                    self.distortionK6,
+                                    self.distortionK7,
                                     self.distortionP1,
                                     self.distortionP2,
                                     self.distortionP3,
@@ -788,20 +792,32 @@ int refractionRootFunc_f(const gsl_vector* x, void* params, gsl_vector* f)
         } else {
             alertResult = NSAlertDefaultReturn; // If there was nothing to overwrite, simulate the user clicking "Overwrite" without prompting for it.
         }
+        NSInteger numEntries =[fullDistortion count];
+        NSInteger linesIndex = (numEntries > 9) ? 12 : 8; // remembering the index 0 counts toward the number of entries
         if (alertResult == NSAlertDefaultReturn) { // user clicked overwrite -- delete old distortion lines AND overwrite parameters
             self.distortionCenterX = [fullDistortion objectAtIndex:0];
             self.distortionCenterY = [fullDistortion objectAtIndex:1];
             self.distortionK1 = [fullDistortion objectAtIndex:2];
             self.distortionK2 = [fullDistortion objectAtIndex:3];
             self.distortionK3 = [fullDistortion objectAtIndex:4];
-            self.distortionP1 = [fullDistortion objectAtIndex:5];
-            self.distortionP2 = [fullDistortion objectAtIndex:6];
-            self.distortionP3 = [fullDistortion objectAtIndex:7];
+            if (numEntries > 9) {
+                self.distortionK4 = [fullDistortion objectAtIndex:5];
+                self.distortionK5 = [fullDistortion objectAtIndex:6];
+                self.distortionK6 = [fullDistortion objectAtIndex:7];
+                self.distortionK7 = [fullDistortion objectAtIndex:8];
+                self.distortionP1 = [fullDistortion objectAtIndex:9];
+                self.distortionP2 = [fullDistortion objectAtIndex:10];
+                self.distortionP3 = [fullDistortion objectAtIndex:11];
+            } else {
+                self.distortionP1 = [fullDistortion objectAtIndex:5];
+                self.distortionP2 = [fullDistortion objectAtIndex:6];
+                self.distortionP3 = [fullDistortion objectAtIndex:7];
+            }
             for (VSDistortionLine *lineToDelete in self.distortionLines) [self.managedObjectContext deleteObject:lineToDelete];		// remove the old points if there are any
         }
         VSDistortionLine *newLine;
         VSDistortionPoint *newPoint;
-        for (NSArray *lineArray in [fullDistortion objectAtIndex:8]) {	// Regardless of overwrite setting, we now add points
+        for (NSArray *lineArray in [fullDistortion objectAtIndex:linesIndex]) {	// Regardless of overwrite setting, we now add points
             newLine = [NSEntityDescription insertNewObjectForEntityForName:@"VSDistortionLine" inManagedObjectContext:[self managedObjectContext]]; 
             newLine.calibration = self;
             newLine.timecode = [lineArray objectAtIndex:0];
