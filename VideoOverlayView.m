@@ -73,6 +73,7 @@
 		[[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKeyPath:@"values.distortionLineThickness" options:0 context:NULL];
 		[[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKeyPath:@"values.distortionPointSize" options:0 context:NULL];
 		[[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKeyPath:@"values.showDistortionConnectingLines" options:0 context:NULL];
+        [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKeyPath:@"values.showDistortionLinesFromWhichTimecodes" options:0 context:NULL];
 		[[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKeyPath:@"values.showDistortionTipToTipLines" options:0 context:NULL];
 		[[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKeyPath:@"values.showDistortionCorrectedPoints" options:0 context:NULL];
 		[[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKeyPath:@"values.showScreenItemDropShadows" options:0 context:NULL];
@@ -327,8 +328,10 @@
 	float lineWidth = [[[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"distortionLineThickness"] floatValue];
 	BOOL showConnectingLines = [[[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"showDistortionConnectingLines"] boolValue];
 	BOOL showTipToTipLines = [[[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"showDistortionTipToTipLines"] boolValue];
+    int showDistortionLinesFromWhichTimecodes = [[[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"showDistortionLinesFromWhichTimecodes"] intValue];
 	
 	NSSet *distortionLines = vwc.videoClip.calibration.distortionLines;
+    
 	NSSortDescriptor *indexDescriptor = [[NSSortDescriptor alloc] initWithKey:@"index" ascending:YES];
 	NSRect shapeRect;
 	NSPoint point,uPoint,undistortedVideoCoords,firstPoint;
@@ -374,56 +377,60 @@
     // Now go through and draw the actual lines as arranged.
     
 	for (VSDistortionLine *distortionLine in distortionLines) {
+        
+        // If the value below is 2, show all lines; otherwise, make sure they're from the current timecode
+        if (showDistortionLinesFromWhichTimecodes == 2 || [UtilityFunctions timeString:distortionLine.timecode isEqualToTimeString:[vwc.videoClip.project.document currentMasterTimeString]]) {
 		
-		distortionPoints = [[distortionLine.distortionPoints allObjects] sortedArrayUsingDescriptors:[NSArray arrayWithObject:indexDescriptor]]; // all points on current line, sorted by index
+            distortionPoints = [[distortionLine.distortionPoints allObjects] sortedArrayUsingDescriptors:[NSArray arrayWithObject:indexDescriptor]]; // all points on current line, sorted by index
 
-		for (int i = 0; i < [distortionPoints count]; i++) {
-			distortionPoint = [distortionPoints objectAtIndex:i];
-			
-			point = [vwc convertVideoToOverlayCoords:NSMakePoint([distortionPoint.screenX floatValue],[distortionPoint.screenY floatValue])];
-			
-            if (i == 0) [tipsToTipsPath moveToPoint:point];
-			if ([vwc.videoClip.calibration hasDistortionCorrection] && [distortionPoints count] >= 2) {
-                undistortedVideoCoords = [vwc.videoClip.calibration undistortPoint:NSMakePoint([distortionPoint.screenX floatValue],[distortionPoint.screenY floatValue])];
-                uPoint = [vwc convertVideoToOverlayCoords:undistortedVideoCoords];
-                if (i == 0) {
-                    firstPoint = uPoint;
-                    [correctedLinesPath moveToPoint:uPoint];
-                    [correctedTipsToTipsPath moveToPoint:uPoint];
-                } else {
-                    [correctedLinesPath lineToPoint:uPoint];
-                }
-                if (i == [distortionPoints count] - 1) {
-                    [correctedTipsToTipsPath lineToPoint:uPoint]; // Connect the end of the line straight back to its beginning in one segment, so any curvature is easily observed.
-                }
-			}
-			shapeRect = NSMakeRect(point.x-shapeSize,point.y-shapeSize,2.0*shapeSize,2.0*shapeSize);	
-			[pointDotsPath appendBezierPathWithOvalInRect:shapeRect];
-			if ([distortionPoints count] > 1) {															// if it is the first point, move the bezier path to there
-				if (showConnectingLines && i == 0) {
-					[connectingLinesPath moveToPoint:point];
-				} else if (showConnectingLines && i > 0) {												// if it's not the first point, draw a line to the previous point
-					[connectingLinesPath lineToPoint:point];
-				}
-				if (showTipToTipLines && [distortionPoints count] > 2 && i == [distortionPoints count]-1) { // if it's the last of more than 2 points, draw a line back to the start 
-					[tipsToTipsPath lineToPoint:point];
-				}
-                if ([vwc.videoClip.calibration hasDistortionCorrection] && i == [distortionPoints count]-1 && [distortionPoints count] >= 2) {
+            for (int i = 0; i < [distortionPoints count]; i++) {
+                distortionPoint = [distortionPoints objectAtIndex:i];
+                
+                point = [vwc convertVideoToOverlayCoords:NSMakePoint([distortionPoint.screenX floatValue],[distortionPoint.screenY floatValue])];
+                
+                if (i == 0) [tipsToTipsPath moveToPoint:point];
+                if ([vwc.videoClip.calibration hasDistortionCorrection] && [distortionPoints count] >= 2) {
                     undistortedVideoCoords = [vwc.videoClip.calibration undistortPoint:NSMakePoint([distortionPoint.screenX floatValue],[distortionPoint.screenY floatValue])];
                     uPoint = [vwc convertVideoToOverlayCoords:undistortedVideoCoords];
-                    [correctedTipsToTipsPath lineToPoint:uPoint];    
+                    if (i == 0) {
+                        firstPoint = uPoint;
+                        [correctedLinesPath moveToPoint:uPoint];
+                        [correctedTipsToTipsPath moveToPoint:uPoint];
+                    } else {
+                        [correctedLinesPath lineToPoint:uPoint];
+                    }
+                    if (i == [distortionPoints count] - 1) {
+                        [correctedTipsToTipsPath lineToPoint:uPoint]; // Connect the end of the line straight back to its beginning in one segment, so any curvature is easily observed.
+                    }
                 }
-			}
-			
-			// now the results display to show the corrected points
-			if ([vwc.videoClip.calibration hasDistortionCorrection] && showCorrectedOverlay) {	// if the clip has a distortion calculated, draw the corrected points
-				undistortedVideoCoords = [vwc.videoClip.calibration undistortPoint:NSMakePoint([distortionPoint.screenX floatValue],[distortionPoint.screenY floatValue])];
-				uPoint = [vwc convertVideoToOverlayCoords:undistortedVideoCoords];
-				shapeRect = NSMakeRect(uPoint.x-shapeSize*0.7,uPoint.y-shapeSize*0.7,2.0*shapeSize*0.7,2.0*shapeSize*0.7);	
-				[correctedPointDotsPath appendBezierPathWithOvalInRect:shapeRect];
-				[correctedPointColor setStroke];
-				[NSBezierPath strokeLineFromPoint:point toPoint:uPoint];
-			}
+                shapeRect = NSMakeRect(point.x-shapeSize,point.y-shapeSize,2.0*shapeSize,2.0*shapeSize);	
+                [pointDotsPath appendBezierPathWithOvalInRect:shapeRect];
+                if ([distortionPoints count] > 1) {															// if it is the first point, move the bezier path to there
+                    if (showConnectingLines && i == 0) {
+                        [connectingLinesPath moveToPoint:point];
+                    } else if (showConnectingLines && i > 0) {												// if it's not the first point, draw a line to the previous point
+                        [connectingLinesPath lineToPoint:point];
+                    }
+                    if (showTipToTipLines && [distortionPoints count] > 2 && i == [distortionPoints count]-1) { // if it's the last of more than 2 points, draw a line back to the start 
+                        [tipsToTipsPath lineToPoint:point];
+                    }
+                    if ([vwc.videoClip.calibration hasDistortionCorrection] && i == [distortionPoints count]-1 && [distortionPoints count] >= 2) {
+                        undistortedVideoCoords = [vwc.videoClip.calibration undistortPoint:NSMakePoint([distortionPoint.screenX floatValue],[distortionPoint.screenY floatValue])];
+                        uPoint = [vwc convertVideoToOverlayCoords:undistortedVideoCoords];
+                        [correctedTipsToTipsPath lineToPoint:uPoint];    
+                    }
+                }
+                
+                // now the results display to show the corrected points
+                if ([vwc.videoClip.calibration hasDistortionCorrection] && showCorrectedOverlay) {	// if the clip has a distortion calculated, draw the corrected points
+                    undistortedVideoCoords = [vwc.videoClip.calibration undistortPoint:NSMakePoint([distortionPoint.screenX floatValue],[distortionPoint.screenY floatValue])];
+                    uPoint = [vwc convertVideoToOverlayCoords:undistortedVideoCoords];
+                    shapeRect = NSMakeRect(uPoint.x-shapeSize*0.7,uPoint.y-shapeSize*0.7,2.0*shapeSize*0.7,2.0*shapeSize*0.7);	
+                    [correctedPointDotsPath appendBezierPathWithOvalInRect:shapeRect];
+                    [correctedPointColor setStroke];
+                    [NSBezierPath strokeLineFromPoint:point toPoint:uPoint];
+                }
+            }
         }
 
 	}
@@ -1350,6 +1357,7 @@
     [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKeyPath:@"values.distortionLineThickness"];
     [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKeyPath:@"values.distortionPointSize"];
     [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKeyPath:@"values.showDistortionConnectingLines"];
+    [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKeyPath:@"showDistortionLinesFromWhichTimecodes"];
     [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKeyPath:@"values.showDistortionTipToTipLines"];
     [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKeyPath:@"values.showDistortionCorrectedPoints"];
     [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKeyPath:@"values.showScreenItemDropShadows"];

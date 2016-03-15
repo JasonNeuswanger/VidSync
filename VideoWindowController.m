@@ -641,21 +641,29 @@
 - (void) handleOverlayRightClickInDistortionMode:(NSPoint)coords
 {
 	VidSyncDocument *doc = self.document;
+    int showDistortionLinesFromWhichTimecodes = [[[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"showDistortionLinesFromWhichTimecodes"] intValue];
+    
+    /*
+     (showDistortionLinesFromWhichTimecodes == 2 || [UtilityFunctions timeString:distortionLine.timecode isEqualToTimeString:[vwc.videoClip.project.document currentMasterTimeString]])
+     
+     */
 	
 	float shortestDistanceFromClick = 1000000.0;								// initialize with an absurdly high number, so the first real click will be "closer"
 	float distanceFromClick;
 	float clickToPointVector[2];
 	VSDistortionPoint *pointToSelect = nil;
 	for (VSDistortionLine *distortionLine in self.videoClip.calibration.distortionLines) {
-		for (VSDistortionPoint *distortionPoint in distortionLine.distortionPoints) {
-			clickToPointVector[0] = coords.x - [distortionPoint.screenX floatValue];
-			clickToPointVector[1] = coords.y - [distortionPoint.screenY floatValue];
-			distanceFromClick = cblas_snrm2(2, clickToPointVector, 1);
-			if (distanceFromClick < shortestDistanceFromClick) {
-				pointToSelect = distortionPoint;
-				shortestDistanceFromClick = distanceFromClick;
-			}
-		}
+        if (showDistortionLinesFromWhichTimecodes == 2 || [UtilityFunctions timeString:distortionLine.timecode isEqualToTimeString:[self.videoClip.project.document currentMasterTimeString]]) {
+            for (VSDistortionPoint *distortionPoint in distortionLine.distortionPoints) {
+                clickToPointVector[0] = coords.x - [distortionPoint.screenX floatValue];
+                clickToPointVector[1] = coords.y - [distortionPoint.screenY floatValue];
+                distanceFromClick = cblas_snrm2(2, clickToPointVector, 1);
+                if (distanceFromClick < shortestDistanceFromClick) {
+                    pointToSelect = distortionPoint;
+                    shortestDistanceFromClick = distanceFromClick;
+                }
+            }
+        }
 	}
 	if (pointToSelect != nil) {
 		if ([[doc.distortionPointsController selectedObjects] count] > 0 && [[[doc.distortionPointsController selectedObjects] objectAtIndex:0] isEqualTo:pointToSelect]) {		// if the point is already selected, deselect it

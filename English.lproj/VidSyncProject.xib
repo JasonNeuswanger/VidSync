@@ -432,7 +432,7 @@
                                                             <textField verticalHuggingPriority="750" id="103631">
                                                                 <rect key="frame" x="280" y="337" width="150" height="17"/>
                                                                 <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
-                                                                <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Points on Selected Line" id="103632">
+                                                                <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Points on selected line" id="103632">
                                                                     <font key="font" metaFont="system"/>
                                                                     <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                                                     <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
@@ -563,7 +563,7 @@
                                                                 </connections>
                                                             </button>
                                                             <textField verticalHuggingPriority="750" id="103662">
-                                                                <rect key="frame" x="38" y="248" width="142" height="17"/>
+                                                                <rect key="frame" x="38" y="274" width="142" height="17"/>
                                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                                 <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Distortion parameters" id="103663">
                                                                     <font key="font" metaFont="system"/>
@@ -591,7 +591,7 @@
                                                                 </connections>
                                                             </textField>
                                                             <button verticalHuggingPriority="750" id="103675">
-                                                                <rect key="frame" x="186" y="243" width="72" height="25"/>
+                                                                <rect key="frame" x="186" y="269" width="72" height="25"/>
                                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                                 <buttonCell key="cell" type="roundTextured" title="Calculate" bezelStyle="texturedRounded" alignment="center" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="103676">
                                                                     <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
@@ -606,14 +606,14 @@
                                                                 </connections>
                                                             </button>
                                                             <scrollView autohidesScrollers="YES" horizontalLineScroll="16" horizontalPageScroll="10" verticalLineScroll="16" verticalPageScroll="10" usesPredominantAxisScrolling="NO" id="103686">
-                                                                <rect key="frame" x="283" y="73" width="234" height="258"/>
+                                                                <rect key="frame" x="283" y="126" width="234" height="205"/>
                                                                 <autoresizingMask key="autoresizingMask" flexibleMinX="YES" heightSizable="YES"/>
                                                                 <clipView key="contentView" id="vm2-fg-kIE">
-                                                                    <rect key="frame" x="1" y="17" width="232" height="240"/>
+                                                                    <rect key="frame" x="1" y="0.0" width="232" height="204"/>
                                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                     <subviews>
                                                                         <tableView identifier="PlumblinePointsTableView" verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnSelection="YES" multipleSelection="NO" autosaveColumns="NO" rowHeight="14" headerView="103690" id="103689" customClass="EventAwareTableView">
-                                                                            <rect key="frame" x="0.0" y="0.0" width="232" height="240"/>
+                                                                            <rect key="frame" x="0.0" y="0.0" width="232" height="187"/>
                                                                             <autoresizingMask key="autoresizingMask"/>
                                                                             <size key="intercellSpacing" width="3" height="2"/>
                                                                             <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
@@ -686,9 +686,9 @@
                                                                 </tableHeaderView>
                                                             </scrollView>
                                                             <button verticalHuggingPriority="750" id="103875">
-                                                                <rect key="frame" x="353" y="509" width="55" height="28"/>
+                                                                <rect key="frame" x="348" y="509" width="85" height="28"/>
                                                                 <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
-                                                                <buttonCell key="cell" type="push" title="Auto" alternateTitle="Automatically detect plumblines from a chessboard pattern in the image" bezelStyle="rounded" alignment="center" controlSize="small" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="103876">
+                                                                <buttonCell key="cell" type="push" title="Autodetect" alternateTitle="Automatically detect plumblines from a chessboard pattern in the image" bezelStyle="rounded" alignment="center" controlSize="small" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="103876">
                                                                     <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                                                     <font key="font" metaFont="smallSystem"/>
                                                                 </buttonCell>
@@ -696,15 +696,6 @@
                                                                     <action selector="makeKeyAndOrderFront:" target="103873" id="103878"/>
                                                                 </connections>
                                                             </button>
-                                                            <textField verticalHuggingPriority="750" id="104064">
-                                                                <rect key="frame" x="14" y="275" width="105" height="17"/>
-                                                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                                                <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Visible overlays:" id="104065">
-                                                                    <font key="font" metaFont="system"/>
-                                                                    <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
-                                                                    <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                                                                </textFieldCell>
-                                                            </textField>
                                                             <button verticalHuggingPriority="750" id="104097">
                                                                 <rect key="frame" x="31" y="8" width="209" height="25"/>
                                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
@@ -756,29 +747,6 @@
                                                                     <action selector="orderFront:" target="100503" id="z9c-6n-clB"/>
                                                                 </connections>
                                                             </button>
-                                                            <popUpButton verticalHuggingPriority="750" id="fEE-ZL-WnU">
-                                                                <rect key="frame" x="123" y="269" width="155" height="26"/>
-                                                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                                                <popUpButtonCell key="cell" type="push" title="Uncorrected" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" selectedItem="MyR-zx-fYN" id="flU-d5-sBb">
-                                                                    <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
-                                                                    <font key="font" metaFont="menu"/>
-                                                                    <menu key="menu" title="OtherViews" id="kNp-i2-bQd">
-                                                                        <items>
-                                                                            <menuItem title="Uncorrected" state="on" id="MyR-zx-fYN">
-                                                                                <modifierMask key="keyEquivalentModifierMask"/>
-                                                                            </menuItem>
-                                                                            <menuItem title="Corrected" id="nu2-Qf-KgU"/>
-                                                                            <menuItem title="Both" id="8wh-Ww-kK9"/>
-                                                                            <menuItem title="None" id="rEz-lf-R7b">
-                                                                                <modifierMask key="keyEquivalentModifierMask"/>
-                                                                            </menuItem>
-                                                                        </items>
-                                                                    </menu>
-                                                                </popUpButtonCell>
-                                                                <connections>
-                                                                    <binding destination="100044" name="selectedValue" keyPath="selection.distortionDisplayMode" id="3q3-kC-bbz"/>
-                                                                </connections>
-                                                            </popUpButton>
                                                             <button toolTip="Open the webpage for help on lens distortion correction" horizontalHuggingPriority="750" verticalHuggingPriority="750" id="2Ni-gH-vvV" customClass="VSWebHelpButton">
                                                                 <rect key="frame" x="251" y="514" width="25" height="25"/>
                                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
@@ -794,7 +762,7 @@
                                                                 </connections>
                                                             </button>
                                                             <button toolTip="Open the webpage for help on lens distortion correction" horizontalHuggingPriority="750" verticalHuggingPriority="750" id="3ew-na-IBn" customClass="VSWebHelpButton">
-                                                                <rect key="frame" x="7" y="242" width="25" height="25"/>
+                                                                <rect key="frame" x="7" y="268" width="25" height="25"/>
                                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                                 <buttonCell key="cell" type="help" bezelStyle="helpButton" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="g3v-Sd-4ot">
                                                                     <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
@@ -852,14 +820,14 @@
                                                                 </connections>
                                                             </textField>
                                                             <scrollView horizontalLineScroll="0.0" horizontalPageScroll="0.0" verticalLineScroll="10" verticalPageScroll="10" hasHorizontalScroller="NO" usesPredominantAxisScrolling="NO" horizontalScrollElasticity="none" id="MHg-p9-Dfw">
-                                                                <rect key="frame" x="8" y="119" width="266" height="121"/>
+                                                                <rect key="frame" x="8" y="119" width="266" height="147"/>
                                                                 <autoresizingMask key="autoresizingMask" flexibleMaxY="YES"/>
                                                                 <clipView key="contentView" id="sgi-Eg-U8J">
-                                                                    <rect key="frame" x="1" y="1" width="249" height="119"/>
+                                                                    <rect key="frame" x="1" y="1" width="249" height="145"/>
                                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                     <subviews>
                                                                         <customView id="Ehg-CV-s2J">
-                                                                            <rect key="frame" x="0.0" y="-90" width="250" height="207"/>
+                                                                            <rect key="frame" x="0.0" y="-64" width="250" height="207"/>
                                                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                                             <subviews>
                                                                                 <textField verticalHuggingPriority="750" id="103677">
@@ -1232,11 +1200,73 @@
                                                                     <rect key="frame" x="-100" y="-100" width="249" height="15"/>
                                                                     <autoresizingMask key="autoresizingMask"/>
                                                                 </scroller>
-                                                                <scroller key="verticalScroller" verticalHuggingPriority="750" doubleValue="1" horizontal="NO" id="t1h-QB-3Qg">
-                                                                    <rect key="frame" x="250" y="1" width="15" height="119"/>
+                                                                <scroller key="verticalScroller" verticalHuggingPriority="750" horizontal="NO" id="t1h-QB-3Qg">
+                                                                    <rect key="frame" x="250" y="1" width="15" height="145"/>
                                                                     <autoresizingMask key="autoresizingMask"/>
                                                                 </scroller>
                                                             </scrollView>
+                                                            <popUpButton verticalHuggingPriority="750" id="oxc-kR-ks7">
+                                                                <rect key="frame" x="367" y="70" width="153" height="26"/>
+                                                                <autoresizingMask key="autoresizingMask" flexibleMinX="YES"/>
+                                                                <popUpButtonCell key="cell" type="push" title="All timecodes" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" tag="2" imageScaling="proportionallyDown" inset="2" selectedItem="B1k-IO-rCt" id="HMX-yr-xPH">
+                                                                    <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
+                                                                    <font key="font" metaFont="menu"/>
+                                                                    <menu key="menu" id="Rxn-kl-2rW">
+                                                                        <items>
+                                                                            <menuItem title="Current timecode" tag="1" id="bTx-sE-90c">
+                                                                                <modifierMask key="keyEquivalentModifierMask"/>
+                                                                            </menuItem>
+                                                                            <menuItem title="All timecodes" state="on" tag="2" id="B1k-IO-rCt">
+                                                                                <modifierMask key="keyEquivalentModifierMask"/>
+                                                                            </menuItem>
+                                                                        </items>
+                                                                    </menu>
+                                                                </popUpButtonCell>
+                                                                <connections>
+                                                                    <binding destination="100045" name="selectedTag" keyPath="values.showDistortionLinesFromWhichTimecodes" id="vWO-9P-vyH"/>
+                                                                </connections>
+                                                            </popUpButton>
+                                                            <textField verticalHuggingPriority="750" id="104064">
+                                                                <rect key="frame" x="281" y="101" width="105" height="17"/>
+                                                                <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
+                                                                <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Visible overlays:" id="104065">
+                                                                    <font key="font" metaFont="system"/>
+                                                                    <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                                                    <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                                                </textFieldCell>
+                                                            </textField>
+                                                            <textField verticalHuggingPriority="750" id="KDu-oj-emU">
+                                                                <rect key="frame" x="281" y="76" width="82" height="17"/>
+                                                                <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
+                                                                <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Lines visible:" id="Cva-zT-NQM">
+                                                                    <font key="font" metaFont="system"/>
+                                                                    <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                                                    <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                                                </textFieldCell>
+                                                            </textField>
+                                                            <popUpButton verticalHuggingPriority="750" id="fEE-ZL-WnU">
+                                                                <rect key="frame" x="390" y="95" width="130" height="26"/>
+                                                                <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
+                                                                <popUpButtonCell key="cell" type="push" title="Uncorrected" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" selectedItem="MyR-zx-fYN" id="flU-d5-sBb">
+                                                                    <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
+                                                                    <font key="font" metaFont="menu"/>
+                                                                    <menu key="menu" title="OtherViews" id="kNp-i2-bQd">
+                                                                        <items>
+                                                                            <menuItem title="Uncorrected" state="on" id="MyR-zx-fYN">
+                                                                                <modifierMask key="keyEquivalentModifierMask"/>
+                                                                            </menuItem>
+                                                                            <menuItem title="Corrected" id="nu2-Qf-KgU"/>
+                                                                            <menuItem title="Both" id="8wh-Ww-kK9"/>
+                                                                            <menuItem title="None" id="rEz-lf-R7b">
+                                                                                <modifierMask key="keyEquivalentModifierMask"/>
+                                                                            </menuItem>
+                                                                        </items>
+                                                                    </menu>
+                                                                </popUpButtonCell>
+                                                                <connections>
+                                                                    <binding destination="100044" name="selectedValue" keyPath="selection.distortionDisplayMode" id="3q3-kC-bbz"/>
+                                                                </connections>
+                                                            </popUpButton>
                                                         </subviews>
                                                     </view>
                                                 </tabViewItem>
@@ -8069,5 +8099,15 @@ Some useful refractive index values are:  1.000 for air, 1.335 for fresh water, 
             </view>
             <point key="canvasLocation" x="238" y="964"/>
         </window>
+        <textField verticalHuggingPriority="750" id="bDE-Yk-H8I">
+            <rect key="frame" x="0.0" y="0.0" width="105" height="40"/>
+            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+            <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Visible overlays:" id="mjh-LD-rjo">
+                <font key="font" metaFont="system"/>
+                <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+            </textFieldCell>
+            <point key="canvasLocation" x="407.5" y="653"/>
+        </textField>
     </objects>
 </document>

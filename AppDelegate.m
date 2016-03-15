@@ -108,6 +108,7 @@
 	[initialValueDict setObject:[NSNumber numberWithBool:YES] forKey:@"showDistortionTipToTipLines"];
 	[initialValueDict setObject:[NSNumber numberWithFloat:2.5] forKey:@"distortionPointSize"];
 	[initialValueDict setObject:[NSNumber numberWithFloat:1.0] forKey:@"distortionLineThickness"];
+    [initialValueDict setObject:[NSNumber numberWithInt:2] forKey:@"showDistortionLinesFromWhichTimecodes"];
 	[initialValueDict setObject:[NSArchiver archivedDataWithRootObject:[NSColor greenColor]] forKey:@"distortionConnectingLinesColor"];
 	[initialValueDict setObject:[NSArchiver archivedDataWithRootObject:[NSColor orangeColor]] forKey:@"distortionTipToTipLinesColor"];
 	[initialValueDict setObject:[NSArchiver archivedDataWithRootObject:[NSColor magentaColor]] forKey:@"distortionCorrectedPointsColor"];
