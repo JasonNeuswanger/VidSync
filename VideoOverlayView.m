@@ -1160,15 +1160,6 @@
     if (vwc.videoClip.calibration.matrixQuadratFrontToScreen != nil) [grids addObject:@[[self quadratCoordinateGridForSurface:@"Front"]]];
     if (vwc.videoClip.calibration.matrixQuadratBackToScreen != nil) [grids addObject:@[[self quadratCoordinateGridForSurface:@"Back"]]];
     quadratCoordinateGrids = grids;
-	/*
-    quadratCoordinateGrids = [NSArray arrayWithObjects:
-							  [NSArray arrayWithObjects:
-                               [self quadratCoordinateGridForSurface:@"Front"],
-							   nil],
-							  [NSArray arrayWithObjects:
-                               [self quadratCoordinateGridForSurface:@"Back"],
-							   nil],
-							  nil];*/
 }
 
 
@@ -1357,7 +1348,7 @@
     [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKeyPath:@"values.distortionLineThickness"];
     [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKeyPath:@"values.distortionPointSize"];
     [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKeyPath:@"values.showDistortionConnectingLines"];
-    [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKeyPath:@"showDistortionLinesFromWhichTimecodes"];
+    [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKeyPath:@"values.showDistortionLinesFromWhichTimecodes"];
     [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKeyPath:@"values.showDistortionTipToTipLines"];
     [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKeyPath:@"values.showDistortionCorrectedPoints"];
     [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKeyPath:@"values.showScreenItemDropShadows"];

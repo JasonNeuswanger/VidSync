@@ -125,15 +125,6 @@ double orthogonalRegressionTotalCostFunction(const gsl_vector *v, void *params){
     return totalSSQRCost;// / totalLinePixelLength;
 }
 
-NSPoint undistortPoint(const NSPoint* pt, const double x0, const double y0, const double k1, const double k2, const double k3, const double k4, const double k5, const double k6, const double k7, const double p1, const double p2, const double p3, const double p4){
-    const double xd = pt->x - x0;
-    const double yd = pt->y - y0;
-    const double rs = xd*xd + yd*yd;
-    const double xu = x0 + xd*(1 + k1*rs + k2*pow(rs,2) + k3*pow(rs,3) + k4*pow(rs,4) + k5*pow(rs,5) + k6*pow(rs,6) + k7*pow(rs,7)) + (p1*(rs + 2*xd*xd) + 2*p2*xd*yd)*(1 + p3*rs + p4*rs*rs);
-    const double yu = y0 + yd*(1 + k1*rs + k2*pow(rs,2) + k3*pow(rs,3) + k4*pow(rs,4) + k5*pow(rs,5) + k6*pow(rs,6) + k7*pow(rs,7)) + (2*p1*xd*yd + p2*(rs + 2*yd*yd))*(1 + p3*rs + p4*rs*rs);
-    return NSMakePoint(xu, yu);
-}
-
 NSPoint redistortPoint(const NSPoint* pt, const double x0, const double y0, const double k1, const double k2, const double k3, const double k4, const double k5, const double k6, const double k7, const double p1, const double p2, const double p3, const double p4){
     // The new undistortion function doesn't have a closed-form inverse, so we instead use Newton's Method to solve numerically for the point
     // (x,y) that, when the undistortion function is applied to it, would give the input point.  That is, we're solving for the {x,y} roots of the 
@@ -148,32 +139,61 @@ NSPoint redistortPoint(const NSPoint* pt, const double x0, const double y0, cons
     double params[13] = {xuc, yuc, k1, k2, k3, k4, k5, k6, k7, p1, p2, p3, p4};
     gsl_multiroot_function_fdf f = {&redistortionRootFunc_f, &redistortionRootFunc_df, &redistortionRootFunc_fdf, n, params};
     gsl_vector *x = gsl_vector_alloc(n);    // Initialize the solution starting at the input/undistorted point
-    gsl_vector_set(x, 0, xuc);
-    gsl_vector_set(x, 1, yuc);
+    // Setting the starting point of the root-finding algorithm to be half-way between the distortion center and the undistorted point.
+    // Using the undistorted point itself worked fine for most applications, but on a highly distorted 8 mm fisheye all the algorithms ran into
+    // numerical instabilities and wouldn't make progress toward the right solution. Likewise, starting at (0,0) didn't offer enough of a
+    // gradient for the algorithms to progress in the right direction. But starting about half-way to the undistorted point seems to work well.
+    // However, with a value of 2.0 the calibration frame grid overlays with the 8 mm fisheye had some slight problems near the corners with
+    // both methods, moreso with the Hybridsj algorithm. It seems 2.5 was the sweet spot for this lens, which is the most extreme test likely.
+    // Other lenses should be more permissive and these values should work well for them too.
+    gsl_vector_set(x, 0, xuc/2.5);
+    gsl_vector_set(x, 1, yuc/2.5);
+    
+    // Newton's algorithm typically uses 0.000010 to 0.000030, rarely a lot more; the hybrid algorithm is faster
     T = gsl_multiroot_fdfsolver_gnewton;
+    // Hybridsj algorithm timing ranges from 0.000007 to 0.000017, except first iteration which is slower. This algorithm is faster, but
+    // it was a bit more prone to numerical stabilities around the edges, so I'm sticking with Newton's.
+    //T = gsl_multiroot_fdfsolver_hybridsj;
+    
+    // Timer for diagnostics
+    // NSDate *methodStart = [NSDate date];
+    
     s = gsl_multiroot_fdfsolver_alloc(T, n);
     gsl_multiroot_fdfsolver_set(s, &f, x);
+    
     do {
         iter++;
         status = gsl_multiroot_fdfsolver_iterate(s);
-        if (status) break;
+        if (status) {
+            NSLog(@"Error in redistortPoint call to gsl_multiroot_fdfsolver_iterate: %s", gsl_strerror(status));
+            break;
+        }
         status = gsl_multiroot_test_residual (s->f, 1e-7);
-    } while (status == GSL_CONTINUE && iter < 1000);
+    } while (status == GSL_CONTINUE && iter < 10000);
     
     NSPoint result = NSMakePoint(x0 + gsl_vector_get(s->x, 0), y0 + gsl_vector_get(s->x, 1));
+    
     /*
-     This code shows a bit of what's going on when this solver finds the wrong solution for one of the y-coordinates in seemingly random (but repeatable)
-     locations... it's probably convering on some other solution. Not sure how to fix this. Only happens in 9/4/2015 video for now with the widest fisheye.
-     
-    if (fabs(pt->y - result.y) > 2000) {
-        NSLog(@"VERY ODDLY REDISTORTED POINT (%1.1f, %1.1f) TO POINT (%1.1f, %1.1f)",pt->x,pt->y,result.x,result.y);
-    } else {
-        NSLog(@"redistorted (%1.1f, %1.1f) to point (%1.1f, %1.1f)",pt->x,pt->y,result.x,result.y);
-    }
+    // Diagnostics
+    double r = sqrt(xuc*xuc+yuc*yuc);
+    NSDate *methodFinish = [NSDate date];
+    NSTimeInterval executionTime = [methodFinish timeIntervalSinceDate:methodStart];
+    NSLog(@"redistorted (%1.1f, %1.1f) at radius %1.1f to point (%1.1f, %1.1f) in %lu iterations (time: %f)",pt->x,pt->y,r,result.x,result.y,iter,executionTime);
     */
-    gsl_multiroot_fdfsolver_free (s);
-    gsl_vector_free (x);
+    gsl_multiroot_fdfsolver_free(s);
+    gsl_vector_free(x);
     return result;
+}
+
+
+
+NSPoint undistortPoint(const NSPoint* pt, const double x0, const double y0, const double k1, const double k2, const double k3, const double k4, const double k5, const double k6, const double k7, const double p1, const double p2, const double p3, const double p4){
+    const double xd = pt->x - x0;
+    const double yd = pt->y - y0;
+    const double rs = xd*xd + yd*yd;
+    const double xu = x0 + xd*(1 + k1*rs + k2*pow(rs,2) + k3*pow(rs,3) + k4*pow(rs,4) + k5*pow(rs,5) + k6*pow(rs,6) + k7*pow(rs,7)) + (p1*(rs + 2*xd*xd) + 2*p2*xd*yd)*(1 + p3*rs + p4*rs*rs);
+    const double yu = y0 + yd*(1 + k1*rs + k2*pow(rs,2) + k3*pow(rs,3) + k4*pow(rs,4) + k5*pow(rs,5) + k6*pow(rs,6) + k7*pow(rs,7)) + (2*p1*xd*yd + p2*(rs + 2*yd*yd))*(1 + p3*rs + p4*rs*rs);
+    return NSMakePoint(xu, yu);
 }
 
 int redistortionRootFunc_f(const gsl_vector* x, void* params, gsl_vector* f) {
@@ -193,13 +213,9 @@ int redistortionRootFunc_f(const gsl_vector* x, void* params, gsl_vector* f) {
     const double p2 = p[10];
     const double p3 = p[11];
     const double p4 = p[12];
-    const double rs = xd*xd + yd*yd; // I read online that multiplying like this is slightly faster than pow() for simple squaring/cubing
-    //const double xu = xd + xd*(k1*rs + k2*rs*rs + k3*rs*rs*rs) + (p1*(rs + 2*xd*xd) + 2*p2*xd*yd)*(1 + p3*rs);
-    //const double yu = yd + yd*(k1*rs + k2*rs*rs + k3*rs*rs*rs) + (2*p1*xd*yd + p2*(rs + 2*yd*yd))*(1 + p3*rs);
-
-    const double xu = x0 + xd*(1 + k1*rs + k2*pow(rs,2) + k3*pow(rs,3) + k4*pow(rs,4) + k5*pow(rs,5) + k6*pow(rs,6) + k7*pow(rs,7)) + (p1*(rs + 2*xd*xd) + 2*p2*xd*yd)*(1 + p3*rs + p4*rs*rs);
-    const double yu = y0 + yd*(1 + k1*rs + k2*pow(rs,2) + k3*pow(rs,3) + k4*pow(rs,4) + k5*pow(rs,5) + k6*pow(rs,6) + k7*pow(rs,7)) + (2*p1*xd*yd + p2*(rs + 2*yd*yd))*(1 + p3*rs + p4*rs*rs);
-    
+    const double rs = xd*xd + yd*yd; // Multiplying like this is slightly faster than pow() for simple squaring/cubing
+    const double xu = xd*(1 + k1*rs + k2*pow(rs,2) + k3*pow(rs,3) + k4*pow(rs,4) + k5*pow(rs,5) + k6*pow(rs,6) + k7*pow(rs,7)) + (p1*(rs + 2*xd*xd) + 2*p2*xd*yd)*(1 + p3*rs + p4*rs*rs);
+    const double yu = yd*(1 + k1*rs + k2*pow(rs,2) + k3*pow(rs,3) + k4*pow(rs,4) + k5*pow(rs,5) + k6*pow(rs,6) + k7*pow(rs,7)) + (2*p1*xd*yd + p2*(rs + 2*yd*yd))*(1 + p3*rs + p4*rs*rs);
     gsl_vector_set(f, 0, xu - x0);
     gsl_vector_set(f, 1, yu - y0);
     return GSL_SUCCESS;
@@ -222,12 +238,6 @@ int redistortionRootFunc_df(const gsl_vector* x, void* params, gsl_matrix* J) {
     const double p4 = p[12];
 
     // This Jacobian consists of the derivative of each of the xd and yd elements of the distortion function, with respect to each of xd and yd.  Calculated and converted into C code using Mathematica.
-    /*
-    const double df00 = 1 + k1*(pow(xd,2) + pow(yd,2)) + k2*pow(pow(xd,2) + pow(yd,2),2) + k3*pow(pow(xd,2) + pow(yd,2),3) + k4*pow(pow(xd,2) + pow(yd,2),4) + k5*pow(pow(xd,2) + pow(yd,2),5) + k6*pow(pow(xd,2) + pow(yd,2),6) + k7*pow(pow(xd,2) + pow(yd,2),7) + (6*p1*xd + 2*p2*yd)*(1 + p3*(pow(xd,2) + pow(yd,2))) + xd*(2*k1*xd + 4*k2*xd*(pow(xd,2) + pow(yd,2)) + 6*k3*xd*pow(pow(xd,2) + pow(yd,2),2) + 8*k4*xd*pow(pow(xd,2) + pow(yd,2),3) + 10*k5*xd*pow(pow(xd,2) + pow(yd,2),4) + 12*k6*xd*pow(pow(xd,2) + pow(yd,2),5) + 14*k7*xd*pow(pow(xd,2) + pow(yd,2),6)) + 2*p3*xd*(2*p2*xd*yd + p1*(3*pow(xd,2) + pow(yd,2)));
-    const double df01 = (2*p2*xd + 2*p1*yd)*(1 + p3*(pow(xd,2) + pow(yd,2))) + xd*(2*k1*yd + 4*k2*yd*(pow(xd,2) + pow(yd,2)) + 6*k3*yd*pow(pow(xd,2) + pow(yd,2),2) + 8*k4*yd*pow(pow(xd,2) + pow(yd,2),3) + 10*k5*yd*pow(pow(xd,2) + pow(yd,2),4) + 12*k6*yd*pow(pow(xd,2) + pow(yd,2),5) + 14*k7*yd*pow(pow(xd,2) + pow(yd,2),6)) + 2*p3*yd*(2*p2*xd*yd + p1*(3*pow(xd,2) + pow(yd,2)));
-    const double df10 = (2*p2*xd + 2*p1*yd)*(1 + p3*(pow(xd,2) + pow(yd,2))) + yd*(2*k1*xd + 4*k2*xd*(pow(xd,2) + pow(yd,2)) + 6*k3*xd*pow(pow(xd,2) + pow(yd,2),2) + 8*k4*xd*pow(pow(xd,2) + pow(yd,2),3) + 10*k5*xd*pow(pow(xd,2) + pow(yd,2),4) + 12*k6*xd*pow(pow(xd,2) + pow(yd,2),5) + 14*k7*xd*pow(pow(xd,2) + pow(yd,2),6)) + 2*p3*xd*(2*p1*xd*yd + p2*(pow(xd,2) + 3*pow(yd,2)));
-    const double df11 = 1 + k1*(pow(xd,2) + pow(yd,2)) + k2*pow(pow(xd,2) + pow(yd,2),2) + k3*pow(pow(xd,2) + pow(yd,2),3) + k4*pow(pow(xd,2) + pow(yd,2),4) + k5*pow(pow(xd,2) + pow(yd,2),5) + k6*pow(pow(xd,2) + pow(yd,2),6) + k7*pow(pow(xd,2) + pow(yd,2),7) + (2*p1*xd + 6*p2*yd)*(1 + p3*(pow(xd,2) + pow(yd,2))) + yd*(2*k1*yd + 4*k2*yd*(pow(xd,2) + pow(yd,2)) + 6*k3*yd*pow(pow(xd,2) + pow(yd,2),2) + 8*k4*yd*pow(pow(xd,2) + pow(yd,2),3) + 10*k5*yd*pow(pow(xd,2) + pow(yd,2),4) + 12*k6*yd*pow(pow(xd,2) + pow(yd,2),5) + 14*k7*yd*pow(pow(xd,2) + pow(yd,2),6)) + 2*p3*yd*(2*p1*xd*yd + p2*(pow(xd,2) + 3*pow(yd,2)));
-     */
     
     const double df00 = 1 + k1*sqrt(pow(xd,2) + pow(yd,2)) + k2*(pow(xd,2) + pow(yd,2)) + k3*pow(pow(xd,2) + pow(yd,2),1.5) + k4*pow(pow(xd,2) + pow(yd,2),2) + k5*pow(pow(xd,2) + pow(yd,2),2.5) + k6*pow(pow(xd,2) + pow(yd,2),3) + k7*pow(pow(xd,2) + pow(yd,2),3.5) + (6*p1*xd + 2*p2*yd)*(1 + p3*(pow(xd,2) + pow(yd,2)) + p4*pow(pow(xd,2) + pow(yd,2),2)) + xd*(2*k2*xd + (k1*xd)/sqrt(pow(xd,2) + pow(yd,2)) + 3*k3*xd*sqrt(pow(xd,2) + pow(yd,2)) + 4*k4*xd*(pow(xd,2) + pow(yd,2)) + 5*k5*xd*pow(pow(xd,2) + pow(yd,2),1.5) + 6*k6*xd*pow(pow(xd,2) + pow(yd,2),2) + 7*k7*xd*pow(pow(xd,2) + pow(yd,2),2.5)) + (2*p3*xd + 4*p4*xd*(pow(xd,2) + pow(yd,2)))*(2*p2*xd*yd + p1*(3*pow(xd,2) + pow(yd,2)));
     const double df01 = (2*p2*xd + 2*p1*yd)*(1 + p3*(pow(xd,2) + pow(yd,2)) + p4*pow(pow(xd,2) + pow(yd,2),2)) + xd*(2*k2*yd + (k1*yd)/sqrt(pow(xd,2) + pow(yd,2)) + 3*k3*yd*sqrt(pow(xd,2) + pow(yd,2)) + 4*k4*yd*(pow(xd,2) + pow(yd,2)) + 5*k5*yd*pow(pow(xd,2) + pow(yd,2),1.5) + 6*k6*yd*pow(pow(xd,2) + pow(yd,2),2) + 7*k7*yd*pow(pow(xd,2) + pow(yd,2),2.5)) + (2*p3*yd + 4*p4*yd*(pow(xd,2) + pow(yd,2)))*(2*p2*xd*yd + p1*(3*pow(xd,2) + pow(yd,2)));
@@ -240,6 +250,7 @@ int redistortionRootFunc_df(const gsl_vector* x, void* params, gsl_matrix* J) {
     gsl_matrix_set(J, 1, 1, df11);
     return GSL_SUCCESS;
 }
+
 
 int redistortionRootFunc_fdf(const gsl_vector* x, void* params, gsl_vector* f, gsl_matrix* J)
 {
@@ -1880,7 +1891,8 @@ int refractionRootFunc_f(const gsl_vector* x, void* params, gsl_vector* f)
     double size;
     
     /* Starting point */
-    x = gsl_vector_alloc(13);
+    int nparams = 13;
+    x = gsl_vector_alloc(nparams);
     gsl_vector_set(x, 0, ([self.videoClip clipWidth]/2.0) / SCALE_FACTOR_X0);       // Initialize the distortion center to be
     gsl_vector_set(x, 1, ([self.videoClip clipHeight]/2.0) / SCALE_FACTOR_Y0);      // at the center of the screen as a first guess
     gsl_vector_set(x, 2, 0.0);  // Note: All the parameters need to have initial default values of zero
@@ -1895,17 +1907,17 @@ int refractionRootFunc_f(const gsl_vector* x, void* params, gsl_vector* f)
     gsl_vector_set(x, 11, 0.0);
     gsl_vector_set(x, 12, 0.0);
     /* Set initial step sizes to 1 */
-    ss = gsl_vector_alloc(13);            // ss is short for "step sizes"
+    ss = gsl_vector_alloc(nparams);            // ss is short for "step sizes"
     gsl_vector_set_all(ss,25);        // I was doing well with 0.25 before; now, 25 seems better.
     gsl_vector_set(ss, 0, 0.001);
     gsl_vector_set(ss, 1, 0.001);
 
     /* Initialize method and iterate */
-    minex_func.n = 13;                                          // Number of variables being adjusted for the minimization (distortion parameters)
+    minex_func.n = nparams;                                     // Number of variables being adjusted for the minimization (distortion parameters)
     minex_func.f = orthogonalRegressionTotalCostFunction;       // The cost function to minimize (defined at the top of VSCalibration.mm)
     minex_func.params = &p;                                     // The *params argument of the cost function -- this holds the line data, not the distortion parameters.
     
-    s = gsl_multimin_fminimizer_alloc(T, 13);
+    s = gsl_multimin_fminimizer_alloc(T, nparams);
     gsl_multimin_fminimizer_set(s, &minex_func, x, ss);
     
     double initial_cost_function_value, final_cost_function_value = 0.0;

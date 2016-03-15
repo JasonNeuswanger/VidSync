@@ -95,7 +95,7 @@
             [distortedPoints addObject:[NSValue valueWithPoint:[self.toVideoClip.calibration distortPoint:NSMakePoint(tempx,y)]]];	// regular intervals in the y direction	
         }
 	}
-	
+
     // sort them by x coordinate
 	[distortedPoints sortUsingComparator:(NSComparator)^(id obj1, id obj2){
 		NSComparisonResult result;
