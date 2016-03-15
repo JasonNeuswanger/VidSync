@@ -941,6 +941,32 @@
                                                                                         </binding>
                                                                                     </connections>
                                                                                 </textField>
+                                                                                <textField verticalHuggingPriority="750" id="ggi-4H-Hiu">
+                                                                                    <rect key="frame" x="126" y="71" width="25" height="11"/>
+                                                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                                                    <textFieldCell key="cell" controlSize="mini" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="p4 =" id="FnK-P2-smB">
+                                                                                        <font key="font" metaFont="miniSystem"/>
+                                                                                        <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                                                                        <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                                                                    </textFieldCell>
+                                                                                </textField>
+                                                                                <textField verticalHuggingPriority="750" id="Gc0-pE-hk8">
+                                                                                    <rect key="frame" x="151" y="68" width="85" height="16"/>
+                                                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                                                    <textFieldCell key="cell" controlSize="mini" scrollable="YES" lineBreakMode="clipping" selectable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="IKK-dT-i8M">
+                                                                                        <numberFormatter key="formatter" formatterBehavior="custom10_4" numberStyle="scientific" usesGroupingSeparator="NO" groupingSize="0" minimumIntegerDigits="0" maximumIntegerDigits="1" minimumFractionDigits="5" maximumFractionDigits="5" id="Gk8-kj-Uac" customClass="VSScientificNotationFormatter"/>
+                                                                                        <font key="font" metaFont="miniSystem"/>
+                                                                                        <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                                                                                        <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                                                                    </textFieldCell>
+                                                                                    <connections>
+                                                                                        <binding destination="100325" name="value" keyPath="selection.calibration.distortionP4" id="CBG-Bn-9wv">
+                                                                                            <dictionary key="options">
+                                                                                                <bool key="NSAllowsEditingMultipleValuesSelection" value="NO"/>
+                                                                                            </dictionary>
+                                                                                        </binding>
+                                                                                    </connections>
+                                                                                </textField>
                                                                                 <textField verticalHuggingPriority="750" id="104069">
                                                                                     <rect key="frame" x="151" y="132" width="85" height="16"/>
                                                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
@@ -1206,7 +1232,7 @@
                                                                     <rect key="frame" x="-100" y="-100" width="249" height="15"/>
                                                                     <autoresizingMask key="autoresizingMask"/>
                                                                 </scroller>
-                                                                <scroller key="verticalScroller" verticalHuggingPriority="750" horizontal="NO" id="t1h-QB-3Qg">
+                                                                <scroller key="verticalScroller" verticalHuggingPriority="750" doubleValue="1" horizontal="NO" id="t1h-QB-3Qg">
                                                                     <rect key="frame" x="250" y="1" width="15" height="119"/>
                                                                     <autoresizingMask key="autoresizingMask"/>
                                                                 </scroller>

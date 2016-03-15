@@ -235,6 +235,8 @@
 		961A2F4C18B43FCE009EA198 /* VideoControlButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VideoControlButton.h; sourceTree = "<group>"; };
 		961A2F4D18B43FCE009EA198 /* VideoControlButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VideoControlButton.m; sourceTree = "<group>"; };
 		961A2F5118B5293D009EA198 /* ImageKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ImageKit.framework; path = Quartz.framework/Frameworks/ImageKit.framework; sourceTree = "<group>"; };
+		9630C4CD1C9783880016933B /* VidSyncProject 1.26.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "VidSyncProject 1.26.xcdatamodel"; sourceTree = "<group>"; };
+		9630C4CE1C9783B20016933B /* VidSyncProject 1.26.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "VidSyncProject 1.26.xcdatamodel"; sourceTree = "<group>"; };
 		964A49E018C29B030051EAFB /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		964A49E118C29B030051EAFB /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
 		964A49E318C2BEAE0051EAFB /* ProjectController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProjectController.h; sourceTree = "<group>"; };
@@ -1943,6 +1945,8 @@
 		96AE98861165348400118398 /* VidSyncProject.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
+				9630C4CE1C9783B20016933B /* VidSyncProject 1.26.xcdatamodel */,
+				9630C4CD1C9783880016933B /* VidSyncProject 1.26.xcdatamodel */,
 				969CFCA91C9548BD006C9904 /* VidSyncProject 1.25.xcdatamodel */,
 				969CFCA81C9547FD006C9904 /* VidSyncProject 1.24.xcdatamodel */,
 				967D3B0E1C93B01700B9D835 /* VidSyncProject 1.23.xcdatamodel */,

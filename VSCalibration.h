@@ -44,6 +44,7 @@
 #define SCALE_FACTOR_P1 1.0e-7
 #define SCALE_FACTOR_P2 1.0e-7
 #define SCALE_FACTOR_P3 1.0e-7
+#define SCALE_FACTOR_P4 1.0e-10
 
 typedef struct
 {
@@ -54,8 +55,8 @@ typedef struct
 
 double orthogonalRegressionLineCostFunction(NSPoint line[], const size_t numLinePoints);
 double orthogonalRegressionTotalCostFunction(const gsl_vector *v, void *params);
-NSPoint undistortPoint(const NSPoint* pt, const double x0, const double y0, const double k1, const double k2, const double k3, const double k4, const double k5, const double k6, const double k7, const double p1, const double p2, const double p3);
-NSPoint redistortPoint(const NSPoint* pt, const double x0, const double y0, const double k1, const double k2, const double k3, const double k4, const double k5, const double k6, const double k7, const double p1, const double p2, const double p3);
+NSPoint undistortPoint(const NSPoint* pt, const double x0, const double y0, const double k1, const double k2, const double k3, const double k4, const double k5, const double k6, const double k7, const double p1, const double p2, const double p3, const double p4);
+NSPoint redistortPoint(const NSPoint* pt, const double x0, const double y0, const double k1, const double k2, const double k3, const double k4, const double k5, const double k6, const double k7, const double p1, const double p2, const double p3, const double p4);
 int redistortionRootFunc_f(const gsl_vector* x, void* params, gsl_vector* f);
 int redistortionRootFunc_df(const gsl_vector* x, void* params, gsl_matrix* J);
 int redistortionRootFunc_fdf(const gsl_vector* x, void* params, gsl_vector* f, gsl_matrix* J);
@@ -118,6 +119,7 @@ int redistortionRootFunc_fdf(const gsl_vector* x, void* params, gsl_vector* f, g
 @property (strong) NSNumber *distortionP1;
 @property (strong) NSNumber *distortionP2;
 @property (strong) NSNumber *distortionP3;
+@property (strong) NSNumber *distortionP4;
 @property (strong) NSNumber *distortionReductionAchieved;
 @property (strong) NSNumber *distortionRemainingPerPoint;
 
