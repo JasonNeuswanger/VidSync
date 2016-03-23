@@ -205,7 +205,7 @@ NSPoint project2DPoint(NSPoint pt, double projectionMatrix[9])
             self.worldX = [NSNumber numberWithDouble:gsl_vector_get(s->x, 0)];
             self.worldY = [NSNumber numberWithDouble:gsl_vector_get(s->x, 1)];
             self.worldZ = [NSNumber numberWithDouble:gsl_vector_get(s->x, 2)];
-            self.reprojectionErrorNorm = [NSNumber numberWithDouble:sqrt(s->fval)];
+            self.reprojectionErrorNorm = [NSNumber numberWithDouble:sqrt(s->fval / numLines)];  // actually the RMS reprojection error
           // Useful diagnostic tool here highlights 
     //        if (iter > 300 || s->fval > 6.0) {
     //            NSLog(@"After %d iterations for point %@ in event %@, cost function with final 3D point of (%1.5f,%1.5f,%1.5f) was %1.5f.",(int) iter,[self index],[self.trackedEvent index],gsl_vector_get(s->x,0),gsl_vector_get(s->x,1),gsl_vector_get(s->x,2),s->fval);

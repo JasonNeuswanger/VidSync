@@ -1967,7 +1967,9 @@ int refractionRootFunc_f(const gsl_vector* x, void* params, gsl_vector* f)
     final_RMS_error=sqrt(final_cost_function_value/totalPointCount);
     self.distortionReductionAchieved = [NSNumber numberWithDouble:(initial_RMS_error - final_RMS_error) / initial_RMS_error];
     self.distortionRemainingPerPoint = [NSNumber numberWithDouble:final_RMS_error];
-
+/*
+    NSLog(@"Distortion cost function was reduced by %1.2f percent.",100*(initial_cost_function_value - final_cost_function_value) / initial_cost_function_value);
+  */
     gsl_vector_free(x);
     gsl_vector_free(ss);
     gsl_multimin_fminimizer_free (s);

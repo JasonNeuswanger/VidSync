@@ -25,7 +25,6 @@
 
 #import "VSCalibrationPoint.h"
 
-
 @implementation VSCalibrationPoint
 
 @dynamic screenX;
