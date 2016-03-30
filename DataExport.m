@@ -162,6 +162,7 @@
     
 	NSData *xmlData = [xmlDoc XMLDataWithOptions:NSXMLNodePrettyPrint];
 	if ([xmlData writeToFile:[self fileNameForExportedFile:@".xml"] atomically:YES]) {
+        self.project.updatedSinceLastExport = [NSNumber numberWithBool:NO];
 		[shutterClick play];
 	} else {
 		NSRunAlertPanel(@"Error writing file.",@"This project's data could not be exported to an XML file for some reason.",@"Ok",nil,nil);

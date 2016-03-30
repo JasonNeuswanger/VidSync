@@ -257,6 +257,10 @@ NSPoint project2DPoint(NSPoint pt, double projectionMatrix[9])
 		self.worldY = nil;
 		self.worldZ = nil;        
     }
+    if ([self.screenPoints count] > 0) {                        // After updating a point (whether 3D or not) set the project file to know it was updated sinece last export.
+        VSEventScreenPoint *pt = [self.screenPoints anyObject]; // The purpose of this is for my code that reads VidSync Document files direclty to check progress of analysis by colleagues in a whole folder.
+        pt.videoClip.project.updatedSinceLastExport = [NSNumber numberWithBool:NO];
+    }
 }
 
 

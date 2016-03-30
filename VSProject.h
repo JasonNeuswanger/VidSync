@@ -42,6 +42,7 @@
 @property (strong) NSMutableSet *videoClips;
 
 @property (strong) NSNumber *useIterativeTriangulation;
+@property (strong) NSNumber *updatedSinceLastExport;
 
 @property (strong) NSString *exportPathForData;
 @property (strong) NSNumber *exportClipSelectedClipName;

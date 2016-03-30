@@ -49,6 +49,7 @@
 @dynamic movieCaptureStartTime;
 @dynamic movieCaptureEndTime;
 @dynamic distortionDisplayMode;
+@dynamic updatedSinceLastExport;
 
 @synthesize document;
 

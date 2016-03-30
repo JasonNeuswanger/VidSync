@@ -202,6 +202,8 @@
 		96070354152A842000905BCC /* VidSyncProject 1.10.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "VidSyncProject 1.10.xcdatamodel"; sourceTree = "<group>"; };
 		96070355153350A700905BCC /* VidSyncProject 1.11.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "VidSyncProject 1.11.xcdatamodel"; sourceTree = "<group>"; };
 		96070356153365BF00905BCC /* DistortionIcon.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = DistortionIcon.icns; sourceTree = "<group>"; };
+		96090A151CAB834200E98599 /* VidSyncProject 1.27.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "VidSyncProject 1.27.xcdatamodel"; sourceTree = "<group>"; };
+		96090A161CAB838D00E98599 /* VidSyncProject 1.28.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "VidSyncProject 1.28.xcdatamodel"; sourceTree = "<group>"; };
 		9612EC0818B57A1300BBED62 /* VidSyncProject 1.12.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "VidSyncProject 1.12.xcdatamodel"; sourceTree = "<group>"; };
 		9612EC0918B5825300BBED62 /* VSTrackedObjectPortrait.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VSTrackedObjectPortrait.h; sourceTree = "<group>"; };
 		9612EC0A18B5825300BBED62 /* VSTrackedObjectPortrait.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VSTrackedObjectPortrait.m; sourceTree = "<group>"; };
@@ -1945,6 +1947,8 @@
 		96AE98861165348400118398 /* VidSyncProject.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
+				96090A161CAB838D00E98599 /* VidSyncProject 1.28.xcdatamodel */,
+				96090A151CAB834200E98599 /* VidSyncProject 1.27.xcdatamodel */,
 				9630C4CE1C9783B20016933B /* VidSyncProject 1.26.xcdatamodel */,
 				9630C4CD1C9783880016933B /* VidSyncProject 1.26.xcdatamodel */,
 				969CFCA91C9548BD006C9904 /* VidSyncProject 1.25.xcdatamodel */,
