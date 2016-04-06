@@ -63,9 +63,8 @@
         self = [super initWithWindowNibName:@"VideoClipWindow"];
         [self window];  // This forces a call to loadWindow, which invokes windowDidLoad and windowWillLoad, and allows video to load properly
         [self setShouldCascadeWindows:NO];
-        self.videoClip = inVideoClip;               // so the error here is definitely from this line, not the one below
+        self.videoClip = inVideoClip;
         self.videoClip.windowController = self;
-        // inVideoClip.windowController = self; // if I replace the two lines above with this one, the error idsappears
         managedObjectContext = moc;
         if (self.videoClip.windowFrame != nil) [[self window] setFrameFromString:self.videoClip.windowFrame];
         
@@ -642,12 +641,6 @@
 {
 	VidSyncDocument *doc = self.document;
     int showDistortionLinesFromWhichTimecodes = [[[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"showDistortionLinesFromWhichTimecodes"] intValue];
-    
-    /*
-     (showDistortionLinesFromWhichTimecodes == 2 || [UtilityFunctions timeString:distortionLine.timecode isEqualToTimeString:[vwc.videoClip.project.document currentMasterTimeString]])
-     
-     */
-	
 	float shortestDistanceFromClick = 1000000.0;								// initialize with an absurdly high number, so the first real click will be "closer"
 	float distanceFromClick;
 	float clickToPointVector[2];
@@ -927,6 +920,7 @@
     [self.videoClip carefullyRemoveObserver:self forKeyPath:@"syncOffset"];
     [self.videoClip carefullyRemoveObserver:self forKeyPath:@"isMasterClipOf"];
 
+    [self.videoClip.project carefullyRemoveObserver:self.overlayView forKeyPath:@"distortionDisplayMode"];
     
     @try {
         // This is one of the most nonsensical pieces of code in VidSync. It stops a crash bug and I have no idea why. Basically,

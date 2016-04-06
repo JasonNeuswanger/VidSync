@@ -649,13 +649,11 @@ static void *AVSPPlayerCurrentTimeContext = &AVSPPlayerCurrentTimeContext;
     
     [syncedPlaybackWindowController close];
     syncedPlaybackWindowController = nil;
-    
     for (id windowController in [self windowControllers]) { // Putting this here to remove observer on window controller before document no longer exists
         if ([windowController class] == [VideoWindowController class]) {
             VideoWindowController *__weak vwc = (VideoWindowController *)windowController;
             @try {
                 [vwc removeObserver:self forKeyPath:@"playerView.player.rate"];
-                // NSLog(@"After removal, observation info is %@",[vwc.playerView.player observationInfo]);
             } @catch (id exception) {
                 NSLog(@"Exception when document tries to to remove observer form VideoWindowController: %@",(NSException *)exception);
             }
