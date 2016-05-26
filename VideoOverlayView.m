@@ -977,7 +977,7 @@
 {
 	float hintLineDrawInterval = [[[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"hintLineDrawInterval"] floatValue];
 	NSBezierPath *path = [hintLine bezierPathForLineWithInterval:hintLineDrawInterval];
-	if (path) {
+    if (path) {
         if ([[[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"showScreenItemDropShadows"] boolValue] == YES) {
             NSShadow *shadow = [NSShadow new];
             [shadow setShadowColor: [NSColor blackColor]];

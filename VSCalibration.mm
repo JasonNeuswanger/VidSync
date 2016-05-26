@@ -149,14 +149,16 @@ NSPoint redistortPoint(const NSPoint* pt, const double x0, const double y0, cons
     gsl_vector_set(x, 0, xuc/2.5);
     gsl_vector_set(x, 1, yuc/2.5);
     
-    // Newton's algorithm typically uses 0.000010 to 0.000030, rarely a lot more; the hybrid algorithm is faster
-    T = gsl_multiroot_fdfsolver_gnewton;
-    // Hybridsj algorithm timing ranges from 0.000007 to 0.000017, except first iteration which is slower. This algorithm is faster, but
-    // it was a bit more prone to numerical stabilities around the edges, so I'm sticking with Newton's.
-    //T = gsl_multiroot_fdfsolver_hybridsj;
-    
-    // Timer for diagnostics
-    // NSDate *methodStart = [NSDate date];
+    // Two algorithms for the redistortion have typically worked okay. Both fail to converge on a good solution (residuals in the 2 to 400 range or so,
+    // as opposed to something like 1e-10 after proper convergence) for similar points. It seems this only happens when calculating far-offscreen
+    // hint line points with an extremely distorted fisheye lens, points that aren't relevant to any actual measurements or displays, although they might
+    // result in display glitches at the extreme corners of the image sometimes. Even with ultrawide fisheyes, the problem only appeared for some videos
+    // and not others. VidSync previously used the gnewton solver based on the appearance of convergence in these scenarios, but it turns out that was
+    // illusory and it was hitting the iteration limit without improving the solution instead. The hybridsj solver as used below is faster and does not
+    // get hung up on those failed, irrelevant points. So I switched from gnewton back to hybridsj to prevent the program from hanging.
+
+    //T = gsl_multiroot_fdfsolver_gnewton;
+    T = gsl_multiroot_fdfsolver_hybridsj;
     
     s = gsl_multiroot_fdfsolver_alloc(T, n);
     gsl_multiroot_fdfsolver_set(s, &f, x);
@@ -165,16 +167,25 @@ NSPoint redistortPoint(const NSPoint* pt, const double x0, const double y0, cons
         iter++;
         status = gsl_multiroot_fdfsolver_iterate(s);
         if (status) {
-            NSLog(@"Error in redistortPoint call to gsl_multiroot_fdfsolver_iterate: %s", gsl_strerror(status));
+            // This error will happen naturally as described above in extreme scenarios, but there's no reason to slow things down by logging it.
+            // NSLog(@"Error in redistortPoint call to gsl_multiroot_fdfsolver_iterate: %s", gsl_strerror(status));
             break;
         }
         status = gsl_multiroot_test_residual (s->f, 1e-7);
     } while (status == GSL_CONTINUE && iter < 10000);
     
+    // Diagnostic code to print residuals.
+//    double resid = 0.0;
+//    for (int i = 0; i < s->f->size; i ++) {
+//        resid += gsl_vector_get(s->f, i) * gsl_vector_get(s->f, i);
+//    }
+//    resid = sqrt(resid);
+//    NSLog(@"Took %lu iterations to achieve RMS residual of %.10f",iter,resid);
+    
     NSPoint result = NSMakePoint(x0 + gsl_vector_get(s->x, 0), y0 + gsl_vector_get(s->x, 1));
     
     /*
-    // Diagnostics
+    // Other diagnostics
     double r = sqrt(xuc*xuc+yuc*yuc);
     NSDate *methodFinish = [NSDate date];
     NSTimeInterval executionTime = [methodFinish timeIntervalSinceDate:methodStart];
@@ -1462,7 +1473,9 @@ int refractionRootFunc_f(const gsl_vector* x, void* params, gsl_vector* f)
 - (NSPoint) distortPoint:(NSPoint)undistortedPoint
 {
 	if (![self hasDistortionCorrection]) return undistortedPoint;		// just return the original point if there's no distortion correction yet
-    return redistortPoint(
+    CFTimeInterval startTime = CACurrentMediaTime();
+    NSLog(@"Redistorting point (%1.3f, %1.3f)",undistortedPoint.x, undistortedPoint.y);
+    NSPoint pt = redistortPoint(
                           &undistortedPoint, 
                           [self.distortionCenterX doubleValue],
                           [self.distortionCenterY doubleValue],
@@ -1478,6 +1491,9 @@ int refractionRootFunc_f(const gsl_vector* x, void* params, gsl_vector* f)
                           [self.distortionP3 doubleValue],
                           [self.distortionP4 doubleValue]
                           );
+    CFTimeInterval elapsedTime = CACurrentMediaTime() - startTime;
+    NSLog(@"Redistorted point to (%1.3f, %1.3f) in time %1.8f", pt.x, pt.y, (float) elapsedTime);
+    return pt;
 }
 
 - (NSPoint) undistortPoint:(NSPoint)distortedPoint  // Undistorts a point with this calibration's saved lambda value.
