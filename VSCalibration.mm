@@ -1473,9 +1473,7 @@ int refractionRootFunc_f(const gsl_vector* x, void* params, gsl_vector* f)
 - (NSPoint) distortPoint:(NSPoint)undistortedPoint
 {
 	if (![self hasDistortionCorrection]) return undistortedPoint;		// just return the original point if there's no distortion correction yet
-    CFTimeInterval startTime = CACurrentMediaTime();
-    NSLog(@"Redistorting point (%1.3f, %1.3f)",undistortedPoint.x, undistortedPoint.y);
-    NSPoint pt = redistortPoint(
+    return redistortPoint(
                           &undistortedPoint, 
                           [self.distortionCenterX doubleValue],
                           [self.distortionCenterY doubleValue],
@@ -1491,9 +1489,6 @@ int refractionRootFunc_f(const gsl_vector* x, void* params, gsl_vector* f)
                           [self.distortionP3 doubleValue],
                           [self.distortionP4 doubleValue]
                           );
-    CFTimeInterval elapsedTime = CACurrentMediaTime() - startTime;
-    NSLog(@"Redistorted point to (%1.3f, %1.3f) in time %1.8f", pt.x, pt.y, (float) elapsedTime);
-    return pt;
 }
 
 - (NSPoint) undistortPoint:(NSPoint)distortedPoint  // Undistorts a point with this calibration's saved lambda value.
