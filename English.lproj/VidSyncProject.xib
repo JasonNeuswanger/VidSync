@@ -3310,19 +3310,8 @@ IA
                                                 <action selector="reSort:" target="101506" id="103822"/>
                                             </connections>
                                         </button>
-                                        <button toolTip="Sorts events ascending by type, then by index, then by name" verticalHuggingPriority="750" id="103816">
-                                            <rect key="frame" x="188" y="294" width="87" height="19"/>
-                                            <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
-                                            <buttonCell key="cell" type="roundTextured" title="Sort (by Type)" bezelStyle="texturedRounded" alignment="center" controlSize="small" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="103817">
-                                                <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                                                <font key="font" metaFont="smallSystem"/>
-                                            </buttonCell>
-                                            <connections>
-                                                <action selector="reSort:" target="101602" id="103823"/>
-                                            </connections>
-                                        </button>
                                         <button toolTip="Sorts events ascending by type, then by index, then by name" verticalHuggingPriority="750" id="SCd-RG-1nt">
-                                            <rect key="frame" x="283" y="294" width="87" height="19"/>
+                                            <rect key="frame" x="240" y="294" width="87" height="19"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
                                             <buttonCell key="cell" type="roundTextured" title="Sort (by Time)" bezelStyle="texturedRounded" alignment="center" controlSize="small" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="a8e-WU-YFq">
                                                 <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
@@ -3333,7 +3322,7 @@ IA
                                             </connections>
                                         </button>
                                         <button toolTip="Open a window with a running total of events per event type for the current object (number of length measurements, etc)." verticalHuggingPriority="750" id="3Bv-aJ-yc4">
-                                            <rect key="frame" x="382" y="294" width="37" height="19"/>
+                                            <rect key="frame" x="339" y="294" width="37" height="19"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
                                             <buttonCell key="cell" type="roundTextured" title="Tally" bezelStyle="texturedRounded" alignment="center" controlSize="small" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="p5G-eg-JEk">
                                                 <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
