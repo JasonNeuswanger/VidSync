@@ -221,6 +221,7 @@
 	for (VSVideoClip *clip in [self.project.videoClips allObjects]) {
 		if (!clip.isMasterClipOf && [clip respondsToSyncedControls]) {	// if the clip is sync-locked, and isn't the master clip, then sync it
 			CMTime offset = [UtilityFunctions CMTimeFromString:clip.syncOffset];
+            // NSLog(@"reSync running for master time %@ and setting secondary clip to %@",[self currentMasterTimeString],[UtilityFunctions CMStringFromTime:CMTimeSubtract(currentMasterTime,offset)]);
 			[clip.windowController.playerView.player seekToTime:CMTimeSubtract(currentMasterTime,offset) toleranceBefore:kCMTimeZero toleranceAfter:kCMTimeZero];
 		}
 		[clip.windowController refreshOverlay];	// refresh the overlay whenever the time changes
