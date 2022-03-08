@@ -146,13 +146,16 @@
 	if (time.value == 0 && time.timescale == 0) {
 		return @"0:00:00:00.0/0"; // added this 1-31-2021 because I was getting divide by zero errors
 	}
-	int32_t subseconds = time.value % time.timescale;
-	int64_t seconds = time.value / time.timescale;
+	int8_t sign = (time.value > 0) ? 1 : -1;
+	int64_t time_value_positive = abs(time.value);
+	int32_t subseconds = time_value_positive % time.timescale;
+	int64_t seconds = time_value_positive / time.timescale;
 	int64_t day = seconds / 86400; // result rounds down to nearest int, typically 0
 	seconds -= day * 86400;
 	NSDate* date = [NSDate dateWithTimeIntervalSince1970:seconds];
-	NSString *result = [NSString stringWithFormat:@"%lld:%@.%d/%d", day, [dateFormatter stringFromDate:date], subseconds, time.timescale];
-	//NSLog(@"Returning CMStringFromTime value of %@", result);
+	NSString *sign_string = (sign > 0) ? @"" : @"-";
+	NSString *result = [NSString stringWithFormat:@"%@%lld:%@.%d/%d", sign_string, day, [dateFormatter stringFromDate:date], subseconds, time.timescale];
+	// NSLog(@"Returning CMStringFromTime value of %@ based on sign=%d, time_value_positive=%lld, seconds=%lld, subseconds=%ld, day=%lld.", result, sign, time_value_positive, seconds, subseconds, day);
 	return result;
 }
 
@@ -162,6 +165,10 @@
 	@try {
 		if ([timeString isEqualToString:@"0:00:00:00.0/0"]) {
 			return kCMTimeZero;
+		}
+		int8_t sign = ([timeString characterAtIndex:0] == '-') ? -1 : 1;
+		if (sign < 0) {
+			timeString = [timeString substringFromIndex:1];
 		}
 		NSArray *parts1 = [timeString componentsSeparatedByString:@":"];
 		int32_t days = [[parts1 objectAtIndex:0] intValue];
@@ -174,7 +181,7 @@
 		int32_t timescale = [[parts3 objectAtIndex:1] intValue];
 		int64_t totaltime = timescale * (86400*days + 3600*hours + 60*minutes + seconds) + subseconds;
 		//NSLog(@"For time %@, totaltime was %llu and timescale was %d.", timeString, totaltime, timescale);
-		return CMTimeMake(totaltime, timescale);
+		return CMTimeMake(sign * totaltime, timescale);
 	} @catch (id exception) {
 		NSLog(@"Exception in CMTimeFromString processing string %@", timeString);
 	}
