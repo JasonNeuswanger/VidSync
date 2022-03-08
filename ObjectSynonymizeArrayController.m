@@ -1,7 +1,7 @@
 /*********************************************************************************                                                                       
  * The MIT License (MIT)
  * 
- * Copyright (c) 2009-2016 Jason Neuswanger
+ * Copyright (c) 2009-2021 Jason Neuswanger
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -56,7 +56,7 @@
 
 - (IBAction) synonymize:(id)sender;
 {
-    if ([UtilityFunctions ConfirmAction:@"Are you sure you want to combine these two objects into one?"]) {
+	if ([UtilityFunctions ConfirmAction:@"Are you sure you want to combine these two objects into one?" withTitle:nil]) {
         VSTrackedObject *deadSynonym = [[self selectedObjects] objectAtIndex:0];
         VSTrackedObject *survivingSynonym = [[mainObjectsController selectedObjects] objectAtIndex:0];
         if (deadSynonym.notes != nil) survivingSynonym.notes = [survivingSynonym.notes stringByAppendingString:[NSString stringWithFormat:@"\n\n%@",deadSynonym.notes]];

@@ -1,7 +1,7 @@
 /*********************************************************************************                                                                       
  * The MIT License (MIT)
  * 
- * Copyright (c) 2009-2016 Jason Neuswanger
+ * Copyright (c) 2009-2021 Jason Neuswanger
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -36,6 +36,7 @@
 - (IBAction) goToLine:(id)sender;
 
 - (void) appendPointToSelectedLineAt:(NSPoint)coords;
-- (void) addNewAutodetectedLineWithNumber:(int)number ofPoints:(void *)points;
+- (void) addNewAutodetectedLineWithPoints:(void *)points;
+//- (void) addNewAutodetectedLineWithNumber:(int)number ofPoints:(void *)points;
 
 @end

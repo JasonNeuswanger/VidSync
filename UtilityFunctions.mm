@@ -1,18 +1,18 @@
 /*********************************************************************************                                                                       
  * The MIT License (MIT)
- * 
- * Copyright (c) 2009-2016 Jason Neuswanger
- * 
+ *
+ * Copyright (c) 2009-2021 Jason Neuswanger
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in all
  * copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -31,96 +31,164 @@
 
 + (NSColor *) userDefaultColorForKey:(NSString *)key
 {
-    NSColor *color;
-    NSData *colorData = [[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:key];
-    if (colorData != nil) {
-        color = (NSColor *) [NSUnarchiver unarchiveObjectWithData:colorData];
-    } else {
-        NSLog(@"Color data was nil for key %@ (not found in user's defaults or in initial default values), using red instead.",key);
-        color = [NSColor redColor];
-    }
-    return color;
+	NSColor *color;
+	NSData *colorData = [[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:key];
+	if (colorData != nil) {
+		NSError *err;
+		color = [NSKeyedUnarchiver unarchivedObjectOfClass:[NSColor class] fromData:colorData error:&err];
+	} else {
+		NSLog(@"Color data was nil for key %@ (not found in user's defaults or in initial default values), using red instead.",key);
+		color = [NSColor redColor];
+	}
+	return color;
 }
 
-+ (BOOL) ConfirmAction:(NSString *)userMessage
++ (BOOL) ConfirmAction:(NSString *)userMessage withTitle:(NSString *)title
 {
-    NSAlert *confirmationAlert = [NSAlert new];
-    [confirmationAlert setMessageText:@"Are you sure?"];
-    [confirmationAlert setInformativeText:userMessage];
-    [confirmationAlert addButtonWithTitle:@"No"];
-    [confirmationAlert addButtonWithTitle:@"Yes"];
-    [confirmationAlert setAlertStyle:NSWarningAlertStyle];
-    NSInteger alertResult = [confirmationAlert runModal];
-    return (alertResult == NSAlertSecondButtonReturn);
+	NSAlert *confirmationAlert = [NSAlert new];
+	if (title == nil) {
+		[confirmationAlert setMessageText:@"Are you sure?"];
+	} else {
+		[confirmationAlert setMessageText:title];
+	}
+	[confirmationAlert setInformativeText:userMessage];
+	[confirmationAlert addButtonWithTitle:@"No"];
+	[confirmationAlert addButtonWithTitle:@"Yes"];
+	[confirmationAlert setAlertStyle:NSAlertStyleWarning];
+	NSInteger alertResult = [confirmationAlert runModal];
+	return (alertResult == NSAlertSecondButtonReturn);
 }
 
-+ (void) InformUser:(NSString *)userMessage
++ (void) InformUser:(NSString *)userMessage withTitle:(NSString *)title
 {
-    NSAlert *alert = [NSAlert new];
-    [alert setMessageText:@"Important Information"];
-    [alert setInformativeText:userMessage];
-    [alert addButtonWithTitle:@"Ok"];
-    [alert setAlertStyle:NSInformationalAlertStyle];
-    [alert runModal];
+	NSAlert *alert = [NSAlert new];
+	if (title == nil) {
+		[alert setMessageText:@"Important Information"];
+	} else {
+		[alert setMessageText:title];
+	}
+	[alert setMessageText:@"Important Information"];
+	[alert setInformativeText:userMessage];
+	[alert addButtonWithTitle:@"Ok"];
+	[alert setAlertStyle:NSAlertStyleInformational];
+	[alert runModal];
+}
+
++ (NSString *) stringFromDateTime:(NSDate *)dateTime format:(NSString *)format
+{
+	NSDateFormatter *df = [[NSDateFormatter alloc] init];
+	[df setTimeZone:[NSTimeZone systemTimeZone]];
+	[df setLocale:[NSLocale currentLocale]];
+	[df setDateFormat:format];
+	[df setFormatterBehavior:NSDateFormatterBehaviorDefault];
+	return [df stringFromDate:dateTime];
+}
+
++ (NSDate *) dateTimeFromString:(NSString *)dateTimeString  format:(NSString *)format
+{
+	NSDateFormatter *df = [[NSDateFormatter alloc] init];
+	[df setTimeZone:[NSTimeZone systemTimeZone]];
+	[df setLocale:[NSLocale currentLocale]];
+	[df setDateFormat:format];
+	[df setFormatterBehavior:NSDateFormatterBehaviorDefault];
+	[df setLenient:YES];
+	return [df dateFromString:dateTimeString];
+}
+
++ (void) delayCallback:(void(^)(void))callback forTotalSeconds:(double)delayInSeconds
+{
+	// Takes a block of code as the parameter and runs it after a given delay in seconds
+	// Borrowed from https://stackoverflow.com/questions/15413014/objective-c-delay-action-with-blocks/15413063
+	dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
+	dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+		 if(callback){
+			 callback();
+		 }
+	 });
 }
 
 + (BOOL) timeString:(NSString *)timeString1 isEqualToTimeString:(NSString *)timeString2
 {
-    // This is just a string version of the function below
-    CMTime time1 = [UtilityFunctions CMTimeFromString:timeString1];
-    CMTime time2 = [UtilityFunctions CMTimeFromString:timeString2];
-    return [UtilityFunctions time:time1 isEqualToTime:time2];
+	// This is just a string version of the function below
+	CMTime time1 = [UtilityFunctions CMTimeFromString:timeString1];
+	CMTime time2 = [UtilityFunctions CMTimeFromString:timeString2];
+	return [UtilityFunctions time:time1 isEqualToTime:time2];
 }
 
 + (BOOL) time:(CMTime)time1 isEqualToTime:(CMTime)time2
 {
-    // This function allows comparing the "equality" of times on different time scales, when the times are effectively the same but not actually equal because of rounding differences in the timescales
-    // This is mainly useful for supporting compatibility with older files in which some points were recorded on strange timescales, not the master clip's native time scale
-    Float64 cmTime1seconds = CMTimeGetSeconds(time1);
-    Float64 cmTime2seconds = CMTimeGetSeconds(time2);
-    Float64 timeDifference = fabs(cmTime1seconds - cmTime2seconds);
-    return timeDifference < 0.004f;    // a realistic difference for me was 0.0016; the value of 0.004 should support detecting real differences at 240 fps or less and ignoring smaller rounding errors
+	// This function allows comparing the "equality" of times on different time scales, when the times are effectively the same but not actually equal because of rounding differences in the timescales
+	// This is mainly useful for supporting compatibility with older files in which some points were recorded on strange timescales, not the master clip's native time scale
+	Float64 cmTime1seconds = CMTimeGetSeconds(time1);
+	Float64 cmTime2seconds = CMTimeGetSeconds(time2);
+	Float64 timeDifference = fabs(cmTime1seconds - cmTime2seconds);
+	return timeDifference < 0.004f;    // a realistic difference for me was 0.0016; the value of 0.004 should support detecting real differences at 240 fps or less and ignoring smaller rounding errors
 }
 
 + (NSString *) CMStringFromTime:(CMTime)time onScale:(int32_t)timeScale
 {
-    CMTime scaledTime = CMTimeConvertScale(time,timeScale,kCMTimeRoundingMethod_RoundHalfAwayFromZero);
-    int64_t scaledTimeValue = scaledTime.value;
-    QTTime qtTime = QTMakeTime(scaledTimeValue,timeScale);
-    return QTStringFromTime(qtTime);
-}
-
-+ (NSString *) CMStringFromTime:(CMTime)time // I have to use QTTime functions for now to encode/decode times as strings for backward compatibility with files that stored times as strings in Core Data.
-                                            // The modern way to do it would be to store the times as dictonaries using CMTimeMakeFromDictiory and CMTimeCopyAsDictionary, but backward compatability would be annoying.
-                                            // This time thing should be the only reason I still have QTKit included in this project, eventually. I'll have to code the string conversions from scratch to eliminate QTKit.
-{
-    long long timeValue = (long long) time.value;
-    long timeScale = (long) time.timescale;
-    QTTime qtTime = QTMakeTime(timeValue,timeScale);
-    return QTStringFromTime(qtTime);
-}
-
-+ (CMTime) CMTimeFromString:(NSString *)timeString; // This one also uses QTKit
-{
-    QTTime rawTime = QTTimeFromString(timeString);
-	if ([timeString characterAtIndex:0] == '-') {
-		QTTime zero = QTMakeTime(0,rawTime.timeScale);
-		NSComparisonResult rawTimeComparedWithZero = QTTimeCompare(rawTime,zero);
-		if (rawTimeComparedWithZero == NSOrderedDescending) {	// if QTTimeFromString returned a positive time from a negative string, fix it and return it.  
-			QTTime decrementedTime = QTTimeDecrement(zero,rawTime);
-            return CMTimeMake((int64_t) decrementedTime.timeValue, (int32_t) decrementedTime.timeScale);
-		}
+	CMTime scaledTime = CMTimeConvertScale(time, timeScale, kCMTimeRoundingMethod_RoundHalfAwayFromZero);
+	//    int64_t scaledTimeValue = scaledTime.value;
+	//    QTTime qtTime = QTMakeTime(scaledTimeValue,timeScale);
+	//    return QTStringFromTime(qtTime);
+	if (timeScale == 0) {
+		return @"0:00:00:00.0/0";
+	} else {
+		return [UtilityFunctions CMStringFromTime:scaledTime];
 	}
-    return CMTimeMake((int64_t) rawTime.timeValue, (int32_t) rawTime.timeScale);
 }
 
-+ (QTTime) FixedQTMakeTimeScaled:(QTTime)inTime scale:(long)timeScale	// Fixes another bug in Quicktime, in which QTMakeTimeScaled comes up 1 short of the timeValue it should
-{	
-	long double newTimeDouble = ((long double) inTime.timeValue / (long double) inTime.timeScale) * (long double) timeScale;
-	long long newTimeLongLong = llroundl(newTimeDouble);	// original QTTime just casts it to double, which is in effect floor() instead of round()
-	return QTMakeTime(newTimeLongLong,timeScale);
++ (NSString *) CMStringFromTime:(CMTime)time
+{
+	static NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+	[dateFormatter setTimeZone:[NSTimeZone timeZoneWithName:@"UTC"]];
+	[dateFormatter setDateFormat:@"HH:mm:ss"];
+	if (time.value == 0 && time.timescale == 0) {
+		return @"0:00:00:00.0/0"; // added this 1-31-2021 because I was getting divide by zero errors
+	}
+	int32_t subseconds = time.value % time.timescale;
+	int64_t seconds = time.value / time.timescale;
+	int64_t day = seconds / 86400; // result rounds down to nearest int, typically 0
+	seconds -= day * 86400;
+	NSDate* date = [NSDate dateWithTimeIntervalSince1970:seconds];
+	NSString *result = [NSString stringWithFormat:@"%lld:%@.%d/%d", day, [dateFormatter stringFromDate:date], subseconds, time.timescale];
+	//NSLog(@"Returning CMStringFromTime value of %@", result);
+	return result;
 }
 
++ (CMTime) CMTimeFromString:(NSString *)timeString;
+{
+	// Time strings from QTMakeTime anyway are of the form 0:00:15:14.29/30
+	@try {
+		if ([timeString isEqualToString:@"0:00:00:00.0/0"]) {
+			return kCMTimeZero;
+		}
+		NSArray *parts1 = [timeString componentsSeparatedByString:@":"];
+		int32_t days = [[parts1 objectAtIndex:0] intValue];
+		int32_t hours = [[parts1 objectAtIndex:1] intValue];
+		int32_t minutes = [[parts1 objectAtIndex:2] intValue];
+		NSArray *parts2 = [[parts1 objectAtIndex:3] componentsSeparatedByString:@"."];
+		int32_t seconds = [[parts2 objectAtIndex:0] intValue];
+		NSArray *parts3 = [[parts2 objectAtIndex:1] componentsSeparatedByString:@"/"];
+		int32_t subseconds = [[parts3 objectAtIndex:0] intValue];
+		int32_t timescale = [[parts3 objectAtIndex:1] intValue];
+		int64_t totaltime = timescale * (86400*days + 3600*hours + 60*minutes + seconds) + subseconds;
+		//NSLog(@"For time %@, totaltime was %llu and timescale was %d.", timeString, totaltime, timescale);
+		return CMTimeMake(totaltime, timescale);
+	} @catch (id exception) {
+		NSLog(@"Exception in CMTimeFromString processing string %@", timeString);
+	}
+	//    QTTime rawTime = QTTimeFromString(timeString);
+	//    if ([timeString characterAtIndex:0] == '-') {
+	//        QTTime zero = QTMakeTime(0,rawTime.timeScale);
+	//        NSComparisonResult rawTimeComparedWithZero = QTTimeCompare(rawTime,zero);
+	//        if (rawTimeComparedWithZero == NSOrderedDescending) {    // if QTTimeFromString returned a positive time from a negative string, fix it and return it.
+	//            QTTime decrementedTime = QTTimeDecrement(zero,rawTime);
+	//            return CMTimeMake((int64_t) decrementedTime.timeValue, (int32_t) decrementedTime.timeScale);
+	//        }
+	//    }
+	//    return CMTimeMake((int64_t) rawTime.timeValue, (int32_t) rawTime.timeScale);
+}
 
 + (NSPoint) project2DPoint:(NSPoint)pt usingMatrix:(double[9])A
 {
@@ -158,7 +226,7 @@
 	A[8] = pointsInPlane[2].z - pointsInPlane[0].z;
 	
 	// Use Lapack's dgesv routine to solve the system Ax=b for x.
-
+	
 	__CLPK_integer n = 3;								// Number of linearly independent rows in the matrix A
 	__CLPK_integer nrhs = 1;							// Number of columns of the matrix b (1, of course)
 	__CLPK_integer lda = 3;								// Leading dimension of the matrix A
@@ -177,87 +245,87 @@
 }
 
 
-+ (VSPoint3D) intersectionOfNumber:(int)numLines of3DLines:(VSLine3D[])lines meanPLD:(double *)meanPLD
++ (VSPoint3D) intersectionOfNumber:(size_t)numLines of3DLines:(VSLine3D[])lines meanPLD:(double *)meanPLD
 {
 	// This calculates the closest point of approach of an arbitrary number of 3D lines.  The formula comes from Wikipedia.
-    // It's the last formula on this page: http://en.wikipedia.org/wiki/Line-line_intersection
-    
-    // I need to first loop through and calculate the CPA.
-    // Then, I can loop through the lines one by one and calculate their distances from the CPA, and average those to get the error index.
-    
-    double I_vvt[9] = {0,0,0,0,0,0,0,0,0};      // 3x3 matrix (as a row-by-row 9 vector) holding the running total of I_3x3 - v_i * Transpose(v_i)
-    double I_vvtp[3] = {0,0,0};                 // 3-vector holding the running total of (I_3x3 - v_i * Transpose(v_i)).p
-    double p[3];
-    double v[3],d[3],dnorm;
-    double A[9];
-    double CPAvect[3];                          // Holds the answer to the closest point of approach (CPA), our estimate of the lines' intersection.
-    VSPoint3D CPA;                              // Holds the answer as above but in a VSPoint3D struct    
-    
-    // This loops over all lines keeping a running total of I - vvT, and (I - vvT)p and adds to them for every line.
-    
-    for (int i=0; i<numLines; i++) {
-        d[0] = lines[i].back.x - lines[i].front.x;  // d is a vector along the ith line
-        d[1] = lines[i].back.y - lines[i].front.y;
-        d[2] = lines[i].back.z - lines[i].front.z;
-        dnorm = cblas_dnrm2(3,d,1);
-        v[0] = d[0]/dnorm;                          // v is a unit vector along the ith line
-        v[1] = d[1]/dnorm;
-        v[2] = d[2]/dnorm;
-        A[0] = 1;                                   // reset A to the identity matrix each time; it will be overwritten with the result of the calculation
-        A[1] = 0;
-        A[2] = 0;
-        A[3] = 0;
-        A[4] = 1;
-        A[5] = 0;
-        A[6] = 0;
-        A[7] = 0;
-        A[8] = 1;
-                
-        cblas_dger(CblasColMajor,3,3,-1.0,v,1,v,1,A,3);
-        
-        for (int j=0; j<9; j++) {
-            I_vvt[j] += A[j];                     // add the result of the calculation for I - v*Transpose(v) into the overall storage array before repeating the loop for other lines
-        }
-        p[0] = lines[i].front.x;
-        p[1] = lines[i].front.y;
-        p[2] = lines[i].front.z;
-
-        cblas_dgemv(CblasColMajor, CblasNoTrans, 3, 3, 1.0, A, 3, p, 1, 1.0, I_vvtp, 1);	// This one line this line's values to the total of (I_3x3 - v_i * Transpose(v_i)).p     
-
-    }
-
-    [VSCalibration invert3x3Matrix:I_vvt];  // Overwrites I_vvt with its inverse, using Lapack's dgetrf and dgetri functions.
-    
-    cblas_dgemv(CblasColMajor, CblasNoTrans, 3, 3, 1.0, I_vvt, 3, I_vvtp, 1, 0, CPAvect, 1);	// Multiplies the 3-vector I_vvtp by the 3x3 inverse of I_vvt to store the final result in CPAvect   
-    
-    CPA.x = CPAvect[0];
-    CPA.y = CPAvect[1];
-    CPA.z = CPAvect[2];
-    
-    // Now the CPA calculation is completed; time to calculate the error estimate.
-
-    double totalPLD = 0.0;  // Holds total point-line distance (PLD) from all the lines to their CPA
-    for (int i=0; i<numLines; i++) {
-        totalPLD += [UtilityFunctions distanceOfPoint:CPA fromLine:lines[i]];
-    }
-    *meanPLD = totalPLD / numLines;
-
+	// It's the last formula on this page: http://en.wikipedia.org/wiki/Line-line_intersection
+	
+	// I need to first loop through and calculate the CPA.
+	// Then, I can loop through the lines one by one and calculate their distances from the CPA, and average those to get the error index.
+	
+	double I_vvt[9] = {0,0,0,0,0,0,0,0,0};      // 3x3 matrix (as a row-by-row 9 vector) holding the running total of I_3x3 - v_i * Transpose(v_i)
+	double I_vvtp[3] = {0,0,0};                 // 3-vector holding the running total of (I_3x3 - v_i * Transpose(v_i)).p
+	double p[3];
+	double v[3],d[3],dnorm;
+	double A[9];
+	double CPAvect[3];                          // Holds the answer to the closest point of approach (CPA), our estimate of the lines' intersection.
+	VSPoint3D CPA;                              // Holds the answer as above but in a VSPoint3D struct
+	
+	// This loops over all lines keeping a running total of I - vvT, and (I - vvT)p and adds to them for every line.
+	
+	for (int i=0; i<numLines; i++) {
+		d[0] = lines[i].back.x - lines[i].front.x;  // d is a vector along the ith line
+		d[1] = lines[i].back.y - lines[i].front.y;
+		d[2] = lines[i].back.z - lines[i].front.z;
+		dnorm = cblas_dnrm2(3,d,1);
+		v[0] = d[0]/dnorm;                          // v is a unit vector along the ith line
+		v[1] = d[1]/dnorm;
+		v[2] = d[2]/dnorm;
+		A[0] = 1;                                   // reset A to the identity matrix each time; it will be overwritten with the result of the calculation
+		A[1] = 0;
+		A[2] = 0;
+		A[3] = 0;
+		A[4] = 1;
+		A[5] = 0;
+		A[6] = 0;
+		A[7] = 0;
+		A[8] = 1;
+		
+		cblas_dger(CblasColMajor,3,3,-1.0,v,1,v,1,A,3);
+		
+		for (int j=0; j<9; j++) {
+			I_vvt[j] += A[j];                     // add the result of the calculation for I - v*Transpose(v) into the overall storage array before repeating the loop for other lines
+		}
+		p[0] = lines[i].front.x;
+		p[1] = lines[i].front.y;
+		p[2] = lines[i].front.z;
+		
+		cblas_dgemv(CblasColMajor, CblasNoTrans, 3, 3, 1.0, A, 3, p, 1, 1.0, I_vvtp, 1);	// This one line this line's values to the total of (I_3x3 - v_i * Transpose(v_i)).p
+		
+	}
+	
+	[VSCalibration invert3x3Matrix:I_vvt];  // Overwrites I_vvt with its inverse, using Lapack's dgetrf and dgetri functions.
+	
+	cblas_dgemv(CblasColMajor, CblasNoTrans, 3, 3, 1.0, I_vvt, 3, I_vvtp, 1, 0, CPAvect, 1);	// Multiplies the 3-vector I_vvtp by the 3x3 inverse of I_vvt to store the final result in CPAvect
+	
+	CPA.x = CPAvect[0];
+	CPA.y = CPAvect[1];
+	CPA.z = CPAvect[2];
+	
+	// Now the CPA calculation is completed; time to calculate the error estimate.
+	
+	double totalPLD = 0.0;  // Holds total point-line distance (PLD) from all the lines to their CPA
+	for (int i=0; i<numLines; i++) {
+		totalPLD += [UtilityFunctions distanceOfPoint:CPA fromLine:lines[i]];
+	}
+	*meanPLD = totalPLD / numLines;
+	
 	return CPA;
 }
 
 + (double) distanceOfPoint:(VSPoint3D)point fromLine:(VSLine3D)line;
 {
-    // This function calculates the distance between a 3-D line and a 3-D point, using equation (6) from Mathworld's Point-Line Distance 3D page, 
-    // which is located here:  http://mathworld.wolfram.com/Point-LineDistance3-Dimensional.html
-    // I use that equation rather than the shorter-form last one (equation 11) because there's no BLAS or Lapack function for the vector cross product.
-    
-    double x1_x0[3] = {line.front.x - point.x, line.front.y - point.y, line.front.z - point.z};
-    double x2_x1[3] = {line.back.x - line.front.x, line.back.y - line.front.y, line.back.z - line.front.z};
-    double x1_x0_nrm = cblas_dnrm2(3,x1_x0,1);
-    double x2_x1_nrm = cblas_dnrm2(3,x2_x1,1);
-    double dotprod = cblas_ddot(3, x1_x0, 1, x2_x1, 1);
-    double dsquared = (x1_x0_nrm * x1_x0_nrm * x2_x1_nrm * x2_x1_nrm - dotprod*dotprod) / (x2_x1_nrm*x2_x1_nrm);
-    return sqrt(dsquared);
+	// This function calculates the distance between a 3-D line and a 3-D point, using equation (6) from Mathworld's Point-Line Distance 3D page,
+	// which is located here:  http://mathworld.wolfram.com/Point-LineDistance3-Dimensional.html
+	// I use that equation rather than the shorter-form last one (equation 11) because there's no BLAS or Lapack function for the vector cross product.
+	
+	double x1_x0[3] = {line.front.x - point.x, line.front.y - point.y, line.front.z - point.z};
+	double x2_x1[3] = {line.back.x - line.front.x, line.back.y - line.front.y, line.back.z - line.front.z};
+	double x1_x0_nrm = cblas_dnrm2(3,x1_x0,1);
+	double x2_x1_nrm = cblas_dnrm2(3,x2_x1,1);
+	double dotprod = cblas_ddot(3, x1_x0, 1, x2_x1, 1);
+	double dsquared = (x1_x0_nrm * x1_x0_nrm * x2_x1_nrm * x2_x1_nrm - dotprod*dotprod) / (x2_x1_nrm*x2_x1_nrm);
+	return sqrt(dsquared);
 }
 
 
@@ -314,67 +382,8 @@
 }
 
 + (NSString *)sanitizeFileNameString:(NSString *)fileName {
-    NSCharacterSet* illegalFileNameCharacters = [NSCharacterSet characterSetWithCharactersInString:@"/\\?%*|\"<>"];
-    return [[fileName componentsSeparatedByCharactersInSet:illegalFileNameCharacters] componentsJoinedByString:@""];
-}
-
-
-#pragma mark Helpers for OpenCV
-#pragma mark
-
-
-// These IplImage<-->CGImage conversion functions are adapted from http://niw.at/articles/2009/03/14/using-opencv-on-iphone/en
-
-// NOTE you SHOULD cvReleaseImage() for the return value when end of the code.
-+ (void *)CreateIplImageFromCGImage:(CGImageRef)imageRef {
-    
-    CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
-    // Creating temporal IplImage for drawing
-    IplImage *iplimage = cvCreateImage(
-                                       cvSize(CGImageGetWidth(imageRef), CGImageGetHeight(imageRef)), IPL_DEPTH_8U, 4
-                                       );
-    // Creating CGContext for temporal IplImage
-    CGContextRef contextRef = CGBitmapContextCreate(
-                                                    iplimage->imageData, iplimage->width, iplimage->height,
-                                                    iplimage->depth, iplimage->widthStep,
-                                                    colorSpace, kCGImageAlphaPremultipliedLast|kCGBitmapByteOrderDefault
-                                                    );
-    // Drawing CGImage to CGContext
-    CGContextDrawImage(
-                       contextRef,
-                       CGRectMake(0, 0, CGImageGetWidth(imageRef), CGImageGetHeight(imageRef)),
-                       imageRef
-                       );
-    CGContextRelease(contextRef);
-    CGColorSpaceRelease(colorSpace);
-    
-    // Creating result IplImage
-    IplImage *ret = cvCreateImage(cvGetSize(iplimage), IPL_DEPTH_8U, 3);    // changing this from 3 channels to 1, just for now
-    cvCvtColor(iplimage, ret, CV_RGBA2BGR);
-    cvReleaseImage(&iplimage);
-    return ret;
-}
-
-// NOTE You should convert color mode as RGB before passing to this function
-
-+ (CGImageRef)CGImageFromIplImage:(void *)imageAsVoid {
-    IplImage *image = (IplImage *) imageAsVoid;
-    CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
-    // Allocating the buffer for CGImage
-    NSData *data =
-    [NSData dataWithBytes:image->imageData length:image->imageSize];
-    CGDataProviderRef provider =
-    CGDataProviderCreateWithCFData((__bridge CFDataRef)data);
-    // Creating CGImage from chunk of IplImage
-    CGImageRef imageRef = CGImageCreate(
-                                        image->width, image->height,
-                                        image->depth, image->depth * image->nChannels, image->widthStep,
-                                        colorSpace, kCGImageAlphaNone|kCGBitmapByteOrderDefault,
-                                        provider, NULL, false, kCGRenderingIntentDefault
-                                        );
-    CGDataProviderRelease(provider);
-    CGColorSpaceRelease(colorSpace);
-    return imageRef;
+	NSCharacterSet* illegalFileNameCharacters = [NSCharacterSet characterSetWithCharactersInString:@"/\\?%*|\"<>"];
+	return [[fileName componentsSeparatedByCharactersInSet:illegalFileNameCharacters] componentsJoinedByString:@""];
 }
 
 #pragma mark Clone an NSManagedObject
@@ -385,29 +394,29 @@
 
 +(NSManagedObject *) Clone:(NSManagedObject *)source inContext:(NSManagedObjectContext *)context deep:(BOOL)deep
 {
-    NSString *entityName = [[source entity] name];
-    NSManagedObject *cloned = [NSEntityDescription insertNewObjectForEntityForName:entityName inManagedObjectContext:context];
-    NSDictionary *attributes = [[NSEntityDescription entityForName:entityName inManagedObjectContext:context] attributesByName];
-    for (NSString *attr in attributes) [cloned setValue:[source valueForKey:attr] forKey:attr];
-    if (deep) {
-        //Loop through all relationships, and clone them.
-        NSDictionary *relationships = [[NSEntityDescription entityForName:entityName inManagedObjectContext:context] relationshipsByName];
-        for (NSRelationshipDescription *rel in relationships){
-            NSString *keyName = [NSString stringWithFormat:@"%@",rel];
-            //get a set of all objects in the relationship
-            NSMutableSet *sourceSet = [source mutableSetValueForKey:keyName];
-            NSMutableSet *clonedSet = [cloned mutableSetValueForKey:keyName];
-            NSEnumerator *e = [sourceSet objectEnumerator];
-            NSManagedObject *relatedObject;
-            while ( relatedObject = [e nextObject]){
-                //Clone it, and add clone to set
-                NSManagedObject *clonedRelatedObject = [UtilityFunctions Clone:relatedObject inContext:context deep:deep];
-                [clonedSet addObject:clonedRelatedObject];
-            }
-        }
-    }
-    
-    return cloned;
+	NSString *entityName = [[source entity] name];
+	NSManagedObject *cloned = [NSEntityDescription insertNewObjectForEntityForName:entityName inManagedObjectContext:context];
+	NSDictionary *attributes = [[NSEntityDescription entityForName:entityName inManagedObjectContext:context] attributesByName];
+	for (NSString *attr in attributes) [cloned setValue:[source valueForKey:attr] forKey:attr];
+	if (deep) {
+		//Loop through all relationships, and clone them.
+		NSDictionary *relationships = [[NSEntityDescription entityForName:entityName inManagedObjectContext:context] relationshipsByName];
+		for (NSRelationshipDescription *rel in relationships){
+			NSString *keyName = [NSString stringWithFormat:@"%@",rel];
+			//get a set of all objects in the relationship
+			NSMutableSet *sourceSet = [source mutableSetValueForKey:keyName];
+			NSMutableSet *clonedSet = [cloned mutableSetValueForKey:keyName];
+			NSEnumerator *e = [sourceSet objectEnumerator];
+			NSManagedObject *relatedObject;
+			while ( relatedObject = [e nextObject]){
+				//Clone it, and add clone to set
+				NSManagedObject *clonedRelatedObject = [UtilityFunctions Clone:relatedObject inContext:context deep:deep];
+				[clonedSet addObject:clonedRelatedObject];
+			}
+		}
+	}
+	
+	return cloned;
 }
 
 @end

@@ -1,18 +1,18 @@
 /*********************************************************************************                                                                       
  * The MIT License (MIT)
- * 
- * Copyright (c) 2009-2016 Jason Neuswanger
- * 
+ *
+ * Copyright (c) 2009-2021 Jason Neuswanger
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in all
  * copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -51,18 +51,18 @@
 	NSManagedObjectModel *__strong managedObjectModel;
 	
 	VSProject *__weak project;
-    
+	
 	NSTimer *__strong playbackTimer;
-    
-    IBOutlet NSTextField *__weak projectNameDisplayInSyncedPlaybackWindow;
-    IBOutlet NSObjectController *__weak projectController;
-    IBOutlet TypeIndexNameSortedArrayController *__weak eventsObjectsController;
-    IBOutlet TypeIndexNameSortedArrayController *__weak objectsEventsController;
-    IBOutlet EventsOtherObjectsArrayController *__weak eventsOtherObjectsController;
-    IBOutlet AllPortraitsArrayController *__weak allPortraitsArrayController;
-    IBOutlet ObjectsPortraitsArrayController *__weak objectsPortraitsArrayController;
-
-    
+	
+	IBOutlet NSTextField *__weak projectNameDisplayInSyncedPlaybackWindow;
+	IBOutlet NSObjectController *__weak projectController;
+	IBOutlet TypeIndexNameSortedArrayController *__weak eventsObjectsController;
+	IBOutlet TypeIndexNameSortedArrayController *__weak objectsEventsController;
+	IBOutlet EventsOtherObjectsArrayController *__weak eventsOtherObjectsController;
+	IBOutlet AllPortraitsArrayController *__weak allPortraitsArrayController;
+	IBOutlet ObjectsPortraitsArrayController *__weak objectsPortraitsArrayController;
+	
+	
 	IBOutlet MagnifiedPreviewView *__weak magnifiedCalibrationPreview,*__weak magnifiedMeasurementPreview,*__weak magnifiedDistortionPreview;
 	IBOutlet VideoClipArrayController *__weak videoClipArrayController;
 	IBOutlet CalibScreenPtArrayController *__weak calibScreenPtFrontArrayController;
@@ -70,29 +70,31 @@
 	IBOutlet TrackedObjectArrayController *__weak trackedObjectsController;
 	IBOutlet TrackedEventArrayController *__weak trackedEventsController;
 	IBOutlet TypesArrayController *__weak trackedObjectTypesController;
-	IBOutlet TypesArrayController *__weak trackedEventTypesController;	
+	IBOutlet TypesArrayController *__weak trackedEventTypesController;
 	IBOutlet EventsPointsController *__weak eventsPointsController;
 	IBOutlet VSVisibleItemArrayController *__weak annotationsController;
 	IBOutlet VSVisibleItemArrayController *__weak distortionPointsController;
-	IBOutlet CalibDistortionLineArrayController *__weak distortionLinesController;	
+	IBOutlet CalibDistortionLineArrayController *__weak distortionLinesController;
 	IBOutlet ObjectSynonymizeArrayController *__weak objectSynonymizeController;
 	IBOutlet NSTableView *__weak eventsPointsTable;
 	
-    IBOutlet NSWindowController *__strong syncedPlaybackWindowController;
-    IBOutlet SyncedPlaybackPanel *__weak syncedPlaybackPanel;
-    IBOutlet SyncedPlaybackView *__weak syncedPlaybackView;
-    IBOutlet NSSlider *__weak syncedPlaybackScrubber;
-    int scrubberMaxTime;
-    
+	IBOutlet NSWindowController *__strong syncedPlaybackWindowController;
+	IBOutlet SyncedPlaybackPanel *__weak syncedPlaybackPanel;
+	IBOutlet SyncedPlaybackView *__weak syncedPlaybackView;
+	IBOutlet NSSlider *__weak syncedPlaybackScrubber;
+	int scrubberMaxTime;
+	
+	IBOutlet NSTextView *__weak textViewForQuadratNodesFront, *__weak textViewForQuadratNodesBack;
+	
 	IBOutlet PlayWhilePressedButton *__weak playForwardAtRate1WhilePressedButton,*__weak playBackwardAtRate1WhilePressedButton,*__weak playForwardAtRate2WhilePressedButton,*__weak playBackwardAtRate2WhilePressedButton,*__weak playForwardWhilePressedButton, *__weak playBackwardWhilePressedButton;
-    
-    IBOutlet VideoControlButton *__weak playOrPauseButton, *__weak playBackwardButton, *__weak playForwardAtRate1Button, *__weak playBackwardAtRate1Button, *__weak playForwardAtRate2Button, *__weak playBackwardAtRate2Button, *__weak instantReplayButton;
-    
+	
+	IBOutlet VideoControlButton *__weak playOrPauseButton, *__weak playBackwardButton, *__weak playForwardAtRate1Button, *__weak playBackwardAtRate1Button, *__weak playForwardAtRate2Button, *__weak playBackwardAtRate2Button, *__weak instantReplayButton;
+	
 	CMTime bookmarkTime1, bookmarkTime2;
-    BOOL bookmarkIsSet1, bookmarkIsSet2;
+	BOOL bookmarkIsSet1, bookmarkIsSet2;
 	
 	IBOutlet NSTextField *__weak masterTimeDisplay;
-
+	
 	IBOutlet MainProjectWindow *__weak mainWindow;
 	IBOutlet NSTabView *__weak mainTabView;
 	IBOutlet NSTabView *__weak calibrationSurfaceTabView;
@@ -100,7 +102,7 @@
 	
 	IBOutlet NSPopUpButton *__weak exportClipSelectionPopUpButton;
 	IBOutlet NSProgressIndicator *__weak videoCaptureProgressIndicator;
-    IBOutlet NSTextField *__weak videoCaptureProgressDescription;
+	IBOutlet NSTextField *__weak videoCaptureProgressDescription;
 	
 	IBOutlet NSProgressIndicator *__weak pointRecalculateProgressIndicator;
 	IBOutlet NSPanel *__weak pointRecalculatePanel;
@@ -111,16 +113,16 @@
 	NSComparisonResult stopTimeComparison;
 	
 	NSSound *__strong shutterClick;
-    
+	
 	NSNumberFormatter *__strong decimalFormatter;
-    
-    VSTrackedObject *__weak portraitSubject;
-    
-    IBOutlet NSButton *__weak allPortraitBrowserOpenButton;
-    
-    BOOL objectsTableSelectionChangeNotificationCascadeEnabled, eventsTableSelectionChangeNotificationCascadeEnabled;
-    
-    NSMutableSet *activeExportSessions;
+	
+	VSTrackedObject *__weak portraitSubject;
+	
+	IBOutlet NSButton *__weak allPortraitBrowserOpenButton;
+	
+	BOOL objectsTableSelectionChangeNotificationCascadeEnabled, eventsTableSelectionChangeNotificationCascadeEnabled;
+	
+	NSMutableSet *activeExportSessions;
 	
 }
 
@@ -255,7 +257,6 @@
 
 - (CGImageRef) stillCGImageFromVSVideoClip:(VSVideoClip *)videoClip atMasterTime:(CMTime)masterTime showOverlay:(BOOL)showOverlay;
 - (NSImage*)currentOverlayImageFromVSVideoClip:(VSVideoClip *)videoClip;
-- (CGImageRef)highQualityStillFromVSVideoClip:(VSVideoClip *)videoClip atMasterTime:(CMTime)masterTime;
 - (void)saveNSImageAsJpeg:(NSImage*)img destination:(NSString*)destination overwriteWarnings:(BOOL)overwriteWarnings;
 - (NSString *)fileNameForExportedFileFromClip:(VSVideoClip *)videoClip withExtension:(NSString *)extension;
 

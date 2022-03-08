@@ -3,7 +3,7 @@
 //
 
 #ifdef __cplusplus
-#include "opencv2/opencv.hpp"
+#import <opencv2/opencv.hpp>
 #endif
 
 #ifdef __OBJC__
@@ -12,9 +12,7 @@
 #import <CoreData/CoreData.h>
 #import <Cocoa/Cocoa.h>
 #import <Accelerate/Accelerate.h>
-#import <QTKit/QTKit.h>
 #import <QuartzCore/QuartzCore.h>
-#import <ImageKit/ImageKit.h>
 #import <AVFoundation/AVFoundation.h>
 #import <AVKit/AVKit.h>
 
@@ -31,7 +29,7 @@
 #import "VSDistortionPoint.h"
 #import "VSPoint.h"
 #import "VSHintLine.h"
-#import "VSEventScreenpoint.h"
+#import "VSEventScreenPoint.h"
 #import "VideoControlButton.h"
 #import "PlayWhilePressedButton.h"
 #import "SyncedPlaybackView.h"
@@ -42,6 +40,9 @@
 #import "VideoOverlayWindow.h"
 #import "MagnifiedPreviewView.h"
 #import "VS2DMatrixToStringTransformer.h"
+#import "VSColorTransformer.h"
+#import "VSColorCoreDataTransformer.h"
+#import "VSQuadratNodeListTransformer.h"
 #import "VSScientificNotationFormatter.h"
 #import "VSVisibleItem.h"
 #import "VSTrackedObjectType.h"

@@ -99,8 +99,6 @@
 	<string>VidSync Help Draft</string>
 	<key>CFBundleHelpBookName</key>
 	<string>vidsync.help</string>
-	<key>CFBundleIconFile</key>
-	<string>VidSyncIcon</string>
 	<key>CFBundleIdentifier</key>
 	<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
 	<key>CFBundleInfoDictionaryVersion</key>
@@ -110,7 +108,7 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>1.661</string>
+	<string>$(MARKETING_VERSION)</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleVersion</key>

@@ -1,7 +1,7 @@
 /*********************************************************************************                                                                       
  * The MIT License (MIT)
  * 
- * Copyright (c) 2009-2016 Jason Neuswanger
+ * Copyright (c) 2009-2021 Jason Neuswanger
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,7 +23,7 @@
  ***********************************************************************************/
 
 
-//#import "opencv2/opencv.hpp"
+#import <opencv2/opencv.hpp>
 
 #import <Cocoa/Cocoa.h>
 
@@ -52,19 +52,21 @@ typedef struct {		// Creates a pair of 2D points, which can be used to represent
 
 + (NSColor *) userDefaultColorForKey:(NSString *)key;
 
-+ (BOOL) ConfirmAction:(NSString *)userMessage;
-+ (void) InformUser:(NSString *)userMessage;
++ (BOOL) ConfirmAction:(NSString *)userMessage withTitle:(NSString *)title;
++ (void) InformUser:(NSString *)userMessage withTitle:(NSString *)title;
++ (void) delayCallback:(void(^)(void))callback forTotalSeconds:(double)delayInSeconds;
++ (NSString *) stringFromDateTime:(NSDate *)dateTime format:(NSString *)format;
++ (NSDate *) dateTimeFromString:(NSString *)dateTimeString format:(NSString *)format;
 
 + (BOOL) timeString:(NSString *)timeString1 isEqualToTimeString:(NSString *)timeString2;
 + (BOOL) time:(CMTime)time1 isEqualToTime:(CMTime)time2;
 + (NSString *) CMStringFromTime:(CMTime)time;
 + (NSString *) CMStringFromTime:(CMTime)time onScale:(int32_t)timeScale;
 + (CMTime) CMTimeFromString:(NSString *)timeString;
-+ (QTTime) FixedQTMakeTimeScaled:(QTTime)inTime scale:(long)timeScale;
 + (NSPoint) project2DPoint:(NSPoint)pt usingMatrix:(double[9])A;
 + (VSPoint3D) intersectionOfLine:(VSLine3D)line withPlaneDefinedByPoints:(VSPoint3D[3])pointsInPlane;
 
-+ (VSPoint3D) intersectionOfNumber:(int)numLines of3DLines:(VSLine3D[])lines meanPLD:(double *)meanPLD;
++ (VSPoint3D) intersectionOfNumber:(size_t)numLines of3DLines:(VSLine3D[])lines meanPLD:(double *)meanPLD;
 + (double) distanceOfPoint:(VSPoint3D)point fromLine:(VSLine3D)line;
 
 + (VSPointPair2D) extendLine:(VSPointPair2D)lineSegment toFillFrameOfClip:(VSVideoClip *)videoClip didFitInFrame:(bool *)didFit;
@@ -73,8 +75,8 @@ typedef struct {		// Creates a pair of 2D points, which can be used to represent
 
 + (NSString *)sanitizeFileNameString:(NSString *)fileName;
 
-+ (void *)CreateIplImageFromCGImage:(CGImageRef)imageRef;   // returns an IplImage ; can't use that c++ type in a .c header though
-+ (CGImageRef)CGImageFromIplImage:(void *)imageAsVoid;
+//+ (void *)CreateIplImageFromCGImage:(CGImageRef)imageRef;   // returns an IplImage ; can't use that c++ type in a .c header though
+//+ (CGImageRef)CGImageFromIplImage:(void *)imageAsVoid;
 
 +(NSManagedObject *) Clone:(NSManagedObject *)source inContext:(NSManagedObjectContext *)context deep:(BOOL)deep;
 

@@ -1,18 +1,18 @@
 /*********************************************************************************                                                                       
  * The MIT License (MIT)
- * 
- * Copyright (c) 2009-2016 Jason Neuswanger
- * 
+ *
+ * Copyright (c) 2009-2021 Jason Neuswanger
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in all
  * copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -37,12 +37,12 @@
 
 + (void) createHintLineFromScreenPoint:(VSEventScreenPoint *)screenPoint toVideoClip:(VSVideoClip *)videoClip
 {
-	// Convert the clicked screen coordinates into front and back face quadrat coordinates, using screenPoint's videoClip's calibration.	
+	// Convert the clicked screen coordinates into front and back face quadrat coordinates, using screenPoint's videoClip's calibration.
 	NSPoint screenPoint2D = NSMakePoint([screenPoint.screenX doubleValue],[screenPoint.screenY doubleValue]);
 	NSPoint frontQuadratCoords = [screenPoint.videoClip.calibration projectScreenPoint:screenPoint2D toQuadratSurface:@"Front"];
 	NSPoint backQuadratCoords = [screenPoint.videoClip.calibration projectScreenPoint:screenPoint2D toQuadratSurface:@"Back"];
-		
-	VSHintLine *hintLine = [NSEntityDescription insertNewObjectForEntityForName:@"VSHintLine" inManagedObjectContext:[screenPoint managedObjectContext]]; 
+	
+	VSHintLine *hintLine = [NSEntityDescription insertNewObjectForEntityForName:@"VSHintLine" inManagedObjectContext:[screenPoint managedObjectContext]];
 	
 	// should rename these attributes to quadratFrontX, quadratFrontY, quadratBackX, quadratBackY in the data model, and store those... but figure out how I unpack that line first
 	hintLine.frontSurfaceX = [NSNumber numberWithFloat:frontQuadratCoords.x];
@@ -55,13 +55,13 @@
 
 - (NSBezierPath *) bezierPathForLineWithInterval:(float)interval	// returns a bezierpath for the hintline in the current overlay coordinates of this hintLine's toVideoClip
 {
-    
-    // A note about the algorithm for calculating hint lines:  It would seem to make more intuitive sense to calculate hint lines by taking 3-D points at intervals up and down the first line-of-sight, 
-    // then converting each of those 3-D points into a screen coordinate from the other screen, and undistorting.  Instead, we convert only two points, the quadrat intercepts, and then extend a 2-D line
-    // between them in the other camera's screen coordinates, and undistort points at intervals along that line.  This results in hint lines with fewer coordinates, because equal intervals on a 3-D line
-    // would translate to very small intervals on the screen as the line extends far away from the camera, and would make bezier paths with very long coordinate lists.  However, it's less intuitive why
-    // this would be correct at all.  
-    
+	
+	// A note about the algorithm for calculating hint lines:  It would seem to make more intuitive sense to calculate hint lines by taking 3-D points at intervals up and down the first line-of-sight,
+	// then converting each of those 3-D points into a screen coordinate from the other screen, and undistorting.  Instead, we convert only two points, the quadrat intercepts, and then extend a 2-D line
+	// between them in the other camera's screen coordinates, and undistort points at intervals along that line.  This results in hint lines with fewer coordinates, because equal intervals on a 3-D line
+	// would translate to very small intervals on the screen as the line extends far away from the camera, and would make bezier paths with very long coordinate lists.  However, it's less intuitive why
+	// this would be correct at all.
+	
 	NSPoint frontQuadratCoords = NSMakePoint([self.frontSurfaceX floatValue],[self.frontSurfaceY floatValue]);
 	NSPoint backQuadratCoords = NSMakePoint([self.backSurfaceX floatValue],[self.backSurfaceY floatValue]);
 	
@@ -76,44 +76,44 @@
 	// generate points on that line at regular intervals in both the x and y directions
 	float xLimit = self.toVideoClip.windowController.movieSize.width;
 	float yLimit = self.toVideoClip.windowController.movieSize.height;
-    float tempx, tempy;
+	float tempx, tempy;
 	NSMutableArray *distortedPoints = [NSMutableArray new];
 	float padding = 50.0*interval;	// pixel padding to extend the drawn line a bit beyond the bounds of the frame
-                                    // a padding value of '4' worked fine for normal lenses but a much higher value is required to accomodate fisheyes
-                                    // going too high, however, ends up confusing the reverse distortion solver on outlandish solutions and lines get messed up
-                                    // 100 worked fine for most videos but had problems in some places on an 8 mm fisheye video
-                                    // 50 isn't without issues but it's a good compromise between not extending lines far enough and making them buggy/jagged
-    
+	// a padding value of '4' worked fine for normal lenses but a much higher value is required to accomodate fisheyes
+	// going too high, however, ends up confusing the reverse distortion solver on outlandish solutions and lines get messed up
+	// 100 worked fine for most videos but had problems in some places on an 8 mm fisheye video
+	// 50 isn't without issues but it's a good compromise between not extending lines far enough and making them buggy/jagged
+	
 	for (float x = -padding; x <= xLimit+padding; x += interval) {
-        tempy = m*x+b;
-        if (tempy >= -padding && tempy <= yLimit + padding) {
-            [distortedPoints addObject:[NSValue valueWithPoint:[self.toVideoClip.calibration distortPoint:NSMakePoint(x,tempy)]]];  // regular intervals in the x direction
-        }
+		tempy = m*x+b;
+		if (tempy >= -padding && tempy <= yLimit + padding) {
+			[distortedPoints addObject:[NSValue valueWithPoint:[self.toVideoClip.calibration distortPoint:NSMakePoint(x,tempy)]]];  // regular intervals in the x direction
+		}
 	}
 	for (float y = -padding; y <= yLimit+padding; y += interval) {
-        tempx = (y-b)/m;
-        if (tempx >= -padding && tempx <= xLimit + padding) {
-            [distortedPoints addObject:[NSValue valueWithPoint:[self.toVideoClip.calibration distortPoint:NSMakePoint(tempx,y)]]];	// regular intervals in the y direction	
-        }
+		tempx = (y-b)/m;
+		if (tempx >= -padding && tempx <= xLimit + padding) {
+			[distortedPoints addObject:[NSValue valueWithPoint:[self.toVideoClip.calibration distortPoint:NSMakePoint(tempx,y)]]];	// regular intervals in the y direction
+		}
 	}
-
-    // sort them by x coordinate
+	
+	// sort them by x coordinate
 	[distortedPoints sortUsingComparator:(NSComparator)^(id obj1, id obj2){
 		NSComparisonResult result;
-			if ([obj1 pointValue].x > [obj2 pointValue].x) {
-				result = NSOrderedAscending;
-			} else if ([obj1 pointValue].x == [obj2 pointValue].x) {
-				result = NSOrderedSame;
-			} else {
-				result = NSOrderedDescending;
-			}
+		if ([obj1 pointValue].x > [obj2 pointValue].x) {
+			result = NSOrderedAscending;
+		} else if ([obj1 pointValue].x == [obj2 pointValue].x) {
+			result = NSOrderedSame;
+		} else {
+			result = NSOrderedDescending;
+		}
 		return result;
-		}];
+	}];
 	
 	// create and return the bezierpath
 	NSPoint distortedPoint,overlayPoint;
 	NSBezierPath *hintLinePath = [NSBezierPath bezierPath];
-	[hintLinePath setLineJoinStyle:NSRoundLineJoinStyle];
+	[hintLinePath setLineJoinStyle:NSLineJoinStyleRound];
 	int numSegments = 0;
 	NSRect drawRegionRect = NSInsetRect([self.toVideoClip.windowController.overlayView frame],-padding,-padding);	// "insets" the visible rect by a negative number to draw slightly past screen edges
 	for (NSValue *distortedPointValue in distortedPoints) {

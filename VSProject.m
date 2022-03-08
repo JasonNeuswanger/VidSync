@@ -1,18 +1,18 @@
 /*********************************************************************************                                                                       
  * The MIT License (MIT)
- * 
- * Copyright (c) 2009-2016 Jason Neuswanger
- * 
+ *
+ * Copyright (c) 2009-2021 Jason Neuswanger
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in all
  * copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -55,22 +55,22 @@
 
 - (NSDate *) dateCreatedAsNSDate
 {
-	return [NSDate dateWithString:self.dateCreated];
+	return [UtilityFunctions dateTimeFromString:self.dateCreated format:@"yyy-MM-dd HH:mm:ss Z"];
 }
 
 - (NSDate *) dateLastSavedAsNSDate
 {
-	return [NSDate dateWithString:self.dateLastSaved];
+	return [UtilityFunctions dateTimeFromString:self.dateLastSaved format:@"yyy-MM-dd HH:mm:ss Z"];
 }
 
 - (void) carefullyRemoveObserver:(NSObject *)observer forKeyPath:(NSString *)keyPath
 {
-    if (observer != nil) {
-        @try {
-            [self removeObserver:observer forKeyPath:keyPath];
-        } @catch (id exception) {
-        }
-    }
+	if (observer != nil) {
+		@try {
+			[self removeObserver:observer forKeyPath:keyPath];
+		} @catch (id exception) {
+		}
+	}
 }
 
 @end

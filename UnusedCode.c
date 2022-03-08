@@ -415,7 +415,7 @@
  NSLog(@"Chessboard status is %d.",chessboardStatus);    // Should be -1 for errors; 0 for no chessboard detected; 1 for chessboard detected
  
  if (chessboardStatus == 1) {
- CvPoint2D32f *foundCorners = (CvPoint2D32f*)malloc((width*height + 1) * sizeof(CvPoint2D32f)); 
+ cv::Point2f *foundCorners = (cv::Point2f*)malloc((width*height + 1) * sizeof(cv::Point2f)); 
  int numFoundCorners = 0;
  int flags = CV_CALIB_CB_ADAPTIVE_THRESH | CV_CALIB_CB_NORMALIZE_IMAGE;
  int found = cvFindChessboardCorners(videoFrameSingleChannelIpl, sz, foundCorners, &numFoundCorners, flags);

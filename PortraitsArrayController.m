@@ -1,18 +1,18 @@
 /*********************************************************************************                                                                       
  * The MIT License (MIT)
- * 
- * Copyright (c) 2009-2016 Jason Neuswanger
- * 
+ *
+ * Copyright (c) 2009-2021 Jason Neuswanger
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in all
  * copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -25,38 +25,58 @@
 
 #import "PortraitsArrayController.h"
 
+// This is the controller for the portraits of a single fish.
+
 @implementation PortraitsArrayController
 
 - (void) removeObjectAtArrangedObjectIndex:(NSUInteger)index    // I had to override the superclass's version of this function because for some reason it didn't remove objects from the context
 {
-    [[self managedObjectContext] deleteObject:[[self arrangedObjects] objectAtIndex:index]];
-    [[self managedObjectContext] processPendingChanges];
-    [self refreshImageBrowserView];
+	[[self managedObjectContext] deleteObject:[[self arrangedObjects] objectAtIndex:index]];
+	[[self managedObjectContext] processPendingChanges];
+	[self refreshCollectionView];
 }
 
-- (void) refreshImageBrowserView
+- (void) refreshCollectionView
 {
-    [portraitBrowserView reloadData];
-    [otherPortraitBrowserView reloadData];
+	[portraitBrowserView reloadData];
+	[otherPortraitBrowserView reloadData];
 }
+
 
 #pragma mark
-#pragma mark Methods to conform to the IKImageBrowserDataSource informal protocol
+#pragma mark NSCollectionViewDataSource protocol methods
 
-- (NSUInteger) numberOfItemsInImageBrowser:(IKImageBrowserView *)view
-{
-    return [[self arrangedObjects] count];
+- (NSInteger)numberOfSectionsInCollectionView:(NSCollectionView *)collectionView {
+	return 1;
 }
 
-- (id) imageBrowser:(IKImageBrowserView *) view itemAtIndex:(NSUInteger)index
+- (NSInteger)collectionView:(NSCollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
 {
-    return [[self arrangedObjects] objectAtIndex:index];
+	return (section == 0) ? [[self arrangedObjects] count] : 0;
 }
 
-- (void) imageBrowser:(IKImageBrowserView *) view removeItemsAtIndexes:(NSIndexSet *)indexes
+- (NSCollectionViewItem *)collectionView:(NSCollectionView *)collectionView itemForRepresentedObjectAtIndexPath:(NSIndexPath *)indexPath
 {
-    [self removeObjectsAtArrangedObjectIndexes:indexes];
+	return [[self arrangedObjects] objectAtIndex:[indexPath item]];
 }
+
+//#pragma mark
+//#pragma mark Methods to conform to the IKImageBrowserDataSource informal protocol
+//
+//- (NSUInteger) numberOfItemsInImageBrowser:(IKImageBrowserView *)view
+//{
+//	return [[self arrangedObjects] count];
+//}
+//
+//- (id) imageBrowser:(IKImageBrowserView *) view itemAtIndex:(NSUInteger)index
+//{
+//	return [[self arrangedObjects] objectAtIndex:index];
+//}
+//
+//- (void) imageBrowser:(IKImageBrowserView *) view removeItemsAtIndexes:(NSIndexSet *)indexes
+//{
+//	[self removeObjectsAtArrangedObjectIndexes:indexes];
+//}
 
 - (void) dealloc
 {

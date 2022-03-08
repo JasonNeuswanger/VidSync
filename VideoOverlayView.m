@@ -1,18 +1,18 @@
 /*********************************************************************************                                                                       
  * The MIT License (MIT)
- * 
- * Copyright (c) 2009-2016 Jason Neuswanger
- * 
+ *
+ * Copyright (c) 2009-2021 Jason Neuswanger
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in all
  * copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -35,27 +35,27 @@
 
 - (id)initWithFrame:(NSRect)frame andWindowController:(VideoWindowController *)windowController
 {
-    self = [super initWithFrame:frame];
-    if (self) {
-        vwc = windowController;
+	self = [super initWithFrame:frame];
+	if (self) {
+		vwc = windowController;
 		trackingArea = [[NSTrackingArea alloc] initWithRect:[self bounds]
-													options:NSTrackingMouseMoved|NSTrackingCursorUpdate|NSTrackingActiveInActiveApp|NSTrackingInVisibleRect
-													  owner:self
-												   userInfo:nil];
+										    options:NSTrackingMouseMoved|NSTrackingCursorUpdate|NSTrackingActiveInActiveApp|NSTrackingInVisibleRect
+											 owner:self
+										   userInfo:nil];
 		[self addTrackingArea:trackingArea];
 		// Note:  I'm setting it to refresh overlay when any of these observed values change as long as the object is the shared user defaults controller, regardless of key -- so only need to put the key here.
 		[[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKeyPath:@"values.quadratGridOverlayLineSpacing" options:0 context:NULL];
-		[[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKeyPath:@"values.quadratGridOverlayLineThickness" options:0 context:NULL];		
-		[[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKeyPath:@"values.pointSelectionIndicatorLineLength" options:0 context:NULL];		
-		[[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKeyPath:@"values.pointSelectionIndicatorLineWidth" options:0 context:NULL];		
-		[[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKeyPath:@"values.pointSelectionIndicatorSizeFactor" options:0 context:NULL];		
-		[[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKeyPath:@"values.pointSelectionIndicatorColor" options:0 context:NULL];		
-		[[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKeyPath:@"values.quadratShowSurfaceGridOverlayFront" options:0 context:NULL];		
-		[[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKeyPath:@"values.quadratShowSurfaceGridOverlayBack" options:0 context:NULL];				
-		[[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKeyPath:@"values.quadratOverlayColorFront" options:0 context:NULL];				
-		[[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKeyPath:@"values.quadratOverlayColorBack" options:0 context:NULL];				
-		[[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKeyPath:@"values.quadratPointOverlayCircleDiameterFront" options:0 context:NULL];				
-		[[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKeyPath:@"values.quadratPointOverlayCircleDiameterBack" options:0 context:NULL];				
+		[[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKeyPath:@"values.quadratGridOverlayLineThickness" options:0 context:NULL];
+		[[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKeyPath:@"values.pointSelectionIndicatorLineLength" options:0 context:NULL];
+		[[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKeyPath:@"values.pointSelectionIndicatorLineWidth" options:0 context:NULL];
+		[[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKeyPath:@"values.pointSelectionIndicatorSizeFactor" options:0 context:NULL];
+		[[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKeyPath:@"values.pointSelectionIndicatorColor" options:0 context:NULL];
+		[[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKeyPath:@"values.quadratShowSurfaceGridOverlayFront" options:0 context:NULL];
+		[[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKeyPath:@"values.quadratShowSurfaceGridOverlayBack" options:0 context:NULL];
+		[[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKeyPath:@"values.quadratOverlayColorFront" options:0 context:NULL];
+		[[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKeyPath:@"values.quadratOverlayColorBack" options:0 context:NULL];
+		[[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKeyPath:@"values.quadratPointOverlayCircleDiameterFront" options:0 context:NULL];
+		[[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKeyPath:@"values.quadratPointOverlayCircleDiameterBack" options:0 context:NULL];
 		[[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKeyPath:@"values.showWorldCoordinatesNextToQuadratPoints" options:0 context:NULL];
 		[[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKeyPath:@"values.showPixelErrorOverlay" options:0 context:NULL];
 		[[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKeyPath:@"values.pixelErrorDotSize" options:0 context:NULL];
@@ -73,15 +73,15 @@
 		[[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKeyPath:@"values.distortionLineThickness" options:0 context:NULL];
 		[[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKeyPath:@"values.distortionPointSize" options:0 context:NULL];
 		[[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKeyPath:@"values.showDistortionConnectingLines" options:0 context:NULL];
-        [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKeyPath:@"values.showDistortionLinesFromWhichTimecodes" options:0 context:NULL];
+		[[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKeyPath:@"values.showDistortionLinesFromWhichTimecodes" options:0 context:NULL];
 		[[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKeyPath:@"values.showDistortionTipToTipLines" options:0 context:NULL];
 		[[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKeyPath:@"values.showDistortionCorrectedPoints" options:0 context:NULL];
 		[[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKeyPath:@"values.showScreenItemDropShadows" options:0 context:NULL];
 		[[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKeyPath:@"values.screenItemDropShadowBlurRadius" options:0 context:NULL];
-        VidSyncDocument *__weak doc = (VidSyncDocument *) vwc.document;
-        [doc.project addObserver:self forKeyPath:@"distortionDisplayMode" options:NSKeyValueObservingOptionNew context:NULL];
+		VidSyncDocument *__weak doc = (VidSyncDocument *) vwc.document;
+		[doc.project addObserver:self forKeyPath:@"distortionDisplayMode" options:NSKeyValueObservingOptionNew context:NULL];
 	}
-    return self;
+	return self;
 }
 
 
@@ -91,9 +91,9 @@
 	if ([keyPath isEqualToString:@"values.quadratGridOverlayLineSpacing"] || [keyPath isEqualToString:@"values.quadratGridOverlayLineThickness"]) {
 		[self calculateQuadratCoordinateGrids];
 	}
-    if ([object isEqualTo:[NSUserDefaultsController sharedUserDefaultsController]]) [self setNeedsDisplay:YES];
-    if ([keyPath isEqualToString:@"distortionDisplayMode"]) [self setNeedsDisplay:YES];
-    
+	if ([object isEqualTo:[NSUserDefaultsController sharedUserDefaultsController]]) self.needsDisplay = YES;
+	if ([keyPath isEqualToString:@"distortionDisplayMode"]) self.needsDisplay = YES;
+	
 }
 
 #pragma mark
@@ -103,7 +103,7 @@
 {
 	BOOL showPixelErrorOverlay = [[[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"showPixelErrorOverlay"] boolValue];
 	
-	[[NSColor clearColor] set]; // use clearColor when not testing size
+	[[NSColor clearColor] set]; // Use clearColor when not testing size
 	NSRectFill([self bounds]);  // without the clearColor fill, this layer fills with a non-transparent gray and completely obscures the video
 	[self calculateVisibleScreenPoints];
 	[self calculateVisibleAnnotations];
@@ -112,7 +112,7 @@
 	[self drawHintLines];
 	[self drawAnnotations];
 	[self drawQuadratCoordinateGrids];
-    [self drawPortraitSelectionBox];
+	[self drawPortraitSelectionBox];
 	[self drawDistortionCorrections];
 	if (showPixelErrorOverlay) [self drawScreenPointToIdealScreenPointComparison];
 }
@@ -120,35 +120,35 @@
 - (void) calculateVisibleScreenPoints;
 {
 	NSMutableSet *tempVisibleScreenPoints = [NSMutableSet set];
-    CMTime now = [vwc.document currentMasterTime];
+	CMTime now = [vwc.document currentMasterTime];
 	for (VSEventScreenPoint *screenPoint in vwc.videoClip.eventScreenPoints) {
-        if (CMTimeRangeContainsTime(screenPoint.totalTimeRange,now)) {
-            [tempVisibleScreenPoints addObject:screenPoint];
-            if ([tempVisibleScreenPoints count] > 2330) {
-                NSLog(@"adding screenpoint from range %@ for current time %@", [NSValue valueWithCMTimeRange:screenPoint.totalTimeRange],[NSValue valueWithCMTime:now]);
-            }
-        }
+		if (CMTimeRangeContainsTime(screenPoint.totalTimeRange,now)) {
+			[tempVisibleScreenPoints addObject:screenPoint];
+			if ([tempVisibleScreenPoints count] > 2330) {
+				NSLog(@"adding screenpoint from range %@ for current time %@", [NSValue valueWithCMTimeRange:screenPoint.totalTimeRange],[NSValue valueWithCMTime:now]);
+			}
+		}
 	}
-    self.visibleScreenPoints = tempVisibleScreenPoints;
+	self.visibleScreenPoints = tempVisibleScreenPoints;
 }
 
 - (void) calculateVisibleAnnotations;
 {
 	NSMutableSet *tempVisibleAnnotations = [NSMutableSet new];
-    CMTime now = [vwc.document currentMasterTime];
+	CMTime now = [vwc.document currentMasterTime];
 	for (VSAnnotation *annotation in vwc.videoClip.annotations) {
-        CMTime startTime = [UtilityFunctions CMTimeFromString:annotation.startTimecode];
-        CMTime solidDuration = CMTimeMakeWithSeconds([annotation.duration doubleValue], [[vwc.videoClip timeScale] longValue]);
-        CMTime fadingDuration = CMTimeMakeWithSeconds([annotation.fadeTime doubleValue], [[vwc.videoClip timeScale] longValue]);
-        CMTime totalDuration = CMTimeAdd(solidDuration,fadingDuration);
-        CMTime fadingStartTime = CMTimeAdd([UtilityFunctions CMTimeFromString:annotation.startTimecode],solidDuration);
-        CMTimeRange totalTimeRange = CMTimeRangeMake(startTime,totalDuration);
-        CMTimeRange fadingTimeRange = CMTimeRangeMake(fadingStartTime,fadingDuration);
+		CMTime startTime = [UtilityFunctions CMTimeFromString:annotation.startTimecode];
+		CMTime solidDuration = CMTimeMake([annotation.duration doubleValue] * [[vwc.videoClip timeScale] longValue], [[vwc.videoClip timeScale] intValue]);
+		CMTime fadingDuration = CMTimeMake([annotation.fadeTime doubleValue] * [[vwc.videoClip timeScale] longValue], [[vwc.videoClip timeScale] intValue]);
+		CMTime totalDuration = CMTimeAdd(solidDuration,fadingDuration);
+		CMTime fadingStartTime = CMTimeAdd([UtilityFunctions CMTimeFromString:annotation.startTimecode],solidDuration);
+		CMTimeRange totalTimeRange = CMTimeRangeMake(startTime,totalDuration);
+		CMTimeRange fadingTimeRange = CMTimeRangeMake(fadingStartTime,fadingDuration);
 		float currentOpacity = 1.0;
 		if (CMTimeRangeContainsTime(totalTimeRange,now)) {
 			if (CMTimeRangeContainsTime(fadingTimeRange,now)) {
 				CMTime fadingTimeElapsed = CMTimeSubtract(now,fadingStartTime);
-                currentOpacity = 1.0 - ((float) fadingTimeElapsed.value / (float) fadingTimeElapsed.timescale) / ((float) fadingDuration.value / (float) fadingDuration.timescale);
+				currentOpacity = 1.0 - ((float) fadingTimeElapsed.value / (float) fadingTimeElapsed.timescale) / ((float) fadingDuration.value / (float) fadingDuration.timescale);
 			}
 			annotation.tempOpacity = currentOpacity;
 			[tempVisibleAnnotations addObject:annotation];
@@ -158,45 +158,45 @@
 }
 
 - (void) drawPortraitSelectionBox {
-    // If the user just double-clicked on a portrait to view it in the video window, draw the frame but then set it to disappear on the next screen draw.
-    if (vwc.shouldShowPortraitFrame != nil && ![vwc.shouldShowPortraitFrame isEqualToString:@""]) {
-        NSColor *selectionColor = [UtilityFunctions userDefaultColorForKey:@"pointSelectionIndicatorColor"];
-        NSRect rawRect = NSRectFromString(vwc.shouldShowPortraitFrame);
-        rawRect.origin.y = vwc.movieSize.height - rawRect.origin.y - rawRect.size.height;    // Flips the rect around to account for difference between top-left and bottom-left zeroed coordinate systems
-        NSRect selectionRect = [vwc convertVideoToOverlayRect:rawRect];
-        NSBezierPath *selectedOutline = [NSBezierPath bezierPathWithRect:selectionRect];
-        double dashes[2];
-        dashes[0] = 5.0;
-        dashes[1] = 3.0;
-        [selectedOutline setLineDash:dashes count:2 phase:0.0];
+	// If the user just double-clicked on a portrait to view it in the video window, draw the frame but then set it to disappear on the next screen draw.
+	if (vwc.shouldShowPortraitFrame != nil && ![vwc.shouldShowPortraitFrame isEqualToString:@""]) {
+		NSColor *selectionColor = [UtilityFunctions userDefaultColorForKey:@"pointSelectionIndicatorColor"];
+		NSRect rawRect = NSRectFromString(vwc.shouldShowPortraitFrame);
+		rawRect.origin.y = vwc.movieSize.height - rawRect.origin.y - rawRect.size.height;    // Flips the rect around to account for difference between top-left and bottom-left zeroed coordinate systems
+		NSRect selectionRect = [vwc convertVideoToOverlayRect:rawRect];
+		NSBezierPath *selectedOutline = [NSBezierPath bezierPathWithRect:selectionRect];
+		double dashes[2];
+		dashes[0] = 5.0;
+		dashes[1] = 3.0;
+		[selectedOutline setLineDash:dashes count:2 phase:0.0];
 		[[NSColor blackColor] set];
 		[selectedOutline setLineWidth:2.6];
 		[selectedOutline stroke];
-        [selectionColor set];
+		[selectionColor set];
 		[selectedOutline setLineWidth:2.0];
 		[selectedOutline stroke];
-        vwc.shouldShowPortraitFrame = nil;
-    }
-    // If the user is drawing a new portrait, show the frame as they draw.
-    if (vwc.videoClip.project.document.portraitSubject != nil) {
-        NSPoint startPoint = [vwc convertVideoToOverlayCoords:vwc.portraitDragStartCoords];
-        NSPoint endPoint = [vwc convertVideoToOverlayCoords:vwc.portraitDragCurrentCoords];
-        float width = fabs(startPoint.x - endPoint.x);
-        float height = fabs(startPoint.y - endPoint.y);
-        NSColor *selectionColor = [UtilityFunctions userDefaultColorForKey:@"pointSelectionIndicatorColor"];
+		vwc.shouldShowPortraitFrame = nil;
+	}
+	// If the user is drawing a new portrait, show the frame as they draw.
+	if (vwc.videoClip.project.document.portraitSubject != nil) {
+		NSPoint startPoint = [vwc convertVideoToOverlayCoords:vwc.portraitDragStartCoords];
+		NSPoint endPoint = [vwc convertVideoToOverlayCoords:vwc.portraitDragCurrentCoords];
+		float width = fabs(startPoint.x - endPoint.x);
+		float height = fabs(startPoint.y - endPoint.y);
+		NSColor *selectionColor = [UtilityFunctions userDefaultColorForKey:@"pointSelectionIndicatorColor"];
 		NSRect selectionRect = NSMakeRect(MIN(startPoint.x,endPoint.x),MIN(startPoint.y,endPoint.y),width,height);
 		NSBezierPath *selectedOutline = [NSBezierPath bezierPathWithRect:selectionRect];
-        double dashes[2];
-        dashes[0] = 5.0;
-        dashes[1] = 3.0;
-        [selectedOutline setLineDash:dashes count:2 phase:0.0];
+		double dashes[2];
+		dashes[0] = 5.0;
+		dashes[1] = 3.0;
+		[selectedOutline setLineDash:dashes count:2 phase:0.0];
 		[[NSColor blackColor] set];
 		[selectedOutline setLineWidth:2.6];
 		[selectedOutline stroke];
-        [selectionColor set];
+		[selectionColor set];
 		[selectedOutline setLineWidth:2.0];
 		[selectedOutline stroke];
-    }
+	}
 }
 
 - (void) drawAnnotations
@@ -207,34 +207,34 @@
 - (void) drawAnnotation:(VSAnnotation *)annotation
 {
 	const float selectionPadding = 5.0;
-    
-    float sizeFactor = vwc.overlayHeight / vwc.movieSize.height;
-
-    
+	
+	float sizeFactor = vwc.overlayHeight / vwc.movieSize.height;
+	
+	
 	NSFont *font = [NSFont fontWithName:annotation.shape size:sizeFactor*[annotation.size floatValue]];
 	NSMutableDictionary *attrs = [NSMutableDictionary new];
 	[attrs setObject:font forKey:NSFontAttributeName];
 	[attrs setObject:[annotation.color colorWithAlphaComponent:annotation.tempOpacity] forKey:NSForegroundColorAttributeName];
-
-    if ([[[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"showScreenItemDropShadows"] boolValue] == YES) {
-        NSShadow *shadow = [NSShadow new];
-        [shadow setShadowBlurRadius:4.0f];
-        [shadow setShadowColor:[NSColor blackColor]];
-        [shadow setShadowOffset:CGSizeMake(1.0f,-1.0f)];
-        [attrs setObject:shadow forKey:NSShadowAttributeName];
-    }
-
-    NSMutableString *annotationText = [[NSMutableString alloc] initWithString:annotation.notes];
-    
-    if ([annotation.appendsTimer boolValue] == YES) {
-        CMTime timeElapsed = CMTimeSubtract([vwc.document currentMasterTime], [UtilityFunctions CMTimeFromString:annotation.startTimecode]);
-        [annotationText appendFormat:@"\n%@",[UtilityFunctions CMStringFromTime:timeElapsed]];
-    }
-    
+	
+	if ([[[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"showScreenItemDropShadows"] boolValue] == YES) {
+		NSShadow *shadow = [NSShadow new];
+		[shadow setShadowBlurRadius:4.0f];
+		[shadow setShadowColor:[NSColor blackColor]];
+		[shadow setShadowOffset:CGSizeMake(1.0f,-1.0f)];
+		[attrs setObject:shadow forKey:NSShadowAttributeName];
+	}
+	
+	NSMutableString *annotationText = [[NSMutableString alloc] initWithString:annotation.notes];
+	
+	if ([annotation.appendsTimer boolValue] == YES) {
+		CMTime timeElapsed = CMTimeSubtract([vwc.document currentMasterTime], [UtilityFunctions CMTimeFromString:annotation.startTimecode]);
+		[annotationText appendFormat:@"\n%@",[UtilityFunctions CMStringFromTime:timeElapsed]];
+	}
+	
 	NSMutableAttributedString *annotationString = [[NSMutableAttributedString alloc] initWithString:annotationText attributes:attrs];
-
-    
-    
+	
+	
+	
 	NSPoint scaledPoint = [vwc convertVideoToOverlayCoords:NSMakePoint([annotation.screenX floatValue],[annotation.screenY floatValue])];
 	
 	NSRect bounds = [annotationString boundingRectWithSize:NSMakeSize(sizeFactor*[annotation.width floatValue],sizeFactor*(vwc.overlayHeight-2.0*selectionPadding)) options:NSStringDrawingTruncatesLastVisibleLine|NSStringDrawingUsesLineFragmentOrigin];
@@ -247,12 +247,12 @@
 	
 	NSPoint drawOrigin = NSMakePoint(scaledPoint.x - bounds.size.width/2,scaledPoint.y - newHeight/2);
 	NSRect drawingRect = NSMakeRect(drawOrigin.x,drawOrigin.y,bounds.size.width,newHeight);
-
-    [annotationString drawWithRect:drawingRect options:NSStringDrawingTruncatesLastVisibleLine|NSStringDrawingUsesLineFragmentOrigin];
-
+	
+	[annotationString drawWithRect:drawingRect options:NSStringDrawingTruncatesLastVisibleLine|NSStringDrawingUsesLineFragmentOrigin];
+	
 	if ([[vwc.videoClip.project.document.annotationsController selectedObjects] count] > 0 && [[[vwc.videoClip.project.document.annotationsController selectedObjects] objectAtIndex:0] isEqualTo:annotation]) {
 		NSColor *selectionColor = [UtilityFunctions userDefaultColorForKey:@"pointSelectionIndicatorColor"];
-        [[NSColor colorWithDeviceRed:[selectionColor redComponent] green:[selectionColor greenComponent] blue:[selectionColor blueComponent] alpha:annotation.tempOpacity] set];
+		[[NSColor colorWithDeviceRed:[selectionColor redComponent] green:[selectionColor greenComponent] blue:[selectionColor blueComponent] alpha:annotation.tempOpacity] set];
 		NSRect selectionRect = NSMakeRect(drawingRect.origin.x - selectionPadding,drawingRect.origin.y - selectionPadding,drawingRect.size.width + 2*selectionPadding,drawingRect.size.height + 2*selectionPadding);
 		NSBezierPath *selectedOutline = [NSBezierPath bezierPathWithRect:selectionRect];
 		[selectedOutline setLineWidth:3.0];
@@ -275,22 +275,22 @@
 	NSBezierPath *path;
 	[pixelErrorLineColor setStroke];
 	[pixelErrorPointColor setFill];
-    if ([[[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"showScreenItemDropShadows"] boolValue] == YES) {
-        NSShadow *shadow = [NSShadow new];
-        [shadow setShadowColor: [NSColor blackColor]];
-        [shadow setShadowBlurRadius: [[[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"screenItemDropShadowBlurRadius"] floatValue]];
-        [shadow setShadowOffset: NSMakeSize(0.0f,-0.0f)];
-        [shadow set];
-    }
+	if ([[[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"showScreenItemDropShadows"] boolValue] == YES) {
+		NSShadow *shadow = [NSShadow new];
+		[shadow setShadowColor: [NSColor blackColor]];
+		[shadow setShadowBlurRadius: [[[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"screenItemDropShadowBlurRadius"] floatValue]];
+		[shadow setShadowOffset: NSMakeSize(0.0f,-0.0f)];
+		[shadow set];
+	}
 	for (VSEventScreenPoint *screenPoint in vwc.videoClip.eventScreenPoints) {
 		if ([screenPoint.point has3Dcoords]) {
 			point = [vwc convertVideoToOverlayCoords:NSMakePoint([screenPoint.screenX floatValue],[screenPoint.screenY floatValue])];
 			idealPoint = [vwc convertVideoToOverlayCoords:[screenPoint reprojectedScreenPoint:YES]];
-			shapeRect = NSMakeRect(point.x-shapeSize,point.y-shapeSize,2.0*shapeSize,2.0*shapeSize);	
+			shapeRect = NSMakeRect(point.x-shapeSize,point.y-shapeSize,2.0*shapeSize,2.0*shapeSize);
 			NSBezierPath *circle = [NSBezierPath bezierPathWithOvalInRect:shapeRect];
 			line[0] = point;
 			line[1] = idealPoint;
-			path = [NSBezierPath bezierPath];	
+			path = [NSBezierPath bezierPath];
 			[path appendBezierPathWithPoints:line count:2];
 			[path setLineWidth:lineWidth];
 			[path stroke];
@@ -301,23 +301,23 @@
 
 - (void) drawDistortionCorrections
 {
-    VidSyncDocument *__weak doc = (VidSyncDocument *) [vwc document];
-    BOOL showUncorrectedOverlay = NO;
-    BOOL showCorrectedOverlay = NO;
-    if ([[[doc.mainTabView selectedTabViewItem] label] isEqualToString:@"Calibration"] && [[[doc.calibrationInputTabView selectedTabViewItem] label] isEqualToString:@"Lens Distortion"]) {
-        if ([doc.project.distortionDisplayMode isEqualToString:@"Both"]) {
-            showUncorrectedOverlay = YES;
-            showCorrectedOverlay = YES;
-        } else if ([doc.project.distortionDisplayMode isEqualToString:@"Uncorrected"]) {
-            showUncorrectedOverlay = YES;
-            showCorrectedOverlay = NO;
-        } else if ([doc.project.distortionDisplayMode isEqualToString:@"Corrected"]) {
-            showUncorrectedOverlay = NO;
-            showCorrectedOverlay = YES;
-        }
+	VidSyncDocument *__weak doc = (VidSyncDocument *) [vwc document];
+	BOOL showUncorrectedOverlay = NO;
+	BOOL showCorrectedOverlay = NO;
+	if ([[[doc.mainTabView selectedTabViewItem] label] isEqualToString:@"Calibration"] && [[[doc.calibrationInputTabView selectedTabViewItem] label] isEqualToString:@"Lens Distortion"]) {
+		if ([doc.project.distortionDisplayMode isEqualToString:@"Both"]) {
+			showUncorrectedOverlay = YES;
+			showCorrectedOverlay = YES;
+		} else if ([doc.project.distortionDisplayMode isEqualToString:@"Uncorrected"]) {
+			showUncorrectedOverlay = YES;
+			showCorrectedOverlay = NO;
+		} else if ([doc.project.distortionDisplayMode isEqualToString:@"Corrected"]) {
+			showUncorrectedOverlay = NO;
+			showCorrectedOverlay = YES;
+		}
 	}
-    if (!(showCorrectedOverlay || showUncorrectedOverlay)) return;
-    
+	if (!(showCorrectedOverlay || showUncorrectedOverlay)) return;
+	
 	NSColor *distortedPointColor = [UtilityFunctions userDefaultColorForKey:@"distortionPointsColor"];
 	NSColor *connectingLineColor = [UtilityFunctions userDefaultColorForKey:@"distortionConnectingLinesColor"];
 	NSColor *tipToTipLineColor = [UtilityFunctions userDefaultColorForKey:@"distortionTipToTipLinesColor"];
@@ -328,10 +328,10 @@
 	float lineWidth = [[[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"distortionLineThickness"] floatValue];
 	BOOL showConnectingLines = [[[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"showDistortionConnectingLines"] boolValue];
 	BOOL showTipToTipLines = [[[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"showDistortionTipToTipLines"] boolValue];
-    int showDistortionLinesFromWhichTimecodes = [[[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"showDistortionLinesFromWhichTimecodes"] intValue];
+	int showDistortionLinesFromWhichTimecodes = [[[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"showDistortionLinesFromWhichTimecodes"] intValue];
 	
 	NSSet *distortionLines = vwc.videoClip.calibration.distortionLines;
-    
+	
 	NSSortDescriptor *indexDescriptor = [[NSSortDescriptor alloc] initWithKey:@"index" ascending:YES];
 	NSRect shapeRect;
 	NSPoint point,uPoint,undistortedVideoCoords,firstPoint;
@@ -343,100 +343,100 @@
 	NSBezierPath *connectingLinesPath = [NSBezierPath bezierPath];
 	NSBezierPath *tipsToTipsPath = [NSBezierPath bezierPath];
 	NSBezierPath *correctedTipsToTipsPath = [NSBezierPath bezierPath];
-    NSBezierPath *correctedLinesPath = [NSBezierPath bezierPath];
+	NSBezierPath *correctedLinesPath = [NSBezierPath bezierPath];
 	[connectingLinesPath setLineWidth:lineWidth];
 	[tipsToTipsPath setLineWidth:lineWidth];
 	[correctedTipsToTipsPath setLineWidth:lineWidth];
-    [correctedLinesPath setLineWidth:lineWidth];
+	[correctedLinesPath setLineWidth:lineWidth];
 	
 	[distortedPointColor setFill];
-    
-    if ([[[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"showScreenItemDropShadows"] boolValue] == YES) {
-        NSShadow *shadow = [NSShadow new];
-        [shadow setShadowColor: [NSColor blackColor]];
-        [shadow setShadowBlurRadius: [[[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"screenItemDropShadowBlurRadius"] floatValue]];
-        [shadow setShadowOffset: NSMakeSize(0.0f,-0.0f)];
-        [shadow set];
-    }
-    
-    // Show the base points autodetected by OpenCV.
-    
-    NSBezierPath *autodetectedPointDotsPath = [NSBezierPath bezierPath];
-    shapeSize=shapeSize*1.2;
-    NSPoint autopoint;
-    [[NSColor yellowColor] setFill];
-    if ([vwc.videoClip.calibration.autodetectedPoints count] > 0) {
-        for (NSValue *point in vwc.videoClip.calibration.autodetectedPoints) {
-            autopoint = [vwc convertVideoToOverlayCoords:point.pointValue];
-            shapeRect = NSMakeRect(autopoint.x-shapeSize,autopoint.y-shapeSize,2.0*shapeSize,2.0*shapeSize);
-            [autodetectedPointDotsPath appendBezierPathWithOvalInRect:shapeRect];
-        }
-    }
-    [autodetectedPointDotsPath fill];
-    
-    // Now go through and draw the actual lines as arranged.
-    
+	
+	if ([[[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"showScreenItemDropShadows"] boolValue] == YES) {
+		NSShadow *shadow = [NSShadow new];
+		[shadow setShadowColor: [NSColor blackColor]];
+		[shadow setShadowBlurRadius: [[[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"screenItemDropShadowBlurRadius"] floatValue]];
+		[shadow setShadowOffset: NSMakeSize(0.0f,-0.0f)];
+		[shadow set];
+	}
+	
+	// Show the base points autodetected by OpenCV.
+	
+	if ([vwc.videoClip.calibration.autodetectedPoints count] > 0) {
+		NSBezierPath *autodetectedPointDotsPath = [NSBezierPath bezierPath];
+		shapeSize=shapeSize*1.2;
+		NSPoint autopoint;
+		[[NSColor yellowColor] setFill];
+		for (NSValue *point in vwc.videoClip.calibration.autodetectedPoints) {
+			autopoint = [vwc convertVideoToOverlayCoords:point.pointValue];
+			shapeRect = NSMakeRect(autopoint.x-shapeSize,autopoint.y-shapeSize,2.0*shapeSize,2.0*shapeSize);
+			[autodetectedPointDotsPath appendBezierPathWithOvalInRect:shapeRect];
+		}
+		[autodetectedPointDotsPath fill];
+	}
+	
+	// Now go through and draw the actual lines as arranged.
+	
 	for (VSDistortionLine *distortionLine in distortionLines) {
-        
-        // If the value below is 2, show all lines; otherwise, make sure they're from the current timecode
-        if (showDistortionLinesFromWhichTimecodes == 2 || [UtilityFunctions timeString:distortionLine.timecode isEqualToTimeString:[vwc.videoClip.project.document currentMasterTimeString]]) {
 		
-            distortionPoints = [[distortionLine.distortionPoints allObjects] sortedArrayUsingDescriptors:[NSArray arrayWithObject:indexDescriptor]]; // all points on current line, sorted by index
-
-            for (int i = 0; i < [distortionPoints count]; i++) {
-                distortionPoint = [distortionPoints objectAtIndex:i];
-                
-                point = [vwc convertVideoToOverlayCoords:NSMakePoint([distortionPoint.screenX floatValue],[distortionPoint.screenY floatValue])];
-                
-                if (i == 0) [tipsToTipsPath moveToPoint:point];
-                if ([vwc.videoClip.calibration hasDistortionCorrection] && [distortionPoints count] >= 2) {
-                    undistortedVideoCoords = [vwc.videoClip.calibration undistortPoint:NSMakePoint([distortionPoint.screenX floatValue],[distortionPoint.screenY floatValue])];
-                    uPoint = [vwc convertVideoToOverlayCoords:undistortedVideoCoords];
-                    if (i == 0) {
-                        firstPoint = uPoint;
-                        [correctedLinesPath moveToPoint:uPoint];
-                        [correctedTipsToTipsPath moveToPoint:uPoint];
-                    } else {
-                        [correctedLinesPath lineToPoint:uPoint];
-                    }
-                    if (i == [distortionPoints count] - 1) {
-                        [correctedTipsToTipsPath lineToPoint:uPoint]; // Connect the end of the line straight back to its beginning in one segment, so any curvature is easily observed.
-                    }
-                }
-                shapeRect = NSMakeRect(point.x-shapeSize,point.y-shapeSize,2.0*shapeSize,2.0*shapeSize);	
-                [pointDotsPath appendBezierPathWithOvalInRect:shapeRect];
-                if ([distortionPoints count] > 1) {															// if it is the first point, move the bezier path to there
-                    if (showConnectingLines && i == 0) {
-                        [connectingLinesPath moveToPoint:point];
-                    } else if (showConnectingLines && i > 0) {												// if it's not the first point, draw a line to the previous point
-                        [connectingLinesPath lineToPoint:point];
-                    }
-                    if (showTipToTipLines && [distortionPoints count] > 2 && i == [distortionPoints count]-1) { // if it's the last of more than 2 points, draw a line back to the start 
-                        [tipsToTipsPath lineToPoint:point];
-                    }
-                    if ([vwc.videoClip.calibration hasDistortionCorrection] && i == [distortionPoints count]-1 && [distortionPoints count] >= 2) {
-                        undistortedVideoCoords = [vwc.videoClip.calibration undistortPoint:NSMakePoint([distortionPoint.screenX floatValue],[distortionPoint.screenY floatValue])];
-                        uPoint = [vwc convertVideoToOverlayCoords:undistortedVideoCoords];
-                        [correctedTipsToTipsPath lineToPoint:uPoint];    
-                    }
-                }
-                
-                // now the results display to show the corrected points
-                if ([vwc.videoClip.calibration hasDistortionCorrection] && showCorrectedOverlay) {	// if the clip has a distortion calculated, draw the corrected points
-                    undistortedVideoCoords = [vwc.videoClip.calibration undistortPoint:NSMakePoint([distortionPoint.screenX floatValue],[distortionPoint.screenY floatValue])];
-                    uPoint = [vwc convertVideoToOverlayCoords:undistortedVideoCoords];
-                    shapeRect = NSMakeRect(uPoint.x-shapeSize*0.7,uPoint.y-shapeSize*0.7,2.0*shapeSize*0.7,2.0*shapeSize*0.7);	
-                    [correctedPointDotsPath appendBezierPathWithOvalInRect:shapeRect];
-                    [correctedPointColor setStroke];
-                    [NSBezierPath strokeLineFromPoint:point toPoint:uPoint];
-                }
-            }
-        }
-
+		// If the value below is 2, show all lines; otherwise, make sure they're from the current timecode
+		if (showDistortionLinesFromWhichTimecodes == 2 || [UtilityFunctions timeString:distortionLine.timecode isEqualToTimeString:[vwc.videoClip.project.document currentMasterTimeString]]) {
+			
+			distortionPoints = [[distortionLine.distortionPoints allObjects] sortedArrayUsingDescriptors:[NSArray arrayWithObject:indexDescriptor]]; // all points on current line, sorted by index
+			
+			for (int i = 0; i < [distortionPoints count]; i++) {
+				distortionPoint = [distortionPoints objectAtIndex:i];
+				
+				point = [vwc convertVideoToOverlayCoords:NSMakePoint([distortionPoint.screenX floatValue],[distortionPoint.screenY floatValue])];
+				
+				if (i == 0) [tipsToTipsPath moveToPoint:point];
+				if ([vwc.videoClip.calibration hasDistortionCorrection] && [distortionPoints count] >= 2) {
+					undistortedVideoCoords = [vwc.videoClip.calibration undistortPoint:NSMakePoint([distortionPoint.screenX floatValue],[distortionPoint.screenY floatValue])];
+					uPoint = [vwc convertVideoToOverlayCoords:undistortedVideoCoords];
+					if (i == 0) {
+						firstPoint = uPoint;
+						[correctedLinesPath moveToPoint:uPoint];
+						[correctedTipsToTipsPath moveToPoint:uPoint];
+					} else {
+						[correctedLinesPath lineToPoint:uPoint];
+					}
+					if (i == [distortionPoints count] - 1) {
+						[correctedTipsToTipsPath lineToPoint:uPoint]; // Connect the end of the line straight back to its beginning in one segment, so any curvature is easily observed.
+					}
+				}
+				shapeRect = NSMakeRect(point.x-shapeSize,point.y-shapeSize,2.0*shapeSize,2.0*shapeSize);
+				[pointDotsPath appendBezierPathWithOvalInRect:shapeRect];
+				if ([distortionPoints count] > 1) {															// if it is the first point, move the bezier path to there
+					if (showConnectingLines && i == 0) {
+						[connectingLinesPath moveToPoint:point];
+					} else if (showConnectingLines && i > 0) {												// if it's not the first point, draw a line to the previous point
+						[connectingLinesPath lineToPoint:point];
+					}
+					if (showTipToTipLines && [distortionPoints count] > 2 && i == [distortionPoints count]-1) { // if it's the last of more than 2 points, draw a line back to the start
+						[tipsToTipsPath lineToPoint:point];
+					}
+					if ([vwc.videoClip.calibration hasDistortionCorrection] && i == [distortionPoints count]-1 && [distortionPoints count] >= 2) {
+						undistortedVideoCoords = [vwc.videoClip.calibration undistortPoint:NSMakePoint([distortionPoint.screenX floatValue],[distortionPoint.screenY floatValue])];
+						uPoint = [vwc convertVideoToOverlayCoords:undistortedVideoCoords];
+						[correctedTipsToTipsPath lineToPoint:uPoint];
+					}
+				}
+				
+				// now the results display to show the corrected points
+				if ([vwc.videoClip.calibration hasDistortionCorrection] && showCorrectedOverlay) {	// if the clip has a distortion calculated, draw the corrected points
+					undistortedVideoCoords = [vwc.videoClip.calibration undistortPoint:NSMakePoint([distortionPoint.screenX floatValue],[distortionPoint.screenY floatValue])];
+					uPoint = [vwc convertVideoToOverlayCoords:undistortedVideoCoords];
+					shapeRect = NSMakeRect(uPoint.x-shapeSize*0.7,uPoint.y-shapeSize*0.7,2.0*shapeSize*0.7,2.0*shapeSize*0.7);
+					[correctedPointDotsPath appendBezierPathWithOvalInRect:shapeRect];
+					[correctedPointColor setStroke];
+					[NSBezierPath strokeLineFromPoint:point toPoint:uPoint];
+				}
+			}
+		}
+		
 	}
 	
 	// if the distortion parameters have been calculated, draw the distortion center
-	if ([vwc.videoClip.calibration hasDistortionCorrection]) {		
+	if ([vwc.videoClip.calibration hasDistortionCorrection]) {
 		NSPoint centerPoint = [vwc convertVideoToOverlayCoords:NSMakePoint([vwc.videoClip.calibration.distortionCenterX floatValue],[vwc.videoClip.calibration.distortionCenterY floatValue])];
 		float centerCrossSize = 10.0;
 		NSBezierPath *centerCrossPath = [NSBezierPath bezierPath];
@@ -449,33 +449,33 @@
 		[centerCrossPath stroke];
 	}
 	
-    if (showUncorrectedOverlay) {
-        [tipToTipLineColor setStroke];
-        [tipsToTipsPath stroke];
-        [connectingLineColor setStroke];
-        [connectingLinesPath stroke];
-    }
-    [distortedPointColor setFill];
-    [pointDotsPath fill];    
-    if (showCorrectedOverlay) {
-        [correctedPointColor setFill];
-        [correctedPointDotsPath fill];
-        [tipToTipLineColor setStroke];
-        [correctedTipsToTipsPath stroke];
-        [correctedLineColor setStroke];
-        [correctedLinesPath stroke];
-    }
-    
+	if (showUncorrectedOverlay) {
+		[tipToTipLineColor setStroke];
+		[tipsToTipsPath stroke];
+		[connectingLineColor setStroke];
+		[connectingLinesPath stroke];
+	}
+	[distortedPointColor setFill];
+	[pointDotsPath fill];
+	if (showCorrectedOverlay) {
+		[correctedPointColor setFill];
+		[correctedPointDotsPath fill];
+		[tipToTipLineColor setStroke];
+		[correctedTipsToTipsPath stroke];
+		[correctedLineColor setStroke];
+		[correctedLinesPath stroke];
+	}
+	
 	// Draw the selection indicator if we're drawing a clip with a current selection
 	if ([[vwc.videoClip.project.document.distortionPointsController selectedObjects] count] > 0) {
-		VSDistortionPoint *selectedDistortionPoint = [[vwc.videoClip.project.document.distortionPointsController selectedObjects] objectAtIndex:0];	
+		VSDistortionPoint *selectedDistortionPoint = [[vwc.videoClip.project.document.distortionPointsController selectedObjects] objectAtIndex:0];
 		if ([selectedDistortionPoint.distortionLine.calibration.videoClip isEqualTo:vwc.videoClip]) {
 			NSPoint selectedPoint = [vwc convertVideoToOverlayCoords:NSMakePoint([selectedDistortionPoint.screenX floatValue],[selectedDistortionPoint.screenY floatValue])];
 			[self drawSelectionIndicatorAtPoint:selectedPoint forShapeOfSize:shapeSize*2.0 opacity:1.0];
 		}
 		
 	}
-    
+	
 }
 
 - (void) drawMeasurementScreenPoints
@@ -490,17 +490,17 @@
 				currentOpacity = 1.0 - ((float) fadingTimeElapsed.value / (float) fadingTimeElapsed.timescale) / ((float) screenPoint.fadingDuration.value / (float) screenPoint.fadingDuration.timescale);
 			}
 			if ([screenPoint.point.trackedEvent.trackedObjects count] == 1) {	// If the event is associated with just one object, draw it.
-				[self drawMeasurementScreenPoint:screenPoint 
-							   fromTrackedObject:[screenPoint.point.trackedEvent.trackedObjects anyObject] 
-									 withOpacity:currentOpacity 
-								   magnification:1.0];
+				[self drawMeasurementScreenPoint:screenPoint
+							fromTrackedObject:[screenPoint.point.trackedEvent.trackedObjects anyObject]
+								 withOpacity:currentOpacity
+							    magnification:1.0];
 			} else {	// If the event is associated with more than one object, draw it with nested symbols representing all their colors.
 				for(int i=0; i < [screenPoint.point.trackedEvent.trackedObjects count]; i++) {
 					float magnification = 1.0 + 0.3 * (float) ([screenPoint.point.trackedEvent.trackedObjects count] - i);
-					[self drawMeasurementScreenPoint:screenPoint 
-								   fromTrackedObject:[[screenPoint.point.trackedEvent.trackedObjects allObjects] objectAtIndex:i] 
-										 withOpacity:currentOpacity 
-									   magnification:magnification];
+					[self drawMeasurementScreenPoint:screenPoint
+								fromTrackedObject:[[screenPoint.point.trackedEvent.trackedObjects allObjects] objectAtIndex:i]
+									 withOpacity:currentOpacity
+								    magnification:magnification];
 				}
 			}
 			
@@ -520,102 +520,102 @@
 	NSPoint line[2];
 	VSEventScreenPoint *currentScreenPoint,*previousScreenPoint;
 	NSArray *allSortedPoints = [NSMutableArray arrayWithArray:[trackedEvent.points sortedArrayUsingDescriptors:[NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"index" ascending:YES]]]];
-    NSMutableArray *sortedPoints = [NSMutableArray new];
-    for (VSPoint *point in allSortedPoints) {   // This filtering prevents showing connecting lines to points in the future
-        CMTime pointTime = [UtilityFunctions CMTimeFromString:point.timecode];
-        CMTime currentTime = [vwc.document currentMasterTime];
-        if (CMTimeCompare(pointTime,currentTime) <= 0) {
-            [sortedPoints addObject:point];
-        }
-    }
-    if ([sortedPoints count] > 1) {
-        VSPoint *previousPoint = [sortedPoints objectAtIndex:0];
-        for (int i = 1; i < [sortedPoints count]; i++) {
-            VSPoint *point = [sortedPoints objectAtIndex:i];
-            if ([point has3Dcoords] && [previousPoint has3Dcoords]) {
-                currentScreenPoint = [point screenPointForVideoClip:vwc.videoClip];
-                previousScreenPoint = [previousPoint screenPointForVideoClip:vwc.videoClip];
-                if (currentScreenPoint != nil && previousScreenPoint != nil) {
-                    VSTrackedObject *objectForColor = [trackedEvent.trackedObjects anyObject];	// not wasting time doing multiple colors for multiple objects here
-                    NSColor *lineColor = [objectForColor.color colorWithAlphaComponent:trackedEvent.tempOpacity];
-                    line[0] = [vwc convertVideoToOverlayCoords:NSMakePoint([previousScreenPoint.screenX floatValue],[previousScreenPoint.screenY floatValue])];
-                    line[1] = [vwc convertVideoToOverlayCoords:NSMakePoint([currentScreenPoint.screenX floatValue],[currentScreenPoint.screenY floatValue])];
-                    [lineColor setStroke];
-                    NSBezierPath *path = [NSBezierPath bezierPath];
-                    [path appendBezierPathWithPoints:line count:2];
-                    [path setLineWidth:[trackedEvent.type.connectingLineThickness floatValue]];
-                    if ([trackedEvent.type.connectingLineType isEqualToString:@"Dotted"]) {
-                        CGFloat lineDash[2] = {3.0,3.0};
-                        [path setLineDash:lineDash count:2 phase:0.0];
-                    }
-                    [path stroke];
-                    if ([trackedEvent.type.connectingLineLengthLabeled intValue] > 0) { // if "Show connecting line length" is not "No"
-                        if ([trackedEvent.type.connectingLineLengthLabeled intValue] == 1 || (currentScreenPoint.videoClip.isMasterClipOf != nil)) {	// Show line if it's "On All Clips"
-                            BOOL do_distance = [trackedEvent.type.connectingLineLabelShowLength boolValue];
-                            BOOL do_speed = [trackedEvent.type.connectingLineLabelShowSpeed boolValue];
-                            if (do_distance || do_speed) {
-                                [self drawConnectingLinesLabelFromVSPoint:point toVSPoint:previousPoint onLine:line inColor:lineColor do_distance:do_distance do_speed:do_speed];	// or if it's "On Master Clip" and this is one.
-                            }
-                        }
-                    }
-                }
-            }
-            previousPoint = point;
-        }
-    }
+	NSMutableArray *sortedPoints = [NSMutableArray new];
+	for (VSPoint *point in allSortedPoints) {   // This filtering prevents showing connecting lines to points in the future
+		CMTime pointTime = [UtilityFunctions CMTimeFromString:point.timecode];
+		CMTime currentTime = [vwc.document currentMasterTime];
+		if (CMTimeCompare(pointTime,currentTime) <= 0) {
+			[sortedPoints addObject:point];
+		}
+	}
+	if ([sortedPoints count] > 1) {
+		VSPoint *previousPoint = [sortedPoints objectAtIndex:0];
+		for (int i = 1; i < [sortedPoints count]; i++) {
+			VSPoint *point = [sortedPoints objectAtIndex:i];
+			if ([point has3Dcoords] && [previousPoint has3Dcoords]) {
+				currentScreenPoint = [point screenPointForVideoClip:vwc.videoClip];
+				previousScreenPoint = [previousPoint screenPointForVideoClip:vwc.videoClip];
+				if (currentScreenPoint != nil && previousScreenPoint != nil) {
+					VSTrackedObject *objectForColor = [trackedEvent.trackedObjects anyObject];	// not wasting time doing multiple colors for multiple objects here
+					NSColor *lineColor = [objectForColor.color colorWithAlphaComponent:trackedEvent.tempOpacity];
+					line[0] = [vwc convertVideoToOverlayCoords:NSMakePoint([previousScreenPoint.screenX floatValue],[previousScreenPoint.screenY floatValue])];
+					line[1] = [vwc convertVideoToOverlayCoords:NSMakePoint([currentScreenPoint.screenX floatValue],[currentScreenPoint.screenY floatValue])];
+					[lineColor setStroke];
+					NSBezierPath *path = [NSBezierPath bezierPath];
+					[path appendBezierPathWithPoints:line count:2];
+					[path setLineWidth:[trackedEvent.type.connectingLineThickness floatValue]];
+					if ([trackedEvent.type.connectingLineType isEqualToString:@"Dotted"]) {
+						CGFloat lineDash[2] = {3.0,3.0};
+						[path setLineDash:lineDash count:2 phase:0.0];
+					}
+					[path stroke];
+					if ([trackedEvent.type.connectingLineLengthLabeled intValue] > 0) { // if "Show connecting line length" is not "No"
+						if ([trackedEvent.type.connectingLineLengthLabeled intValue] == 1 || (currentScreenPoint.videoClip.isMasterClipOf != nil)) {	// Show line if it's "On All Clips"
+							BOOL do_distance = [trackedEvent.type.connectingLineLabelShowLength boolValue];
+							BOOL do_speed = [trackedEvent.type.connectingLineLabelShowSpeed boolValue];
+							if (do_distance || do_speed) {
+								[self drawConnectingLinesLabelFromVSPoint:point toVSPoint:previousPoint onLine:line inColor:lineColor do_distance:do_distance do_speed:do_speed];	// or if it's "On Master Clip" and this is one.
+							}
+						}
+					}
+				}
+			}
+			previousPoint = point;
+		}
+	}
 	
 }
 
 - (void) drawConnectingLinesLabelFromVSPoint:(VSPoint *)point toVSPoint:(VSPoint *)otherPoint onLine:(NSPoint[2])line inColor:(NSColor *)color do_distance:(BOOL)do_distance do_speed:(BOOL)do_speed
 {
 	// Calculate the connecting line length and midPoint
-    
-    NSNumber *distance, *speed;
-    NSNumberFormatter *dnf, *snf;
-
-    if (do_distance) {
-        distance = [point distanceToVSPoint:otherPoint];
-        dnf = [[NSNumberFormatter alloc] init];
-        [dnf setFormatterBehavior:NSNumberFormatterBehavior10_4];
-        [dnf setMultiplier:point.trackedEvent.type.connectingLineLengthLabelUnitMultiplier];
-        [dnf setMaximumFractionDigits:[point.trackedEvent.type.connectingLineLengthLabelFractionDigits intValue]];
-        [dnf setPositiveSuffix:point.trackedEvent.type.connectingLineLengthLabelUnits];
-    }
 	
-    if (do_speed) {
-        speed = [point speedToVSPoint:otherPoint];
-        snf = [[NSNumberFormatter alloc] init];
-        [snf setFormatterBehavior:NSNumberFormatterBehavior10_4];
-        [snf setMultiplier:point.trackedEvent.type.connectingLineLengthLabelUnitMultiplier];
-        [snf setMaximumFractionDigits:[point.trackedEvent.type.connectingLineLengthLabelFractionDigits intValue]];
-        [snf setPositiveSuffix:[point.trackedEvent.type.connectingLineLengthLabelUnits stringByAppendingString:@"/s"]];
-    }
-    
-    NSPoint midPoint = NSMakePoint(((line[0].x + line[1].x) / 2.0), ((line[0].y + line[1].y) / 2.0));
+	NSNumber *distance, *speed;
+	NSNumberFormatter *dnf, *snf;
+	
+	if (do_distance) {
+		distance = [point distanceToVSPoint:otherPoint];
+		dnf = [[NSNumberFormatter alloc] init];
+		[dnf setFormatterBehavior:NSNumberFormatterBehavior10_4];
+		[dnf setMultiplier:point.trackedEvent.type.connectingLineLengthLabelUnitMultiplier];
+		[dnf setMaximumFractionDigits:[point.trackedEvent.type.connectingLineLengthLabelFractionDigits intValue]];
+		[dnf setPositiveSuffix:point.trackedEvent.type.connectingLineLengthLabelUnits];
+	}
+	
+	if (do_speed) {
+		speed = [point speedToVSPoint:otherPoint];
+		snf = [[NSNumberFormatter alloc] init];
+		[snf setFormatterBehavior:NSNumberFormatterBehavior10_4];
+		[snf setMultiplier:point.trackedEvent.type.connectingLineLengthLabelUnitMultiplier];
+		[snf setMaximumFractionDigits:[point.trackedEvent.type.connectingLineLengthLabelFractionDigits intValue]];
+		[snf setPositiveSuffix:[point.trackedEvent.type.connectingLineLengthLabelUnits stringByAppendingString:@"/s"]];
+	}
+	
+	NSPoint midPoint = NSMakePoint(((line[0].x + line[1].x) / 2.0), ((line[0].y + line[1].y) / 2.0));
 	
 	
-    NSString *labelText;
-    
-    if (do_speed && do_distance) {
-        labelText = [NSString stringWithFormat:@"%@ at %@",[dnf stringFromNumber:distance],[snf stringFromNumber:speed]];
-    } else if (do_speed) {
-        labelText = [snf stringFromNumber:speed];
-    } else if (do_distance) {
-        labelText = [dnf stringFromNumber:distance];
-    } else {
-        labelText = @"Label error"; // Should never happen
-    }
-    
+	NSString *labelText;
+	
+	if (do_speed && do_distance) {
+		labelText = [NSString stringWithFormat:@"%@ at %@",[dnf stringFromNumber:distance],[snf stringFromNumber:speed]];
+	} else if (do_speed) {
+		labelText = [snf stringFromNumber:speed];
+	} else if (do_distance) {
+		labelText = [dnf stringFromNumber:distance];
+	} else {
+		labelText = @"Label error"; // Should never happen
+	}
+	
 	NSFont *labelStrFont = [NSFont fontWithName:@"Helvetica" size:[point.trackedEvent.type.connectingLineLengthLabelFontSize floatValue]];
-    NSShadow *shadow = [NSShadow new];
-    [shadow setShadowBlurRadius:8.0f];
-    [shadow setShadowColor:[NSColor whiteColor]];
-    [shadow setShadowOffset:CGSizeMake(1.0f,-1.0f)];
+	NSShadow *shadow = [NSShadow new];
+	[shadow setShadowBlurRadius:8.0f];
+	[shadow setShadowColor:[NSColor whiteColor]];
+	[shadow setShadowOffset:CGSizeMake(1.0f,-1.0f)];
 	NSDictionary *labelStrAttributes = [NSDictionary dictionaryWithObjectsAndKeys:labelStrFont,NSFontAttributeName,
-										 color,NSForegroundColorAttributeName,shadow,NSShadowAttributeName,nil];
-
+								 color,NSForegroundColorAttributeName,shadow,NSShadowAttributeName,nil];
+	
 	NSMutableAttributedString *labelStr = [[NSMutableAttributedString alloc] initWithString:labelText attributes:labelStrAttributes];
-	   
+	
 	// Draw everything
 	
 	float lineAngle;						// the angle the line makes going from the left point to the right point, in radians
@@ -664,22 +664,22 @@
 	if (videoPoint.x == 0.0 && videoPoint.y == 0.0) return;
 	NSPoint point = [vwc convertVideoToOverlayCoords:videoPoint];
 	NSColor *pointColor = [NSColor colorWithDeviceRed:[pointsObject.color redComponent]
-												green:[pointsObject.color greenComponent]
-												 blue:[pointsObject.color blueComponent]
-												alpha:opacity];
+									    green:[pointsObject.color greenComponent]
+										blue:[pointsObject.color blueComponent]
+									    alpha:opacity];
 	[pointColor setStroke];
 	[pointColor setFill];
-    
-    if ([[[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"showScreenItemDropShadows"] boolValue] == YES) {
-        NSShadow *shadow = [NSShadow new];
-        [shadow setShadowColor: [NSColor blackColor]];
-        [shadow setShadowBlurRadius: [[[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"screenItemDropShadowBlurRadius"] floatValue]];
-        [shadow setShadowOffset: NSMakeSize(0.0f,-0.0f)];
-        [shadow set];
-    }
-    
+	
+	if ([[[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"showScreenItemDropShadows"] boolValue] == YES) {
+		NSShadow *shadow = [NSShadow new];
+		[shadow setShadowColor: [NSColor blackColor]];
+		[shadow setShadowBlurRadius: [[[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"screenItemDropShadowBlurRadius"] floatValue]];
+		[shadow setShadowOffset: NSMakeSize(0.0f,-0.0f)];
+		[shadow set];
+	}
+	
 	float shapeSize = [screenPoint.point.trackedEvent.type.size floatValue]*magnification;
-	NSRect shapeRect = NSMakeRect(point.x-shapeSize,point.y-shapeSize,2.0*shapeSize,2.0*shapeSize);	
+	NSRect shapeRect = NSMakeRect(point.x-shapeSize,point.y-shapeSize,2.0*shapeSize,2.0*shapeSize);
 	if ([screenPoint.point.trackedEvent.type.shape isEqualToString:@"Circle"]) {
 		NSBezierPath *circle = [NSBezierPath bezierPathWithOvalInRect:shapeRect];
 		[circle setLineWidth:3.0];
@@ -698,60 +698,60 @@
 		NSRect centerPoint = NSMakeRect(point.x-1.5, point.y-1.5, 3.0, 3.0);
 		NSRectFill(centerPoint);
 	} else if ([screenPoint.point.trackedEvent.type.shape isEqualToString:@"Pacman"]) {
-        NSPoint mouthPoints[2];
-        mouthPoints[0] = point;
-        mouthPoints[1] = NSMakePoint(point.x+shapeSize*0.92388,point.y+shapeSize*0.382683);	// uses cos and sin of half the total mouth angle
-        NSBezierPath *pacMan = [NSBezierPath bezierPath];
-        [pacMan appendBezierPathWithArcWithCenter:point radius:shapeSize startAngle:22.5 endAngle:342.5];	// total mouth angle 45 degrees
-        [pacMan appendBezierPathWithPoints:mouthPoints count:2];
-        [pacMan setLineWidth:2.0];
-        [pacMan stroke];
-    } else if ([[NSArray arrayWithObjects:@"Anchor",@"Bed",@"Beer",@"Bell",@"Binoculars",@"Bug",@"Cutlery",@"Diamond",@"Fighter Jet",@"Flag",@"Frown",@"Gavel",@"Heart",@"Home",@"Leaf",@"Lock",@"Music",@"Scale",@"Smile",@"Star",@"Tachometer",@"Thumbs Up",@"Thumbs Down",@"Trash",@"Tree",@"Unlock",@"Warning",nil] containsObject:screenPoint.point.trackedEvent.type.shape]) { // FontAwesome glyphs
-        NSDictionary *fontAwesomeCodes = [NSDictionary dictionaryWithObjectsAndKeys:
-                                          @"\uf13d",@"Anchor",
-                                          @"\uf236",@"Bed",
-                                          @"\uf0fc",@"Beer",
-                                          @"\uf0f3",@"Bell",
-                                          @"\uf1e5",@"Binoculars",
-                                          @"\uf188",@"Bug",
-                                          @"\uf0f5",@"Cutlery",
-                                          @"\uf219",@"Diamond",
-                                          @"\uf0fb",@"Fighter Jet",
-                                          @"\uf024",@"Flag",
-                                          @"\uf119",@"Frown",
-                                          @"\uf0e3",@"Gavel",
-                                          @"\uf004",@"Heart",
-                                          @"\uf015",@"Home",
-                                          @"\uf06c",@"Leaf",
-                                          @"\uf023",@"Lock",
-                                          @"\uf001",@"Music",
-                                          @"\uf24e",@"Scale",
-                                          @"\uf118",@"Smile",
-                                          @"\uf006",@"Star",
-                                          @"\uf0e4",@"Tachometer",
-                                          @"\uf164",@"Thumbs Up",
-                                          @"\uf165",@"Thumbs Down",
-                                          @"\uf1f8",@"Trash",
-                                          @"\uf1bb",@"Tree",
-                                          @"\uf09c",@"Unlock",
-                                          @"\uf071",@"Warning",
-                                          nil];
-        NSString *glyphText = [fontAwesomeCodes objectForKey:screenPoint.point.trackedEvent.type.shape];
-        
-        
-        
-        
-        NSFont *glyphStrFont = [NSFont fontWithName:@"FontAwesome" size:shapeSize*2.5];
-        NSShadow *shadow = [NSShadow new];
-        [shadow setShadowBlurRadius:3.0f];
-        [shadow setShadowColor:[NSColor grayColor]];
-        [shadow setShadowOffset:CGSizeMake(1.0f,-1.0f)];
-        NSDictionary *glyphStrAttributes = [NSDictionary dictionaryWithObjectsAndKeys:glyphStrFont,NSFontAttributeName,
-                                            pointColor,NSForegroundColorAttributeName,shadow,NSShadowAttributeName,nil];
-        NSMutableAttributedString *glyphStr = [[NSMutableAttributedString alloc] initWithString:glyphText attributes:glyphStrAttributes];
-        NSRect glyphStrBounds = [glyphStr boundingRectWithSize:NSMakeSize(1000.0,1000.0) options:NSStringDrawingTruncatesLastVisibleLine|NSStringDrawingUsesLineFragmentOrigin];
-        NSRect glyphStrRect = NSMakeRect(point.x - glyphStrBounds.size.width/2,point.y-glyphStrBounds.size.height/2,glyphStrBounds.size.width,glyphStrBounds.size.height);
-        [glyphStr drawWithRect:glyphStrRect options:NSStringDrawingTruncatesLastVisibleLine|NSStringDrawingUsesLineFragmentOrigin];
+		NSPoint mouthPoints[2];
+		mouthPoints[0] = point;
+		mouthPoints[1] = NSMakePoint(point.x+shapeSize*0.92388,point.y+shapeSize*0.382683);	// uses cos and sin of half the total mouth angle
+		NSBezierPath *pacMan = [NSBezierPath bezierPath];
+		[pacMan appendBezierPathWithArcWithCenter:point radius:shapeSize startAngle:22.5 endAngle:342.5];	// total mouth angle 45 degrees
+		[pacMan appendBezierPathWithPoints:mouthPoints count:2];
+		[pacMan setLineWidth:2.0];
+		[pacMan stroke];
+	} else if ([[NSArray arrayWithObjects:@"Anchor",@"Bed",@"Beer",@"Bell",@"Binoculars",@"Bug",@"Cutlery",@"Diamond",@"Fighter Jet",@"Flag",@"Frown",@"Gavel",@"Heart",@"Home",@"Leaf",@"Lock",@"Music",@"Scale",@"Smile",@"Star",@"Tachometer",@"Thumbs Up",@"Thumbs Down",@"Trash",@"Tree",@"Unlock",@"Warning",nil] containsObject:screenPoint.point.trackedEvent.type.shape]) { // FontAwesome glyphs
+		NSDictionary *fontAwesomeCodes = [NSDictionary dictionaryWithObjectsAndKeys:
+								    @"\uf13d",@"Anchor",
+								    @"\uf236",@"Bed",
+								    @"\uf0fc",@"Beer",
+								    @"\uf0f3",@"Bell",
+								    @"\uf1e5",@"Binoculars",
+								    @"\uf188",@"Bug",
+								    @"\uf0f5",@"Cutlery",
+								    @"\uf219",@"Diamond",
+								    @"\uf0fb",@"Fighter Jet",
+								    @"\uf024",@"Flag",
+								    @"\uf119",@"Frown",
+								    @"\uf0e3",@"Gavel",
+								    @"\uf004",@"Heart",
+								    @"\uf015",@"Home",
+								    @"\uf06c",@"Leaf",
+								    @"\uf023",@"Lock",
+								    @"\uf001",@"Music",
+								    @"\uf24e",@"Scale",
+								    @"\uf118",@"Smile",
+								    @"\uf006",@"Star",
+								    @"\uf0e4",@"Tachometer",
+								    @"\uf164",@"Thumbs Up",
+								    @"\uf165",@"Thumbs Down",
+								    @"\uf1f8",@"Trash",
+								    @"\uf1bb",@"Tree",
+								    @"\uf09c",@"Unlock",
+								    @"\uf071",@"Warning",
+								    nil];
+		NSString *glyphText = [fontAwesomeCodes objectForKey:screenPoint.point.trackedEvent.type.shape];
+		
+		
+		
+		
+		NSFont *glyphStrFont = [NSFont fontWithName:@"FontAwesome" size:shapeSize*2.5];
+		NSShadow *shadow = [NSShadow new];
+		[shadow setShadowBlurRadius:3.0f];
+		[shadow setShadowColor:[NSColor grayColor]];
+		[shadow setShadowOffset:CGSizeMake(1.0f,-1.0f)];
+		NSDictionary *glyphStrAttributes = [NSDictionary dictionaryWithObjectsAndKeys:glyphStrFont,NSFontAttributeName,
+									 pointColor,NSForegroundColorAttributeName,shadow,NSShadowAttributeName,nil];
+		NSMutableAttributedString *glyphStr = [[NSMutableAttributedString alloc] initWithString:glyphText attributes:glyphStrAttributes];
+		NSRect glyphStrBounds = [glyphStr boundingRectWithSize:NSMakeSize(1000.0,1000.0) options:NSStringDrawingTruncatesLastVisibleLine|NSStringDrawingUsesLineFragmentOrigin];
+		NSRect glyphStrRect = NSMakeRect(point.x - glyphStrBounds.size.width/2,point.y-glyphStrBounds.size.height/2,glyphStrBounds.size.width,glyphStrBounds.size.height);
+		[glyphStr drawWithRect:glyphStrRect options:NSStringDrawingTruncatesLastVisibleLine|NSStringDrawingUsesLineFragmentOrigin];
 	} else if ([screenPoint.point.trackedEvent.type.shape isEqualToString:@"Square"]) {
 		NSBezierPath *square = [NSBezierPath bezierPathWithRect:shapeRect];
 		[square setLineWidth:3.0];
@@ -774,7 +774,7 @@
 		NSBezierPath *cross1path = [NSBezierPath bezierPath];
 		[cross1path appendBezierPathWithPoints:cross1 count:2];
 		NSBezierPath *cross2path = [NSBezierPath bezierPath];
-		[cross2path appendBezierPathWithPoints:cross2 count:2];		
+		[cross2path appendBezierPathWithPoints:cross2 count:2];
 		[cross1path setLineWidth:3.0];
 		[cross2path setLineWidth:3.0];
 		[cross1path stroke];
@@ -793,7 +793,7 @@
 		[cross1path setLineWidth:3.0];
 		[cross2path setLineWidth:3.0];
 		[cross1path stroke];
-		[cross2path stroke];		
+		[cross2path stroke];
 	} else if ([screenPoint.point.trackedEvent.type.shape isEqualToString:@"Collision"]) {	// colliding left and right arrows
 		NSPoint line1[2];
 		NSPoint line2[3];
@@ -816,8 +816,8 @@
 		[line2path setLineWidth:2.0];
 		[line3path setLineWidth:2.0];
 		[line1path stroke];
-		[line2path stroke];		
-		[line3path stroke];				
+		[line2path stroke];
+		[line3path stroke];
 	} else if ([screenPoint.point.trackedEvent.type.shape isEqualToString:@"Up Arrow"]) {
 		NSPoint line1[2];
 		NSPoint line2[3];
@@ -887,14 +887,14 @@
 		[line1path stroke];
 		[line2path stroke];
 	}
-    
+	
 	BOOL pointIsSelected = ([[screenPoint.videoClip.project.document.eventsPointsController selectedObjects] count] > 0 && [[screenPoint.videoClip.project.document.eventsPointsController selectedObjects] containsObject:screenPoint.point]);
 	if (pointIsSelected) [self drawSelectionIndicatorAtPoint:point forShapeOfSize:shapeSize opacity:opacity];
 }
 
 - (void) drawSelectionIndicatorAtPoint:(NSPoint)point forShapeOfSize:(float)shapeSize opacity:(float)opacity
 {
-    // THIS FUNCTION CURRENTLY IGNORES OPACITY. The fading looked cool but made it harder to select visible points on screen and go-to them for editing. I'm keeping the commented code for now.
+	// THIS FUNCTION CURRENTLY IGNORES OPACITY. The fading looked cool but made it harder to select visible points on screen and go-to them for editing. I'm keeping the commented code for now.
 	float selectionLineLength = [[[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"pointSelectionIndicatorLineLength"] floatValue];
 	float selectionLineWidth = [[[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"pointSelectionIndicatorLineWidth"] floatValue];
 	float selectionLineSizeFactor = [[[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"pointSelectionIndicatorSizeFactor"] floatValue];
@@ -912,7 +912,7 @@
 	[mainPath lineToPoint:NSMakePoint(point.x,point.y+indicatorDistance+selectionLineLength)];
 	[mainPath moveToPoint:NSMakePoint(point.x,point.y-indicatorDistance)];
 	[mainPath lineToPoint:NSMakePoint(point.x,point.y-indicatorDistance-selectionLineLength)];
-
+	
 	[outlinePath moveToPoint:NSMakePoint(point.x+indicatorDistance-outlineWidth,point.y)];
 	[outlinePath lineToPoint:NSMakePoint(point.x+indicatorDistance+selectionLineLength+outlineWidth,point.y)];
 	[outlinePath moveToPoint:NSMakePoint(point.x-indicatorDistance+outlineWidth,point.y)];
@@ -921,27 +921,27 @@
 	[outlinePath lineToPoint:NSMakePoint(point.x,point.y+indicatorDistance+selectionLineLength+outlineWidth)];
 	[outlinePath moveToPoint:NSMakePoint(point.x,point.y-indicatorDistance+outlineWidth)];
 	[outlinePath lineToPoint:NSMakePoint(point.x,point.y-indicatorDistance-selectionLineLength-outlineWidth)];
-
+	
 	[mainPath setLineWidth:selectionLineWidth];
 	[outlinePath setLineWidth:selectionLineWidth+2*outlineWidth];
-//	[[NSColor colorWithWhite:0.0f alpha:opacity] set];
-    [[NSColor blackColor] set];
+	//	[[NSColor colorWithWhite:0.0f alpha:opacity] set];
+	[[NSColor blackColor] set];
 	[outlinePath stroke];
-//    [[NSColor colorWithDeviceRed:[selectionColor redComponent] green:[selectionColor greenComponent] blue:[selectionColor blueComponent] alpha:opacity] set];
-    [selectionColor set];
+	//    [[NSColor colorWithDeviceRed:[selectionColor redComponent] green:[selectionColor greenComponent] blue:[selectionColor blueComponent] alpha:opacity] set];
+	[selectionColor set];
 	[mainPath stroke];
 }
 
 - (void) drawHintLines
 {
 	NSString *hintLinesSetting = [[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"hintLinesSetting"];
-	if (![hintLinesSetting isEqualToString:@"None"]) {	
-        NSSet *visibleHintLines = [NSSet set];
-        NSMutableSet __block *currentHintLines = [NSMutableSet set];
-        [vwc.videoClip.hintLines enumerateObjectsUsingBlock:^(id obj, BOOL *stop) {
-            VSHintLine *hintLine = obj;
-            if ([UtilityFunctions timeString:hintLine.fromScreenPoint.point.timecode isEqualToTimeString:[vwc.videoClip.project.document currentMasterTimeString]]) [currentHintLines addObject:obj];
-        }];
+	if (![hintLinesSetting isEqualToString:@"None"]) {
+		NSSet *visibleHintLines = [NSSet set];
+		NSMutableSet __block *currentHintLines = [NSMutableSet set];
+		[vwc.videoClip.hintLines enumerateObjectsUsingBlock:^(id obj, BOOL *stop) {
+			VSHintLine *hintLine = obj;
+			if ([UtilityFunctions timeString:hintLine.fromScreenPoint.point.timecode isEqualToTimeString:[vwc.videoClip.project.document currentMasterTimeString]]) [currentHintLines addObject:obj];
+		}];
 		if ([hintLinesSetting isEqualToString:@"All"]) {
 			visibleHintLines = currentHintLines;
 		} else {	// setting is "Unpaired"; show only unpaired hintLines
@@ -949,7 +949,7 @@
 				for (VSHintLine *hintLine in currentHintLines) {
 					// if another VSEventScreenPoint for this VSHintLine's VSPoint has the same VSVideoClip as the VSHintLine does, it's paired.
 					bool isPaired = false;
-					for (VSEventScreenPoint *screenPoint in hintLine.fromScreenPoint.point.screenPoints) {						
+					for (VSEventScreenPoint *screenPoint in hintLine.fromScreenPoint.point.screenPoints) {
 						if ([screenPoint.videoClip isEqualTo:hintLine.toVideoClip]) isPaired = true;
 					}
 					if (!isPaired) visibleHintLines = [visibleHintLines setByAddingObject:hintLine];	// only add unpaired ones to the visibleHintLines
@@ -958,33 +958,33 @@
 		}
 		for (VSHintLine *hintLine in visibleHintLines) {	// only draw hintlines for the current timecode
 			if ([hintLine.fromScreenPoint.point.trackedEvent.trackedObjects count] == 1) {	// If the line is associated with just one object, draw it.
-				[self drawHintLine:hintLine 
-						   ofWidth:1.5
+				[self drawHintLine:hintLine
+						 ofWidth:1.5
 				 fromTrackedObject:[hintLine.fromScreenPoint.point.trackedEvent.trackedObjects anyObject]];
 			} else {	// If the line is associated with more than one object, draw it as nested lines of increasing thickness, representing all their colors.
 				for(int i=0; i < [hintLine.fromScreenPoint.point.trackedEvent.trackedObjects count]; i++) {
 					float lineWidth = 2*([hintLine.fromScreenPoint.point.trackedEvent.trackedObjects count] - i);
-					[self drawHintLine:hintLine 
-							   ofWidth:lineWidth
+					[self drawHintLine:hintLine
+							 ofWidth:lineWidth
 					 fromTrackedObject:[[hintLine.fromScreenPoint.point.trackedEvent.trackedObjects allObjects] objectAtIndex:i]];
 				}
 			}
 		}
-	}	
+	}
 }
 
 - (void) drawHintLine:(VSHintLine *)hintLine ofWidth:(float)width fromTrackedObject:(VSTrackedObject *)obj
 {
 	float hintLineDrawInterval = [[[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"hintLineDrawInterval"] floatValue];
 	NSBezierPath *path = [hintLine bezierPathForLineWithInterval:hintLineDrawInterval];
-    if (path) {
-        if ([[[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"showScreenItemDropShadows"] boolValue] == YES) {
-            NSShadow *shadow = [NSShadow new];
-            [shadow setShadowColor: [NSColor blackColor]];
-            [shadow setShadowBlurRadius: [[[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"screenItemDropShadowBlurRadius"] floatValue]];
-            [shadow setShadowOffset: NSMakeSize(0.0f,-0.0f)];
-            [shadow set];
-        }
+	if (path) {
+		if ([[[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"showScreenItemDropShadows"] boolValue] == YES) {
+			NSShadow *shadow = [NSShadow new];
+			[shadow setShadowColor: [NSColor blackColor]];
+			[shadow setShadowBlurRadius: [[[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"screenItemDropShadowBlurRadius"] floatValue]];
+			[shadow setShadowOffset: NSMakeSize(0.0f,-0.0f)];
+			[shadow set];
+		}
 		[obj.color setStroke];
 		[path setLineWidth:width];
 		[path stroke];
@@ -1023,14 +1023,14 @@
 		textOffset = NSMakePoint(1.2*radius,-1.63*radius);
 		pointsArrayController = calibrationPoint.calibration.videoClip.project.document.calibScreenPtBackArrayController;
 	}
-    // set up drop shadows
-    if ([[[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"showScreenItemDropShadows"] boolValue] == YES) {
-        NSShadow *shadow = [NSShadow new];
-        [shadow setShadowColor: [NSColor blackColor]];
-        [shadow setShadowBlurRadius: [[[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"screenItemDropShadowBlurRadius"] floatValue]];
-        [shadow setShadowOffset: NSMakeSize(0.0f,-0.0f)];
-        [shadow set];
-    }
+	// set up drop shadows
+	if ([[[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"showScreenItemDropShadows"] boolValue] == YES) {
+		NSShadow *shadow = [NSShadow new];
+		[shadow setShadowColor: [NSColor blackColor]];
+		[shadow setShadowBlurRadius: [[[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"screenItemDropShadowBlurRadius"] floatValue]];
+		[shadow setShadowOffset: NSMakeSize(0.0f,-0.0f)];
+		[shadow set];
+	}
 	// draw the circle around the point
 	[pointColor setStroke];
 	NSRect circleRect = NSMakeRect(point.x-radius,point.y-radius,2.0*radius,2.0*radius);
@@ -1040,7 +1040,7 @@
 	// draw the dot at the point
 	[pointColor setFill];
 	NSRect centerPoint = NSMakeRect(point.x-1.5, point.y-1.5, 3.0, 3.0);
-    NSRectFill(centerPoint);
+	NSRectFill(centerPoint);
 	// draw the selection indicator, if the point is selected
 	
 	BOOL pointIsSelected = ([[pointsArrayController selectedObjects] count] > 0 && [[pointsArrayController selectedObjects] containsObject:calibrationPoint]);
@@ -1050,71 +1050,71 @@
 	
 	if ([[[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"showWorldCoordinatesNextToQuadratPoints"] boolValue]) {
 		float worldX = 0.0;
-        float worldY = 0.0;
-        float worldZ = 0.0;
+		float worldY = 0.0;
+		float worldZ = 0.0;
 		if ([vwc.videoClip.calibration.axisHorizontal isEqualToString:@"x"]) {
 			worldX = [calibrationPoint.worldHcoord floatValue];
 			if ([vwc.videoClip.calibration.axisVertical isEqualToString:@"y"]) {
-				worldY = [calibrationPoint.worldVcoord floatValue];	
+				worldY = [calibrationPoint.worldVcoord floatValue];
 				if ([whichSurface isEqual: @"Front"]) {
 					worldZ = [vwc.videoClip.calibration.planeCoordFront floatValue];
 				} else if ([whichSurface isEqual: @"Back"]) {
 					worldZ = [vwc.videoClip.calibration.planeCoordBack floatValue];
 				}
 			} else if ([vwc.videoClip.calibration.axisVertical isEqualToString:@"z"]) {
-				worldZ = [calibrationPoint.worldVcoord floatValue];		
+				worldZ = [calibrationPoint.worldVcoord floatValue];
 				if ([whichSurface isEqual: @"Front"]) {
 					worldY = [vwc.videoClip.calibration.planeCoordFront floatValue];
 				} else if ([whichSurface isEqual: @"Back"]) {
 					worldY = [vwc.videoClip.calibration.planeCoordBack floatValue];
-				}			
+				}
 			}
 		} else if ([vwc.videoClip.calibration.axisHorizontal isEqualToString:@"y"]) {
 			worldY = [calibrationPoint.worldHcoord floatValue];
 			if ([vwc.videoClip.calibration.axisVertical isEqualToString:@"x"]) {
-				worldX = [calibrationPoint.worldVcoord floatValue];	
+				worldX = [calibrationPoint.worldVcoord floatValue];
 				if ([whichSurface isEqual: @"Front"]) {
 					worldZ = [vwc.videoClip.calibration.planeCoordFront floatValue];
 				} else if ([whichSurface isEqual: @"Back"]) {
 					worldZ = [vwc.videoClip.calibration.planeCoordBack floatValue];
-				}			
+				}
 			} else if ([vwc.videoClip.calibration.axisVertical isEqualToString:@"z"]) {
-				worldZ = [calibrationPoint.worldVcoord floatValue];		
+				worldZ = [calibrationPoint.worldVcoord floatValue];
 				if ([whichSurface isEqual: @"Front"]) {
 					worldX = [vwc.videoClip.calibration.planeCoordFront floatValue];
 				} else if ([whichSurface isEqual: @"Back"]) {
 					worldX = [vwc.videoClip.calibration.planeCoordBack floatValue];
-				}			
-			}		
+				}
+			}
 		} else if ([vwc.videoClip.calibration.axisHorizontal isEqualToString:@"z"]) {
 			worldZ = [calibrationPoint.worldHcoord floatValue];
 			if ([vwc.videoClip.calibration.axisVertical isEqualToString:@"x"]) {
-				worldX = [calibrationPoint.worldVcoord floatValue];	
+				worldX = [calibrationPoint.worldVcoord floatValue];
 				if ([whichSurface isEqual: @"Front"]) {
 					worldY = [vwc.videoClip.calibration.planeCoordFront floatValue];
 				} else if ([whichSurface isEqual: @"Back"]) {
 					worldY = [vwc.videoClip.calibration.planeCoordBack floatValue];
-				}			
+				}
 			} else if ([vwc.videoClip.calibration.axisVertical isEqualToString:@"y"]) {
-				worldY = [calibrationPoint.worldVcoord floatValue];		
+				worldY = [calibrationPoint.worldVcoord floatValue];
 				if ([whichSurface isEqual: @"Front"]) {
 					worldX = [vwc.videoClip.calibration.planeCoordFront floatValue];
 				} else if ([whichSurface isEqual: @"Back"]) {
 					worldX = [vwc.videoClip.calibration.planeCoordBack floatValue];
-				}			
-			}	
+				}
+			}
 		}
-        
-        NSShadow *shadow = [NSShadow new];
-        if ([[[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"showScreenItemDropShadows"] boolValue] == YES) {
-            [shadow setShadowBlurRadius:4.0f];
-            [shadow setShadowColor:[NSColor blackColor]];
-            [shadow setShadowOffset:CGSizeMake(1.0f,-1.0f)];
-        }
-        
+		
+		NSShadow *shadow = [NSShadow new];
+		if ([[[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"showScreenItemDropShadows"] boolValue] == YES) {
+			[shadow setShadowBlurRadius:4.0f];
+			[shadow setShadowColor:[NSColor blackColor]];
+			[shadow setShadowOffset:CGSizeMake(1.0f,-1.0f)];
+		}
+		
 		NSDictionary *textAttributes = [NSDictionary dictionaryWithObjectsAndKeys:
-										[NSFont fontWithName:@"Helvetica" size:11.0],NSFontAttributeName,
-										pointColor,NSForegroundColorAttributeName,shadow,NSShadowAttributeName,nil];
+								  [NSFont fontWithName:@"Helvetica" size:11.0],NSFontAttributeName,
+								  pointColor,NSForegroundColorAttributeName,shadow,NSShadowAttributeName,nil];
 		NSString *label = [NSString stringWithFormat:@"%1.2f\n%1.2f\n%1.2f",worldX,worldY,worldZ];
 		[label drawAtPoint:NSMakePoint(point.x+textOffset.x,point.y+textOffset.y) withAttributes:textAttributes];
 	}
@@ -1126,40 +1126,40 @@
 {
 	BOOL shouldDrawFront = [[[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"quadratShowSurfaceGridOverlayFront"] boolValue] && [vwc.videoClip.calibration frontIsCalibrated];
 	BOOL shouldDrawBack = [[[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"quadratShowSurfaceGridOverlayBack"] boolValue] && [vwc.videoClip.calibration backIsCalibrated];
-    
-    NSColor *frontColor = [UtilityFunctions userDefaultColorForKey:@"quadratOverlayColorFront"];
-    NSColor *backColor = [UtilityFunctions userDefaultColorForKey:@"quadratOverlayColorBack"];
-    
+	
+	NSColor *frontColor = [UtilityFunctions userDefaultColorForKey:@"quadratOverlayColorFront"];
+	NSColor *backColor = [UtilityFunctions userDefaultColorForKey:@"quadratOverlayColorBack"];
+	
 	if (shouldDrawFront || shouldDrawBack) {	// quadratCoordinateGrids holds a multidimensional array of NSBezierPaths representing all the grid lines
 		if (quadratCoordinateGrids == nil) [self calculateQuadratCoordinateGrids];
-        if ([[[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"showScreenItemDropShadows"] boolValue] == YES) {
-            NSShadow *shadow = [NSShadow new];
-            [shadow setShadowColor: [NSColor blackColor]];
-            [shadow setShadowBlurRadius: [[[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"screenItemDropShadowBlurRadius"] floatValue]];
-            [shadow setShadowOffset: NSMakeSize(0.0f,-0.0f)];
-            [shadow set];
-        }
-        if (shouldDrawBack) {
-            [backColor setStroke];
-            for (NSArray *directionArray in [quadratCoordinateGrids objectAtIndex:1]) {
-                for (NSBezierPath *path in directionArray) [path stroke];
-            }
-        }
-        if (shouldDrawFront) {
-            [frontColor setStroke];
-            for (NSArray *directionArray in [quadratCoordinateGrids objectAtIndex:0]) {
-                for (NSBezierPath *path in directionArray) [path stroke];
-            }
-        }
-    }
+		if ([[[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"showScreenItemDropShadows"] boolValue] == YES) {
+			NSShadow *shadow = [NSShadow new];
+			[shadow setShadowColor: [NSColor blackColor]];
+			[shadow setShadowBlurRadius: [[[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"screenItemDropShadowBlurRadius"] floatValue]];
+			[shadow setShadowOffset: NSMakeSize(0.0f,-0.0f)];
+			[shadow set];
+		}
+		if (shouldDrawBack) {
+			[backColor setStroke];
+			for (NSArray *directionArray in [quadratCoordinateGrids objectAtIndex:1]) {
+				for (NSBezierPath *path in directionArray) [path stroke];
+			}
+		}
+		if (shouldDrawFront) {
+			[frontColor setStroke];
+			for (NSArray *directionArray in [quadratCoordinateGrids objectAtIndex:0]) {
+				for (NSBezierPath *path in directionArray) [path stroke];
+			}
+		}
+	}
 }
 
 - (void) calculateQuadratCoordinateGrids
 {
-    NSMutableArray *grids = [NSMutableArray new];
-    if (vwc.videoClip.calibration.matrixQuadratFrontToScreen != nil) [grids addObject:@[[self quadratCoordinateGridForSurface:@"Front"]]];
-    if (vwc.videoClip.calibration.matrixQuadratBackToScreen != nil) [grids addObject:@[[self quadratCoordinateGridForSurface:@"Back"]]];
-    quadratCoordinateGrids = grids;
+	NSMutableArray *grids = [NSMutableArray new];
+	if (vwc.videoClip.calibration.matrixQuadratFrontToScreen != nil) [grids addObject:@[[self quadratCoordinateGridForSurface:@"Front"]]];
+	if (vwc.videoClip.calibration.matrixQuadratBackToScreen != nil) [grids addObject:@[[self quadratCoordinateGridForSurface:@"Back"]]];
+	quadratCoordinateGrids = grids;
 }
 
 
@@ -1171,89 +1171,89 @@
 	// Returns an NSArray of NSBezierPaths, one representing all the grid lines, and one (thicker) representing the two x=0, y=0 axes.
 	NSMutableArray *outPathsArray = [NSMutableArray new];
 	
-    // Here we configure the spacing for the overlay grid automatically based on the distance between the first two points in world coordinates.
-    // Having user-configured spacings creates major problems when a default value like 0.1 (for using meters) is applied to someone using millimeters for their units (millions of grid nodes slow everything down)
-    NSSet *calibPoints = ([surface isEqualToString:@"Front"]) ? vwc.videoClip.calibration.pointsFront : vwc.videoClip.calibration.pointsBack;
-    if ([calibPoints count] < 2) return outPathsArray;
-    NSArray *calibPointsOrdered = [[calibPoints allObjects] sortedArrayUsingDescriptors:[NSArray arrayWithObjects:[NSSortDescriptor sortDescriptorWithKey:@"worldHcoord" ascending:YES],[NSSortDescriptor sortDescriptorWithKey:@"worldVcoord" ascending:YES],nil]];
-    
-    // Calculate the grid spacing by sorting the unique hCoord and vCoord values and comparing the difference between consecutive values on both dimensions and using the minimum (h or v) value
-    NSMutableSet *__block allHVals = [NSMutableSet set];
-    NSMutableSet *__block allVVals = [NSMutableSet set];
-    [calibPointsOrdered enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
-        VSCalibrationPoint *pt = (VSCalibrationPoint *) obj;
-        [allHVals addObject:[pt worldHcoord]];
-        [allVVals addObject:[pt worldVcoord]];
-    }];
-    NSArray *uniqueHVals = [[NSOrderedSet orderedSetWithSet:allHVals] array];
-    NSArray *uniqueVVals = [[NSOrderedSet orderedSetWithSet:allVVals] array];
-    NSArray *sortedUniqueHVals = [uniqueHVals sortedArrayUsingSelector:@selector(compare:)];
-    NSArray *sortedUniqueVVals = [uniqueVVals sortedArrayUsingSelector:@selector(compare:)];
-    float hGridSpacing = fabs([[sortedUniqueHVals objectAtIndex:1] floatValue] - [[sortedUniqueHVals objectAtIndex:0] floatValue]);
-    float vGridSpacing = fabs([[sortedUniqueVVals objectAtIndex:1] floatValue] - [[sortedUniqueVVals objectAtIndex:0] floatValue]);
-    float gridSpacing = fmin(hGridSpacing,vGridSpacing);//(hGridSpacing > vGridSpacing) ? hGridSpacing : vGridSpacing;
-    
+	// Here we configure the spacing for the overlay grid automatically based on the distance between the first two points in world coordinates.
+	// Having user-configured spacings creates major problems when a default value like 0.1 (for using meters) is applied to someone using millimeters for their units (millions of grid nodes slow everything down)
+	NSSet *calibPoints = ([surface isEqualToString:@"Front"]) ? vwc.videoClip.calibration.pointsFront : vwc.videoClip.calibration.pointsBack;
+	if ([calibPoints count] < 2) return outPathsArray;
+	NSArray *calibPointsOrdered = [[calibPoints allObjects] sortedArrayUsingDescriptors:[NSArray arrayWithObjects:[NSSortDescriptor sortDescriptorWithKey:@"worldHcoord" ascending:YES],[NSSortDescriptor sortDescriptorWithKey:@"worldVcoord" ascending:YES],nil]];
+	
+	// Calculate the grid spacing by sorting the unique hCoord and vCoord values and comparing the difference between consecutive values on both dimensions and using the minimum (h or v) value
+	NSMutableSet *__block allHVals = [NSMutableSet set];
+	NSMutableSet *__block allVVals = [NSMutableSet set];
+	[calibPointsOrdered enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+		VSCalibrationPoint *pt = (VSCalibrationPoint *) obj;
+		[allHVals addObject:[pt worldHcoord]];
+		[allVVals addObject:[pt worldVcoord]];
+	}];
+	NSArray *uniqueHVals = [[NSOrderedSet orderedSetWithSet:allHVals] array];
+	NSArray *uniqueVVals = [[NSOrderedSet orderedSetWithSet:allVVals] array];
+	NSArray *sortedUniqueHVals = [uniqueHVals sortedArrayUsingSelector:@selector(compare:)];
+	NSArray *sortedUniqueVVals = [uniqueVVals sortedArrayUsingSelector:@selector(compare:)];
+	float hGridSpacing = fabs([[sortedUniqueHVals objectAtIndex:1] floatValue] - [[sortedUniqueHVals objectAtIndex:0] floatValue]);
+	float vGridSpacing = fabs([[sortedUniqueVVals objectAtIndex:1] floatValue] - [[sortedUniqueVVals objectAtIndex:0] floatValue]);
+	float gridSpacing = fmin(hGridSpacing,vGridSpacing);//(hGridSpacing > vGridSpacing) ? hGridSpacing : vGridSpacing;
+	
 	float lineWidth = [[[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"quadratGridOverlayLineThickness"] floatValue];
-    
-    NSPoint bottomLeft = [vwc.videoClip.calibration projectScreenPoint:NSMakePoint(0.0,0.0) toQuadratSurface:surface];
-    NSPoint bottomRight = [vwc.videoClip.calibration projectScreenPoint:NSMakePoint([vwc.videoClip clipWidth],0.0) toQuadratSurface:surface];
-    NSPoint topLeft = [vwc.videoClip.calibration projectScreenPoint:NSMakePoint(0.0,[vwc.videoClip clipHeight]) toQuadratSurface:surface];
-    NSPoint topRight = [vwc.videoClip.calibration projectScreenPoint:NSMakePoint([vwc.videoClip clipWidth],[vwc.videoClip clipHeight]) toQuadratSurface:surface];
-    float maxX = bottomLeft.x;
-    float minX = bottomLeft.x;
-    float maxY = bottomLeft.y;
-    float minY = bottomLeft.y;
-    if (bottomRight.x > maxX) maxX = bottomRight.x;
-    if (bottomRight.x < minX) minX = bottomRight.x;
-    if (topLeft.x > maxX) maxX = topLeft.x;
-    if (topLeft.x < minX) minX = topLeft.x;
-    if (topRight.x > maxX) maxX = topRight.x;
-    if (topRight.x < minX) minX = topRight.x;
-    if (bottomRight.y > maxY) maxY = bottomRight.y;
-    if (bottomRight.y < minY) minY = bottomRight.y;
-    if (topLeft.y > maxY) maxY = topLeft.y;
-    if (topLeft.y < minY) minY = topLeft.y;
-    if (topRight.y > maxY) maxY = topRight.y;
-    if (topRight.y < minY) minY = topRight.y;    
-    maxX = ceilf(maxX/gridSpacing) * gridSpacing;
-    minX = floorf(minX/gridSpacing) * gridSpacing;
-    maxY = ceilf(maxY/gridSpacing) * gridSpacing;
-    minY = floorf(minY/gridSpacing) * gridSpacing;
-    
-    NSBezierPath *path = [NSBezierPath bezierPath];
-    NSBezierPath *axisPath = [NSBezierPath bezierPath];
-	[path setLineWidth:lineWidth];    
-    [axisPath setLineWidth:lineWidth*2.5];
-    NSPoint pt, overlayPt;
-    for (float x = minX; x <= maxX; x += gridSpacing) {
-        for (float y = minY; y <= maxY; y += (maxY - minY)/100) {
-            pt = [vwc.videoClip.calibration projectToScreenFromPoint:NSMakePoint(x,y) onQuadratSurface:surface redistort:TRUE];
-            overlayPt = [vwc convertVideoToOverlayCoords:pt];
-            if (y == minY) {
-                [path moveToPoint:overlayPt];
-                if (fabs(x) < 0.1*gridSpacing) [axisPath moveToPoint:overlayPt];    // equivalent to if(x == 0), accounting for floating point errors
-            } else {
-                [path lineToPoint:overlayPt];
-                if (fabs(x) < 0.1*gridSpacing) [axisPath lineToPoint:overlayPt];
-            }
-        }
-    }
-    for (float y = minY; y <= maxY; y += gridSpacing) {
-        for (float x = minX; x <= maxX; x += (maxX - minX)/100) {
-            pt = [vwc.videoClip.calibration projectToScreenFromPoint:NSMakePoint(x,y) onQuadratSurface:surface redistort:TRUE];
-            overlayPt = [vwc convertVideoToOverlayCoords:pt];
-            if (x == minX) {
-                [path moveToPoint:overlayPt];
-                if (fabs(y) < 0.1*gridSpacing) [axisPath moveToPoint:overlayPt];    // equivalent to if(x == 0), accounting for floating point errors
-            } else {
-                [path lineToPoint:overlayPt];
-                if (fabs(y) < 0.1*gridSpacing) [axisPath lineToPoint:overlayPt];
-            }
-        }
-    }                                                                                        
-    [outPathsArray addObject:path];
-    [outPathsArray addObject:axisPath];
-    return outPathsArray;
+	
+	NSPoint bottomLeft = [vwc.videoClip.calibration projectScreenPoint:NSMakePoint(0.0,0.0) toQuadratSurface:surface];
+	NSPoint bottomRight = [vwc.videoClip.calibration projectScreenPoint:NSMakePoint([vwc.videoClip clipWidth],0.0) toQuadratSurface:surface];
+	NSPoint topLeft = [vwc.videoClip.calibration projectScreenPoint:NSMakePoint(0.0,[vwc.videoClip clipHeight]) toQuadratSurface:surface];
+	NSPoint topRight = [vwc.videoClip.calibration projectScreenPoint:NSMakePoint([vwc.videoClip clipWidth],[vwc.videoClip clipHeight]) toQuadratSurface:surface];
+	float maxX = bottomLeft.x;
+	float minX = bottomLeft.x;
+	float maxY = bottomLeft.y;
+	float minY = bottomLeft.y;
+	if (bottomRight.x > maxX) maxX = bottomRight.x;
+	if (bottomRight.x < minX) minX = bottomRight.x;
+	if (topLeft.x > maxX) maxX = topLeft.x;
+	if (topLeft.x < minX) minX = topLeft.x;
+	if (topRight.x > maxX) maxX = topRight.x;
+	if (topRight.x < minX) minX = topRight.x;
+	if (bottomRight.y > maxY) maxY = bottomRight.y;
+	if (bottomRight.y < minY) minY = bottomRight.y;
+	if (topLeft.y > maxY) maxY = topLeft.y;
+	if (topLeft.y < minY) minY = topLeft.y;
+	if (topRight.y > maxY) maxY = topRight.y;
+	if (topRight.y < minY) minY = topRight.y;
+	maxX = ceilf(maxX/gridSpacing) * gridSpacing;
+	minX = floorf(minX/gridSpacing) * gridSpacing;
+	maxY = ceilf(maxY/gridSpacing) * gridSpacing;
+	minY = floorf(minY/gridSpacing) * gridSpacing;
+	
+	NSBezierPath *path = [NSBezierPath bezierPath];
+	NSBezierPath *axisPath = [NSBezierPath bezierPath];
+	[path setLineWidth:lineWidth];
+	[axisPath setLineWidth:lineWidth*2.5];
+	NSPoint pt, overlayPt;
+	for (float x = minX; x <= maxX; x += gridSpacing) {
+		for (float y = minY; y <= maxY; y += (maxY - minY)/100) {
+			pt = [vwc.videoClip.calibration projectToScreenFromPoint:NSMakePoint(x,y) onQuadratSurface:surface redistort:TRUE];
+			overlayPt = [vwc convertVideoToOverlayCoords:pt];
+			if (y == minY) {
+				[path moveToPoint:overlayPt];
+				if (fabs(x) < 0.1*gridSpacing) [axisPath moveToPoint:overlayPt];    // equivalent to if(x == 0), accounting for floating point errors
+			} else {
+				[path lineToPoint:overlayPt];
+				if (fabs(x) < 0.1*gridSpacing) [axisPath lineToPoint:overlayPt];
+			}
+		}
+	}
+	for (float y = minY; y <= maxY; y += gridSpacing) {
+		for (float x = minX; x <= maxX; x += (maxX - minX)/100) {
+			pt = [vwc.videoClip.calibration projectToScreenFromPoint:NSMakePoint(x,y) onQuadratSurface:surface redistort:TRUE];
+			overlayPt = [vwc convertVideoToOverlayCoords:pt];
+			if (x == minX) {
+				[path moveToPoint:overlayPt];
+				if (fabs(y) < 0.1*gridSpacing) [axisPath moveToPoint:overlayPt];    // equivalent to if(x == 0), accounting for floating point errors
+			} else {
+				[path lineToPoint:overlayPt];
+				if (fabs(y) < 0.1*gridSpacing) [axisPath lineToPoint:overlayPt];
+			}
+		}
+	}
+	[outPathsArray addObject:path];
+	[outPathsArray addObject:axisPath];
+	return outPathsArray;
 }
 
 #pragma mark
@@ -1261,13 +1261,13 @@
 
 - (void)mouseMoved:(NSEvent *)theEvent {
 	NSPoint mousePosition = [self convertPoint:[theEvent locationInWindow] fromView:nil];
-    mousePosition.x = floor(mousePosition.x);   // Here, I'm accounting for a weird behavior in Lion in which mouseMoved events deliver apparently "subpixel" coordinates but
-    mousePosition.y = ceil(mousePosition.y);    // mouseDown doesn't, so the position of a click doesn't match where the mouse had moved to.  The subpixel coordinates weren't real anyway.
+	mousePosition.x = floor(mousePosition.x);   // Here, I'm accounting for a weird behavior in Lion in which mouseMoved events deliver apparently "subpixel" coordinates but
+	mousePosition.y = ceil(mousePosition.y);    // mouseDown doesn't, so the position of a click doesn't match where the mouse had moved to.  The subpixel coordinates weren't real anyway.
 	[vwc updateMagnifiedPreviewWithCenter:[vwc convertOverlayToVideoCoords:mousePosition]];
 	[[vwc window] makeKeyAndOrderFront:nil]; // the delegate is the VideoWindowController
 	[vwc makeOverlayKeyWindow];	// make the overlay the key window, so it receives keyDown events
 	[vwc.document setFrontVideoClip:vwc.videoClip];
-    if (vwc.videoClip.project.document.portraitSubject != nil) [[NSCursor crosshairCursor] set];   // Prevents portrait selection crosshair cursor from resetting to arrow when window is ordered to front
+	if (vwc.videoClip.project.document.portraitSubject != nil) [[NSCursor crosshairCursor] set];   // Prevents portrait selection crosshair cursor from resetting to arrow when window is ordered to front
 }
 
 - (void)mouseDown:(NSEvent *)theEvent {	
@@ -1291,16 +1291,16 @@
 }
 
 - (void)otherMouseDown:(NSEvent *)theEvent {	// Clicking the 4th mouse button (left side button on mine) snaps a new point to the nearest corner unless the OS grabs that button first
-    if ([theEvent buttonNumber] == 3) {
-        NSPoint mousePosition = [self convertPoint:[theEvent locationInWindow] fromView:nil];
-        [vwc handleOverlayClick:mousePosition fromEvent:theEvent];	// tell the VideoWindowController to figure out what to do
-    }
+	if ([theEvent buttonNumber] == 3) {
+		NSPoint mousePosition = [self convertPoint:[theEvent locationInWindow] fromView:nil];
+		[vwc handleOverlayClick:mousePosition fromEvent:theEvent];	// tell the VideoWindowController to figure out what to do
+	}
 }
 
 - (BOOL)acceptsFirstResponder {
 	return YES;
 }
- 
+
 - (void)keyUp:(NSEvent *)theEvent {
 	[vwc handleOverlayKeyUp:theEvent];
 }
@@ -1310,49 +1310,49 @@
 }
 
 - (void)scrollWheel:(NSEvent *)theEvent {
-    if ([theEvent deltaY] > 0.0) {
-        [vwc.document stepBackwardAll:self];
-    } else if ([theEvent deltaY] < 0.0) {
-        [vwc.document stepForwardAll:self];
-    }
+	if ([theEvent deltaY] > 0.0) {
+		[vwc.document stepBackwardAll:self];
+	} else if ([theEvent deltaY] < 0.0) {
+		[vwc.document stepForwardAll:self];
+	}
 }
 
 - (void) dealloc
 {
-    [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKeyPath:@"values.quadratGridOverlayLineSpacing"];
-    [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKeyPath:@"values.quadratGridOverlayLineThickness"];
-    [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKeyPath:@"values.pointSelectionIndicatorLineLength"];
-    [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKeyPath:@"values.pointSelectionIndicatorLineWidth"];
-    [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKeyPath:@"values.pointSelectionIndicatorSizeFactor"];
-    [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKeyPath:@"values.pointSelectionIndicatorColor"];
-    [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKeyPath:@"values.quadratShowSurfaceGridOverlayFront"];
-    [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKeyPath:@"values.quadratShowSurfaceGridOverlayBack"];
-    [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKeyPath:@"values.quadratOverlayColorFront"];
-    [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKeyPath:@"values.quadratOverlayColorBack"];
-    [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKeyPath:@"values.quadratPointOverlayCircleDiameterFront"];
-    [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKeyPath:@"values.quadratPointOverlayCircleDiameterBack"];
-    [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKeyPath:@"values.showWorldCoordinatesNextToQuadratPoints"];
-    [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKeyPath:@"values.showPixelErrorOverlay"];
-    [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKeyPath:@"values.pixelErrorDotSize"];
-    [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKeyPath:@"values.pixelErrorLineWidth"];
-    [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKeyPath:@"values.pixelErrorLineColor"];
-    [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKeyPath:@"values.pixelErrorPointColor"];
-    [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKeyPath:@"values.hintLineDrawInterval"];
-    [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKeyPath:@"values.showDistortionOverlay"];
-    [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKeyPath:@"values.distortionPointsColor"];
-    [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKeyPath:@"values.distortionConnectingLinesColor"];
-    [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKeyPath:@"values.distortionTipToTipLinesColor"];
-    [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKeyPath:@"values.distortionCorrectedPointsColor"];
-    [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKeyPath:@"values.distortionCorrectedLinesColor"];
-    [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKeyPath:@"values.distortionCenterColor"];
-    [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKeyPath:@"values.distortionLineThickness"];
-    [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKeyPath:@"values.distortionPointSize"];
-    [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKeyPath:@"values.showDistortionConnectingLines"];
-    [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKeyPath:@"values.showDistortionLinesFromWhichTimecodes"];
-    [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKeyPath:@"values.showDistortionTipToTipLines"];
-    [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKeyPath:@"values.showDistortionCorrectedPoints"];
-    [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKeyPath:@"values.showScreenItemDropShadows"];
-    [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKeyPath:@"values.screenItemDropShadowBlurRadius"];
+	[[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKeyPath:@"values.quadratGridOverlayLineSpacing"];
+	[[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKeyPath:@"values.quadratGridOverlayLineThickness"];
+	[[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKeyPath:@"values.pointSelectionIndicatorLineLength"];
+	[[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKeyPath:@"values.pointSelectionIndicatorLineWidth"];
+	[[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKeyPath:@"values.pointSelectionIndicatorSizeFactor"];
+	[[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKeyPath:@"values.pointSelectionIndicatorColor"];
+	[[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKeyPath:@"values.quadratShowSurfaceGridOverlayFront"];
+	[[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKeyPath:@"values.quadratShowSurfaceGridOverlayBack"];
+	[[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKeyPath:@"values.quadratOverlayColorFront"];
+	[[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKeyPath:@"values.quadratOverlayColorBack"];
+	[[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKeyPath:@"values.quadratPointOverlayCircleDiameterFront"];
+	[[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKeyPath:@"values.quadratPointOverlayCircleDiameterBack"];
+	[[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKeyPath:@"values.showWorldCoordinatesNextToQuadratPoints"];
+	[[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKeyPath:@"values.showPixelErrorOverlay"];
+	[[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKeyPath:@"values.pixelErrorDotSize"];
+	[[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKeyPath:@"values.pixelErrorLineWidth"];
+	[[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKeyPath:@"values.pixelErrorLineColor"];
+	[[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKeyPath:@"values.pixelErrorPointColor"];
+	[[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKeyPath:@"values.hintLineDrawInterval"];
+	[[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKeyPath:@"values.showDistortionOverlay"];
+	[[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKeyPath:@"values.distortionPointsColor"];
+	[[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKeyPath:@"values.distortionConnectingLinesColor"];
+	[[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKeyPath:@"values.distortionTipToTipLinesColor"];
+	[[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKeyPath:@"values.distortionCorrectedPointsColor"];
+	[[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKeyPath:@"values.distortionCorrectedLinesColor"];
+	[[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKeyPath:@"values.distortionCenterColor"];
+	[[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKeyPath:@"values.distortionLineThickness"];
+	[[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKeyPath:@"values.distortionPointSize"];
+	[[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKeyPath:@"values.showDistortionConnectingLines"];
+	[[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKeyPath:@"values.showDistortionLinesFromWhichTimecodes"];
+	[[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKeyPath:@"values.showDistortionTipToTipLines"];
+	[[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKeyPath:@"values.showDistortionCorrectedPoints"];
+	[[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKeyPath:@"values.showScreenItemDropShadows"];
+	[[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKeyPath:@"values.screenItemDropShadowBlurRadius"];
 }
 
 @end

@@ -1,7 +1,7 @@
 /*********************************************************************************                                                                       
  * The MIT License (MIT)
  * 
- * Copyright (c) 2009-2016 Jason Neuswanger
+ * Copyright (c) 2009-2021 Jason Neuswanger
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -38,12 +38,17 @@
     
 }
 
-- (void) refreshImageBrowserView;
+- (void) refreshCollectionView;
 
-- (NSUInteger) numberOfItemsInImageBrowser:(IKImageBrowserView *)view;
+// Methods to conform to NSCollectionViewDataSource protocol
+- (NSInteger)numberOfSectionsInCollectionView:(NSCollectionView *)collectionView;
+- (NSInteger)collectionView:(NSCollectionView *)collectionView numberOfItemsInSection:(NSInteger)section;
+- (NSCollectionViewItem *)collectionView:(NSCollectionView *)collectionView itemForRepresentedObjectAtIndexPath:(NSIndexPath *)indexPath;
 
-- (id) imageBrowser:(IKImageBrowserView *) view itemAtIndex:(NSUInteger)index;
-
-- (void) imageBrowser:(IKImageBrowserView *) view removeItemsAtIndexes:(NSIndexSet *)indexes;
+//- (NSUInteger) numberOfItemsInImageBrowser:(IKImageBrowserView *)view;
+//
+//- (id) imageBrowser:(IKImageBrowserView *) view itemAtIndex:(NSUInteger)index;
+//
+//- (void) imageBrowser:(IKImageBrowserView *) view removeItemsAtIndexes:(NSIndexSet *)indexes;
 
 @end

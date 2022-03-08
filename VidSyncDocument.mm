@@ -1,18 +1,18 @@
 /*********************************************************************************                                                                       
  * The MIT License (MIT)
- * 
- * Copyright (c) 2009-2016 Jason Neuswanger
- * 
+ *
+ * Copyright (c) 2009-2021 Jason Neuswanger
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in all
  * copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -85,26 +85,24 @@ static void *AVSPPlayerCurrentTimeContext = &AVSPPlayerCurrentTimeContext;
 
 - (id)init 
 {
-    self = [super init];
-    if (self != nil) {
+	self = [super init];
+	if (self != nil) {
 		shutterClick = [[NSSound alloc] initWithContentsOfFile:[[NSBundle mainBundle] pathForSoundResource:@"CameraClick"] byReference:YES];
-         
+		
 		stopTime = kCMTimeIndefinite;
-        bookmarkIsSet1 = NO;
-        bookmarkIsSet2 = NO;
-        objectsTableSelectionChangeNotificationCascadeEnabled = YES;
-        objectsTableSelectionChangeNotificationCascadeEnabled = YES;
+		bookmarkIsSet1 = NO;
+		bookmarkIsSet2 = NO;
+		objectsTableSelectionChangeNotificationCascadeEnabled = YES;
+		objectsTableSelectionChangeNotificationCascadeEnabled = YES;
 		
 		decimalFormatter = [[NSNumberFormatter alloc] init];
 		[decimalFormatter setFormatterBehavior:NSNumberFormatterBehavior10_4];
 		[decimalFormatter setNumberStyle:NSNumberFormatterDecimalStyle];				// Prevents occasional numbers from being spit out in scientific notation, which screws up importers (Mathematica and others)
 		[decimalFormatter setGroupingSeparator:@""];
 		[decimalFormatter setMinimumFractionDigits:15];
-        
-        activeExportSessions = [NSMutableSet new];
-        
-    }
-    return self;
+		activeExportSessions = [NSMutableSet new];
+	}
+	return self;
 }
 
 - (void)makeWindowControllers
@@ -113,46 +111,51 @@ static void *AVSPPlayerCurrentTimeContext = &AVSPPlayerCurrentTimeContext;
 	[mainWindowController setShouldCloseDocument:YES];
 	[mainWindowController setShouldCascadeWindows:NO];
 	[self addWindowController:mainWindowController];
-    
-    
-    NSArray *playbackWindowTopLevelObjects;
-    [[NSBundle mainBundle] loadNibNamed:@"SyncedPlaybackWindow" owner:self topLevelObjects:&playbackWindowTopLevelObjects];
-    SyncedPlaybackPanel *loadingSyncedPlaybackPanel;
-    for (id obj in playbackWindowTopLevelObjects) if ([obj isKindOfClass:[SyncedPlaybackPanel class]]) loadingSyncedPlaybackPanel = (SyncedPlaybackPanel *) obj;
-    syncedPlaybackWindowController = [[NSWindowController alloc] initWithWindow:loadingSyncedPlaybackPanel];
-    [self addWindowController:syncedPlaybackWindowController];
-    
-    for (VSVideoClip *clip in [self.project.videoClips allObjects]) {
-        VideoWindowController __strong *vwc = [[VideoWindowController alloc] initWithVideoClip:clip inManagedObjectContext:[self managedObjectContext]];
-        [self observeWindowControllerVideoRate:vwc];
-        if (vwc != nil) [self addWindowController:vwc];
-    }
-
-    [self addObserver:self forKeyPath:@"portraitSubject" options:NSKeyValueObservingOptionNew context:NULL];
-
-    [[NSNotificationCenter defaultCenter] addObserver:self
-											 selector:@selector(movieTimeDidChange:)
-												 name:AVPlayerItemTimeJumpedNotification
-                                               object:project.masterClip.windowController.playerView.player.currentItem];
-    
-    [[NSNotificationCenter defaultCenter] addObserver:self
-											 selector:@selector(anyTableViewSelectionDidChange:)
-												 name:NSTableViewSelectionDidChangeNotification object:nil];
-    
+	
+	
+	NSArray *playbackWindowTopLevelObjects;
+	[[NSBundle mainBundle] loadNibNamed:@"SyncedPlaybackWindow" owner:self topLevelObjects:&playbackWindowTopLevelObjects];
+	SyncedPlaybackPanel *loadingSyncedPlaybackPanel;
+	for (id obj in playbackWindowTopLevelObjects) if ([obj isKindOfClass:[SyncedPlaybackPanel class]]) loadingSyncedPlaybackPanel = (SyncedPlaybackPanel *) obj;
+	syncedPlaybackWindowController = [[NSWindowController alloc] initWithWindow:loadingSyncedPlaybackPanel];
+	[self addWindowController:syncedPlaybackWindowController];
+	
+	for (VSVideoClip *clip in [self.project.videoClips allObjects]) {
+		if (clip.isMasterClipOf != nil) {
+			// Fixes a weird glitch that appeared in the 2021 updates in which master clips were coming back with nil rather than zero syncOffsets,
+			// leading to various errors down the line when treating clips the same including referencing their syncOffset.
+			clip.syncOffset = [UtilityFunctions CMStringFromTime:CMTimeMake(0,[clip.timeScale intValue])];
+		}
+		VideoWindowController __strong *vwc = [[VideoWindowController alloc] initWithVideoClip:clip inManagedObjectContext:[self managedObjectContext]];
+		[self observeWindowControllerVideoRate:vwc];
+		if (vwc != nil) [self addWindowController:vwc];
+	}
+	
+	[self addObserver:self forKeyPath:@"portraitSubject" options:NSKeyValueObservingOptionNew context:NULL];
+	
 	[[NSNotificationCenter defaultCenter] addObserver:self
-											 selector:@selector(anyTableViewSelectionIsChanging:)
-												 name:NSTableViewSelectionIsChangingNotification object:nil];
-    
+									 selector:@selector(movieTimeDidChange:)
+										name:AVPlayerItemTimeJumpedNotification
+									   object:project.masterClip.windowController.playerView.player.currentItem];
+	
+	[[NSNotificationCenter defaultCenter] addObserver:self
+									 selector:@selector(anyTableViewSelectionDidChange:)
+										name:NSTableViewSelectionDidChangeNotification object:nil];
+	
+	[[NSNotificationCenter defaultCenter] addObserver:self
+									 selector:@selector(anyTableViewSelectionIsChanging:)
+										name:NSTableViewSelectionIsChangingNotification object:nil];
+	
 	// The lines below sets up the timer used for frame-by-frame updates of the overlay layer; it's the main playback loop for the calibration, measurement, and annotation points.
-    playbackTimer = [NSTimer timerWithTimeInterval:0.03 target:self selector:@selector(playbackLoopActions) userInfo:nil repeats:YES];
-    [[NSRunLoop currentRunLoop] addTimer:playbackTimer forMode:NSRunLoopCommonModes];
-    [[NSRunLoop currentRunLoop] addTimer:playbackTimer forMode:NSEventTrackingRunLoopMode]; // This keeps the timer running and overlays updating during play-while-pressed and other user interface actions
-    
+	playbackTimer = [NSTimer timerWithTimeInterval:0.03 target:self selector:@selector(playbackLoopActions) userInfo:nil repeats:YES];
+	[[NSRunLoop currentRunLoop] addTimer:playbackTimer forMode:NSRunLoopCommonModes];
+	[[NSRunLoop currentRunLoop] addTimer:playbackTimer forMode:NSEventTrackingRunLoopMode]; // This keeps the timer running and overlays updating during play-while-pressed and other user interface actions
+	
 }
 
 - (void) observeWindowControllerVideoRate:(VideoWindowController *)vwc  // called from above and also VideoClipArrayController when adding new clips
 {
-    [vwc addObserver:self forKeyPath:@"playerView.player.rate" options:NSKeyValueObservingOptionNew context:NULL];
+	[vwc addObserver:self forKeyPath:@"playerView.player.rate" options:NSKeyValueObservingOptionNew context:NULL];
 }
 
 - (void) windowControllerDidLoadNib:(NSWindowController *)windowController
@@ -161,8 +164,8 @@ static void *AVSPPlayerCurrentTimeContext = &AVSPPlayerCurrentTimeContext;
 		NSString *fileName = [[self fileURL] absoluteString];
 		if (fileName != nil) [[windowController window] setFrameAutosaveName:fileName];
 		[[NSNotificationCenter defaultCenter] addObserver:videoClipArrayController
-											 selector:@selector(keyWindowDidChange:)
-												 name:NSWindowDidBecomeKeyNotification object:nil];	
+										 selector:@selector(keyWindowDidChange:)
+											name:NSWindowDidBecomeKeyNotification object:nil];
 		NSSortDescriptor *indexDescriptor = [[NSSortDescriptor alloc] initWithKey:@"index" ascending:YES];
 		NSSortDescriptor *nameDescriptor = [[NSSortDescriptor alloc] initWithKey:@"name" ascending:YES];
 		NSSortDescriptor *timecodeDescriptor = [[NSSortDescriptor alloc] initWithKey:@"timecode" ascending:YES];
@@ -172,62 +175,64 @@ static void *AVSPPlayerCurrentTimeContext = &AVSPPlayerCurrentTimeContext;
 		[trackedObjectTypesController setSortDescriptors:[NSArray arrayWithObject:nameDescriptor]];
 		[distortionLinesController setSortDescriptors:[NSArray arrayWithObject:timecodeDescriptor]];
 		[distortionPointsController setSortDescriptors:[NSArray arrayWithObject:indexDescriptor]];
-        NSMutableAttributedString *portraitWindowOpenButtonTitle =[[NSMutableAttributedString alloc] initWithAttributedString:[[NSMutableAttributedString alloc] initWithString:@"\uf030"]];
-        [portraitWindowOpenButtonTitle addAttribute:NSFontAttributeName value:[NSFont fontWithName:@"FontAwesome" size:12.0f] range:NSMakeRange(0,1)];
-        [allPortraitBrowserOpenButton setAttributedTitle:portraitWindowOpenButtonTitle];
+		NSMutableAttributedString *portraitWindowOpenButtonTitle =[[NSMutableAttributedString alloc] initWithAttributedString:[[NSMutableAttributedString alloc] initWithString:@"\uf030"]];
+		[portraitWindowOpenButtonTitle addAttribute:NSFontAttributeName value:[NSFont fontWithName:@"FontAwesome" size:12.0f] range:NSMakeRange(0,1)];
+		[allPortraitBrowserOpenButton setAttributedTitle:portraitWindowOpenButtonTitle];
+		[textViewForQuadratNodesFront setUsesAdaptiveColorMappingForDarkAppearance:YES];
+		[textViewForQuadratNodesBack setUsesAdaptiveColorMappingForDarkAppearance:YES];
 	}
 }
 
 - (void) syncedPlaybackPanelAwokeFromNib    // called by SyncedPlaybackPanel when it wakes up
 {
-    scrubberMaxTime = 1000000000;
-    [syncedPlaybackScrubber setMaxValue:(double) scrubberMaxTime];
-    [self addObserver:syncedPlaybackView forKeyPath:@"bookmarkIsSet1" options:NSKeyValueObservingOptionNew context:NULL];
-    [self addObserver:syncedPlaybackView forKeyPath:@"bookmarkIsSet2" options:NSKeyValueObservingOptionNew context:NULL];
-    playForwardWhilePressedButton.direction = 1.0;
-    playForwardWhilePressedButton.advancedRateToUse = 0;
-    playBackwardWhilePressedButton.direction = -1.0;
-    playBackwardWhilePressedButton.advancedRateToUse = 0;
-    playForwardAtRate1WhilePressedButton.direction = 1.0;
-    playForwardAtRate1WhilePressedButton.advancedRateToUse = 1;
-    playBackwardAtRate1WhilePressedButton.direction = -1.0;
-    playBackwardAtRate1WhilePressedButton.advancedRateToUse = 1;
-    playForwardAtRate2WhilePressedButton.direction = 1.0;
-    playForwardAtRate2WhilePressedButton.advancedRateToUse = 2;
-    playBackwardAtRate2WhilePressedButton.direction = -1.0;
-    playBackwardAtRate2WhilePressedButton.advancedRateToUse = 2;
+	scrubberMaxTime = 1000000000;
+	[syncedPlaybackScrubber setMaxValue:(double) scrubberMaxTime];
+	[self addObserver:syncedPlaybackView forKeyPath:@"bookmarkIsSet1" options:NSKeyValueObservingOptionNew context:NULL];
+	[self addObserver:syncedPlaybackView forKeyPath:@"bookmarkIsSet2" options:NSKeyValueObservingOptionNew context:NULL];
+	playForwardWhilePressedButton.direction = 1.0;
+	playForwardWhilePressedButton.advancedRateToUse = 0;
+	playBackwardWhilePressedButton.direction = -1.0;
+	playBackwardWhilePressedButton.advancedRateToUse = 0;
+	playForwardAtRate1WhilePressedButton.direction = 1.0;
+	playForwardAtRate1WhilePressedButton.advancedRateToUse = 1;
+	playBackwardAtRate1WhilePressedButton.direction = -1.0;
+	playBackwardAtRate1WhilePressedButton.advancedRateToUse = 1;
+	playForwardAtRate2WhilePressedButton.direction = 1.0;
+	playForwardAtRate2WhilePressedButton.advancedRateToUse = 2;
+	playBackwardAtRate2WhilePressedButton.direction = -1.0;
+	playBackwardAtRate2WhilePressedButton.advancedRateToUse = 2;
 }
 
 - (id)initWithType:(NSString *)type error:(NSError **)error {	// This method is called only when a new document is created.
-    self = [super initWithType:type error:error];
-    if (self != nil) {
-        NSManagedObjectContext *managedObjectContext = [self managedObjectContext];
-        [[managedObjectContext undoManager] disableUndoRegistration];
-        self.project = [NSEntityDescription insertNewObjectForEntityForName:@"VSProject" inManagedObjectContext:managedObjectContext];
+	self = [super initWithType:type error:error];
+	if (self != nil) {
+		NSManagedObjectContext *managedObjectContext = [self managedObjectContext];
+		[[managedObjectContext undoManager] disableUndoRegistration];
+		self.project = [NSEntityDescription insertNewObjectForEntityForName:@"VSProject" inManagedObjectContext:managedObjectContext];
 		self.project.document = self;
-		self.project.dateCreated = [[NSDate dateWithTimeIntervalSinceNow:0.0] description];	// current date as a string
+		self.project.dateCreated = [UtilityFunctions stringFromDateTime:[NSDate dateWithTimeIntervalSinceNow:0.0] format:@"yyy-MM-dd HH:mm:ss Z"];
 		self.project.capturePathForMovies = [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/VidSync Exports/Movies/"];
-		self.project.capturePathForStills = [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/VidSync Exports/Stills/"];	
-		self.project.exportPathForData = [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/VidSync Exports/Data/"];	
-        [managedObjectContext processPendingChanges];
-        [[managedObjectContext undoManager] enableUndoRegistration];
-    }
+		self.project.capturePathForStills = [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/VidSync Exports/Stills/"];
+		self.project.exportPathForData = [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/VidSync Exports/Data/"];
+		[managedObjectContext processPendingChanges];
+		[[managedObjectContext undoManager] enableUndoRegistration];
+	}
 	return self;
 }
 
 - (NSManagedObjectModel *)managedObjectModel {	// required when using migrations, to override the default behavior in order to tell it to only load one (the most current) data model
-    if (managedObjectModel != nil) return managedObjectModel;
-    NSString *path = [[NSBundle mainBundle] pathForResource:@"VidSyncProject" ofType:@"momd"];
-    NSURL *momURL = [NSURL fileURLWithPath:path];
-    managedObjectModel = [[NSManagedObjectModel alloc] initWithContentsOfURL:momURL];
-    return managedObjectModel;
+	if (managedObjectModel != nil) return managedObjectModel;
+	NSString *path = [[NSBundle mainBundle] pathForResource:@"VidSyncProject" ofType:@"momd"];
+	NSURL *momURL = [NSURL fileURLWithPath:path];
+	managedObjectModel = [[NSManagedObjectModel alloc] initWithContentsOfURL:momURL];
+	return managedObjectModel;
 }
 
 - (id)initWithContentsOfURL:(NSURL *)absoluteURL ofType:(NSString *)typeName error:(NSError **)outError		// This method is called only when an existing document is loaded.
 {
 	// I think this is where custom migrations are supposed to go, if/when I have to make any.
-    NSString *savedPath = [[absoluteURL path] stringByDeletingLastPathComponent];
-    [[[NSUserDefaultsController sharedUserDefaultsController] values] setValue:savedPath forKey:@"mainFileSaveDirectory"];
+	NSString *savedPath = [[absoluteURL path] stringByDeletingLastPathComponent];
+	[[[NSUserDefaultsController sharedUserDefaultsController] values] setValue:savedPath forKey:@"mainFileSaveDirectory"];
 	return [super initWithContentsOfURL:absoluteURL ofType:typeName error:outError];
 }
 
@@ -236,7 +241,7 @@ static void *AVSPPlayerCurrentTimeContext = &AVSPPlayerCurrentTimeContext;
 
 - (BOOL)configurePersistentStoreCoordinatorForURL:(NSURL *)url ofType:(NSString *)fileType modelConfiguration:(NSString *)configuration storeOptions:(NSDictionary *)storeOptions error:(NSError **)error
 {    
-    NSMutableDictionary *newOptions;
+	NSMutableDictionary *newOptions;
 	if (storeOptions) {
 		newOptions = [storeOptions mutableCopy];
 	} else {
@@ -244,7 +249,7 @@ static void *AVSPPlayerCurrentTimeContext = &AVSPPlayerCurrentTimeContext;
 	}
 	[newOptions setObject:[NSNumber numberWithBool:YES] forKey:NSMigratePersistentStoresAutomaticallyOption];
 	[newOptions setObject:[NSNumber numberWithBool:YES] forKey:NSInferMappingModelAutomaticallyOption];
-    [newOptions setObject:@{@"journal_mode":@"DELETE"} forKey:NSSQLitePragmasOption];   // Uses "rollback" journaling mode instead default WAL, so each VidSync document is saved in 1 file, not 3
+	[newOptions setObject:@{@"journal_mode":@"DELETE"} forKey:NSSQLitePragmasOption];   // Uses "rollback" journaling mode instead default WAL, so each VidSync document is saved in 1 file, not 3
 	BOOL result = [super configurePersistentStoreCoordinatorForURL:url ofType:fileType modelConfiguration:configuration storeOptions:newOptions error:error];
 	return result;
 }
@@ -254,29 +259,29 @@ static void *AVSPPlayerCurrentTimeContext = &AVSPPlayerCurrentTimeContext;
 
 - (VSProject *)project
 {
-    if (project != nil) {
-        return project;
-    } else {
-        NSManagedObjectContext *moc = [self managedObjectContext];
-        NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
-        NSError *fetchError = nil;
-        NSArray *fetchResults;
-        NSEntityDescription *entity = [NSEntityDescription entityForName:@"VSProject" inManagedObjectContext:moc];
-        [fetchRequest setEntity:entity];
-        fetchResults = [moc executeFetchRequest:fetchRequest error:&fetchError];
-        if ((fetchResults != nil) && ([fetchResults count] == 1) && (fetchError == nil)) {
-            project = [fetchResults objectAtIndex:0];
-            project.document = self;
-            return project;
-        } else {
-            if (fetchError != nil) {
-                [self presentError:fetchError];
-            } else {
-                NSLog(@"Project wasn't correctly fetched from the managed object context.");
-            }
-            return nil;
-        }
-    }
+	if (project != nil) {
+		return project;
+	} else {
+		NSManagedObjectContext *moc = [self managedObjectContext];
+		NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
+		NSError *fetchError = nil;
+		NSArray *fetchResults;
+		NSEntityDescription *entity = [NSEntityDescription entityForName:@"VSProject" inManagedObjectContext:moc];
+		[fetchRequest setEntity:entity];
+		fetchResults = [moc executeFetchRequest:fetchRequest error:&fetchError];
+		if ((fetchResults != nil) && ([fetchResults count] == 1) && (fetchError == nil)) {
+			project = [fetchResults objectAtIndex:0];
+			project.document = self;
+			return project;
+		} else {
+			if (fetchError != nil) {
+				[self presentError:fetchError];
+			} else {
+				NSLog(@"Project wasn't correctly fetched from the managed object context.");
+			}
+			return nil;
+		}
+	}
 }
 
 #pragma mark
@@ -284,44 +289,44 @@ static void *AVSPPlayerCurrentTimeContext = &AVSPPlayerCurrentTimeContext;
 
 - (void) anyTableViewSelectionIsChanging:(NSNotification *)notification
 {
-    // This would control what to do when a table view's selection is about to change but hasn't changed yet.
-    // I used to have some things here, but removed them when they were no longer needed.
+	// This would control what to do when a table view's selection is about to change but hasn't changed yet.
+	// I used to have some things here, but removed them when they were no longer needed.
 }
 
 - (void) anyTableViewSelectionDidChange:(NSNotification *)notification	// Controls what to do once a table view's selection HAS changed
 {
-    // NSLog(@"Processing a change to selection from tableView %@",[[notification object] identifier]);
+	// NSLog(@"Processing a change to selection from tableView %@",[[notification object] identifier]);
 	if (self.project.masterClip != nil) {
 		
 		if ([[notification object] isEqualTo:eventsPointsTable]) {
-            [[self managedObjectContext] processPendingChanges];
+			[[self managedObjectContext] processPendingChanges];
 			if ([[eventsPointsController selectedObjects] count] > 0) {
 				VSPoint *selectedPoint = [[eventsPointsController selectedObjects] objectAtIndex:0];
 				VSEventScreenPoint *selectedScreenPoint = [selectedPoint screenPointForVideoClip:self.frontVideoClip];
 				if ([selectedScreenPoint.screenX floatValue] > 0.0 || [selectedScreenPoint.screenY floatValue] > 0.0) {
 					NSPoint newPoint = NSMakePoint([selectedScreenPoint.screenX floatValue],[selectedScreenPoint.screenY floatValue]);
-                    [self refreshOverlaysOfAllClips:nil];   // Refresh overlays before updating preview image, for speed
+					[self refreshOverlaysOfAllClips:nil];   // Refresh overlays before updating preview image, for speed
 					[self updatePreviewImageWithPlayerLayer:self.frontVideoClip.windowController.playerLayer atPoint:newPoint];
 				}
-				[eventsPointsController scrollTableToSelectedObject];				
+				[eventsPointsController scrollTableToSelectedObject];
 			} else {
-                [self refreshOverlaysOfAllClips:nil];   // Refresh overlays if we deselected a clip, too
-            }
-
+				[self refreshOverlaysOfAllClips:nil];   // Refresh overlays if we deselected a clip, too
+			}
+			
 		} else if ([[notification object] isEqualTo:distortionLinesController.mainTableView]) {
 			
 			[distortionLinesController scrollTableToSelectedObject];
 			if ([[distortionLinesController arrangedObjects] count] > 0) {
 				[distortionPointsController setSelectionIndex:0];
 				[self.frontVideoClip.windowController refreshOverlay];
-                if ([[distortionPointsController arrangedObjects] count] > 0) {
-                    VSDistortionPoint *firstPoint = [[distortionPointsController arrangedObjects] objectAtIndex:0];
-                    [self updatePreviewImageWithPlayerLayer:firstPoint.distortionLine.calibration.videoClip.windowController.playerLayer atPoint:NSMakePoint([firstPoint.screenX floatValue],[firstPoint.screenY floatValue])];
-                }
+				if ([[distortionPointsController arrangedObjects] count] > 0) {
+					VSDistortionPoint *firstPoint = [[distortionPointsController arrangedObjects] objectAtIndex:0];
+					[self updatePreviewImageWithPlayerLayer:firstPoint.distortionLine.calibration.videoClip.windowController.playerLayer atPoint:NSMakePoint([firstPoint.screenX floatValue],[firstPoint.screenY floatValue])];
+				}
 			}
 			
 		} else if ([[notification object] isEqualTo:[distortionPointsController mainTableView]]) {
-
+			
 			[distortionPointsController scrollTableToSelectedObject];
 			
 			if ([[distortionPointsController selectedObjects] count] > 0) {
@@ -329,13 +334,13 @@ static void *AVSPPlayerCurrentTimeContext = &AVSPPlayerCurrentTimeContext;
 				[self updatePreviewImageWithPlayerLayer:selectedPoint.distortionLine.calibration.videoClip.windowController.playerLayer atPoint:NSMakePoint([selectedPoint.screenX floatValue],[selectedPoint.screenY floatValue])];
 			}
 			
-			[self.frontVideoClip.windowController refreshOverlay];	
+			[self.frontVideoClip.windowController refreshOverlay];
 			
 		} else if ([[notification object] isEqualTo:[videoClipArrayController mainTableView]]) {
 			
 			if ([[videoClipArrayController selectedObjects] count] > 0) {
 				VSVideoClip *selectedClip = [[videoClipArrayController selectedObjects] objectAtIndex:0];
-				[[selectedClip.windowController window] orderFront:self]; 
+				[[selectedClip.windowController window] orderFront:self];
 			}
 			
 		} else if ([[notification object] isEqualTo:calibScreenPtFrontArrayController.mainTableView]) {
@@ -372,51 +377,51 @@ static void *AVSPPlayerCurrentTimeContext = &AVSPPlayerCurrentTimeContext;
 					[anyAnnotation.videoClip.windowController refreshOverlay];
 				}
 			}
-		
+			
 		} else if ([[notification object] isEqualTo:trackedObjectsController.mainTableView]) {
 			
 			if ([[trackedObjectsController selectedObjects] count] > 0) {
-                [trackedObjectsController scrollTableToSelectedObject];
-                if (objectsTableSelectionChangeNotificationCascadeEnabled) {
-                    [trackedEventsController setSelectionIndex:0];	// Select the object's first event
-                    [eventsPointsController setSelectionIndex:0];	// and that event's first point
-                } else {
-                    objectsTableSelectionChangeNotificationCascadeEnabled = YES;
-                }
-                // the problem is if I disable the notification, they won't scroll and stuff... I just need to tell them not to trigger notifications on their own
-                
+				[trackedObjectsController scrollTableToSelectedObject];
+				if (objectsTableSelectionChangeNotificationCascadeEnabled) {
+					[trackedEventsController setSelectionIndex:0];	// Select the object's first event
+					[eventsPointsController setSelectionIndex:0];	// and that event's first point
+				} else {
+					objectsTableSelectionChangeNotificationCascadeEnabled = YES;
+				}
+				// the problem is if I disable the notification, they won't scroll and stuff... I just need to tell them not to trigger notifications on their own
+				
 				[objectSynonymizeController rearrangeObjects];
-                [objectsPortraitsArrayController refreshImageBrowserView];
+				[objectsPortraitsArrayController refreshImageBrowserView];
 				
 			}
 			
 		} else if ([[notification object] isEqualTo:trackedEventsController.mainTableView]) {
-            if ([[trackedEventsController selectedObjects] count] > 0) {
-                [trackedEventsController scrollTableToSelectedObject];
-                if (eventsTableSelectionChangeNotificationCascadeEnabled) {
-                    [eventsPointsController setSelectionIndex:0];	// Select the event's first point.
-                } else {
-                    eventsTableSelectionChangeNotificationCascadeEnabled = YES;
-                }
-            }
+			if ([[trackedEventsController selectedObjects] count] > 0) {
+				[trackedEventsController scrollTableToSelectedObject];
+				if (eventsTableSelectionChangeNotificationCascadeEnabled) {
+					[eventsPointsController setSelectionIndex:0];	// Select the event's first point.
+				} else {
+					eventsTableSelectionChangeNotificationCascadeEnabled = YES;
+				}
+			}
 		}
 	}
 }
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
 {
-    if ([keyPath isEqualToString:@"playerView.player.rate"]) {
-        // trigger player rate change handler
-        if (self.project.masterClip.windowController != nil && [object isEqualTo:self.project.masterClip.windowController]) {
-            [self movieRateDidChange];
-        }
-    } else if ([keyPath isEqualToString:@"portraitSubject"]) {
-        if (portraitSubject == nil) {
-            [[NSCursor arrowCursor] set];
-        } else {
-            [[NSCursor crosshairCursor] set];
-        }
-    }
+	if ([keyPath isEqualToString:@"playerView.player.rate"]) {
+		// trigger player rate change handler
+		if (self.project.masterClip.windowController != nil && [object isEqualTo:self.project.masterClip.windowController]) {
+			[self movieRateDidChange];
+		}
+	} else if ([keyPath isEqualToString:@"portraitSubject"]) {
+		if (portraitSubject == nil) {
+			[[NSCursor arrowCursor] set];
+		} else {
+			[[NSCursor crosshairCursor] set];
+		}
+	}
 }
 
 
@@ -425,7 +430,7 @@ static void *AVSPPlayerCurrentTimeContext = &AVSPPlayerCurrentTimeContext;
 
 - (void) tabView:(NSTabView *)tabView didSelectTabViewItem:(NSTabViewItem *)tabViewItem
 {
-    [self refreshOverlaysOfAllClips:self];
+	[self refreshOverlaysOfAllClips:self];
 }
 
 #pragma mark
@@ -433,25 +438,25 @@ static void *AVSPPlayerCurrentTimeContext = &AVSPPlayerCurrentTimeContext;
 
 - (void) saveToURL:(NSURL *)url ofType:(NSString *)typeName forSaveOperation:(NSSaveOperationType)saveOperation completionHandler:(void (^)(NSError *))completionHandler
 {
-	self.project.dateLastSaved = [[NSDate dateWithTimeIntervalSinceNow:0.0] description];	// current date as a string
+	self.project.dateLastSaved = [UtilityFunctions stringFromDateTime:[NSDate dateWithTimeIntervalSinceNow:0.0] format:@"yyy-MM-dd HH:mm:ss Z"];	// current date as a string
 	[[self managedObjectContext] processPendingChanges];
-    NSString *savedPath = [[url path] stringByDeletingLastPathComponent];
-    [[[NSUserDefaultsController sharedUserDefaultsController] values] setValue:savedPath forKey:@"mainFileSaveDirectory"];
-    if (self.project.capturePathForMovies == nil || [self.project.capturePathForMovies isEqualToString:@""] || [self.project.capturePathForMovies isEqualToString:[NSHomeDirectory() stringByAppendingPathComponent:@"Documents/VidSync Exports/Movies/"]]) self.project.capturePathForMovies = savedPath;
-    if (self.project.capturePathForStills == nil || [self.project.capturePathForStills isEqualToString:@""] || [self.project.capturePathForStills isEqualToString:[NSHomeDirectory() stringByAppendingPathComponent:@"Documents/VidSync Exports/Stills/"]]) self.project.capturePathForStills = savedPath;
-    if (self.project.exportPathForData == nil || [self.project.exportPathForData isEqualToString:@""] || [self.project.exportPathForData isEqualToString:[NSHomeDirectory() stringByAppendingPathComponent:@"Documents/VidSync Exports/Data/"]]) self.project.exportPathForData = savedPath;
+	NSString *savedPath = [[url path] stringByDeletingLastPathComponent];
+	[[[NSUserDefaultsController sharedUserDefaultsController] values] setValue:savedPath forKey:@"mainFileSaveDirectory"];
+	if (self.project.capturePathForMovies == nil || [self.project.capturePathForMovies isEqualToString:@""] || [self.project.capturePathForMovies isEqualToString:[NSHomeDirectory() stringByAppendingPathComponent:@"Documents/VidSync Exports/Movies/"]]) self.project.capturePathForMovies = savedPath;
+	if (self.project.capturePathForStills == nil || [self.project.capturePathForStills isEqualToString:@""] || [self.project.capturePathForStills isEqualToString:[NSHomeDirectory() stringByAppendingPathComponent:@"Documents/VidSync Exports/Stills/"]]) self.project.capturePathForStills = savedPath;
+	if (self.project.exportPathForData == nil || [self.project.exportPathForData isEqualToString:@""] || [self.project.exportPathForData isEqualToString:[NSHomeDirectory() stringByAppendingPathComponent:@"Documents/VidSync Exports/Data/"]]) self.project.exportPathForData = savedPath;
 	[super saveToURL:url ofType:typeName forSaveOperation:saveOperation completionHandler:completionHandler];
 }
 
 - (BOOL) prepareSavePanel:(NSSavePanel *)savePanel
 {
-    // Set the default directory to the previous directory in which a .vsc file was saved
-    NSString *previousDirectory = [[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"mainFileSaveDirectory"];
-    BOOL directoryExists;
-    if ([[NSFileManager defaultManager] fileExistsAtPath:previousDirectory isDirectory:&directoryExists] && directoryExists) [savePanel setDirectoryURL:[NSURL fileURLWithPath:previousDirectory]];
-    // Set the default filename to the project name, if it exists
-    if (![self.project.name isEqualToString:@""]) [savePanel setNameFieldStringValue:self.project.name];
-    return YES;
+	// Set the default directory to the previous directory in which a .vsc file was saved
+	NSString *previousDirectory = [[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"mainFileSaveDirectory"];
+	BOOL directoryExists;
+	if ([[NSFileManager defaultManager] fileExistsAtPath:previousDirectory isDirectory:&directoryExists] && directoryExists) [savePanel setDirectoryURL:[NSURL fileURLWithPath:previousDirectory]];
+	// Set the default filename to the project name, if it exists
+	if (![self.project.name isEqualToString:@""]) [savePanel setNameFieldStringValue:self.project.name];
+	return YES;
 }
 
 #pragma mark
@@ -460,7 +465,7 @@ static void *AVSPPlayerCurrentTimeContext = &AVSPPlayerCurrentTimeContext;
 - (IBAction) saveObjectAndEventTypesToFile:(id)sender
 {
 	NSMutableArray *objectTypesArray = [[NSMutableArray alloc] init];
-	NSMutableArray *eventTypesArray = [[NSMutableArray alloc] init];	
+	NSMutableArray *eventTypesArray = [[NSMutableArray alloc] init];
 	for (VSTrackedObjectType *objectType in self.project.trackedObjectTypes) {
 		[objectTypesArray addObject:[objectType contentsAsWriteableDictionary]];
 	}
@@ -484,7 +489,7 @@ static void *AVSPPlayerCurrentTimeContext = &AVSPPlayerCurrentTimeContext;
 	[openPanel setAllowedFileTypes:[NSArray arrayWithObjects:@"VidSyncTypes",nil]];
 	[openPanel setCanChooseDirectories:NO];
 	[openPanel setAllowsMultipleSelection:NO];
-    [openPanel setMessage:@"Loading types from a file will add them to the existing types list, not replace it. If loaded types have the same name as existing types, their attributes (color, etc.) will be updated from the new file."];
+	[openPanel setMessage:@"Loading types from a file will add them to the existing types list, not replace it. If loaded types have the same name as existing types, their attributes (color, etc.) will be updated from the new file."];
 	if ([openPanel runModal]) {
 		filePath = [[[openPanel URLs] objectAtIndex:0] path];
 		[self loadObjectAndEventTypesFromFileAtPath:filePath];
@@ -507,7 +512,7 @@ static void *AVSPPlayerCurrentTimeContext = &AVSPPlayerCurrentTimeContext;
 	}
 	for (NSDictionary *eventTypeDictionary in eventTypesArray) {
 		[VSTrackedEventType insertNewTypeFromLoadedDictionary:eventTypeDictionary inProject:self.project inManagedObjectContext:[self managedObjectContext]];
-	}	
+	}
 }
 
 #pragma mark
@@ -515,20 +520,20 @@ static void *AVSPPlayerCurrentTimeContext = &AVSPPlayerCurrentTimeContext;
 
 - (void) updatePreviewImageWithPlayerLayer:(AVPlayerLayer *)playerLayer atPoint:(NSPoint)point;
 {
-    if (playerLayer != nil) {
-        if ([[[mainTabView selectedTabViewItem] label] isEqualToString:@"Measurement"]) {
-            [magnifiedMeasurementPreview setPlayerLayer:playerLayer];
-            [magnifiedMeasurementPreview setCenterPoint:point];
-        } else if ([[[mainTabView selectedTabViewItem] label] isEqualToString:@"Calibration"]) {
-            if ([[[calibrationInputTabView selectedTabViewItem] label] isEqualToString:@"3D Calibration Frame Input"]) {
-                [magnifiedCalibrationPreview setPlayerLayer:playerLayer];
-                [magnifiedCalibrationPreview setCenterPoint:point];
-            } else if ([[[calibrationInputTabView selectedTabViewItem] label] isEqualToString:@"Lens Distortion"]) {
-                [magnifiedDistortionPreview setPlayerLayer:playerLayer];
-                [magnifiedDistortionPreview setCenterPoint:point];
-            }
-        }
-    }
+	if (playerLayer != nil) {
+		if ([[[mainTabView selectedTabViewItem] label] isEqualToString:@"Measurement"]) {
+			[magnifiedMeasurementPreview setPlayerLayer:playerLayer];
+			[magnifiedMeasurementPreview setCenterPoint:point];
+		} else if ([[[mainTabView selectedTabViewItem] label] isEqualToString:@"Calibration"]) {
+			if ([[[calibrationInputTabView selectedTabViewItem] label] isEqualToString:@"3D Calibration Frame Input"]) {
+				[magnifiedCalibrationPreview setPlayerLayer:playerLayer];
+				[magnifiedCalibrationPreview setCenterPoint:point];
+			} else if ([[[calibrationInputTabView selectedTabViewItem] label] isEqualToString:@"Lens Distortion"]) {
+				[magnifiedDistortionPreview setPlayerLayer:playerLayer];
+				[magnifiedDistortionPreview setCenterPoint:point];
+			}
+		}
+	}
 }
 
 - (IBAction) resetPreviewMagnification:(id)sender
@@ -546,8 +551,8 @@ static void *AVSPPlayerCurrentTimeContext = &AVSPPlayerCurrentTimeContext;
 
 - (IBAction) setCalibrationTime:(id)sender
 {
-    BOOL doSet = YES;
-    if (self.project.calibrationTimecode != nil) doSet = [UtilityFunctions ConfirmAction:@"You already set a calibration time. Are you sure you want to change it?"];
+	BOOL doSet = YES;
+	if (self.project.calibrationTimecode != nil) doSet = [UtilityFunctions ConfirmAction:@"You already set a calibration time. Are you sure you want to change it?" withTitle:nil];
 	if (doSet) self.project.calibrationTimecode = [self currentMasterTimeString];
 }
 
@@ -569,14 +574,14 @@ static void *AVSPPlayerCurrentTimeContext = &AVSPPlayerCurrentTimeContext;
 
 - (IBAction) recalculateAllPoints:(id)sender
 {
-    NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
-    NSError *fetchError = nil;
-    NSEntityDescription *allVSPoints = [NSEntityDescription entityForName:@"VSPoint" inManagedObjectContext:[self managedObjectContext]];
-    [fetchRequest setEntity:allVSPoints];
-    NSArray *fetchResults = [[self managedObjectContext] executeFetchRequest:fetchRequest error:&fetchError];
-    if ((fetchResults != nil) && (fetchError == nil) && [fetchResults count] > 0) {
+	NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
+	NSError *fetchError = nil;
+	NSEntityDescription *allVSPoints = [NSEntityDescription entityForName:@"VSPoint" inManagedObjectContext:[self managedObjectContext]];
+	[fetchRequest setEntity:allVSPoints];
+	NSArray *fetchResults = [[self managedObjectContext] executeFetchRequest:fetchRequest error:&fetchError];
+	if ((fetchResults != nil) && (fetchError == nil) && [fetchResults count] > 0) {
 		[pointRecalculateProgressIndicator setDoubleValue:0.0];
-		[pointRecalculatePanel makeKeyAndOrderFront:self];		
+		[pointRecalculatePanel makeKeyAndOrderFront:self];
 		[pointRecalculateProgressIndicator displayIfNeeded];
 		int i = 0;
 		for (VSPoint *point in fetchResults) {
@@ -585,14 +590,14 @@ static void *AVSPPlayerCurrentTimeContext = &AVSPPlayerCurrentTimeContext;
 			[point clearPointToPointDistanceCache];
 			i += 1;
 			[pointRecalculateProgressIndicator setDoubleValue:(double) i / (double) [fetchResults count]];
-			[pointRecalculateProgressIndicator displayIfNeeded];			
+			[pointRecalculateProgressIndicator displayIfNeeded];
 		}
 		[self refreshOverlaysOfAllClips:sender];
 		[pointRecalculatePanel performClose:self];
-		[eventsPointsController.mainTableView setNeedsDisplay];	// refresh the point table
-    }	
-	if (fetchResults == nil) [UtilityFunctions InformUser:@"There are no measured points yet, so nothing is being recalculated."];
-    if (fetchError != nil) [self presentError:fetchError];
+		eventsPointsController.mainTableView.needsDisplay = YES;	// refresh the point table
+	}
+	if (fetchResults == nil) [UtilityFunctions InformUser:@"There are no measured points yet, so nothing is being recalculated." withTitle:@"No measurements yet"];
+	if (fetchError != nil) [self presentError:fetchError];
 }
 
 #pragma mark
@@ -600,92 +605,92 @@ static void *AVSPPlayerCurrentTimeContext = &AVSPPlayerCurrentTimeContext;
 
 - (void) setPortraitSubject:(VSTrackedObject *)subject
 {
-    portraitSubject = subject;
+	portraitSubject = subject;
 }
 
 - (VSTrackedObject *) portraitSubject
 {
-    return portraitSubject;
+	return portraitSubject;
 }
 
-// Delegate method for PortraitBrowserView, following IKImageBrowserDelegate informal protocol)
-
-// Double-clicking on a portrait takes the video to the time at which the portrait was created, and brings that window to the front
-
-- (void)imageBrowser:(IKImageBrowserView *)aBrowser cellWasDoubleClickedAtIndex:(NSUInteger)index
-{
-    VSTrackedObjectPortrait *portrait = (VSTrackedObjectPortrait *) [[[aBrowser dataSource] arrangedObjects] objectAtIndex:index];
-    [self goToMasterTime:[UtilityFunctions CMTimeFromString:portrait.timecode]];
-    portrait.sourceVideoClip.windowController.shouldShowPortraitFrame = portrait.frameString;
-    [[portrait.sourceVideoClip.windowController window] makeKeyAndOrderFront:self];
-}
+//// Delegate method for PortraitBrowserView, following IKImageBrowserDelegate informal protocol)
+//
+//// Double-clicking on a portrait takes the video to the time at which the portrait was created, and brings that window to the front
+//
+//- (void)imageBrowser:(IKImageBrowserView *)aBrowser cellWasDoubleClickedAtIndex:(NSUInteger)index
+//{
+//    VSTrackedObjectPortrait *portrait = (VSTrackedObjectPortrait *) [[[aBrowser dataSource] arrangedObjects] objectAtIndex:index];
+//    [self goToMasterTime:[UtilityFunctions CMTimeFromString:portrait.timecode]];
+//    portrait.sourceVideoClip.windowController.shouldShowPortraitFrame = portrait.frameString;
+//    [[portrait.sourceVideoClip.windowController window] makeKeyAndOrderFront:self];
+//}
 
 #pragma mark
 #pragma mark Help
 
 - (IBAction) openHelpWebpage:(id)sender
 {
-    VSWebHelpButton *whb = (VSWebHelpButton *) sender;
-    [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:whb.helpURL]];
+	VSWebHelpButton *whb = (VSWebHelpButton *) sender;
+	[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:whb.helpURL]];
 }
 
 #pragma mark
 #pragma mark Document-closing cleanup behavior
 
 /*
-- (void) canCloseDocumentWithDelegate:(id)delegate shouldCloseSelector:(SEL)shouldCloseSelector contextInfo:(void *)contextInfo
-{
-    
-    // This is just called to check if the document CAN be closed; before the user has chosen yes/no/cancel
-    
-}
+ - (void) canCloseDocumentWithDelegate:(id)delegate shouldCloseSelector:(SEL)shouldCloseSelector contextInfo:(void *)contextInfo
+ {
+ 
+ // This is just called to check if the document CAN be closed; before the user has chosen yes/no/cancel
+ 
+ }
  */
 
 - (void) close
 {
-    [playbackTimer invalidate]; // This prevents the run loop from retaining the document via the timer after it's supposed to be released
-
-    // Unregister various observers, or else there are complaints about deallocing objects with observers still attachced
-    
-    [syncedPlaybackWindowController close];
-    syncedPlaybackWindowController = nil;
-    for (id windowController in [self windowControllers]) { // Putting this here to remove observer on window controller before document no longer exists
-        if ([windowController class] == [VideoWindowController class]) {
-            VideoWindowController *__weak vwc = (VideoWindowController *)windowController;
-            @try {
-                [vwc removeObserver:self forKeyPath:@"playerView.player.rate"];
-            } @catch (id exception) {
-                NSLog(@"Exception when document tries to to remove observer form VideoWindowController: %@",(NSException *)exception);
-            }
-            @try {
-                [self.project carefullyRemoveObserver:vwc.overlayView forKeyPath:@"distortionDisplayMode"];
-            } @catch (id exception) {
-                NSLog(@"Exception when document tries to to remove observer form VideoOverlayView: %@",(NSException *)exception);
-            }
-        }
-    }
-    
-    @try {
-        [[NSNotificationCenter defaultCenter] removeObserver:self];
-    } @catch (id exception) {
-    }
-    [self carefullyRemoveObserver:self forKeyPath:@"portraitSubject"];
-    [self carefullyRemoveObserver:syncedPlaybackView forKeyPath:@"bookmarkIsSet1"];
-    [self carefullyRemoveObserver:syncedPlaybackView forKeyPath:@"bookmarkIsSet2"];
-    [super close];
+	[playbackTimer invalidate]; // This prevents the run loop from retaining the document via the timer after it's supposed to be released
+	
+	// Unregister various observers, or else there are complaints about deallocing objects with observers still attachced
+	
+	[syncedPlaybackWindowController close];
+	syncedPlaybackWindowController = nil;
+	for (id windowController in [self windowControllers]) { // Putting this here to remove observer on window controller before document no longer exists
+		if ([windowController class] == [VideoWindowController class]) {
+			VideoWindowController *__weak vwc = (VideoWindowController *)windowController;
+			@try {
+				[vwc removeObserver:self forKeyPath:@"playerView.player.rate"];
+			} @catch (id exception) {
+				NSLog(@"Exception when document tries to to remove observer form VideoWindowController: %@",(NSException *)exception);
+			}
+			@try {
+				[self.project carefullyRemoveObserver:vwc.overlayView forKeyPath:@"distortionDisplayMode"];
+			} @catch (id exception) {
+				NSLog(@"Exception when document tries to to remove observer form VideoOverlayView: %@",(NSException *)exception);
+			}
+		}
+	}
+	
+	@try {
+		[[NSNotificationCenter defaultCenter] removeObserver:self];
+	} @catch (id exception) {
+	}
+	[self carefullyRemoveObserver:self forKeyPath:@"portraitSubject"];
+	[self carefullyRemoveObserver:syncedPlaybackView forKeyPath:@"bookmarkIsSet1"];
+	[self carefullyRemoveObserver:syncedPlaybackView forKeyPath:@"bookmarkIsSet2"];
+	[super close];
 }
 
 - (void) carefullyRemoveObserver:(NSObject *)observer forKeyPath:(NSString *)keyPath
 {
-    if (observer != nil) {
-        @try {
-            [self removeObserver:observer forKeyPath:keyPath];
-        } @catch (id exception) {
-            // The "close" method is called twice when closing the document thorugh the menu, because the document closing the first time tells its main window to close, which tells
-            // the document to close. This is normal, but the second time will always fail to find the observers because they're removed in the first run.
-            // NSLog(@"Exception removing observer %@ from VidSyncDocument on close: %@",observer,(NSException *)exception);
-        }
-    }
+	if (observer != nil) {
+		@try {
+			[self removeObserver:observer forKeyPath:keyPath];
+		} @catch (id exception) {
+			// The "close" method is called twice when closing the document thorugh the menu, because the document closing the first time tells its main window to close, which tells
+			// the document to close. This is normal, but the second time will always fail to find the observers because they're removed in the first run.
+			// NSLog(@"Exception removing observer %@ from VidSyncDocument on close: %@",observer,(NSException *)exception);
+		}
+	}
 }
 
 @end

@@ -1,18 +1,18 @@
 /*********************************************************************************                                                                       
  * The MIT License (MIT)
- * 
- * Copyright (c) 2009-2016 Jason Neuswanger
- * 
+ *
+ * Copyright (c) 2009-2021 Jason Neuswanger
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in all
  * copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -29,87 +29,87 @@
 
 - (IBAction) copyAll3DPointsToClipboard:(id)sender
 {
-    NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
-    NSError *fetchError = nil;
-    [fetchRequest setEntity:[NSEntityDescription entityForName:@"VSPoint" inManagedObjectContext:[self managedObjectContext]]];
-    NSArray *fetchResults = [[self managedObjectContext] executeFetchRequest:fetchRequest error:&fetchError];
-    if ((fetchResults != nil) && (fetchError == nil)) {
+	NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
+	NSError *fetchError = nil;
+	[fetchRequest setEntity:[NSEntityDescription entityForName:@"VSPoint" inManagedObjectContext:[self managedObjectContext]]];
+	NSArray *fetchResults = [[self managedObjectContext] executeFetchRequest:fetchRequest error:&fetchError];
+	if ((fetchResults != nil) && (fetchError == nil)) {
 		NSMutableString *totalString = [NSMutableString new];
 		for (VSPoint *point in fetchResults) {
-            [totalString appendString:[point spreadsheetFormatted3DPoint:@"\t"]];
+			[totalString appendString:[point spreadsheetFormatted3DPoint:@"\t"]];
 		}
 		if (![totalString isEqualToString:@""]) {	// if there are some connecting lines to paste
 			NSString *titleString = [NSString stringWithFormat:@"%@ 3D Points\n%@\t%@\t%@\t%@\t%@\t%@\t%@\t%@\t%@\t%@\t%@\n",
-									 self.project.name,
-									 @"Object(s)",
-									 @"Event",
-                                     @"Timecode",
-                                     @"Time",
-									 @"X",
-									 @"Y",
-									 @"Z",
-									 @"PLD Error",
-                                     @"Re-projection Error",
-                                     @"Nearest Camera Distance",
-                                     @"Screen coordinates (may be multiple columns)"
-									 ];
+								self.project.name,
+								@"Object(s)",
+								@"Event",
+								@"Timecode",
+								@"Time",
+								@"X",
+								@"Y",
+								@"Z",
+								@"PLD Error",
+								@"Re-projection Error",
+								@"Nearest Camera Distance",
+								@"Screen coordinates (may be multiple columns)"
+								];
 			NSPasteboard *pb = [NSPasteboard generalPasteboard];
-			[pb declareTypes:[NSArray arrayWithObjects:NSStringPboardType, nil] owner:self];
-			[pb setString:[titleString stringByAppendingString:totalString] forType:NSStringPboardType];	
+			[pb declareTypes:[NSArray arrayWithObjects:NSPasteboardTypeString, nil] owner:self];
+			[pb setString:[titleString stringByAppendingString:totalString] forType:NSPasteboardTypeString];
 		}
-	}	
-	if (fetchResults == nil) NSRunAlertPanel(@"No points.",@"There are no 3D points yet, so you can't export them.",@"Ok",nil,nil); 
-    if (fetchError != nil) [self presentError:fetchError];
+	}
+	[UtilityFunctions InformUser:@"There are no 3D points yet, so you can't export them." withTitle:@"No points."];
+	if (fetchError != nil) [self presentError:fetchError];
 }
 
 - (IBAction) exportCSVFile:(id)sender
 {
-    NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
-    NSError *fetchError = nil;
-    [fetchRequest setEntity:[NSEntityDescription entityForName:@"VSPoint" inManagedObjectContext:[self managedObjectContext]]];
-    NSArray *fetchResults = [[self managedObjectContext] executeFetchRequest:fetchRequest error:&fetchError];
-    if ((fetchResults != nil) && (fetchError == nil)) {
+	NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
+	NSError *fetchError = nil;
+	[fetchRequest setEntity:[NSEntityDescription entityForName:@"VSPoint" inManagedObjectContext:[self managedObjectContext]]];
+	NSArray *fetchResults = [[self managedObjectContext] executeFetchRequest:fetchRequest error:&fetchError];
+	if ((fetchResults != nil) && (fetchError == nil)) {
 		NSMutableString *totalString = [NSMutableString new];
 		for (VSPoint *point in fetchResults) {
-            [totalString appendString:[point spreadsheetFormatted3DPoint:@","]];
+			[totalString appendString:[point spreadsheetFormatted3DPoint:@","]];
 		}
 		if (![totalString isEqualToString:@""]) {	// if there are some connecting lines to paste
 			NSString *titleString = [NSString stringWithFormat:@"All measured points in VidSync project %@\n%@,%@,%@,%@,%@,%@,%@,%@,%@,%@,%@\n",
-									 self.project.name,
-									 @"Object(s)",
-									 @"Event",
-                                     @"Timecode",
-                                     @"Time",
-									 @"X",
-									 @"Y",
-									 @"Z",
-									 @"PLD Error",
-                                     @"Re-projection Error",
-                                     @"Nearest Camera Distance",
-                                     @"Screen coordinates (may be multiple columns)"
-									 ];
-            [totalString insertString:titleString atIndex:0];
-            NSError *error;
-            if ([totalString writeToFile:[self fileNameForExportedFile:@".csv"] atomically:YES encoding:NSUTF8StringEncoding error:&error]) {
-                [shutterClick play];
-            } else {
-                NSRunAlertPanel(@"Error writing file.",@"This project's data could not be exported to an XML file for some reason.",@"Ok",nil,nil);
-            }
-        }
-	}	
-	if (fetchResults == nil) NSRunAlertPanel(@"No points.",@"There are no points yet, so you can't export them.",@"Ok",nil,nil); 
-    if (fetchError != nil) [self presentError:fetchError];
+								self.project.name,
+								@"Object(s)",
+								@"Event",
+								@"Timecode",
+								@"Time",
+								@"X",
+								@"Y",
+								@"Z",
+								@"PLD Error",
+								@"Re-projection Error",
+								@"Nearest Camera Distance",
+								@"Screen coordinates (may be multiple columns)"
+								];
+			[totalString insertString:titleString atIndex:0];
+			NSError *error;
+			if ([totalString writeToFile:[self fileNameForExportedFile:@".csv"] atomically:YES encoding:NSUTF8StringEncoding error:&error]) {
+				[shutterClick play];
+			} else {
+				[UtilityFunctions InformUser:@"This project's data could not be exported to an XML file for some reason." withTitle:@"Error writing file"];
+			}
+		}
+	}
+	if (fetchResults == nil) [UtilityFunctions InformUser:@"There are no points yet, so you can't export them." withTitle:@"No points"];
+	if (fetchError != nil) [self presentError:fetchError];
 }
 
 - (IBAction) copyAllConnectingLinesToClipboard:(id)sender
 {
 	// Copies to clipboard the connecting line lengths and confidence intervals for all events whose type has "connectingLineLengthLabeled" set to yes.
 	// Columns are delineated by tabs \t, and new lines by newline characters \n.  This works fine for Excel 2008 for Mac, at least.
-    NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
-    NSError *fetchError = nil;
-    [fetchRequest setEntity:[NSEntityDescription entityForName:@"VSTrackedEvent" inManagedObjectContext:[self managedObjectContext]]];
-    NSArray *fetchResults = [[self managedObjectContext] executeFetchRequest:fetchRequest error:&fetchError];
-    if ((fetchResults != nil) && (fetchError == nil)) {
+	NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
+	NSError *fetchError = nil;
+	[fetchRequest setEntity:[NSEntityDescription entityForName:@"VSTrackedEvent" inManagedObjectContext:[self managedObjectContext]]];
+	NSArray *fetchResults = [[self managedObjectContext] executeFetchRequest:fetchRequest error:&fetchError];
+	if ((fetchResults != nil) && (fetchError == nil)) {
 		NSArray *connectingLines;
 		NSMutableString *totalString = [NSMutableString new];
 		for (VSTrackedEvent *event in fetchResults) {
@@ -120,19 +120,19 @@
 		}
 		if (![totalString isEqualToString:@""]) {	// if there are some connecting lines to paste
 			NSString *titleString = [NSString stringWithFormat:@"%@ Connecting Line Lengths\n%@\t%@\t%@\t%@\n",
-									 self.project.name,
-									 @"Object",
-									 @"Event",
-									 @"Length",
-                                     @"Speed"
-									 ];
+								self.project.name,
+								@"Object",
+								@"Event",
+								@"Length",
+								@"Speed"
+								];
 			NSPasteboard *pb = [NSPasteboard generalPasteboard];
-			[pb declareTypes:[NSArray arrayWithObjects:NSStringPboardType, nil] owner:self];
-			[pb setString:[titleString stringByAppendingString:totalString] forType:NSStringPboardType];	
+			[pb declareTypes:[NSArray arrayWithObjects:NSPasteboardTypeString, nil] owner:self];
+			[pb setString:[titleString stringByAppendingString:totalString] forType:NSPasteboardTypeString];
 		}
-	}	
-	if (fetchResults == nil) NSRunAlertPanel(@"No events.",@"There are no events yet, so you can't export their connecting lines.",@"Ok",nil,nil); 
-    if (fetchError != nil) [self presentError:fetchError];
+	}
+	if (fetchResults == nil) [UtilityFunctions InformUser:@"There are no events yet, so you can't export their connecting lines." withTitle:@"No events"];
+	if (fetchError != nil) [self presentError:fetchError];
 }
 
 - (IBAction) exportXMLFile:(id)sender
@@ -141,31 +141,31 @@
 	NSXMLDocument *xmlDoc = [[NSXMLDocument alloc] initWithRootElement:root];
 	[xmlDoc setVersion:@"1.0"];
 	[xmlDoc setCharacterEncoding:@"UTF-8"];
-    
-    [root addAttribute:[NSXMLNode attributeWithName:@"name" stringValue:self.project.name]];
-    [root addAttribute:[NSXMLNode attributeWithName:@"notes" stringValue:self.project.notes]];
-    [root addAttribute:[NSXMLNode attributeWithName:@"calibrationTimecode" stringValue:self.project.calibrationTimecode]];
-    [root addAttribute:[NSXMLNode attributeWithName:@"dateCreated" stringValue:self.project.dateCreated]];
-    [root addAttribute:[NSXMLNode attributeWithName:@"dateLastSaved" stringValue:self.project.dateLastSaved]];
-    
-    NSXMLElement *trackedObjects = (NSXMLElement *) [NSXMLNode elementWithName:@"objects"];
+	
+	[root addAttribute:[NSXMLNode attributeWithName:@"name" stringValue:self.project.name]];
+	[root addAttribute:[NSXMLNode attributeWithName:@"notes" stringValue:self.project.notes]];
+	[root addAttribute:[NSXMLNode attributeWithName:@"calibrationTimecode" stringValue:self.project.calibrationTimecode]];
+	[root addAttribute:[NSXMLNode attributeWithName:@"dateCreated" stringValue:self.project.dateCreated]];
+	[root addAttribute:[NSXMLNode attributeWithName:@"dateLastSaved" stringValue:self.project.dateLastSaved]];
+	
+	NSXMLElement *trackedObjects = (NSXMLElement *) [NSXMLNode elementWithName:@"objects"];
 	for (VSTrackedObject *trackedObject in self.project.trackedObjects) {
 		[trackedObjects addChild:[trackedObject representationAsXMLNode]];
 	}
-    [root addChild:trackedObjects];
-    
-    NSXMLElement *videoClips = (NSXMLElement *) [NSXMLNode elementWithName:@"videoClips"];
-    for (VSVideoClip *videoClip in self.project.videoClips) {
+	[root addChild:trackedObjects];
+	
+	NSXMLElement *videoClips = (NSXMLElement *) [NSXMLNode elementWithName:@"videoClips"];
+	for (VSVideoClip *videoClip in self.project.videoClips) {
 		[videoClips addChild:[videoClip representationAsXMLNode]];
 	}
-    [root addChild:videoClips];
-    
+	[root addChild:videoClips];
+	
 	NSData *xmlData = [xmlDoc XMLDataWithOptions:NSXMLNodePrettyPrint];
 	if ([xmlData writeToFile:[self fileNameForExportedFile:@".xml"] atomically:YES]) {
-        self.project.updatedSinceLastExport = [NSNumber numberWithBool:NO];
+		self.project.updatedSinceLastExport = [NSNumber numberWithBool:NO];
 		[shutterClick play];
 	} else {
-		NSRunAlertPanel(@"Error writing file.",@"This project's data could not be exported to an XML file for some reason.",@"Ok",nil,nil);
+		[UtilityFunctions InformUser:@"This project's data could not be exported to an XML file for some reason." withTitle:@"Error writing file"];
 	}
 }
 
@@ -178,19 +178,19 @@
 	BOOL createFolderForProject = [[[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"createFolderForProjectExports"] boolValue];
 	NSString *customText = [[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"exportedFileNameCustomText"];
 	NSMutableString *filePath = [NSMutableString stringWithString:self.project.exportPathForData];
-    if (createFolderForProject) [filePath appendString:[NSString stringWithFormat:@"/%@",[UtilityFunctions sanitizeFileNameString:self.project.name]]];
+	if (createFolderForProject) [filePath appendString:[NSString stringWithFormat:@"/%@",[UtilityFunctions sanitizeFileNameString:self.project.name]]];
 	if (![fm fileExistsAtPath:filePath]) [fm createDirectoryAtPath:filePath withIntermediateDirectories:YES attributes:nil error:NULL];
 	[filePath appendString:@"/"];
-    NSDate *now = [NSDate dateWithTimeIntervalSinceNow:0.0];
-    NSMutableArray *pathStrings = [NSMutableArray new];
-    if (includeProjectName) [pathStrings addObject:[UtilityFunctions sanitizeFileNameString:self.project.name]];
-    if (includeCurrentDate) [pathStrings addObject:[now descriptionWithCalendarFormat:@"%Y-%m-%d" timeZone:nil locale:[[NSUserDefaults standardUserDefaults] dictionaryRepresentation]]];
-    if (includeCurrentTime) [pathStrings addObject:[now descriptionWithCalendarFormat:@"%H:%M:%S" timeZone:nil locale:[[NSUserDefaults standardUserDefaults] dictionaryRepresentation]]];
-    if (![customText isEqualToString:@""]) [pathStrings addObject:customText];
-    NSString *fileName = [pathStrings componentsJoinedByString:@" - "]; // doing this from an array avoids annoying trailing dashes etc
-    if ([fileName isEqualToString:@""]) fileName = @"Untitled";	// give it a default if all naming values are turned off
-    [filePath appendString:fileName];
-    [filePath appendString:extension];
+	NSDate *now = [NSDate dateWithTimeIntervalSinceNow:0.0];
+	NSMutableArray *pathStrings = [NSMutableArray new];
+	if (includeProjectName) [pathStrings addObject:[UtilityFunctions sanitizeFileNameString:self.project.name]];
+	if (includeCurrentDate) [pathStrings addObject:[UtilityFunctions stringFromDateTime:now format:@"yyy-MM-dd"]];
+	if (includeCurrentTime) [pathStrings addObject:[UtilityFunctions stringFromDateTime:now format:@"HH:mm:ss"]];
+	if (![customText isEqualToString:@""]) [pathStrings addObject:customText];
+	NSString *fileName = [pathStrings componentsJoinedByString:@" - "]; // doing this from an array avoids annoying trailing dashes etc
+	if ([fileName isEqualToString:@""]) fileName = @"Untitled";	// give it a default if all naming values are turned off
+	[filePath appendString:fileName];
+	[filePath appendString:extension];
 	return filePath;
 }
 

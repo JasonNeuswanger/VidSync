@@ -1,18 +1,18 @@
 /*********************************************************************************                                                                       
  * The MIT License (MIT)
- * 
- * Copyright (c) 2009-2016 Jason Neuswanger
- * 
+ *
+ * Copyright (c) 2009-2021 Jason Neuswanger
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in all
  * copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -48,9 +48,9 @@
 
 typedef struct
 {
-    NSPoint** lines;
-    size_t* lineLengths;
-    size_t numLines;
+	NSPoint** lines;
+	size_t* lineLengths;
+	size_t numLines;
 } Plumblines;
 
 double orthogonalRegressionLineCostFunction(NSPoint line[], const size_t numLinePoints);
@@ -64,14 +64,14 @@ int redistortionRootFunc_fdf(const gsl_vector* x, void* params, gsl_vector* f, g
 /* ------------------------------------The actual VSCalibration class ----------------------------------------------------*/
 
 @interface VSCalibration : NSManagedObject {
-    
-	// The matrices below can't be made Objective-C 2.0 properties, because C functions (the synthesized accessors) can't return a matrix.  
+	
+	// The matrices below can't be made Objective-C 2.0 properties, because C functions (the synthesized accessors) can't return a matrix.
 	// Therefore I have to access them through a pointer passed to the custom accessor as a parameter.
 	double matrixQuadratFrontToScreenFCM[9];	// Each of these contains its respective matrix represented as a flattened, 1-dimensional vector in Fortran column-major form
 	double matrixQuadratBackToScreenFCM[9];		// for use by Lapack.  These vectors are not stored in Core Data, but are calculated from the Core Data values the first time
 	double matrixScreenToQuadratFrontFCM[9];	// they're called for after the project is opened, or when the calibration is recalculated.  The purpose of storing them here
 	double matrixScreenToQuadratBackFCM[9];		// is to not waste CPU time reorganizing arrays when doing calculations based on the projection matrices.
-		
+	
 }
 
 @property (strong) VSVideoClip *videoClip;
@@ -164,6 +164,14 @@ int redistortionRootFunc_fdf(const gsl_vector* x, void* params, gsl_vector* f, g
 
 - (NSPoint) projectScreenPoint:(NSPoint)screenPoint toQuadratSurface:(NSString *)surface;
 - (NSPoint) projectToScreenFromPoint:(NSPoint)quadratPoint onQuadratSurface:(NSString *)surface redistort:(BOOL)redistort;
+
+// I'm not including these functions in the header of VSCalibration because it doesn't understand C++ types. I would have to pass everything as (void *)
+// and then do type casting in the functions to convert back to the main type.
+
+//- (int) indexOfNearestPointTo:(cv::Point2f)position inCvPoints:(std::vector<cv::Point2f>)points bestDistance:(double *)bestDistance;
+//- (int) indexOfPointEqualTo:(cv::Point2f)position inCvPoints:(std::vector<cv::Point2f>)points
+//- (cv::Point2f) centroidOfCvPoints:(std::vector<cv::Point2f>)points;
+//- std::vector<cv::Point2f> buildLineFromPoints:std::vector<cv::Point2f>allPoints byExtending:(int)startPointInd inDirectionOf:(int)dirPointInd;
 
 - (void) autodetectChessboardPlumblines;
 - (BOOL) hasDistortionCorrection;

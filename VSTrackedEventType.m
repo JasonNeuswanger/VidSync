@@ -1,18 +1,18 @@
 /*********************************************************************************                                                                       
  * The MIT License (MIT)
- * 
- * Copyright (c) 2009-2016 Jason Neuswanger
- * 
+ *
+ * Copyright (c) 2009-2021 Jason Neuswanger
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in all
  * copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -54,8 +54,8 @@
 
 - (void)awakeFromInsert
 {
-    [self addObservers];
-    [super awakeFromInsert];
+	[self addObservers];
+	[super awakeFromInsert];
 }
 
 - (void)addObservers
@@ -64,8 +64,8 @@
 	[self addObserver:self forKeyPath:@"shape" options:NSKeyValueObservingOptionNew context:NULL];
 	[self addObserver:self forKeyPath:@"size" options:NSKeyValueObservingOptionNew context:NULL];
 	[self addObserver:self forKeyPath:@"connectingLineLengthLabeled" options:NSKeyValueObservingOptionNew context:NULL];
-    [self addObserver:self forKeyPath:@"connectingLineLabelShowLength" options:NSKeyValueObservingOptionNew context:NULL];
-    [self addObserver:self forKeyPath:@"connectingLineLabelShowSpeed" options:NSKeyValueObservingOptionNew context:NULL];
+	[self addObserver:self forKeyPath:@"connectingLineLabelShowLength" options:NSKeyValueObservingOptionNew context:NULL];
+	[self addObserver:self forKeyPath:@"connectingLineLabelShowSpeed" options:NSKeyValueObservingOptionNew context:NULL];
 	[self addObserver:self forKeyPath:@"connectingLineThickness" options:NSKeyValueObservingOptionNew context:NULL];
 	[self addObserver:self forKeyPath:@"connectingLineType" options:NSKeyValueObservingOptionNew context:NULL];
 	[self addObserver:self forKeyPath:@"connectingLineLengthLabelFontSize" options:NSKeyValueObservingOptionNew context:NULL];
@@ -85,60 +85,60 @@
 
 + (void) insertNewTypeFromLoadedDictionary:(NSDictionary *)eventTypeDictionary inProject:(VSProject *)project inManagedObjectContext:(NSManagedObjectContext *)moc
 {
-    // This function loads a type's information from a saved dictionary. If its name matches an old type, it updates the old type's visual properties to match those in the loaded file. Otherwise, it creates a new type.
+	// This function loads a type's information from a saved dictionary. If its name matches an old type, it updates the old type's visual properties to match those in the loaded file. Otherwise, it creates a new type.
 	VSTrackedEventType *newType = nil;
-    BOOL overwritingOldType = NO;
+	BOOL overwritingOldType = NO;
 	for (VSTrackedEventType *oldType in project.trackedEventTypes) {
 		if ([oldType.name isEqualToString:[eventTypeDictionary objectForKey:@"name"]]) {
-            overwritingOldType = YES;
-            oldType.maxNumPoints = [eventTypeDictionary objectForKey:@"maxNumPoints"];
-            oldType.connectingLineType = [eventTypeDictionary objectForKey:@"connectingLineType"];
-            oldType.requiresSameTimecode = [eventTypeDictionary objectForKey:@"requiresSameTimecode"];
-            oldType.connectingLineLengthLabeled = [eventTypeDictionary objectForKey:@"connectingLineLengthLabeled"];
-            oldType.connectingLineThickness = [eventTypeDictionary objectForKey:@"connectingLineThickness"];
-            if ([eventTypeDictionary objectForKey:@"connectingLineLabelShowLength"] != nil) { // preserve compatibility with older files
-                oldType.connectingLineLabelShowLength = [eventTypeDictionary objectForKey:@"connectingLineLabelShowLength"];
-            } else {
-                oldType.connectingLineLabelShowLength = [NSNumber numberWithBool:NO];
-            }
-            if ([eventTypeDictionary objectForKey:@"connectingLineLabelShowSpeed"] != nil) { // preserve compatibility with older files
-                oldType.connectingLineLabelShowSpeed = [eventTypeDictionary objectForKey:@"connectingLineLabelShowSpeed"];
-            } else {
-                oldType.connectingLineLabelShowSpeed = [NSNumber numberWithBool:NO];
-            }
-            oldType.connectingLineLengthLabelFontSize = [eventTypeDictionary objectForKey:@"connectingLineLengthLabelFontSize"];
-            oldType.connectingLineLengthLabelFractionDigits = [eventTypeDictionary objectForKey:@"connectingLineLengthLabelFractionDigits"];
-            oldType.connectingLineLengthLabelUnitMultiplier = [eventTypeDictionary objectForKey:@"connectingLineLengthLabelUnitMultiplier"];
-            oldType.connectingLineLengthLabelUnits = [eventTypeDictionary objectForKey:@"connectingLineLengthLabelUnits"];
-            [oldType setVisibleItemPropertiesFromDictionary:eventTypeDictionary];
+			overwritingOldType = YES;
+			oldType.maxNumPoints = [eventTypeDictionary objectForKey:@"maxNumPoints"];
+			oldType.connectingLineType = [eventTypeDictionary objectForKey:@"connectingLineType"];
+			oldType.requiresSameTimecode = [eventTypeDictionary objectForKey:@"requiresSameTimecode"];
+			oldType.connectingLineLengthLabeled = [eventTypeDictionary objectForKey:@"connectingLineLengthLabeled"];
+			oldType.connectingLineThickness = [eventTypeDictionary objectForKey:@"connectingLineThickness"];
+			if ([eventTypeDictionary objectForKey:@"connectingLineLabelShowLength"] != nil) { // preserve compatibility with older files
+				oldType.connectingLineLabelShowLength = [eventTypeDictionary objectForKey:@"connectingLineLabelShowLength"];
+			} else {
+				oldType.connectingLineLabelShowLength = [NSNumber numberWithBool:NO];
+			}
+			if ([eventTypeDictionary objectForKey:@"connectingLineLabelShowSpeed"] != nil) { // preserve compatibility with older files
+				oldType.connectingLineLabelShowSpeed = [eventTypeDictionary objectForKey:@"connectingLineLabelShowSpeed"];
+			} else {
+				oldType.connectingLineLabelShowSpeed = [NSNumber numberWithBool:NO];
+			}
+			oldType.connectingLineLengthLabelFontSize = [eventTypeDictionary objectForKey:@"connectingLineLengthLabelFontSize"];
+			oldType.connectingLineLengthLabelFractionDigits = [eventTypeDictionary objectForKey:@"connectingLineLengthLabelFractionDigits"];
+			oldType.connectingLineLengthLabelUnitMultiplier = [eventTypeDictionary objectForKey:@"connectingLineLengthLabelUnitMultiplier"];
+			oldType.connectingLineLengthLabelUnits = [eventTypeDictionary objectForKey:@"connectingLineLengthLabelUnits"];
+			[oldType setVisibleItemPropertiesFromDictionary:eventTypeDictionary];
 		}
 	}
 	if (!overwritingOldType) {
-        newType = [NSEntityDescription insertNewObjectForEntityForName:@"VSTrackedEventType" inManagedObjectContext:moc];
-        [newType addObserver:newType forKeyPath:@"name" options:NSKeyValueObservingOptionNew context:NULL];
-        newType.project = project;
-        newType.name = [eventTypeDictionary objectForKey:@"name"];
-        newType.maxNumPoints = [eventTypeDictionary objectForKey:@"maxNumPoints"];
-        newType.connectingLineType = [eventTypeDictionary objectForKey:@"connectingLineType"];
-        newType.requiresSameTimecode = [eventTypeDictionary objectForKey:@"requiresSameTimecode"];
-        newType.connectingLineLengthLabeled = [eventTypeDictionary objectForKey:@"connectingLineLengthLabeled"];
-        newType.connectingLineThickness = [eventTypeDictionary objectForKey:@"connectingLineThickness"];
-        if ([eventTypeDictionary objectForKey:@"connectingLineLabelShowLength"] != nil) { // preserve compatibility with older files
-            newType.connectingLineLabelShowLength = [eventTypeDictionary objectForKey:@"connectingLineLabelShowLength"];
-        } else {
-            newType.connectingLineLabelShowLength = [NSNumber numberWithBool:NO];
-        }
-        if ([eventTypeDictionary objectForKey:@"connectingLineLabelShowSpeed"] != nil) { // preserve compatibility with older files
-            newType.connectingLineLabelShowSpeed = [eventTypeDictionary objectForKey:@"connectingLineLabelShowSpeed"];
-        } else {
-            newType.connectingLineLabelShowSpeed = [NSNumber numberWithBool:NO];
-        }
-        newType.connectingLineLengthLabelFontSize = [eventTypeDictionary objectForKey:@"connectingLineLengthLabelFontSize"];
-        newType.connectingLineLengthLabelFractionDigits = [eventTypeDictionary objectForKey:@"connectingLineLengthLabelFractionDigits"];
-        newType.connectingLineLengthLabelUnitMultiplier = [eventTypeDictionary objectForKey:@"connectingLineLengthLabelUnitMultiplier"];
-        newType.connectingLineLengthLabelUnits = [eventTypeDictionary objectForKey:@"connectingLineLengthLabelUnits"];
-        [newType setVisibleItemPropertiesFromDictionary:eventTypeDictionary];
-    }
+		newType = [NSEntityDescription insertNewObjectForEntityForName:@"VSTrackedEventType" inManagedObjectContext:moc];
+		[newType addObserver:newType forKeyPath:@"name" options:NSKeyValueObservingOptionNew context:NULL];
+		newType.project = project;
+		newType.name = [eventTypeDictionary objectForKey:@"name"];
+		newType.maxNumPoints = [eventTypeDictionary objectForKey:@"maxNumPoints"];
+		newType.connectingLineType = [eventTypeDictionary objectForKey:@"connectingLineType"];
+		newType.requiresSameTimecode = [eventTypeDictionary objectForKey:@"requiresSameTimecode"];
+		newType.connectingLineLengthLabeled = [eventTypeDictionary objectForKey:@"connectingLineLengthLabeled"];
+		newType.connectingLineThickness = [eventTypeDictionary objectForKey:@"connectingLineThickness"];
+		if ([eventTypeDictionary objectForKey:@"connectingLineLabelShowLength"] != nil) { // preserve compatibility with older files
+			newType.connectingLineLabelShowLength = [eventTypeDictionary objectForKey:@"connectingLineLabelShowLength"];
+		} else {
+			newType.connectingLineLabelShowLength = [NSNumber numberWithBool:NO];
+		}
+		if ([eventTypeDictionary objectForKey:@"connectingLineLabelShowSpeed"] != nil) { // preserve compatibility with older files
+			newType.connectingLineLabelShowSpeed = [eventTypeDictionary objectForKey:@"connectingLineLabelShowSpeed"];
+		} else {
+			newType.connectingLineLabelShowSpeed = [NSNumber numberWithBool:NO];
+		}
+		newType.connectingLineLengthLabelFontSize = [eventTypeDictionary objectForKey:@"connectingLineLengthLabelFontSize"];
+		newType.connectingLineLengthLabelFractionDigits = [eventTypeDictionary objectForKey:@"connectingLineLengthLabelFractionDigits"];
+		newType.connectingLineLengthLabelUnitMultiplier = [eventTypeDictionary objectForKey:@"connectingLineLengthLabelUnitMultiplier"];
+		newType.connectingLineLengthLabelUnits = [eventTypeDictionary objectForKey:@"connectingLineLengthLabelUnits"];
+		[newType setVisibleItemPropertiesFromDictionary:eventTypeDictionary];
+	}
 }
 
 - (NSMutableDictionary *) contentsAsWriteableDictionary
@@ -147,30 +147,30 @@
 	[superDict setObject:self.name forKey:@"name"];
 	[superDict setObject:self.maxNumPoints forKey:@"maxNumPoints"];
 	[superDict setObject:self.requiresSameTimecode forKey:@"requiresSameTimecode"];
-
+	
 	[superDict setObject:self.connectingLineType forKey:@"connectingLineType"];
-	[superDict setObject:self.connectingLineLengthLabeled forKey:@"connectingLineLengthLabeled"];	
+	[superDict setObject:self.connectingLineLengthLabeled forKey:@"connectingLineLengthLabeled"];
 	[superDict setObject:self.connectingLineThickness forKey:@"connectingLineThickness"];
-    [superDict setObject:self.connectingLineLabelShowLength forKey:@"connectingLineLabelShowLength"];
-    [superDict setObject:self.connectingLineLabelShowSpeed forKey:@"connectingLineLabelShowSpeed"];
+	[superDict setObject:self.connectingLineLabelShowLength forKey:@"connectingLineLabelShowLength"];
+	[superDict setObject:self.connectingLineLabelShowSpeed forKey:@"connectingLineLabelShowSpeed"];
 	[superDict setObject:self.connectingLineLengthLabelFontSize forKey:@"connectingLineLengthLabelFontSize"];
-	[superDict setObject:self.connectingLineLengthLabelFractionDigits forKey:@"connectingLineLengthLabelFractionDigits"];	
-	[superDict setObject:self.connectingLineLengthLabelUnitMultiplier forKey:@"connectingLineLengthLabelUnitMultiplier"];	
-	[superDict setObject:self.connectingLineLengthLabelUnits forKey:@"connectingLineLengthLabelUnits"];	
+	[superDict setObject:self.connectingLineLengthLabelFractionDigits forKey:@"connectingLineLengthLabelFractionDigits"];
+	[superDict setObject:self.connectingLineLengthLabelUnitMultiplier forKey:@"connectingLineLengthLabelUnitMultiplier"];
+	[superDict setObject:self.connectingLineLengthLabelUnits forKey:@"connectingLineLengthLabelUnits"];
 	
 	return superDict;
 }
 
 - (void) dealloc
 {
-    [self carefullyRemoveObserver:self forKeyPath:@"name"];
+	[self carefullyRemoveObserver:self forKeyPath:@"name"];
 	[self carefullyRemoveObserver:self forKeyPath:@"shape"];
 	[self carefullyRemoveObserver:self forKeyPath:@"size"];
 	[self carefullyRemoveObserver:self forKeyPath:@"connectingLineLengthLabeled"];
 	[self carefullyRemoveObserver:self forKeyPath:@"connectingLineThickness"];
 	[self carefullyRemoveObserver:self forKeyPath:@"connectingLineLabelShowLength"];
-    [self carefullyRemoveObserver:self forKeyPath:@"connectingLineLabelShowSpeed"];
-    [self carefullyRemoveObserver:self forKeyPath:@"connectingLineType"];
+	[self carefullyRemoveObserver:self forKeyPath:@"connectingLineLabelShowSpeed"];
+	[self carefullyRemoveObserver:self forKeyPath:@"connectingLineType"];
 	[self carefullyRemoveObserver:self forKeyPath:@"connectingLineLengthLabelFontSize"];
 	[self carefullyRemoveObserver:self forKeyPath:@"connectingLineLengthLabelFractionDigits"];
 	[self carefullyRemoveObserver:self forKeyPath:@"connectingLineLengthLabelUnitMultiplier"];
@@ -179,12 +179,12 @@
 
 - (void) carefullyRemoveObserver:(NSObject *)observer forKeyPath:(NSString *)keyPath
 {
-    if (observer != nil) {
-        @try {
-            [self removeObserver:observer forKeyPath:keyPath];
-        } @catch (id exception) {
-        }
-    }
+	if (observer != nil) {
+		@try {
+			[self removeObserver:observer forKeyPath:keyPath];
+		} @catch (id exception) {
+		}
+	}
 }
 
 @end

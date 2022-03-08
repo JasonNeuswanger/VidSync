@@ -1,7 +1,7 @@
 /*********************************************************************************                                                                       
  * The MIT License (MIT)
  * 
- * Copyright (c) 2009-2016 Jason Neuswanger
+ * Copyright (c) 2009-2021 Jason Neuswanger
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,7 +24,6 @@
 
 
 #import <CoreData/CoreData.h>
-#import <ImageKit/ImageKit.h>
 
 @interface VSTrackedObjectPortrait : NSManagedObject {
 
@@ -42,11 +41,12 @@
 
 
 // Methods to conform to the informal protocol IKImageBrowserItem
+/*
 - (NSString *) imageUID;
 - (NSString *) imageTitle;
 - (NSString *) imageRepresentationType;
 - (id) imageRepresentation;
 - (BOOL) isSelectable;
-
+*/
 
 @end

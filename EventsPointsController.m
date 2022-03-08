@@ -1,7 +1,7 @@
 /*********************************************************************************                                                                       
  * The MIT License (MIT)
  * 
- * Copyright (c) 2009-2016 Jason Neuswanger
+ * Copyright (c) 2009-2021 Jason Neuswanger
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -41,9 +41,9 @@
 	if ([[[framesSelectButton selectedItem] title] isEqualToString:@"Currently Visible"]) {				// Show all points visible during the currentFrame, even if they're fading out
 		for (VSPoint *point in objects) {
 			CMTime startTime = [UtilityFunctions CMTimeFromString:point.timecode];
-			CMTime solidDuration = CMTimeMakeWithSeconds([point.trackedEvent.type.duration doubleValue], [[document.project.masterClip timeScale] longValue]);
-			CMTime fadingDuration = CMTimeMakeWithSeconds([point.trackedEvent.type.fadeTime doubleValue], [[document.project.masterClip timeScale] longValue]);
-			CMTime totalDuration = CMTimeAdd(solidDuration,fadingDuration);
+			CMTime solidDuration = CMTimeMake([point.trackedEvent.type.duration doubleValue] * [[document.project.masterClip timeScale] longValue], [[document.project.masterClip timeScale] intValue]);
+            CMTime fadingDuration = CMTimeMake([point.trackedEvent.type.fadeTime doubleValue] * [[document.project.masterClip timeScale] longValue], [[document.project.masterClip timeScale] intValue]);
+            CMTime totalDuration = CMTimeAdd(solidDuration,fadingDuration);
 			CMTimeRange totalTimeRange = CMTimeRangeMake(startTime,totalDuration);
 			if (CMTimeRangeContainsTime(totalTimeRange,now)) filteredPoints = [filteredPoints arrayByAddingObject:point];
 		}

@@ -1,7 +1,7 @@
 /*********************************************************************************                                                                       
  * The MIT License (MIT)
  * 
- * Copyright (c) 2009-2016 Jason Neuswanger
+ * Copyright (c) 2009-2021 Jason Neuswanger
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,9 +22,6 @@
  * SOFTWARE.
  ***********************************************************************************/
 
-
-#import <ImageKit/ImageKit.h>
-
-@interface PortraitBrowserCell : IKImageBrowserCell
+@interface PortraitBrowserCell : NSCollectionViewItem
 
 @end

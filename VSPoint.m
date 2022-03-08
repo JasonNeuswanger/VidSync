@@ -1,18 +1,18 @@
 /*********************************************************************************                                                                       
  * The MIT License (MIT)
- * 
- * Copyright (c) 2009-2016 Jason Neuswanger
- * 
+ *
+ * Copyright (c) 2009-2021 Jason Neuswanger
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in all
  * copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -28,28 +28,28 @@
 #import "gsl/gsl_multiroots.h"
 
 double pointSolverCostFunction_f(const gsl_vector* x, void* params) {
-    const VSPointSolverParams* p = (VSPointSolverParams *) params;
-    VSLine3D lineToCamera;
-    lineToCamera.front.x = gsl_vector_get(x, 0);    // this is the candidate 3D point
-    lineToCamera.front.y = gsl_vector_get(x, 1);
-    lineToCamera.front.z = gsl_vector_get(x, 2);
-    double cost = 0.0;
-    VSPoint3D frontQuadratPoint3D;
-    NSPoint frontQuadratPoint2D,reprojectedScreenPoint;
-    for (int i = 0; i < p->numCameras; i++) {  // Loop over all videos / camera views
-        // Construct the camera side of the line from the candidate 3-D point through the camera
-        lineToCamera.back.x = p->camPositions[i].x;
-        lineToCamera.back.y = p->camPositions[i].y;
-        lineToCamera.back.z = p->camPositions[i].z;
-        // Calculate the 3-D point intersection of that line with the front quadrat plane, and express it as a 2-D point in that plane
-        frontQuadratPoint3D = linePlaneIntersect(lineToCamera, p->frontFacePlanes[i]);                                      // function defined in this file, below
-        frontQuadratPoint2D = quadratCoords2Dfrom3D(&frontQuadratPoint3D,p->axesHorizontal[i],p->axesVertical[i]);	// function defined in VSEventScreenPoint.h	
-        // project the front quadrat point onto the undistorted screen
-        reprojectedScreenPoint = project2DPoint(frontQuadratPoint2D, p->quadratFrontToScreenFCMMatrices[i]);
-        // add the distance between the input screen point (already undistorted) and reprojected screen point (inherently undistorted) to the cost function
-        cost += pow(reprojectedScreenPoint.x - p->undistortedScreenPoints[i].x, 2) + pow(reprojectedScreenPoint.y - p->undistortedScreenPoints[i].y, 2);
-    }
-    return cost;
+	const VSPointSolverParams* p = (VSPointSolverParams *) params;
+	VSLine3D lineToCamera;
+	lineToCamera.front.x = gsl_vector_get(x, 0);    // this is the candidate 3D point
+	lineToCamera.front.y = gsl_vector_get(x, 1);
+	lineToCamera.front.z = gsl_vector_get(x, 2);
+	double cost = 0.0;
+	VSPoint3D frontQuadratPoint3D;
+	NSPoint frontQuadratPoint2D,reprojectedScreenPoint;
+	for (int i = 0; i < p->numCameras; i++) {  // Loop over all videos / camera views
+		// Construct the camera side of the line from the candidate 3-D point through the camera
+		lineToCamera.back.x = p->camPositions[i].x;
+		lineToCamera.back.y = p->camPositions[i].y;
+		lineToCamera.back.z = p->camPositions[i].z;
+		// Calculate the 3-D point intersection of that line with the front quadrat plane, and express it as a 2-D point in that plane
+		frontQuadratPoint3D = linePlaneIntersect(lineToCamera, p->frontFacePlanes[i]);                                      // function defined in this file, below
+		frontQuadratPoint2D = quadratCoords2Dfrom3D(&frontQuadratPoint3D,p->axesHorizontal[i],p->axesVertical[i]);	// function defined in VSEventScreenPoint.h
+		// project the front quadrat point onto the undistorted screen
+		reprojectedScreenPoint = project2DPoint(frontQuadratPoint2D, p->quadratFrontToScreenFCMMatrices[i]);
+		// add the distance between the input screen point (already undistorted) and reprojected screen point (inherently undistorted) to the cost function
+		cost += pow(reprojectedScreenPoint.x - p->undistortedScreenPoints[i].x, 2) + pow(reprojectedScreenPoint.y - p->undistortedScreenPoints[i].y, 2);
+	}
+	return cost;
 }
 
 VSPoint3D linePlaneIntersect(VSLine3D line, VSPoint3D pointsInPlane[3]){
@@ -70,7 +70,7 @@ VSPoint3D linePlaneIntersect(VSLine3D line, VSPoint3D pointsInPlane[3]){
 	A[8] = pointsInPlane[2].z - pointsInPlane[0].z;
 	
 	// Use Lapack's dgesv routine to solve the system Ax=b for x.
-    
+	
 	__CLPK_integer n = 3;								// Number of linearly independent rows in the matrix A
 	__CLPK_integer nrhs = 1;							// Number of columns of the matrix b (1, of course)
 	__CLPK_integer lda = 3;								// Leading dimension of the matrix A
@@ -122,11 +122,11 @@ NSPoint project2DPoint(NSPoint pt, double projectionMatrix[9])
 
 - (void) handleScreenPointChange
 {
-    for (VSPoint *point in self.trackedEvent.points) [point clearPointToPointDistanceCache];        // clear the distance cache for this point and others that may connect to it
+	for (VSPoint *point in self.trackedEvent.points) [point clearPointToPointDistanceCache];        // clear the distance cache for this point and others that may connect to it
 	VidSyncDocument *doc = [[[self.trackedEvent.trackedObjects anyObject] project] document];
 	[self calculate3DCoords];
 	if ([self.screenPoints count] == 0) [[self managedObjectContext] deleteObject:self]; // if the point now has no screenpoints, delete it
-	[doc.eventsPointsController.mainTableView setNeedsDisplay];	// refresh the point table
+	doc.eventsPointsController.mainTableView.needsDisplay = YES;	// refresh the point table
 	[doc.trackedEventsController.mainTableView setNeedsDisplayInRect:[doc.trackedEventsController.mainTableView rectOfColumn:4]];	// refresh the event table's # Points column
 }
 
@@ -137,130 +137,130 @@ NSPoint project2DPoint(NSPoint pt, double projectionMatrix[9])
 
 - (NSSet *) calibratedScreenPoints  // Returns only screen points on clips with a valid calibration
 {
-    NSMutableSet *calibratedPoints = [NSMutableSet new];
-    for (VSEventScreenPoint *screenPoint in self.screenPoints) {
-        if ([screenPoint.videoClip.calibration.matrixQuadratFrontToScreen count] > 0 && [screenPoint.videoClip.calibration.matrixQuadratBackToScreen count] > 0) [calibratedPoints addObject:screenPoint];
-    }
-    return calibratedPoints;
+	NSMutableSet *calibratedPoints = [NSMutableSet new];
+	for (VSEventScreenPoint *screenPoint in self.screenPoints) {
+		if ([screenPoint.videoClip.calibration.matrixQuadratFrontToScreen count] > 0 && [screenPoint.videoClip.calibration.matrixQuadratBackToScreen count] > 0) [calibratedPoints addObject:screenPoint];
+	}
+	return calibratedPoints;
 }
 
 - (void) calculate3DCoords
 // This function begins by calculating estimated 3-D coordinates using the linear closest point of approach method.  From that starting point, it numerically
 // searches for a 3-D position that minimizes the total squared reprojection (pixel) error over all video clips, which is a better 3-D position estimate than the linear one.
 {
-    NSSet *calibratedScreenPoints = [self calibratedScreenPoints];
- 	size_t numLines = (size_t) [calibratedScreenPoints count];
+	NSSet *calibratedScreenPoints = [self calibratedScreenPoints];
+	size_t numLines = (size_t) [calibratedScreenPoints count];
 	if (numLines > 1) {
-        // Get a starting guess at the 3-D point position from the old linear "closest point of approach" method 
-        VSPoint3D linearIntersectionPoint = [self calculate3DCoordsLinear];
-        if ([((VSEventScreenPoint *)[[calibratedScreenPoints allObjects] objectAtIndex:0]).videoClip.project.useIterativeTriangulation boolValue]) {
-            // Load up the parameter array for the nonlinear root solver with all the info it needs to calculate the pixel error cost function
-            VSPointSolverParams params;
-            params.numCameras = numLines;
-            params.camPositions = (VSPoint3D *) malloc(numLines*sizeof(VSPoint3D));
-            params.axesHorizontal = (char *) malloc(numLines*sizeof(char));
-            params.axesVertical = (char *) malloc(numLines*sizeof(char));
-            params.quadratFrontToScreenFCMMatrices = (double**) malloc(numLines*sizeof(double *));
-            params.frontFacePlanes = (VSPoint3D**) malloc(numLines*sizeof(VSPoint3D *));
-            params.undistortedScreenPoints = (NSPoint *) malloc(numLines*sizeof(NSPoint));
-            VSEventScreenPoint *screenPoint;
-            for (int i = 0; i < numLines; i++) {
-                screenPoint = [[calibratedScreenPoints allObjects] objectAtIndex:i];
-                params.camPositions[i].x = [screenPoint.videoClip.calibration.cameraX doubleValue];
-                params.camPositions[i].y = [screenPoint.videoClip.calibration.cameraY doubleValue];
-                params.camPositions[i].z = [screenPoint.videoClip.calibration.cameraZ doubleValue];
-                params.quadratFrontToScreenFCMMatrices[i] = (double *) malloc(9*sizeof(double));
-                [screenPoint.videoClip.calibration putQuadratFrontToScreenFCMMatrixInArray:params.quadratFrontToScreenFCMMatrices[i]];
-                params.frontFacePlanes[i] = (VSPoint3D *) malloc(3*sizeof(VSPoint3D));
-                [screenPoint putPointsInFrontQuadratPlaneIntoArray:params.frontFacePlanes[i]];
-                params.axesHorizontal[i] = [screenPoint.videoClip.calibration.axisHorizontal characterAtIndex:0];
-                params.axesVertical[i] = [screenPoint.videoClip.calibration.axisVertical characterAtIndex:0];
-                params.undistortedScreenPoints[i] = [screenPoint undistortedCoords];
-            }
-            // Set up and perform the minimization
-            const gsl_multimin_fminimizer_type *T = gsl_multimin_fminimizer_nmsimplex2;
-            gsl_multimin_fminimizer *s = gsl_multimin_fminimizer_alloc(T, 3);
-            gsl_multimin_function f = {&pointSolverCostFunction_f, 3, &params};
-            // Starting point
-            gsl_vector *x = gsl_vector_alloc(3);           
-            gsl_vector_set(x, 0, linearIntersectionPoint.x);
-            gsl_vector_set(x, 1, linearIntersectionPoint.y);
-            gsl_vector_set(x, 2, linearIntersectionPoint.z);         
-            // Set initial step sizes to 1
-            gsl_vector *ss = gsl_vector_alloc(3);            // ss is short for "step sizes"
-            gsl_vector_set_all(ss, 1);
-            gsl_multimin_fminimizer_set(s, &f, x, ss);
-            size_t iter = 0;
-            int status;
-            double size;
-            do {
-                iter++;
-                status = gsl_multimin_fminimizer_iterate(s);
-                if (status) break;
-                size = gsl_multimin_fminimizer_size(s);
-                status = gsl_multimin_test_size(size, 1e-6);                        // Here we set the minimum characteristic size of the simplex as a possible stopping criterion
-                //NSLog(@"After %3d iterations with size %1.12f for point %@ in event %@, cost function with final 3D point of (%1.5f,%1.5f,%1.5f) was %1.5f.",(int) iter,size,[self index],[self.trackedEvent index],gsl_vector_get(s->x,0),gsl_vector_get(s->x,1),gsl_vector_get(s->x,2),s->fval);
-            } while (status == GSL_CONTINUE && iter < 100);                         // Here we set the max # of iterations
-            // Store the results
-            self.worldX = [NSNumber numberWithDouble:gsl_vector_get(s->x, 0)];
-            self.worldY = [NSNumber numberWithDouble:gsl_vector_get(s->x, 1)];
-            self.worldZ = [NSNumber numberWithDouble:gsl_vector_get(s->x, 2)];
-            self.reprojectionErrorNorm = [NSNumber numberWithDouble:sqrt(s->fval / numLines)];  // actually the RMS reprojection error
-          // Useful diagnostic tool here highlights 
-    //        if (iter > 300 || s->fval > 6.0) {
-    //            NSLog(@"After %d iterations for point %@ in event %@, cost function with final 3D point of (%1.5f,%1.5f,%1.5f) was %1.5f.",(int) iter,[self index],[self.trackedEvent index],gsl_vector_get(s->x,0),gsl_vector_get(s->x,1),gsl_vector_get(s->x,2),s->fval);
-    //        }
-    //
-            // Free up all the memory malloc'd above
-            gsl_vector_free(x);
-            gsl_vector_free(ss);
-            gsl_multimin_fminimizer_free(s);
-            free(params.camPositions);
-            free(params.undistortedScreenPoints);
-            for (int i = 0; i < numLines; i++) {
-                free(params.quadratFrontToScreenFCMMatrices[i]);
-                free(params.frontFacePlanes[i]);
-            }
-            free(params.quadratFrontToScreenFCMMatrices);
-            // Calculate the hint lines
-            for (VSEventScreenPoint *screenPoint in calibratedScreenPoints) [screenPoint calculateHintLines];
-            // Calculate the new Mean PLD (point-line distance)        VSLine3D lines[numLines];
-            VSLine3D lines[numLines];
-            for (int i=0; i<numLines; i++) lines[i] = [[[calibratedScreenPoints allObjects] objectAtIndex:i] computeLine3D:YES];
-            double PLD;
-            [UtilityFunctions intersectionOfNumber:numLines of3DLines:lines meanPLD:&PLD];
-            self.meanPLD = [NSNumber numberWithDouble:PLD];
-        } else {    // if not using iterative intersections, just set the world coords to the linear result
-            self.worldX = [NSNumber numberWithDouble:linearIntersectionPoint.x];
-            self.worldY = [NSNumber numberWithDouble:linearIntersectionPoint.y];
-            self.worldZ = [NSNumber numberWithDouble:linearIntersectionPoint.z];
-        }
-
-        // Now calculate the distance from the point to the nearest camera
-        
-        bool isFirstCameraDistance = YES;
-        for (VSEventScreenPoint *screenPoint in calibratedScreenPoints) {
-            VSPoint3D cameraPoint;
-            cameraPoint.x = [screenPoint.videoClip.calibration.cameraX floatValue];
-            cameraPoint.y = [screenPoint.videoClip.calibration.cameraY floatValue];
-            cameraPoint.z = [screenPoint.videoClip.calibration.cameraZ floatValue];
-            float lineDiff[3] = {[self.worldX floatValue]-cameraPoint.x,[self.worldY floatValue]-cameraPoint.y,[self.worldZ floatValue]-cameraPoint.z};
-            float distance = cblas_snrm2(3, lineDiff, 1);
-            if (isFirstCameraDistance || distance < [self.nearestCameraDistance floatValue]) {
-                self.nearestCameraDistance = [NSNumber numberWithFloat:distance];
-            }
-            isFirstCameraDistance = NO;
-        }
-        
-    } else {
+		// Get a starting guess at the 3-D point position from the old linear "closest point of approach" method
+		VSPoint3D linearIntersectionPoint = [self calculate3DCoordsLinear];
+		if ([((VSEventScreenPoint *)[[calibratedScreenPoints allObjects] objectAtIndex:0]).videoClip.project.useIterativeTriangulation boolValue]) {
+			// Load up the parameter array for the nonlinear root solver with all the info it needs to calculate the pixel error cost function
+			VSPointSolverParams params;
+			params.numCameras = numLines;
+			params.camPositions = (VSPoint3D *) malloc(numLines*sizeof(VSPoint3D));
+			params.axesHorizontal = (char *) malloc(numLines*sizeof(char));
+			params.axesVertical = (char *) malloc(numLines*sizeof(char));
+			params.quadratFrontToScreenFCMMatrices = (double**) malloc(numLines*sizeof(double *));
+			params.frontFacePlanes = (VSPoint3D**) malloc(numLines*sizeof(VSPoint3D *));
+			params.undistortedScreenPoints = (NSPoint *) malloc(numLines*sizeof(NSPoint));
+			VSEventScreenPoint *screenPoint;
+			for (int i = 0; i < numLines; i++) {
+				screenPoint = [[calibratedScreenPoints allObjects] objectAtIndex:i];
+				params.camPositions[i].x = [screenPoint.videoClip.calibration.cameraX doubleValue];
+				params.camPositions[i].y = [screenPoint.videoClip.calibration.cameraY doubleValue];
+				params.camPositions[i].z = [screenPoint.videoClip.calibration.cameraZ doubleValue];
+				params.quadratFrontToScreenFCMMatrices[i] = (double *) malloc(9*sizeof(double));
+				[screenPoint.videoClip.calibration putQuadratFrontToScreenFCMMatrixInArray:params.quadratFrontToScreenFCMMatrices[i]];
+				params.frontFacePlanes[i] = (VSPoint3D *) malloc(3*sizeof(VSPoint3D));
+				[screenPoint putPointsInFrontQuadratPlaneIntoArray:params.frontFacePlanes[i]];
+				params.axesHorizontal[i] = [screenPoint.videoClip.calibration.axisHorizontal characterAtIndex:0];
+				params.axesVertical[i] = [screenPoint.videoClip.calibration.axisVertical characterAtIndex:0];
+				params.undistortedScreenPoints[i] = [screenPoint undistortedCoords];
+			}
+			// Set up and perform the minimization
+			const gsl_multimin_fminimizer_type *T = gsl_multimin_fminimizer_nmsimplex2;
+			gsl_multimin_fminimizer *s = gsl_multimin_fminimizer_alloc(T, 3);
+			gsl_multimin_function f = {&pointSolverCostFunction_f, 3, &params};
+			// Starting point
+			gsl_vector *x = gsl_vector_alloc(3);
+			gsl_vector_set(x, 0, linearIntersectionPoint.x);
+			gsl_vector_set(x, 1, linearIntersectionPoint.y);
+			gsl_vector_set(x, 2, linearIntersectionPoint.z);
+			// Set initial step sizes to 1
+			gsl_vector *ss = gsl_vector_alloc(3);            // ss is short for "step sizes"
+			gsl_vector_set_all(ss, 1);
+			gsl_multimin_fminimizer_set(s, &f, x, ss);
+			size_t iter = 0;
+			int status;
+			double size;
+			do {
+				iter++;
+				status = gsl_multimin_fminimizer_iterate(s);
+				if (status) break;
+				size = gsl_multimin_fminimizer_size(s);
+				status = gsl_multimin_test_size(size, 1e-6);                        // Here we set the minimum characteristic size of the simplex as a possible stopping criterion
+				//NSLog(@"After %3d iterations with size %1.12f for point %@ in event %@, cost function with final 3D point of (%1.5f,%1.5f,%1.5f) was %1.5f.",(int) iter,size,[self index],[self.trackedEvent index],gsl_vector_get(s->x,0),gsl_vector_get(s->x,1),gsl_vector_get(s->x,2),s->fval);
+			} while (status == GSL_CONTINUE && iter < 100);                         // Here we set the max # of iterations
+			// Store the results
+			self.worldX = [NSNumber numberWithDouble:gsl_vector_get(s->x, 0)];
+			self.worldY = [NSNumber numberWithDouble:gsl_vector_get(s->x, 1)];
+			self.worldZ = [NSNumber numberWithDouble:gsl_vector_get(s->x, 2)];
+			self.reprojectionErrorNorm = [NSNumber numberWithDouble:sqrt(s->fval / numLines)];  // actually the RMS reprojection error
+			// Useful diagnostic tool here highlights
+			//        if (iter > 300 || s->fval > 6.0) {
+			//            NSLog(@"After %d iterations for point %@ in event %@, cost function with final 3D point of (%1.5f,%1.5f,%1.5f) was %1.5f.",(int) iter,[self index],[self.trackedEvent index],gsl_vector_get(s->x,0),gsl_vector_get(s->x,1),gsl_vector_get(s->x,2),s->fval);
+			//        }
+			//
+			// Free up all the memory malloc'd above
+			gsl_vector_free(x);
+			gsl_vector_free(ss);
+			gsl_multimin_fminimizer_free(s);
+			free(params.camPositions);
+			free(params.undistortedScreenPoints);
+			for (int i = 0; i < numLines; i++) {
+				free(params.quadratFrontToScreenFCMMatrices[i]);
+				free(params.frontFacePlanes[i]);
+			}
+			free(params.quadratFrontToScreenFCMMatrices);
+			// Calculate the hint lines
+			for (VSEventScreenPoint *screenPoint in calibratedScreenPoints) [screenPoint calculateHintLines];
+			// Calculate the new Mean PLD (point-line distance)        VSLine3D lines[numLines];
+			VSLine3D lines[numLines];
+			for (int i=0; i<numLines; i++) lines[i] = [[[calibratedScreenPoints allObjects] objectAtIndex:i] computeLine3D:YES];
+			double PLD;
+			[UtilityFunctions intersectionOfNumber:numLines of3DLines:lines meanPLD:&PLD];
+			self.meanPLD = [NSNumber numberWithDouble:PLD];
+		} else {    // if not using iterative intersections, just set the world coords to the linear result
+			self.worldX = [NSNumber numberWithDouble:linearIntersectionPoint.x];
+			self.worldY = [NSNumber numberWithDouble:linearIntersectionPoint.y];
+			self.worldZ = [NSNumber numberWithDouble:linearIntersectionPoint.z];
+		}
+		
+		// Now calculate the distance from the point to the nearest camera
+		
+		bool isFirstCameraDistance = YES;
+		for (VSEventScreenPoint *screenPoint in calibratedScreenPoints) {
+			VSPoint3D cameraPoint;
+			cameraPoint.x = [screenPoint.videoClip.calibration.cameraX floatValue];
+			cameraPoint.y = [screenPoint.videoClip.calibration.cameraY floatValue];
+			cameraPoint.z = [screenPoint.videoClip.calibration.cameraZ floatValue];
+			float lineDiff[3] = {[self.worldX floatValue] - (float) cameraPoint.x,[self.worldY floatValue] - (float) cameraPoint.y,[self.worldZ floatValue] - (float) cameraPoint.z};
+			float distance = cblas_snrm2(3, lineDiff, 1);
+			if (isFirstCameraDistance || distance < [self.nearestCameraDistance floatValue]) {
+				self.nearestCameraDistance = [NSNumber numberWithFloat:distance];
+			}
+			isFirstCameraDistance = NO;
+		}
+		
+	} else {
 		self.worldX = nil;
 		self.worldY = nil;
-		self.worldZ = nil;        
-    }
-    if ([self.screenPoints count] > 0) {                        // After updating a point (whether 3D or not) set the project file to know it was updated sinece last export.
-        VSEventScreenPoint *pt = [self.screenPoints anyObject]; // The purpose of this is for my code that reads VidSync Document files directly to check progress of analysis by colleagues in a whole folder.
-        pt.videoClip.project.updatedSinceLastExport = [NSNumber numberWithBool:YES];
-    }
+		self.worldZ = nil;
+	}
+	if ([self.screenPoints count] > 0) {                        // After updating a point (whether 3D or not) set the project file to know it was updated sinece last export.
+		VSEventScreenPoint *pt = [self.screenPoints anyObject]; // The purpose of this is for my code that reads VidSync Document files directly to check progress of analysis by colleagues in a whole folder.
+		pt.videoClip.project.updatedSinceLastExport = [NSNumber numberWithBool:YES];
+	}
 }
 
 
@@ -272,13 +272,13 @@ NSPoint project2DPoint(NSPoint pt, double projectionMatrix[9])
 
 - (VSPoint3D) calculate3DCoordsLinear
 {
- 	int numLines = [self.screenPoints count];
-    VSLine3D lines[numLines];
-    for (int i=0; i<numLines; i++) lines[i] = [[[self.screenPoints allObjects] objectAtIndex:i] computeLine3D:NO];
-    double PLD;
-    VSPoint3D intersection = [UtilityFunctions intersectionOfNumber:numLines of3DLines:lines meanPLD:&PLD];
-    self.meanPLD = [NSNumber numberWithDouble:PLD];
-    return intersection;
+	size_t numLines = [self.screenPoints count];
+	VSLine3D lines[numLines];
+	for (int i=0; i<numLines; i++) lines[i] = [[[self.screenPoints allObjects] objectAtIndex:i] computeLine3D:NO];
+	double PLD;
+	VSPoint3D intersection = [UtilityFunctions intersectionOfNumber:numLines of3DLines:lines meanPLD:&PLD];
+	self.meanPLD = [NSNumber numberWithDouble:PLD];
+	return intersection;
 }
 
 
@@ -308,12 +308,12 @@ NSPoint project2DPoint(NSPoint pt, double projectionMatrix[9])
 	NSArray *sortedScreenPoints = [sortableScreenPoints sortedArrayUsingDescriptors:[NSArray arrayWithObject:alphabeticalByClipName]];
 	// Format and add all point to the string and return
 	for (VSEventScreenPoint *screenPoint in sortedScreenPoints) {
-        if (screenPoint.videoClip.calibration.frontIsCalibrated) {
-            [pointsStr appendFormat:@"%@Front: {%1.4f,%1.4f}   ",screenPoint.videoClip.clipName,[screenPoint.frontFrameWorldH floatValue],[screenPoint.frontFrameWorldV floatValue]];
-        }
-        if (screenPoint.videoClip.calibration.backIsCalibrated) {
-            [pointsStr appendFormat:@"%@Back: {%1.4f,%1.4f}   ",screenPoint.videoClip.clipName,[screenPoint.backFrameWorldH floatValue],[screenPoint.backFrameWorldV floatValue]];
-        }
+		if (screenPoint.videoClip.calibration.frontIsCalibrated) {
+			[pointsStr appendFormat:@"%@Front: {%1.4f,%1.4f}   ",screenPoint.videoClip.clipName,[screenPoint.frontFrameWorldH floatValue],[screenPoint.frontFrameWorldV floatValue]];
+		}
+		if (screenPoint.videoClip.calibration.backIsCalibrated) {
+			[pointsStr appendFormat:@"%@Back: {%1.4f,%1.4f}   ",screenPoint.videoClip.clipName,[screenPoint.backFrameWorldH floatValue],[screenPoint.backFrameWorldV floatValue]];
+		}
 	}
 	return pointsStr;
 }
@@ -331,7 +331,7 @@ NSPoint project2DPoint(NSPoint pt, double projectionMatrix[9])
 
 - (NSNumber *) distanceToVSPoint:(VSPoint *)otherPoint
 {
-	if (!pointToPointDistanceCache) {	// If there is no cache for point-to-point distances, create one.  
+	if (!pointToPointDistanceCache) {	// If there is no cache for point-to-point distances, create one.
 		pointToPointDistanceCache = [NSMapTable strongToStrongObjectsMapTable];	// The Objects are the NSNumbers returned from this function; the keys are the otherPoints.
 		// Will put the NSNumber resulting from the current calculation into this cache at the end of the function.
 	} else {							// Otherwise, look for a distance from this point to otherPoint in the cache; and return it if it exists
@@ -342,39 +342,39 @@ NSPoint project2DPoint(NSPoint pt, double projectionMatrix[9])
 	
 	float lineDiff[3] = {[self.worldX floatValue]-[otherPoint.worldX floatValue],[self.worldY floatValue]-[otherPoint.worldY floatValue],[self.worldZ floatValue]-[otherPoint.worldZ floatValue]};
 	float distance = cblas_snrm2(3, lineDiff, 1);
-    [pointToPointDistanceCache setObject:[NSNumber numberWithFloat:distance] forKey:otherPoint];  
+	[pointToPointDistanceCache setObject:[NSNumber numberWithFloat:distance] forKey:otherPoint];
 	return [NSNumber numberWithFloat:distance];
 }
 
 - (NSNumber *) speedToVSPoint:(VSPoint *)otherPoint // magnitude of the velocity vector from this point to the otherPoint
 {
-    float distance = [[self distanceToVSPoint:otherPoint] floatValue];
-    float thisTime = (float) CMTimeGetSeconds([UtilityFunctions CMTimeFromString:self.timecode]);
-    float otherTime = (float) CMTimeGetSeconds([UtilityFunctions CMTimeFromString:otherPoint.timecode]);
-    NSNumber *speed;
-    if (thisTime == otherTime) {
-        speed = [NSDecimalNumber notANumber];
-    } else {
-        speed = [NSNumber numberWithFloat:distance/fabs(thisTime - otherTime)];
-    }
-    return speed;
+	float distance = [[self distanceToVSPoint:otherPoint] floatValue];
+	float thisTime = (float) CMTimeGetSeconds([UtilityFunctions CMTimeFromString:self.timecode]);
+	float otherTime = (float) CMTimeGetSeconds([UtilityFunctions CMTimeFromString:otherPoint.timecode]);
+	NSNumber *speed;
+	if (thisTime == otherTime) {
+		speed = [NSDecimalNumber notANumber];
+	} else {
+		speed = [NSNumber numberWithFloat:distance/fabs(thisTime - otherTime)];
+	}
+	return speed;
 }
 
 - (NSString *) spreadsheetFormatted3DPoint:(NSString *)separator
 {	
 	BOOL includeScreenCoords = [[[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"includeScreenCoordsInExports"] boolValue];
 	NSMutableString *objectsString = [NSMutableString new];
-    
-    NSTimeInterval time;	// is a double
-    time = CMTimeGetSeconds([UtilityFunctions CMTimeFromString:self.timecode]);
-    
+	
+	NSTimeInterval time;	// is a double
+	time = CMTimeGetSeconds([UtilityFunctions CMTimeFromString:self.timecode]);
+	
 	int objectCount = 1;
 	for (VSTrackedObject *trackedObject in self.trackedEvent.trackedObjects) {
 		if (objectCount > 1) [objectsString appendString:@", "];
 		if ([trackedObject.name isEqualToString:@""] || trackedObject.name == nil) {
 			[objectsString appendFormat:@"%@ %@",trackedObject.type.name,trackedObject.index];
 		} else {
-			[objectsString appendFormat:@"%@ %@ (%@)",trackedObject.type.name,trackedObject.index,trackedObject.name];				
+			[objectsString appendFormat:@"%@ %@ (%@)",trackedObject.type.name,trackedObject.index,trackedObject.name];
 		}
 		objectCount += 1;
 	}
@@ -384,27 +384,26 @@ NSPoint project2DPoint(NSPoint pt, double projectionMatrix[9])
 	} else {
 		eventString = [NSString stringWithFormat:@"%@ %@ (%@) (Notes: %@)",self.trackedEvent.type.name,self.trackedEvent.index,self.trackedEvent.name,self.trackedEvent.notes];
 	}
-    
-    NSMutableString *screenCoordsString = [NSMutableString stringWithString:@""];
-    if (includeScreenCoords) {
-        [screenCoordsString appendString:separator];
-        for (VSEventScreenPoint *point in self.screenPoints) [screenCoordsString appendString:[point spreadsheetFormattedScreenPoint]];
-    }
-    
-	return [NSString stringWithFormat:@"%@%@%@%@%@%@%f%@%f%@%f%@%f%@%f%@%f%@%f%@\n",
-									  objectsString,separator,
-									  eventString,separator,
-                                      self.timecode,separator,
-                                      [[NSNumber numberWithDouble:time] floatValue],separator,
-									  [[self worldX] floatValue],separator,
-									  [[self worldY] floatValue],separator,
-									  [[self worldZ] floatValue],separator,
-									  [[self meanPLD] floatValue],separator,
-                                      [[self reprojectionErrorNorm] floatValue],separator,
-                                      [[self nearestCameraDistance] floatValue],
-                                      screenCoordsString
 	
-        ];
+	NSMutableString *screenCoordsString = [NSMutableString stringWithString:@""];
+	if (includeScreenCoords) {
+		[screenCoordsString appendString:separator];
+		for (VSEventScreenPoint *point in self.screenPoints) [screenCoordsString appendString:[point spreadsheetFormattedScreenPoint]];
+	}
+	
+	return [NSString stringWithFormat:@"%@%@%@%@%@%@%f%@%f%@%f%@%f%@%f%@%f%@%f%@\n",
+		   objectsString,separator,
+		   eventString,separator,
+		   self.timecode,separator,
+		   [[NSNumber numberWithDouble:time] floatValue],separator,
+		   [[self worldX] floatValue],separator,
+		   [[self worldY] floatValue],separator,
+		   [[self worldZ] floatValue],separator,
+		   [[self meanPLD] floatValue],separator,
+		   [[self reprojectionErrorNorm] floatValue],separator,
+		   [[self nearestCameraDistance] floatValue],
+		   screenCoordsString
+		   ];
 }
 
 - (NSXMLNode *) representationAsXMLNode
@@ -413,7 +412,7 @@ NSPoint project2DPoint(NSPoint pt, double projectionMatrix[9])
 	NSXMLElement *mainElement = [[NSXMLElement alloc] initWithName:@"point"];
 	NSTimeInterval time;	// is a double
 	time = CMTimeGetSeconds([UtilityFunctions CMTimeFromString:self.timecode]);
-    
+	
 	NSNumberFormatter *nf = self.trackedEvent.type.project.document.decimalFormatter;
 	[mainElement addAttribute:[NSXMLNode attributeWithName:@"index" stringValue:[self.index stringValue]]];
 	[mainElement addAttribute:[NSXMLNode attributeWithName:@"x" stringValue:[nf stringFromNumber:self.worldX]]];
@@ -423,9 +422,9 @@ NSPoint project2DPoint(NSPoint pt, double projectionMatrix[9])
 	[mainElement addAttribute:[NSXMLNode attributeWithName:@"time" stringValue:[nf stringFromNumber:[NSNumber numberWithDouble:time]]]];
 	[mainElement addAttribute:[NSXMLNode attributeWithName:@"meanPLD" stringValue:[nf stringFromNumber:self.meanPLD]]];
 	[mainElement addAttribute:[NSXMLNode attributeWithName:@"reprojectionErrorNorm" stringValue:[nf stringFromNumber:self.reprojectionErrorNorm]]];
-    [mainElement addAttribute:[NSXMLNode attributeWithName:@"nearestCameraDistance" stringValue:[nf stringFromNumber:self.nearestCameraDistance]]];
+	[mainElement addAttribute:[NSXMLNode attributeWithName:@"nearestCameraDistance" stringValue:[nf stringFromNumber:self.nearestCameraDistance]]];
 	if (includeScreenCoords) for (VSEventScreenPoint *point in self.screenPoints) [mainElement addChild:[point representationAsXMLNode]];
-	return mainElement;		
+	return mainElement;
 }
 
 @end
