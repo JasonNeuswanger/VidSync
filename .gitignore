@@ -3,6 +3,9 @@
 xcuserdata/
 .DS_Store
 OpenCV/.DS_Store
+VidSync.xcodeproj/project.xcworkspace/xcuserdata/jason.xcuserdatad
+VidSync.xcodeproj/project.xcworkspace/xcuserdata/*
+
 
 ## Xcode 8 and earlier
 *.xcscmblueprint
