@@ -140,6 +140,7 @@ NSPoint redistortPoint(const NSPoint* pt, const double x0, const double y0, cons
 	double params[13] = {xuc, yuc, k1, k2, k3, k4, k5, k6, k7, p1, p2, p3, p4};
 	gsl_multiroot_function_fdf f = {&redistortionRootFunc_f, &redistortionRootFunc_df, &redistortionRootFunc_fdf, n, params};
 	gsl_vector *x = gsl_vector_alloc(n);    // Initialize the solution starting at the input/undistorted point
+	// OLD NOTES:
 	// Setting the starting point of the root-finding algorithm to be half-way between the distortion center and the undistorted point.
 	// Using the undistorted point itself worked fine for most applications, but on a highly distorted 8 mm fisheye all the algorithms ran into
 	// numerical instabilities and wouldn't make progress toward the right solution. Likewise, starting at (0,0) didn't offer enough of a
@@ -147,9 +148,7 @@ NSPoint redistortPoint(const NSPoint* pt, const double x0, const double y0, cons
 	// However, with a value of 2.0 the calibration frame grid overlays with the 8 mm fisheye had some slight problems near the corners with
 	// both methods, moreso with the Hybridsj algorithm. It seems 2.5 was the sweet spot for this lens, which is the most extreme test likely.
 	// Other lenses should be more permissive and these values should work well for them too.
-	gsl_vector_set(x, 0, xuc/2.5);
-	gsl_vector_set(x, 1, yuc/2.5);
-	
+	//
 	// Two algorithms for the redistortion have typically worked okay. Both fail to converge on a good solution (residuals in the 2 to 400 range or so,
 	// as opposed to something like 1e-10 after proper convergence) for similar points. It seems this only happens when calculating far-offscreen
 	// hint line points with an extremely distorted fisheye lens, points that aren't relevant to any actual measurements or displays, although they might
@@ -157,34 +156,45 @@ NSPoint redistortPoint(const NSPoint* pt, const double x0, const double y0, cons
 	// and not others. VidSync previously used the gnewton solver based on the appearance of convergence in these scenarios, but it turns out that was
 	// illusory and it was hitting the iteration limit without improving the solution instead. The hybridsj solver as used below is faster and does not
 	// get hung up on those failed, irrelevant points. So I switched from gnewton back to hybridsj to prevent the program from hanging.
+	//
+	// NEW NOTES (2022):
+	// I realized there is no need to pick just one starting point -- why not try multiple if the first one doesn't work? This has greatly
+	// improved the occasional problem I had with very wide lenses, in which hint lines had jagged spots because the redistortion to project
+	// them on the screen wasn't converging in this algorithm. This should not have affected any actual measurements, but it was a disconcerting
+	// visual glitch. I'm trying a mix of different starting points here. The first comes from a series expansion of the function of interest,
+	// and the remainder are just arbitrary guesses. In combination they eliminate most of the jagged convergence failures in hint lines and
+	// related redistorted overlays, but not all. Because this glitch doesn't affect measurements it isn't worth more effort at this time.
+
 	
-	//T = gsl_multiroot_fdfsolver_gnewton;
+	const double x_guesses[15] = {xuc - 2*p2*xuc*yuc - 3*p1*pow(xuc,2) - p1*pow(yuc,2), 0.0, xuc/2.5, xuc/4.5, xuc/2.0, xuc/1.5, xuc/0.9, xuc, xuc*1.1, xuc*1.5, xuc*2.5, xuc/2.0, xuc*2.0, xuc*1.2, xuc/1.2};
+	const double y_guesses[15] = {yuc - 2*p1*xuc*yuc - p2*pow(xuc,2) - 3*p2*pow(yuc,2), 0.0, yuc/2.5, yuc/4.5, yuc/2.0, yuc/1.5, yuc/0.9, yuc, yuc*1.1, yuc*1.5, yuc*2.5, yuc*2.0, yuc/2.0, yuc/1.2, yuc*1.2};
+
 	T = gsl_multiroot_fdfsolver_hybridsj;
-	
 	s = gsl_multiroot_fdfsolver_alloc(T, n);
-	gsl_multiroot_fdfsolver_set(s, &f, x);
-	
-	do {
-		iter++;
-		status = gsl_multiroot_fdfsolver_iterate(s);
-		if (status) {
-			// This error will happen naturally as described above in extreme scenarios, but there's no reason to slow things down by logging it.
-			// NSLog(@"Error in redistortPoint call to gsl_multiroot_fdfsolver_iterate: %s", gsl_strerror(status));
+	bool failed;
+	for (int i=0; i < 15; i++) {
+		failed = false;
+		gsl_vector_set(x, 0, x_guesses[i]);
+		gsl_vector_set(x, 1, y_guesses[i]);
+		gsl_multiroot_fdfsolver_set(s, &f, x);
+		do {
+			iter++;
+			status = gsl_multiroot_fdfsolver_iterate(s);
+			if (status) {
+				failed = true;
+				break;
+			}
+			status = gsl_multiroot_test_residual(s->f, 1e-7);
+		} while (status == GSL_CONTINUE && iter < 1000);
+		if (!failed) {
 			break;
 		}
-		status = gsl_multiroot_test_residual (s->f, 1e-7);
-	} while (status == GSL_CONTINUE && iter < 10000);
+	}
 	
-	// Diagnostic code to print residuals.
-	//    double resid = 0.0;
-	//    for (int i = 0; i < s->f->size; i ++) {
-	//        resid += gsl_vector_get(s->f, i) * gsl_vector_get(s->f, i);
-	//    }
-	//    resid = sqrt(resid);
-	//    NSLog(@"Took %lu iterations to achieve RMS residual of %.10f",iter,resid);
+//	double resid = sqrt(pow(gsl_vector_get(s->f, 0),2) + pow(gsl_vector_get(s->f, 1),2));
 	
 	NSPoint result = NSMakePoint(x0 + gsl_vector_get(s->x, 0), y0 + gsl_vector_get(s->x, 1));
-	
+ 
 	/*
 	 // Other diagnostics
 	 double r = sqrt(xuc*xuc+yuc*yuc);

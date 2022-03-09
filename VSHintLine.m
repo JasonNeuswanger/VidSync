@@ -88,14 +88,26 @@
 		tempy = m*x+b;
 		if (tempy >= -padding && tempy <= yLimit + padding) {
 			[distortedPoints addObject:[NSValue valueWithPoint:[self.toVideoClip.calibration distortPoint:NSMakePoint(x,tempy)]]];  // regular intervals in the x direction
+			//[distortedPointsTEMP addObject:[NSValue valueWithPoint:NSMakePoint(x,tempy)]];  // regular intervals in the x direction
 		}
 	}
 	for (float y = -padding; y <= yLimit+padding; y += interval) {
 		tempx = (y-b)/m;
 		if (tempx >= -padding && tempx <= xLimit + padding) {
 			[distortedPoints addObject:[NSValue valueWithPoint:[self.toVideoClip.calibration distortPoint:NSMakePoint(tempx,y)]]];	// regular intervals in the y direction
+			//[distortedPointsTEMP addObject:[NSValue valueWithPoint:NSMakePoint(tempx,y)]];	// regular intervals in the y direction
 		}
 	}
+
+	// All the janky stuff disappears if I just return the straight lines and don't do undistortion, so it's coming from there somehow...
+	// and it seems like the problem is some points don't get undistorted?
+	// The seemingly straight liens the oddballs get mapped to aren't the same ones they'd be at if they weren't distorted. Something else is happening.
+
+	// The janky bits are comign from both the x and y-sourced grids
+	
+
+	// Changing the interval to a low value (from 1 to 3) makes the janky stuff go away, and it gradually comes back as the interval grows... why?
+	
 	
 	// sort them by x coordinate
 	[distortedPoints sortUsingComparator:(NSComparator)^(id obj1, id obj2){
@@ -109,6 +121,9 @@
 		}
 		return result;
 	}];
+
+
+	
 	
 	// create and return the bezierpath
 	NSPoint distortedPoint,overlayPoint;
@@ -128,6 +143,12 @@
 			numSegments += 1;
 		}
 	}
+	
+	
+	
+	
+	
+	
 	if (numSegments > 0) {
 		return hintLinePath;
 	} else {

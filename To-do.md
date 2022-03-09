@@ -4,7 +4,6 @@
 
 * Portraits need to be completely redone
 * Left and right aren't always synced perfectly after play/pause with arrow keys
-* Glitchy hint lines
 
 ## Minor debugging
 
@@ -25,6 +24,7 @@ allow synchronizing. Need to uncheck that setting to work normally with 2 clips.
 
 ## Feature improvements
 
+* Improve initial window layout
 * Add a preset for 10 % size for 4K videos on smaller screens.
 * Add "random bright color" or "random dark color" options for object creation
 
