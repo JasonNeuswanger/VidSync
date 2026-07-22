@@ -39,7 +39,7 @@
 			[totalString appendString:[point spreadsheetFormatted3DPoint:@"\t"]];
 		}
 		if (![totalString isEqualToString:@""]) {	// if there are some connecting lines to paste
-			NSString *titleString = [NSString stringWithFormat:@"%@ 3D Points\n%@\t%@\t%@\t%@\t%@\t%@\t%@\t%@\t%@\t%@\t%@\n",
+			NSString *titleString = [NSString stringWithFormat:@"%@ 3D Points\n%@\t%@\t%@\t%@\t%@\t%@\t%@\t%@\t%@\t%@\t%@\t%@\t%@\n",
 								self.project.name,
 								@"Object(s)",
 								@"Event",
@@ -51,15 +51,18 @@
 								@"PLD Error",
 								@"Re-projection Error",
 								@"Nearest Camera Distance",
-								@"Screen coordinates (may be multiple columns)"
+								@"Point Index",
+								@"Event Notes",
+								@"Screen Coordinates"
 								];
 			NSPasteboard *pb = [NSPasteboard generalPasteboard];
 			[pb declareTypes:[NSArray arrayWithObjects:NSPasteboardTypeString, nil] owner:self];
 			[pb setString:[titleString stringByAppendingString:totalString] forType:NSPasteboardTypeString];
 		}
+	} else {
+		[UtilityFunctions InformUser:@"There are no 3D points yet, so you can't export them." withTitle:@"No points."];
+		if (fetchError != nil) [self presentError:fetchError];
 	}
-	[UtilityFunctions InformUser:@"There are no 3D points yet, so you can't export them." withTitle:@"No points."];
-	if (fetchError != nil) [self presentError:fetchError];
 }
 
 - (IBAction) exportCSVFile:(id)sender
@@ -74,7 +77,7 @@
 			[totalString appendString:[point spreadsheetFormatted3DPoint:@","]];
 		}
 		if (![totalString isEqualToString:@""]) {	// if there are some connecting lines to paste
-			NSString *titleString = [NSString stringWithFormat:@"All measured points in VidSync project %@\n%@,%@,%@,%@,%@,%@,%@,%@,%@,%@,%@\n",
+			NSString *titleString = [NSString stringWithFormat:@"All measured points in VidSync project %@\n%@,%@,%@,%@,%@,%@,%@,%@,%@,%@,%@,%@,%@\n",
 								self.project.name,
 								@"Object(s)",
 								@"Event",
@@ -86,7 +89,9 @@
 								@"PLD Error",
 								@"Re-projection Error",
 								@"Nearest Camera Distance",
-								@"Screen coordinates (may be multiple columns)"
+								@"Point Index",
+								@"Event Notes",
+								@"Screen Coordinates"
 								];
 			[totalString insertString:titleString atIndex:0];
 			NSError *error;

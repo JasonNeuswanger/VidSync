@@ -382,7 +382,7 @@ NSPoint project2DPoint(NSPoint pt, double projectionMatrix[9])
 	if ([self.trackedEvent.name isEqualToString:@""] || self.trackedEvent.name == nil) {
 		eventString = [NSString stringWithFormat:@"%@ %@",self.trackedEvent.type.name,self.trackedEvent.index];
 	} else {
-		eventString = [NSString stringWithFormat:@"%@ %@ (%@) (Notes: %@)",self.trackedEvent.type.name,self.trackedEvent.index,self.trackedEvent.name,self.trackedEvent.notes];
+		eventString = [NSString stringWithFormat:@"%@ %@ (%@)",self.trackedEvent.type.name,self.trackedEvent.index,self.trackedEvent.name];
 	}
 	
 	NSMutableString *screenCoordsString = [NSMutableString stringWithString:@""];
@@ -391,7 +391,14 @@ NSPoint project2DPoint(NSPoint pt, double projectionMatrix[9])
 		for (VSEventScreenPoint *point in self.screenPoints) [screenCoordsString appendString:[point spreadsheetFormattedScreenPoint]];
 	}
 	
-	return [NSString stringWithFormat:@"%@%@%@%@%@%@%f%@%f%@%f%@%f%@%f%@%f%@%f%@\n",
+	NSString *eventNotesString;
+	if ([self.trackedEvent.notes isEqualToString:@""] || self.trackedEvent.notes == nil) {
+		eventNotesString = @"";
+	} else {
+		eventNotesString = self.trackedEvent.notes;
+	}
+	
+	return [NSString stringWithFormat:@"%@%@%@%@%@%@%f%@%f%@%f%@%f%@%f%@%f%@%f%@%@%@%@%@\n",
 		   objectsString,separator,
 		   eventString,separator,
 		   self.timecode,separator,
@@ -401,7 +408,9 @@ NSPoint project2DPoint(NSPoint pt, double projectionMatrix[9])
 		   [[self worldZ] floatValue],separator,
 		   [[self meanPLD] floatValue],separator,
 		   [[self reprojectionErrorNorm] floatValue],separator,
-		   [[self nearestCameraDistance] floatValue],
+		   [[self nearestCameraDistance] floatValue],separator,
+		   self.index,separator,
+		   eventNotesString,
 		   screenCoordsString
 		   ];
 }

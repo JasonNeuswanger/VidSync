@@ -389,7 +389,7 @@ static void *AVSPPlayerCurrentTimeContext = &AVSPPlayerCurrentTimeContext;
 					objectsTableSelectionChangeNotificationCascadeEnabled = YES;
 				}
 				// the problem is if I disable the notification, they won't scroll and stuff... I just need to tell them not to trigger notifications on their own
-				
+				 
 				[objectSynonymizeController rearrangeObjects];
 				[objectsPortraitsArrayController refreshImageBrowserView];
 				
