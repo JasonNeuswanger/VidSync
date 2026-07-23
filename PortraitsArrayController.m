@@ -1,4 +1,4 @@
-/*********************************************************************************                                                                       
+/*********************************************************************************
  * The MIT License (MIT)
  *
  * Copyright (c) 2009-2021 Jason Neuswanger
@@ -25,9 +25,43 @@
 
 #import "PortraitsArrayController.h"
 
-// This is the controller for the portraits of a single fish.
-
 @implementation PortraitsArrayController
+
+static NSCollectionViewFlowLayout *makeDefaultPortraitLayout(void) {
+    NSCollectionViewFlowLayout *layout = [[NSCollectionViewFlowLayout alloc] init];
+    layout.itemSize = NSMakeSize(180, 130);
+    layout.minimumInteritemSpacing = 4.0;
+    layout.minimumLineSpacing = 4.0;
+    layout.sectionInset = NSEdgeInsetsMake(4, 4, 4, 4);
+    return layout;
+}
+
+- (void) awakeFromNib
+{
+    if (portraitBrowserView != nil) {
+        if (portraitBrowserView.collectionViewLayout == nil) {
+            portraitBrowserView.collectionViewLayout = makeDefaultPortraitLayout();
+        }
+        [portraitBrowserView registerClass:[PortraitBrowserCell class] forItemWithIdentifier:@"PortraitBrowserCell"];
+        portraitBrowserView.dataSource = self;
+        [self addObserver:self forKeyPath:@"arrangedObjects" options:0 context:NULL];
+    }
+    if (otherPortraitBrowserView != nil) {
+        if (otherPortraitBrowserView.collectionViewLayout == nil) {
+            otherPortraitBrowserView.collectionViewLayout = makeDefaultPortraitLayout();
+        }
+        [otherPortraitBrowserView registerClass:[PortraitBrowserCell class] forItemWithIdentifier:@"PortraitBrowserCell"];
+    }
+}
+
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
+{
+    if ([keyPath isEqualToString:@"arrangedObjects"]) {
+        [self refreshCollectionView];
+    } else {
+        [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
+    }
+}
 
 - (void) removeObjectAtArrangedObjectIndex:(NSUInteger)index    // I had to override the superclass's version of this function because for some reason it didn't remove objects from the context
 {
@@ -52,34 +86,21 @@
 
 - (NSInteger)collectionView:(NSCollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
 {
-	return (section == 0) ? [[self arrangedObjects] count] : 0;
+	return (section == 0) ? (NSInteger)[[self arrangedObjects] count] : 0;
 }
 
 - (NSCollectionViewItem *)collectionView:(NSCollectionView *)collectionView itemForRepresentedObjectAtIndexPath:(NSIndexPath *)indexPath
 {
-	return [[self arrangedObjects] objectAtIndex:[indexPath item]];
+    PortraitBrowserCell *item = (PortraitBrowserCell *)[collectionView makeItemWithIdentifier:@"PortraitBrowserCell" forIndexPath:indexPath];
+    item.representedObject = [[self arrangedObjects] objectAtIndex:[indexPath item]];
+    return item;
 }
-
-//#pragma mark
-//#pragma mark Methods to conform to the IKImageBrowserDataSource informal protocol
-//
-//- (NSUInteger) numberOfItemsInImageBrowser:(IKImageBrowserView *)view
-//{
-//	return [[self arrangedObjects] count];
-//}
-//
-//- (id) imageBrowser:(IKImageBrowserView *) view itemAtIndex:(NSUInteger)index
-//{
-//	return [[self arrangedObjects] objectAtIndex:index];
-//}
-//
-//- (void) imageBrowser:(IKImageBrowserView *) view removeItemsAtIndexes:(NSIndexSet *)indexes
-//{
-//	[self removeObjectsAtArrangedObjectIndexes:indexes];
-//}
 
 - (void) dealloc
 {
+    @try {
+        [self removeObserver:self forKeyPath:@"arrangedObjects"];
+    } @catch (id exception) {}
 }
 
 @end

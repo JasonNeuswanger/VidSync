@@ -1,4 +1,4 @@
-/*********************************************************************************                                                                       
+/*********************************************************************************
  * The MIT License (MIT)
  *
  * Copyright (c) 2009-2021 Jason Neuswanger
@@ -29,11 +29,43 @@
 
 - (void) awakeFromNib
 {
+    [super awakeFromNib];
+    if (self.collectionViewLayout == nil) {
+        NSCollectionViewFlowLayout *layout = [[NSCollectionViewFlowLayout alloc] init];
+        layout.itemSize = NSMakeSize(180, 130);
+        layout.minimumInteritemSpacing = 4.0;
+        layout.minimumLineSpacing = 4.0;
+        layout.sectionInset = NSEdgeInsetsMake(4, 4, 4, 4);
+        self.collectionViewLayout = layout;
+    }
+    if (self.enclosingScrollView && self.enclosingScrollView.documentView != self) {
+        self.enclosingScrollView.documentView = self;
+    }
 }
 
-- (void)drawRect:(NSRect)dirtyRect
+- (void)mouseDown:(NSEvent *)event
 {
-	[super drawRect:dirtyRect];
+    if (event.clickCount == 2) {
+        NSPoint point = [self convertPoint:event.locationInWindow fromView:nil];
+        NSIndexPath *indexPath = [self indexPathForItemAtPoint:point];
+        if (indexPath) {
+            NSCollectionViewItem *item = [self itemAtIndexPath:indexPath];
+            if (item && [self.delegate respondsToSelector:@selector(portraitBrowserView:didDoubleClickPortrait:)]) {
+                [(id<PortraitBrowserViewDelegate>)self.delegate portraitBrowserView:self
+                                                              didDoubleClickPortrait:(VSTrackedObjectPortrait *)item.representedObject];
+            }
+        }
+    }
+    [super mouseDown:event];
+}
+
+- (void)setZoomFactor:(CGFloat)zoom
+{
+    NSCollectionViewFlowLayout *layout = (NSCollectionViewFlowLayout *)self.collectionViewLayout;
+    if ([layout isKindOfClass:[NSCollectionViewFlowLayout class]]) {
+        layout.itemSize = NSMakeSize(180.0 * zoom, 130.0 * zoom);
+        [self reloadData];
+    }
 }
 
 @end

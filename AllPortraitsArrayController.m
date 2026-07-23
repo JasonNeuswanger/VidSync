@@ -1,4 +1,4 @@
-/*********************************************************************************                                                                       
+/*********************************************************************************
  * The MIT License (MIT)
  *
  * Copyright (c) 2009-2021 Jason Neuswanger
@@ -28,55 +28,17 @@
 @implementation AllPortraitsArrayController
 
 - (void) awakeFromNib {
-	// initialization (if any) to execute before the objects are fetched
 	[self setEntityName:@"VSTrackedObjectPortrait"];
 	[self setSortDescriptors:@[[NSSortDescriptor sortDescriptorWithKey:@"trackedObject.index" ascending:YES]]];
+	[super awakeFromNib];  // registers cell class, sets dataSource, adds KVO observer for arrangedObjects
 	NSError *error;
-	[self fetchWithRequest:nil merge:NO error:&error];
+	[self fetchWithRequest:nil merge:NO error:&error];  // populates arrangedObjects → KVO fires → reloadData
 	if (error != nil) [NSApp presentError:error];
-	[portraitBrowserView reloadData];
 }
 
-#pragma mark
-#pragma mark NSCollectionViewDataSource protocol methods
-
-- (NSInteger)numberOfSectionsInCollectionView:(NSCollectionView *)collectionView {
-	return [[self objectPortraitData] count];
-}
-
-- (NSInteger)collectionView:(NSCollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
-{
-	return (section == 0) ? [[self arrangedObjects] count] : 0; // NEEDS UPDATING.. ALLOF THESE NEEDTO USE collectionView param!!
-}
-
-- (NSCollectionViewItem *)collectionView:(NSCollectionView *)collectionView itemForRepresentedObjectAtIndexPath:(NSIndexPath *)indexPath
-{
-	return [[self arrangedObjects] objectAtIndex:[indexPath item]];
-}
-
-
-//#pragma mark
-//#pragma mark IKImageBrowserDataSource informal protocol methods for grouping
-//
-//- (NSUInteger) numberOfGroupsInImageBrowser:(IKImageBrowserView *) aBrowser
-//{
-//	return [[self objectPortraitData] count];
-//}
-//
-//- (NSDictionary *) imageBrowser:(IKImageBrowserView *) aBrowser groupAtIndex:(NSUInteger) index
-//{
-//
-//	NSArray *objectPortraitData = [self objectPortraitData];
-//
-//	return @{IKImageBrowserGroupRangeKey: [[objectPortraitData objectAtIndex:index] valueForKey:@"portraitIndexRange"],
-//		    IKImageBrowserGroupBackgroundColorKey: [NSColor redColor],
-//		    IKImageBrowserGroupTitleKey: [[objectPortraitData objectAtIndex:index] valueForKey:@"title"],
-//		    IKImageBrowserGroupStyleKey: [NSNumber numberWithInt:IKGroupDisclosureStyle]}; // disclosure vs bezel
-//}
-
+// Returns portrait data grouped by tracked object, for potential future use in sectioned display
 - (NSArray *) objectPortraitData
 {
-	// First, to tally the counts, I create an NSDictionary with the object index as the key and its portrait count as the value
 	NSMutableDictionary *portraitCountsDict = [NSMutableDictionary dictionary];
 	NSUInteger currentPortraitIndex = 0;
 	for (VSTrackedObjectPortrait *portrait in [self arrangedObjects]) {
@@ -95,13 +57,11 @@
 		}
 		currentPortraitIndex += 1;
 	}
-	// To put the data back in order by object index, I convert the dictionary of dictionaries into an array of dictionaries
 	NSMutableArray *portraitCountsArray = [NSMutableArray array];
 	[portraitCountsDict enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
 		NSRange indexRange = {(NSUInteger) [[obj objectForKey:@"start"] intValue], (NSUInteger) [[obj objectForKey:@"length"] intValue]};
 		[portraitCountsArray addObject:@{ @"objectIndex" : key, @"portraitIndexRange" : [NSValue valueWithRange:indexRange], @"title" : [obj objectForKey:@"title"]}];
 	}];
-	// Then I return a sorted version of the array
 	return [portraitCountsArray sortedArrayUsingDescriptors:@[[NSSortDescriptor sortDescriptorWithKey:@"objectIndex" ascending:YES]]];
 }
 
