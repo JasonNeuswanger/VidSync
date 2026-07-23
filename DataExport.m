@@ -98,7 +98,7 @@
 			if ([totalString writeToFile:[self fileNameForExportedFile:@".csv"] atomically:YES encoding:NSUTF8StringEncoding error:&error]) {
 				[shutterClick play];
 			} else {
-				[UtilityFunctions InformUser:@"This project's data could not be exported to an XML file for some reason." withTitle:@"Error writing file"];
+				[UtilityFunctions InformUser:@"This project's data could not be exported to a CSV file for some reason." withTitle:@"Error writing file"];
 			}
 		}
 	}

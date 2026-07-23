@@ -217,11 +217,14 @@ NSPoint project2DPoint(NSPoint pt, double projectionMatrix[9])
 			gsl_multimin_fminimizer_free(s);
 			free(params.camPositions);
 			free(params.undistortedScreenPoints);
+			free(params.axesHorizontal);
+			free(params.axesVertical);
 			for (int i = 0; i < numLines; i++) {
 				free(params.quadratFrontToScreenFCMMatrices[i]);
 				free(params.frontFacePlanes[i]);
 			}
 			free(params.quadratFrontToScreenFCMMatrices);
+			free(params.frontFacePlanes);
 			// Calculate the hint lines
 			for (VSEventScreenPoint *screenPoint in calibratedScreenPoints) [screenPoint calculateHintLines];
 			// Calculate the new Mean PLD (point-line distance)        VSLine3D lines[numLines];
@@ -320,7 +323,7 @@ NSPoint project2DPoint(NSPoint pt, double projectionMatrix[9])
 
 - (BOOL) has3Dcoords
 {
-	return ([self.worldX floatValue] != 0.0 || [self.worldX floatValue] != 0.0 || [self.worldX floatValue] != 0.0);
+	return ([self.worldX floatValue] != 0.0 || [self.worldY floatValue] != 0.0 || [self.worldZ floatValue] != 0.0);
 }
 
 - (VSEventScreenPoint *) screenPointForVideoClip:(VSVideoClip *)videoClip;

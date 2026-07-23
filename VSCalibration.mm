@@ -970,7 +970,7 @@ int refractionRootFunc_f(const gsl_vector* x, void* params, gsl_vector* f)
 
 - (BOOL) backIsCalibrated
 {
-	return (self.matrixScreenToQuadratBack != nil && self.matrixQuadratFrontToScreen != nil);
+	return (self.matrixScreenToQuadratBack != nil && self.matrixQuadratBackToScreen != nil);
 }
 
 - (void) calculatePixelResiduals:(NSString *)whichSurface
@@ -1207,7 +1207,7 @@ int refractionRootFunc_f(const gsl_vector* x, void* params, gsl_vector* f)
 	RefractionSolverParams p;
 	p.axisHorizontal = [self.axisHorizontal characterAtIndex:0];
 	p.axisVertical   = [self.axisVertical characterAtIndex:0];
-	p.frontSurfaceCoord = [self.tofile doubleValue];
+	p.frontSurfaceCoord = [self.planeCoordFront doubleValue];
 	p.backSurfaceCoord = p.frontSurfaceCoord + frontSurfaceThickness;
 	p.camPosition = VSMakePoint3D([self.cameraX doubleValue],[self.cameraY doubleValue],[self.cameraZ doubleValue]);
 	p.n1 = [self.mediumRefractiveIndex doubleValue];  // 1.3364;  // index of refraction of the medium between the quadrat planes (typically water)

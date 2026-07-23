@@ -112,7 +112,7 @@
 	// sort them by x coordinate
 	[distortedPoints sortUsingComparator:(NSComparator)^(id obj1, id obj2){
 		NSComparisonResult result;
-		if ([obj1 pointValue].x > [obj2 pointValue].x) {
+		if ([obj1 pointValue].x < [obj2 pointValue].x) {
 			result = NSOrderedAscending;
 		} else if ([obj1 pointValue].x == [obj2 pointValue].x) {
 			result = NSOrderedSame;

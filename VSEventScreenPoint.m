@@ -84,7 +84,7 @@ NSPoint quadratCoords2Dfrom3D(const VSPoint3D *quadratCoords3D, const char axisH
 {
 	[self addObserver:self forKeyPath:@"point.timecode" options:0 context:NULL];
 	[self updateVisibleTimeRange];
-	[super awakeFromFetch];
+	[super awakeFromInsert];
 }
 
 - (void) observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {

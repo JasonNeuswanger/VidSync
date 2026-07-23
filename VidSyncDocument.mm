@@ -93,7 +93,7 @@ static void *AVSPPlayerCurrentTimeContext = &AVSPPlayerCurrentTimeContext;
 		bookmarkIsSet1 = NO;
 		bookmarkIsSet2 = NO;
 		objectsTableSelectionChangeNotificationCascadeEnabled = YES;
-		objectsTableSelectionChangeNotificationCascadeEnabled = YES;
+		eventsTableSelectionChangeNotificationCascadeEnabled = YES;
 		
 		decimalFormatter = [[NSNumberFormatter alloc] init];
 		[decimalFormatter setFormatterBehavior:NSNumberFormatterBehavior10_4];
@@ -391,7 +391,7 @@ static void *AVSPPlayerCurrentTimeContext = &AVSPPlayerCurrentTimeContext;
 				// the problem is if I disable the notification, they won't scroll and stuff... I just need to tell them not to trigger notifications on their own
 				 
 				[objectSynonymizeController rearrangeObjects];
-				[objectsPortraitsArrayController refreshImageBrowserView];
+				[objectsPortraitsArrayController refreshCollectionView];
 				
 			}
 			
@@ -613,17 +613,13 @@ static void *AVSPPlayerCurrentTimeContext = &AVSPPlayerCurrentTimeContext;
 	return portraitSubject;
 }
 
-//// Delegate method for PortraitBrowserView, following IKImageBrowserDelegate informal protocol)
-//
-//// Double-clicking on a portrait takes the video to the time at which the portrait was created, and brings that window to the front
-//
-//- (void)imageBrowser:(IKImageBrowserView *)aBrowser cellWasDoubleClickedAtIndex:(NSUInteger)index
-//{
-//    VSTrackedObjectPortrait *portrait = (VSTrackedObjectPortrait *) [[[aBrowser dataSource] arrangedObjects] objectAtIndex:index];
-//    [self goToMasterTime:[UtilityFunctions CMTimeFromString:portrait.timecode]];
-//    portrait.sourceVideoClip.windowController.shouldShowPortraitFrame = portrait.frameString;
-//    [[portrait.sourceVideoClip.windowController window] makeKeyAndOrderFront:self];
-//}
+// PortraitBrowserViewDelegate — double-clicking a portrait navigates to the frame it was captured from
+- (void)portraitBrowserView:(NSCollectionView *)browserView didDoubleClickPortrait:(VSTrackedObjectPortrait *)portrait
+{
+    [self goToMasterTime:[UtilityFunctions CMTimeFromString:portrait.timecode]];
+    portrait.sourceVideoClip.windowController.shouldShowPortraitFrame = portrait.frameString;
+    [[portrait.sourceVideoClip.windowController window] makeKeyAndOrderFront:self];
+}
 
 #pragma mark
 #pragma mark Help

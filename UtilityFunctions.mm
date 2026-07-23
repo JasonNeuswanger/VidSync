@@ -67,7 +67,6 @@
 	} else {
 		[alert setMessageText:title];
 	}
-	[alert setMessageText:@"Important Information"];
 	[alert setInformativeText:userMessage];
 	[alert addButtonWithTitle:@"Ok"];
 	[alert setAlertStyle:NSAlertStyleInformational];
