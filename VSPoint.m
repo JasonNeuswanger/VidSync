@@ -426,15 +426,15 @@ NSPoint project2DPoint(NSPoint pt, double projectionMatrix[9])
 	time = CMTimeGetSeconds([UtilityFunctions CMTimeFromString:self.timecode]);
 	
 	NSNumberFormatter *nf = self.trackedEvent.type.project.document.decimalFormatter;
-	[mainElement addAttribute:[NSXMLNode attributeWithName:@"index" stringValue:[self.index stringValue]]];
-	[mainElement addAttribute:[NSXMLNode attributeWithName:@"x" stringValue:[nf stringFromNumber:self.worldX]]];
-	[mainElement addAttribute:[NSXMLNode attributeWithName:@"y" stringValue:[nf stringFromNumber:self.worldY]]];
-	[mainElement addAttribute:[NSXMLNode attributeWithName:@"z" stringValue:[nf stringFromNumber:self.worldZ]]];
-	[mainElement addAttribute:[NSXMLNode attributeWithName:@"timecode" stringValue:self.timecode]];
-	[mainElement addAttribute:[NSXMLNode attributeWithName:@"time" stringValue:[nf stringFromNumber:[NSNumber numberWithDouble:time]]]];
-	[mainElement addAttribute:[NSXMLNode attributeWithName:@"meanPLD" stringValue:[nf stringFromNumber:self.meanPLD]]];
-	[mainElement addAttribute:[NSXMLNode attributeWithName:@"reprojectionErrorNorm" stringValue:[nf stringFromNumber:self.reprojectionErrorNorm]]];
-	[mainElement addAttribute:[NSXMLNode attributeWithName:@"nearestCameraDistance" stringValue:[nf stringFromNumber:self.nearestCameraDistance]]];
+	[mainElement addAttribute:[NSXMLNode attributeWithName:@"index" stringValue:[self.index stringValue] ?: @""]];
+	[mainElement addAttribute:[NSXMLNode attributeWithName:@"x" stringValue:[nf stringFromNumber:self.worldX] ?: @""]];
+	[mainElement addAttribute:[NSXMLNode attributeWithName:@"y" stringValue:[nf stringFromNumber:self.worldY] ?: @""]];
+	[mainElement addAttribute:[NSXMLNode attributeWithName:@"z" stringValue:[nf stringFromNumber:self.worldZ] ?: @""]];
+	[mainElement addAttribute:[NSXMLNode attributeWithName:@"timecode" stringValue:self.timecode ?: @""]];
+	[mainElement addAttribute:[NSXMLNode attributeWithName:@"time" stringValue:[nf stringFromNumber:[NSNumber numberWithDouble:time]] ?: @""]];
+	[mainElement addAttribute:[NSXMLNode attributeWithName:@"meanPLD" stringValue:[nf stringFromNumber:self.meanPLD] ?: @""]];
+	[mainElement addAttribute:[NSXMLNode attributeWithName:@"reprojectionErrorNorm" stringValue:[nf stringFromNumber:self.reprojectionErrorNorm] ?: @""]];
+	[mainElement addAttribute:[NSXMLNode attributeWithName:@"nearestCameraDistance" stringValue:[nf stringFromNumber:self.nearestCameraDistance] ?: @""]];
 	if (includeScreenCoords) for (VSEventScreenPoint *point in self.screenPoints) [mainElement addChild:[point representationAsXMLNode]];
 	return mainElement;
 }

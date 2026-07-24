@@ -138,7 +138,7 @@
 - (NSXMLNode *) representationAsXMLNode	// partial implementation just to get distortion lines ASAP, although the idea of flattening the calibration with the clip in the XML may remain
 {
 	NSXMLElement *mainElement = [[NSXMLElement alloc] initWithName:@"videoClip"];
-	[mainElement addAttribute:[NSXMLNode attributeWithName:@"name" stringValue:self.clipName]];
+	[mainElement addAttribute:[NSXMLNode attributeWithName:@"name" stringValue:self.clipName ?: @""]];
 	[mainElement addChild:[self.calibration representationAsXMLNode]];
 	for (VSAnnotation *annotation in self.annotations) [mainElement addChild:[annotation representationAsXMLNode]];
 	return mainElement;

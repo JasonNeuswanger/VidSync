@@ -744,6 +744,7 @@ int refractionRootFunc_f(const gsl_vector* x, void* params, gsl_vector* f)
 		VSCalibrationPoint *newPoint;
 		for (VSCalibrationPoint *pointToDelete in self.pointsFront) [self.managedObjectContext deleteObject:pointToDelete];		// remove the old points if there are any
 		for (NSArray *pointArray in [fullCalibration objectAtIndex:6]) {	// Loop through the array for the front calibration points, and create them
+			if (![pointArray isKindOfClass:[NSArray class]] || [pointArray count] < 5) continue;
 			newPoint = [NSEntityDescription insertNewObjectForEntityForName:@"VSCalibrationPointFront" inManagedObjectContext:[self managedObjectContext]];
 			newPoint.calibration = self;
 			newPoint.screenX = [pointArray objectAtIndex:0];
@@ -754,6 +755,7 @@ int refractionRootFunc_f(const gsl_vector* x, void* params, gsl_vector* f)
 		}
 		for (VSCalibrationPoint *pointToDelete in self.pointsBack) [self.managedObjectContext deleteObject:pointToDelete];		// remove the old points if there are any
 		for (NSArray *pointArray in [fullCalibration objectAtIndex:7]) {	// Loop through the array for the back calibration points, and create them
+			if (![pointArray isKindOfClass:[NSArray class]] || [pointArray count] < 5) continue;
 			newPoint = [NSEntityDescription insertNewObjectForEntityForName:@"VSCalibrationPointBack" inManagedObjectContext:[self managedObjectContext]];
 			newPoint.calibration = self;
 			newPoint.screenX = [pointArray objectAtIndex:0];
@@ -850,7 +852,7 @@ int refractionRootFunc_f(const gsl_vector* x, void* params, gsl_vector* f)
 			self.distortionK1 = [fullDistortion objectAtIndex:2];
 			self.distortionK2 = [fullDistortion objectAtIndex:3];
 			self.distortionK3 = [fullDistortion objectAtIndex:4];
-			if (numEntries > 9) {
+			if (numEntries > 12) {
 				self.distortionK4 = [fullDistortion objectAtIndex:5];
 				self.distortionK5 = [fullDistortion objectAtIndex:6];
 				self.distortionK6 = [fullDistortion objectAtIndex:7];
@@ -1215,6 +1217,7 @@ int refractionRootFunc_f(const gsl_vector* x, void* params, gsl_vector* f)
 	double frontSurfaceThickness = [self.frontQuadratSurfaceThickness doubleValue]; // 0.009525;
 	
 	RefractionSolverParams p;
+	if ([self.axisHorizontal length] == 0 || [self.axisVertical length] == 0) return;
 	p.axisHorizontal = [self.axisHorizontal characterAtIndex:0];
 	p.axisVertical   = [self.axisVertical characterAtIndex:0];
 	p.frontSurfaceCoord = [self.planeCoordFront doubleValue];
