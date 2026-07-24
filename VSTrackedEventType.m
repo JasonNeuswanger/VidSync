@@ -115,7 +115,6 @@
 	}
 	if (!overwritingOldType) {
 		newType = [NSEntityDescription insertNewObjectForEntityForName:@"VSTrackedEventType" inManagedObjectContext:moc];
-		[newType addObserver:newType forKeyPath:@"name" options:NSKeyValueObservingOptionNew context:NULL];
 		newType.project = project;
 		newType.name = [eventTypeDictionary objectForKey:@"name"];
 		newType.maxNumPoints = [eventTypeDictionary objectForKey:@"maxNumPoints"];

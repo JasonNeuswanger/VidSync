@@ -69,28 +69,29 @@
 
 - (IBAction)capturePortraits:(id)sender
 {
-	//    NSImage *portraitImage;
-	//    if ([[allPortraitsArrayController arrangedObjects] count] > 0) {
-	//
-	//        NSFileManager *fm = [NSFileManager defaultManager];
-	//        NSString *fileSafeProjectName = [[self.project.name stringByReplacingOccurrencesOfString:@":" withString:@"-"] stringByReplacingOccurrencesOfString:@"/" withString:@"+"];
-	//        NSString *portraitsFolder = [NSString stringWithFormat:@"%@/%@ Portraits",self.project.capturePathForStills,fileSafeProjectName];
-	//        if (![fm fileExistsAtPath:portraitsFolder]) [fm createDirectoryAtPath:portraitsFolder withIntermediateDirectories:YES attributes:nil error:NULL];
-	//        for (VSTrackedObjectPortrait *portrait in [allPortraitsArrayController arrangedObjects]) {
-	//            portraitImage = (NSImage *) [portrait imageRepresentation];
-	//            if ([portraitImage isValid]) {
-	//                NSMutableString *filePath = [NSMutableString new];
-	//                [filePath appendString:self.project.capturePathForStills];
-	//                NSString *nameString = ([portrait.trackedObject.name isEqualToString:@""]) ? @"" : [NSString stringWithFormat:@" (%@)",portrait.trackedObject.name];
-	//                NSString *fileSafeTimecode = [[portrait.timecode stringByReplacingOccurrencesOfString:@":" withString:@"-"] stringByReplacingOccurrencesOfString:@"/" withString:@"+"];
-	//                [filePath appendFormat:@"/%@ Portraits/%@ %@%@ from %@ (%@) at %@.jpg",fileSafeProjectName,portrait.trackedObject.type.name,portrait.trackedObject.index,nameString,fileSafeProjectName,portrait.sourceVideoClip.clipName,fileSafeTimecode];
-	//                [self saveNSImageAsJpeg:portraitImage destination:filePath overwriteWarnings:NO];
-	//            }
-	//        }
-	//        [shutterClick play];
-	//    } else {
-	//        NSRunAlertPanel(@"There are no portraits yet",@"You have to create portraits of objects before you can export them.",@"Ok",nil,nil);
-	//    }
+    if ([[allPortraitsArrayController arrangedObjects] count] > 0) {
+        NSFileManager *fm = [NSFileManager defaultManager];
+        NSString *fileSafeProjectName = [[self.project.name stringByReplacingOccurrencesOfString:@":" withString:@"-"] stringByReplacingOccurrencesOfString:@"/" withString:@"+"];
+        NSString *portraitsFolder = [NSString stringWithFormat:@"%@/%@ Portraits",self.project.capturePathForStills,fileSafeProjectName];
+        if (![fm fileExistsAtPath:portraitsFolder]) [fm createDirectoryAtPath:portraitsFolder withIntermediateDirectories:YES attributes:nil error:NULL];
+        for (VSTrackedObjectPortrait *portrait in [allPortraitsArrayController arrangedObjects]) {
+            NSImage *portraitImage = [portrait image];
+            if ([portraitImage isValid]) {
+                NSMutableString *filePath = [NSMutableString new];
+                [filePath appendString:self.project.capturePathForStills];
+                NSString *nameString = ([portrait.trackedObject.name isEqualToString:@""]) ? @"" : [NSString stringWithFormat:@" (%@)",portrait.trackedObject.name];
+                NSString *fileSafeTimecode = [[portrait.timecode stringByReplacingOccurrencesOfString:@":" withString:@"-"] stringByReplacingOccurrencesOfString:@"/" withString:@"+"];
+                [filePath appendFormat:@"/%@ Portraits/%@ %@%@ from %@ (%@) at %@.jpg",fileSafeProjectName,portrait.trackedObject.type.name,portrait.trackedObject.index,nameString,fileSafeProjectName,portrait.sourceVideoClip.clipName,fileSafeTimecode];
+                [self saveNSImageAsJpeg:portraitImage destination:filePath overwriteWarnings:NO];
+            }
+        }
+        [shutterClick play];
+    } else {
+        NSAlert *alert = [NSAlert new];
+        alert.messageText = @"There are no portraits yet";
+        alert.informativeText = @"You have to create portraits of objects before you can export them.";
+        [alert runModal];
+    }
 }
 
 - (IBAction)setVideoCaptureTime:(id)sender
@@ -146,7 +147,10 @@
 		capturePath = self.project.exportPathForData;
 		appendsProjectName = [[[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"createFolderForProjectExports"] boolValue];
 	}
-	if (appendsProjectName) capturePath = [capturePath stringByAppendingFormat:@"/%@",self.project.name];
+	if (appendsProjectName) {
+		NSString *fileSafeProjectName = [[self.project.name stringByReplacingOccurrencesOfString:@":" withString:@"-"] stringByReplacingOccurrencesOfString:@"/" withString:@"+"];
+		capturePath = [capturePath stringByAppendingFormat:@"/%@", fileSafeProjectName];
+	}
 	
 	NSFileManager *fm = [NSFileManager defaultManager];	// file manager to create video capture directory if it doesn't exist yet
 	if (![fm fileExistsAtPath:capturePath]) [fm createDirectoryAtPath:capturePath withIntermediateDirectories:YES attributes:nil error:NULL];
@@ -258,9 +262,9 @@
 			if (usePassthrough == YES) {
 				dispatch_async(dispatch_get_main_queue(), ^{
 					[videoCaptureProgressDescription setStringValue:@"Retrying..."];
+					if ([activeExportSessions containsObject:exportSession]) [activeExportSessions removeObject:exportSession];
+					[self captureWithoutOverlayFromVideoClip:videoClip usingPassthrough:NO];
 				});
-				if ([activeExportSessions containsObject:exportSession]) [activeExportSessions removeObject:exportSession];
-				[self captureWithoutOverlayFromVideoClip:videoClip usingPassthrough:NO];
 			} else {
 				dispatch_async(dispatch_get_main_queue(), ^{
 					[videoCaptureProgressDescription setStringValue:@"Error."];
@@ -273,15 +277,15 @@
 				[shutterClick play];
 			});
 		}
-		if ([activeExportSessions containsObject:exportSession]) [activeExportSessions removeObject:exportSession];
-		if ([activeExportSessions count] == 0) {
-			dispatch_async(dispatch_get_main_queue(), ^{
+		dispatch_async(dispatch_get_main_queue(), ^{
+			if ([activeExportSessions containsObject:exportSession]) [activeExportSessions removeObject:exportSession];
+			if ([activeExportSessions count] == 0) {
 				[videoCaptureProgressIndicator setHidden:YES];
 				[videoCaptureProgressDescription displayIfNeeded];
 				[exportProgressBarTimer invalidate];
-			});
-		}
-		exportSession = nil;
+			}
+			exportSession = nil;
+		});
 	};
 	[activeExportSessions addObject:exportSession];
 	[exportSession exportAsynchronouslyWithCompletionHandler:myCompletionHandler];
@@ -363,7 +367,7 @@
 	CVPixelBufferRef buffer = NULL;
 	
 	while (CMTimeCompare([self currentMasterTime],clipEndTime) <= 0) {
-		@autoreleasepool {  // this makes the CGImageRef returned from stillCGImagefromVSVideoClip be released after each iteration of the loop, so not all of them stored until the whole function ends
+		@autoreleasepool {  // drains ObjC objects (NSImages, NSErrors, etc.) created during each iteration; rawMovieImage (CF type) is released inside stillCGImageFromVSVideoClip itself
 			im = [self stillCGImageFromVSVideoClip:videoClip atMasterTime:[self currentMasterTime] showOverlay:YES];
 			
 			
@@ -639,17 +643,17 @@
 	CMTime movieTime = CMTimeSubtract(masterTime,offset);
 	CMTime actualCopiedTime;
 	
-	// Note: I'm not responsible for CGImageReleasing CGImageRefs unless I manully created them using some function like CGImageMaskCreate etc. If they come from some AVFoundation function or something they're autoreleased.
 	NSError *err;
 	CGImageRef rawMovieImage = [videoClip.windowController.assetImageGenerator copyCGImageAtTime:movieTime actualTime:&actualCopiedTime error:&err];
 	if (err != nil) [NSApp presentError:err];
-	
+
 	// Add the overlay if necessary
-	
+
 	if (showOverlay) {
 		NSImage *__strong overlayImage = [self currentOverlayImageFromVSVideoClip:videoClip];
 		NSImage *__strong resizedOverlayImage = [NSImage alloc];
 		returnImage = [returnImage initWithCGImage:rawMovieImage size:NSZeroSize];
+		CGImageRelease(rawMovieImage);  // NSImage now retains it; release the Create reference from copyCGImageAtTime
 		float overlayWidth = videoClip.windowController.overlayWidth;
 		float overlayHeight = videoClip.windowController.overlayHeight;
 		if (movieWidth == overlayWidth && movieHeight == overlayHeight) {		// if the overlay is already at the video size, just use it
@@ -665,7 +669,9 @@
 		[returnImage unlockFocus];
 		return [returnImage CGImageForProposedRect:&imageRect context:NULL hints:NULL];
 	} else {
-		return rawMovieImage;
+		returnImage = [[NSImage alloc] initWithCGImage:rawMovieImage size:NSZeroSize];
+		CGImageRelease(rawMovieImage);  // NSImage now retains it; release the Create reference from copyCGImageAtTime
+		return [returnImage CGImageForProposedRect:&imageRect context:NULL hints:NULL];
 	}
 }
 
@@ -706,6 +712,7 @@
 	BOOL separateClipsByFolder = [[[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"separateClipsByFolder"] boolValue];
 	BOOL createFolderForProject = [[[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"createFolderForProjectCaptures"] boolValue];
 	NSString *customText = [[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"capturedFileNameCustomText"];
+	NSString *fileSafeProjectName = [[self.project.name stringByReplacingOccurrencesOfString:@":" withString:@"-"] stringByReplacingOccurrencesOfString:@"/" withString:@"+"];
 	NSMutableString *filePath = [NSMutableString new];
 	NSString *timeString1 = nil;
 	if ([extension isEqualToString:@"jpg"]) {
@@ -715,11 +722,11 @@
 		[filePath appendString:self.project.capturePathForMovies];
 		timeString1 = [NSString stringWithFormat:@"%@ to %@", self.project.movieCaptureStartTime, self.project.movieCaptureEndTime];
 	}
-	if (createFolderForProject) [filePath appendString:[NSString stringWithFormat:@"/%@",self.project.name]];
+	if (createFolderForProject) [filePath appendString:[NSString stringWithFormat:@"/%@", fileSafeProjectName]];
 	if (separateClipsByFolder) [filePath appendString:[NSString stringWithFormat:@"/%@",videoClip.clipName]];
 	if (![fm fileExistsAtPath:filePath]) [fm createDirectoryAtPath:filePath withIntermediateDirectories:YES attributes:nil error:NULL];
 	[filePath appendString:@"/"];
-	if (includeProjectName) [filePath appendString:[NSString stringWithFormat:@"%@ - ",self.project.name]];
+	if (includeProjectName) [filePath appendString:[NSString stringWithFormat:@"%@ - ", fileSafeProjectName]];
 	if (includeMasterTimecode) {
 		NSString *timeString2 = [timeString1 stringByReplacingOccurrencesOfString:@":" withString:@"-"];
 		NSString *timeString3 = [timeString2 stringByReplacingOccurrencesOfString:@"/" withString:@"+"]; // : gets replaced by / in filenames

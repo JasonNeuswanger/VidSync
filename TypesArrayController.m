@@ -35,13 +35,11 @@
 		newType.name = [newTypeName stringValue];
 		newType.notes = [newTypeDescription stringValue];
 		[self addObject:newType];	// Adds the object type to the project
-		[newType addObserver:newType forKeyPath:@"name" options:NSKeyValueObservingOptionNew context:NULL];
 	} else {						// It's a new event type.
 		VSTrackedEventType *newType = [NSEntityDescription insertNewObjectForEntityForName:@"VSTrackedEventType" inManagedObjectContext:[self managedObjectContext]];	
 		newType.name = [newTypeName stringValue];
 		newType.notes = [newTypeDescription stringValue];
 		[self addObject:newType];	// Adds the event type to the project
-		[newType addObserver:newType forKeyPath:@"name" options:NSKeyValueObservingOptionNew context:NULL];
 	}
 	[self rearrangeObjects];
 	[inputPanel performClose:self];

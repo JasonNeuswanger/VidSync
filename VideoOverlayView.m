@@ -1189,6 +1189,7 @@
 	NSArray *uniqueVVals = [[NSOrderedSet orderedSetWithSet:allVVals] array];
 	NSArray *sortedUniqueHVals = [uniqueHVals sortedArrayUsingSelector:@selector(compare:)];
 	NSArray *sortedUniqueVVals = [uniqueVVals sortedArrayUsingSelector:@selector(compare:)];
+	if ([sortedUniqueHVals count] < 2 || [sortedUniqueVVals count] < 2) return outPathsArray;
 	float hGridSpacing = fabs([[sortedUniqueHVals objectAtIndex:1] floatValue] - [[sortedUniqueHVals objectAtIndex:0] floatValue]);
 	float vGridSpacing = fabs([[sortedUniqueVVals objectAtIndex:1] floatValue] - [[sortedUniqueVVals objectAtIndex:0] floatValue]);
 	float gridSpacing = fmin(hGridSpacing,vGridSpacing);//(hGridSpacing > vGridSpacing) ? hGridSpacing : vGridSpacing;
@@ -1353,6 +1354,8 @@
 	[[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKeyPath:@"values.showDistortionCorrectedPoints"];
 	[[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKeyPath:@"values.showScreenItemDropShadows"];
 	[[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKeyPath:@"values.screenItemDropShadowBlurRadius"];
+	VidSyncDocument *__weak doc = (VidSyncDocument *) vwc.document;
+	if (doc.project) [doc.project removeObserver:self forKeyPath:@"distortionDisplayMode"];
 }
 
 @end

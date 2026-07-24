@@ -48,13 +48,13 @@
 	} else {
 		notesToStore = self.notes;
 	}
-	NSMutableDictionary *fullDict = [NSMutableDictionary dictionaryWithObjectsAndKeys:colorDict,@"color",
-							   notesToStore,@"notes",
-							   self.duration,@"duration",
-							   self.fadeTime,@"fadeTime",
-							   self.shape,@"shape",
-							   self.size,@"size",
-							   nil];
+	NSMutableDictionary *fullDict = [NSMutableDictionary dictionary];
+	[fullDict setObject:colorDict forKey:@"color"];
+	[fullDict setObject:notesToStore forKey:@"notes"];
+	if (self.duration) [fullDict setObject:self.duration forKey:@"duration"];
+	if (self.fadeTime) [fullDict setObject:self.fadeTime forKey:@"fadeTime"];
+	if (self.shape) [fullDict setObject:self.shape forKey:@"shape"];
+	if (self.size) [fullDict setObject:self.size forKey:@"size"];
 	return fullDict;
 }
 

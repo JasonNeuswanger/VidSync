@@ -43,7 +43,7 @@
 {
 	// Observe the value of name, so the array controller can re-sort itself when a name is changed.
 	[self addObserver:self forKeyPath:@"name" options:NSKeyValueObservingOptionNew context:NULL];
-	[super awakeFromFetch];
+	[super awakeFromInsert];
 }
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
@@ -66,7 +66,6 @@
 	}
 	if (!overwritingOldType) {
 		newType = [NSEntityDescription insertNewObjectForEntityForName:@"VSTrackedObjectType" inManagedObjectContext:moc];
-		[newType addObserver:newType forKeyPath:@"name" options:NSKeyValueObservingOptionNew context:NULL];
 		newType.project = project;
 		newType.name = [objectTypeDictionary objectForKey:@"name"];
 		[newType setVisibleItemPropertiesFromDictionary:objectTypeDictionary];

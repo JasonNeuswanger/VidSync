@@ -183,6 +183,7 @@
 		return CMTimeMake(sign * totaltime, timescale);
 	} @catch (id exception) {
 		NSLog(@"Exception in CMTimeFromString processing string %@", timeString);
+		return kCMTimeZero;
 	}
 	//    QTTime rawTime = QTTimeFromString(timeString);
 	//    if ([timeString characterAtIndex:0] == '-') {
