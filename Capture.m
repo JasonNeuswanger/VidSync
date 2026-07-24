@@ -339,8 +339,13 @@
 	[videoWriter addInput:videoWriterInput];
 	
 	// Calculate the expected number of frames (used only for updating the progress indicator)
-	
-	CMTime frameIncrement = CMTimeMake(1000000,(int32_t) round([videoClip frameRate]*1000000.0f));
+
+	float fr = [videoClip frameRate];
+	if (fr <= 0) {
+		[UtilityFunctions InformUser:@"This video's frame rate could not be determined. The capture cannot proceed." withTitle:@"Unknown Frame Rate"];
+		return;
+	}
+	CMTime frameIncrement = CMTimeMake(1000000,(int32_t) round(fr*1000000.0f));
 	double clipDuration = (double) clipTimeRange.duration.value / (double) clipTimeRange.duration.timescale;
 	double frameDuration = (double)frameIncrement.value/(double)frameIncrement.timescale;
 	NSUInteger numFrames = (NSUInteger) round(clipDuration/frameDuration);

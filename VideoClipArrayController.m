@@ -78,12 +78,16 @@
 
 - (void)remove:(id)sender
 {
+	if ([[self selectedObjects] count] == 0) return;
 	VSVideoClip *clipToDelete = [[self selectedObjects] objectAtIndex:0];
 	NSString *confirmQuestion = [NSString stringWithFormat:@"Are you sure you want to delete clip %@?", clipToDelete.clipName];
 	bool shouldDeleteClip = [UtilityFunctions ConfirmAction:confirmQuestion  withTitle:@"Are you sure?"];
 	if (shouldDeleteClip) {
 		// Close the window before deleting it
-		[clipToDelete.windowController removeObserver:document forKeyPath:@"playerView.player.rate"];
+		@try {
+			[clipToDelete.windowController removeObserver:document forKeyPath:@"playerView.player.rate"];
+		} @catch (id exception) {
+		}
 		[clipToDelete.windowController close];
 		[document removeWindowController:clipToDelete.windowController];
 		[super remove:sender];

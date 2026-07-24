@@ -323,7 +323,7 @@ NSPoint project2DPoint(NSPoint pt, double projectionMatrix[9])
 
 - (BOOL) has3Dcoords
 {
-	return ([self.worldX floatValue] != 0.0 || [self.worldY floatValue] != 0.0 || [self.worldZ floatValue] != 0.0);
+	return (self.worldX != nil);  // worldX/Y/Z are set together and nil-ed together; nil means no solution, not zero coords
 }
 
 - (VSEventScreenPoint *) screenPointForVideoClip:(VSVideoClip *)videoClip;

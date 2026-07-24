@@ -159,11 +159,11 @@
 - (NSXMLNode *) representationAsXMLNode
 {
 	NSXMLElement *mainElement = [[NSXMLElement alloc] initWithName:@"event"];
-	[mainElement addAttribute:[NSXMLNode attributeWithName:@"type" stringValue:self.type.name]];
+	[mainElement addAttribute:[NSXMLNode attributeWithName:@"type" stringValue:self.type.name ?: @""]];
 	[mainElement addAttribute:[NSXMLNode attributeWithName:@"index" stringValue:[self.index stringValue]]];
-	[mainElement addAttribute:[NSXMLNode attributeWithName:@"name" stringValue:self.name]];
-	[mainElement addAttribute:[NSXMLNode attributeWithName:@"notes" stringValue:self.notes]];
-	[mainElement addAttribute:[NSXMLNode attributeWithName:@"observer" stringValue:self.observer]];
+	[mainElement addAttribute:[NSXMLNode attributeWithName:@"name" stringValue:self.name ?: @""]];
+	[mainElement addAttribute:[NSXMLNode attributeWithName:@"notes" stringValue:self.notes ?: @""]];
+	[mainElement addAttribute:[NSXMLNode attributeWithName:@"observer" stringValue:self.observer ?: @""]];
 	NSSortDescriptor *indexDescriptor = [[NSSortDescriptor alloc] initWithKey:@"index" ascending:YES];
 	NSArray *sortedPoints = [[self.points allObjects] sortedArrayUsingDescriptors:[NSArray arrayWithObjects:indexDescriptor,nil]];
 	for (VSPoint *point in sortedPoints) [mainElement addChild:[point representationAsXMLNode]];

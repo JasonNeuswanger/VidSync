@@ -1355,7 +1355,11 @@
 	[[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKeyPath:@"values.showScreenItemDropShadows"];
 	[[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKeyPath:@"values.screenItemDropShadowBlurRadius"];
 	VidSyncDocument *__weak doc = (VidSyncDocument *) vwc.document;
-	if (doc.project) [doc.project removeObserver:self forKeyPath:@"distortionDisplayMode"];
+	@try {
+		if (doc.project) [doc.project removeObserver:self forKeyPath:@"distortionDisplayMode"];
+	} @catch (id exception) {
+		// document-close may have already removed this observer via carefullyRemoveObserver; suppress the imbalance exception
+	}
 }
 
 @end

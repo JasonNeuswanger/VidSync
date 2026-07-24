@@ -638,11 +638,15 @@ int refractionRootFunc_f(const gsl_vector* x, void* params, gsl_vector* f)
 	if ([openPanel runModal]) {
 		filePath = [[[openPanel URLs] objectAtIndex:0] path];
 		NSArray *quadratDescription = [[NSArray alloc] initWithContentsOfFile:filePath];
+		if (![quadratDescription isKindOfClass:[NSArray class]] || [quadratDescription count] < 4) {
+			[UtilityFunctions InformUser:@"The quadrat file could not be read or is from an unsupported version." withTitle:@"Invalid File"];
+			return;
+		}
 		self.quadratNodesFront = [[NSAttributedString alloc] initWithString:[quadratDescription objectAtIndex:0]];
 		self.quadratNodesBack = [[NSAttributedString alloc] initWithString:[quadratDescription objectAtIndex:1]];
 		self.planeCoordFront = [quadratDescription objectAtIndex:2];
 		self.planeCoordBack = [quadratDescription objectAtIndex:3];
-		if ([quadratDescription count] > 4) {
+		if ([quadratDescription count] > 7) {
 			self.shouldCorrectRefraction = [quadratDescription objectAtIndex:4];
 			self.frontQuadratSurfaceThickness = [quadratDescription objectAtIndex:5];
 			self.frontQuadratSurfaceRefractiveIndex = [quadratDescription objectAtIndex:6];
@@ -659,7 +663,7 @@ int refractionRootFunc_f(const gsl_vector* x, void* params, gsl_vector* f)
 	self.quadratNodesBack = [[NSAttributedString alloc] initWithString:[quadratDescription objectAtIndex:1]];
 	self.planeCoordFront = [quadratDescription objectAtIndex:2];
 	self.planeCoordBack = [quadratDescription objectAtIndex:3];
-	if ([quadratDescription count] > 4) {
+	if ([quadratDescription count] > 7) {
 		self.shouldCorrectRefraction = [quadratDescription objectAtIndex:4];
 		self.frontQuadratSurfaceThickness = [quadratDescription objectAtIndex:5];
 		self.frontQuadratSurfaceRefractiveIndex = [quadratDescription objectAtIndex:6];
@@ -721,13 +725,17 @@ int refractionRootFunc_f(const gsl_vector* x, void* params, gsl_vector* f)
 		filePath = [[[openPanel URLs] objectAtIndex:0] path];
 		NSArray *fullCalibration = [[NSArray alloc] initWithContentsOfFile:filePath];
 		// NSLog(@"fullCalibration has %lu entries, which are %@",(unsigned long)[fullCalibration count],fullCalibration);
+		if (![fullCalibration isKindOfClass:[NSArray class]] || [fullCalibration count] < 10) {
+			[UtilityFunctions InformUser:@"The calibration file could not be read or is from an unsupported version." withTitle:@"Invalid File"];
+			return;
+		}
 		self.quadratNodesFront = [[NSAttributedString alloc] initWithString:[fullCalibration objectAtIndex:0]];
 		self.quadratNodesBack = [[NSAttributedString alloc] initWithString:[fullCalibration objectAtIndex:1]];
 		self.planeCoordFront = [fullCalibration objectAtIndex:2];
 		self.planeCoordBack = [fullCalibration objectAtIndex:3];
 		self.axisHorizontal = [fullCalibration objectAtIndex:4];
 		self.axisVertical = [fullCalibration objectAtIndex:5];
-		if ([fullCalibration count] > 10) {
+		if ([fullCalibration count] > 13) {
 			self.shouldCorrectRefraction = [fullCalibration objectAtIndex:10];
 			self.frontQuadratSurfaceThickness = [fullCalibration objectAtIndex:11];
 			self.frontQuadratSurfaceRefractiveIndex = [fullCalibration objectAtIndex:12];
@@ -830,8 +838,12 @@ int refractionRootFunc_f(const gsl_vector* x, void* params, gsl_vector* f)
 		} else {
 			shouldOverwrite = YES; // If there was nothing to overwrite, simulate the user clicking "Overwrite" without prompting for it.
 		}
-		NSInteger numEntries =[fullDistortion count];
-		NSInteger linesIndex = (numEntries > 9) ? 13 : 8; // remembering the index 0 counts toward the number of entries
+		if (![fullDistortion isKindOfClass:[NSArray class]] || [fullDistortion count] < 9) {
+			[UtilityFunctions InformUser:@"The distortion file could not be read or is from an unsupported version." withTitle:@"Invalid File"];
+			return;
+		}
+		NSInteger numEntries = [fullDistortion count];
+		NSInteger linesIndex = (numEntries > 13) ? 13 : 8; // extended format (14+ entries) puts lines at index 13; legacy format puts them at index 8
 		if (shouldOverwrite) { // user clicked overwrite -- delete old distortion lines AND overwrite parameters
 			self.distortionCenterX = [fullDistortion objectAtIndex:0];
 			self.distortionCenterY = [fullDistortion objectAtIndex:1];

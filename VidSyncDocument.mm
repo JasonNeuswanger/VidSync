@@ -505,6 +505,10 @@ static void *AVSPPlayerCurrentTimeContext = &AVSPPlayerCurrentTimeContext;
 - (void) loadObjectAndEventTypesFromFileAtPath:(NSString *)filePath
 {
 	NSArray *allTypes = [[NSArray alloc] initWithContentsOfFile:filePath];
+	if (![allTypes isKindOfClass:[NSArray class]] || [allTypes count] < 2) {
+		[UtilityFunctions InformUser:@"The types file could not be read or is from an unsupported version." withTitle:@"Invalid File"];
+		return;
+	}
 	NSArray *objectTypesArray = [allTypes objectAtIndex:0];
 	NSArray *eventTypesArray = [allTypes objectAtIndex:1];
 	for (NSDictionary *objectTypeDictionary in objectTypesArray) {
