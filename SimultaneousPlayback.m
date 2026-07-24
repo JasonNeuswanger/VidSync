@@ -167,6 +167,7 @@
 {
 	CMTime newStopTime;
 	int32_t myTimeScale = (int32_t) [[self.project.masterClip timeScale] longValue];
+	if (myTimeScale <= 0) return kCMTimeZero;  // master clip not yet loaded; caller should not seek
 	CMTime durationScaled = CMTimeMake(duration * myTimeScale, myTimeScale);
 	if (rate > 0) {
 		newStopTime = CMTimeAdd([self currentMasterTime],durationScaled);
@@ -231,8 +232,10 @@
 - (CMTime) currentMasterTime
 {
 	// Sometimes the player's time separates from the video's timescale by minute amounts like 1/3000 second. The conversion here prevents that quirk from messing up overlays of points recorded at the current time.
+	int32_t masterScale = (int32_t) [[self.project.masterClip timeScale] intValue];
+	if (masterScale <= 0) return kCMTimeZero;  // master clip not yet loaded; CMTimeConvertScale with scale 0 produces kCMTimeInvalid
 	CMTime rawCurrentTime = [self.project.masterClip.windowController.playerView.player currentTime];
-	return CMTimeConvertScale(rawCurrentTime,[[self.project.masterClip timeScale] intValue],kCMTimeRoundingMethod_RoundHalfAwayFromZero);
+	return CMTimeConvertScale(rawCurrentTime, masterScale, kCMTimeRoundingMethod_RoundHalfAwayFromZero);
 }
 
 - (NSString *) currentMasterTimeString

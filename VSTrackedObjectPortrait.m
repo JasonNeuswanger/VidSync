@@ -35,7 +35,16 @@
 
 - (void) setImage:(NSImage *)imageSource
 {
+	image = nil;  // invalidate cached decode so next read of -image reflects the new data
 	self.imageData = [imageSource TIFFRepresentationUsingCompression:NSTIFFCompressionJPEG factor:0.6f];
+}
+
+- (NSImage *) image
+{
+	if (image == nil) {
+		image = [[NSImage alloc] initWithData:self.imageData];
+	}
+	return image;
 }
 
 /*

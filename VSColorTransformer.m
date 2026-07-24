@@ -42,6 +42,7 @@
 		NSData *colorData = (NSData *) value;
 		NSError *err;
 		NSColor *color = [NSKeyedUnarchiver unarchivedObjectOfClass:[NSColor class] fromData:colorData error:&err];
+		if (!color) return [NSColor cyanColor];  // modern unarchiver returns nil on failure rather than throwing
 		return color;
 	} @catch (id exception) {
 		NSLog(@"Error decoding color: %@", (NSException *)exception);

@@ -106,6 +106,7 @@ NSPoint quadratCoords2Dfrom3D(const VSPoint3D *quadratCoords3D, const char axisH
 		fadingStartTime = CMTimeMake(0, 30);
 		totalTimeRange = CMTimeRangeMake(fadingStartTime, fadingDuration);
 		fadingDuration = CMTimeMake(0, 30);
+		[NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(updateVisibleTimeRange) object:nil];  // coalesce retries
 		[self performSelector:@selector(updateVisibleTimeRange) withObject:nil afterDelay:0.3f];
 	}
 }
@@ -294,6 +295,7 @@ NSPoint quadratCoords2Dfrom3D(const VSPoint3D *quadratCoords3D, const char axisH
 
 - (void) dealloc
 {
+	[NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(updateVisibleTimeRange) object:nil];
 	[self carefullyRemoveObserver:self forKeyPath:@"point.timecode"];
 }
 

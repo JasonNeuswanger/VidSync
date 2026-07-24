@@ -50,10 +50,16 @@
             // That happens before it's assigned a name or a type, which generates an error here when we go to add it to a count above. Therefore
             // we only do that step when it's not nil. If it's a newly created event with a nil type, the line below says to wait 0.05 seconds
             // (after which the event will have a type) and then rearrange everything, properly incorporating it into the count.
+            [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(rearrangeObjects) object:self];  // coalesce; bulk inserts queue many redundant rearranges otherwise
             [self performSelector:@selector(rearrangeObjects) withObject:self afterDelay:0.05];
         }
     }
     return [super arrangeObjects:[typeCounts allValues]];
+}
+
+- (void) dealloc
+{
+    [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(rearrangeObjects) object:self];
 }
 
 
