@@ -146,7 +146,7 @@
 		return @"0:00:00:00.0/0"; // added this 1-31-2021 because I was getting divide by zero errors
 	}
 	int8_t sign = (time.value > 0) ? 1 : -1;
-	int64_t time_value_positive = abs(time.value);
+	int64_t time_value_positive = llabs(time.value);
 	int32_t subseconds = time_value_positive % time.timescale;
 	int64_t seconds = time_value_positive / time.timescale;
 	int64_t day = seconds / 86400; // result rounds down to nearest int, typically 0
@@ -178,7 +178,7 @@
 		NSArray *parts3 = [[parts2 objectAtIndex:1] componentsSeparatedByString:@"/"];
 		int32_t subseconds = [[parts3 objectAtIndex:0] intValue];
 		int32_t timescale = [[parts3 objectAtIndex:1] intValue];
-		int64_t totaltime = timescale * (86400*days + 3600*hours + 60*minutes + seconds) + subseconds;
+		int64_t totaltime = (int64_t)timescale * (86400*days + 3600*hours + 60*minutes + seconds) + subseconds;
 		//NSLog(@"For time %@, totaltime was %llu and timescale was %d.", timeString, totaltime, timescale);
 		return CMTimeMake(sign * totaltime, timescale);
 	} @catch (id exception) {

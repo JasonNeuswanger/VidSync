@@ -54,23 +54,14 @@ double orthogonalRegressionLineCostFunction(NSPoint line[], const size_t numLine
 		mainsum += (line[i].x - centroid.x) * (line[i].y - centroid.y);
 		mainsqsum += (pow((line[i].x - centroid.x),2.0) - pow((line[i].y - centroid.y),2.0));
 	}
-	// Calculate the sums of squares
-	const double theta1 = 0.5 * atan(2.0 * mainsum / mainsqsum);
-	const double theta2 = 0.5 * atan2(2.0 * mainsum, mainsqsum);
-	const double xInt1 = centroid.x - centroid.y / tan(theta1);
-	const double xInt2 = centroid.x - centroid.y / tan(theta2);
-	double ssq1 = 0.0;
-	double ssq2 = 0.0;
+	// Calculate the best-fit angle and sum of squared perpendicular distances
+	const double theta = 0.5 * atan2(2.0 * mainsum, mainsqsum);
+	const double xInt = centroid.x - centroid.y / tan(theta);
+	double ssq = 0.0;
 	for (int i = 0; i < numLinePoints; i++) {
-		ssq1 += pow(-(line[i].x - xInt1) * sin(theta1) + line[i].y * cos(theta1),2.0);
-		ssq2 += pow(-(line[i].x - xInt2) * sin(theta2) + line[i].y * cos(theta2),2.0);
+		ssq += pow(-(line[i].x - xInt) * sin(theta) + line[i].y * cos(theta),2.0);
 	}
-	// Return the smallest ssq
-	if (ssq1 <= ssq2) {
-		return ssq1;
-	} else {
-		return ssq2;
-	}
+	return ssq;
 }
 
 
@@ -174,6 +165,7 @@ NSPoint redistortPoint(const NSPoint* pt, const double x0, const double y0, cons
 	bool failed;
 	for (int i=0; i < 15; i++) {
 		failed = false;
+		iter = 0;
 		gsl_vector_set(x, 0, x_guesses[i]);
 		gsl_vector_set(x, 1, y_guesses[i]);
 		gsl_multiroot_fdfsolver_set(s, &f, x);
