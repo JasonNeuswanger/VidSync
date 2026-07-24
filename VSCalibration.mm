@@ -392,9 +392,9 @@ int refractionRootFunc_f(const gsl_vector* x, void* params, gsl_vector* f)
 		} else {    // axisVertical == y
 			interfaceNormal = VSMakePoint3D(1.0, 0.0, 0.0);
 			backIntersection = VSMakePoint3D(p->backSurfaceCoord, backSolveCoord2, backSolveCoord1);
-			frontIntersection = VSMakePoint3D(p->frontSurfaceCoord, frontSolveCoord2, frontSolveCoord2);
+			frontIntersection = VSMakePoint3D(p->frontSurfaceCoord, frontSolveCoord2, frontSolveCoord1);
 			refractionPlaneBackPoint = VSMakePoint3D(p->realPosition.x, backSolveCoord2, backSolveCoord1);
-			refractionPlaneFrontPoint = VSMakePoint3D(p->camPosition.y, frontSolveCoord2, frontSolveCoord2);
+			refractionPlaneFrontPoint = VSMakePoint3D(p->camPosition.x, frontSolveCoord2, frontSolveCoord1);
 		}
 	}
 	
