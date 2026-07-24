@@ -69,10 +69,6 @@
 	NSPoint frontScreenCoordsUndistorted = [self.toVideoClip.calibration projectToScreenFromPoint:frontQuadratCoords onQuadratSurface:@"Front" redistort:NO];
 	NSPoint backScreenCoordsUndistorted = [self.toVideoClip.calibration projectToScreenFromPoint:backQuadratCoords onQuadratSurface:@"Back" redistort:NO];
 	
-	// get m and b for the line y = mx + b describing the undistorted hintline
-	float m = (frontScreenCoordsUndistorted.y - backScreenCoordsUndistorted.y) / (frontScreenCoordsUndistorted.x - backScreenCoordsUndistorted.x);
-	float b = frontScreenCoordsUndistorted.y - m*frontScreenCoordsUndistorted.x;
-	
 	// generate points on that line at regular intervals in both the x and y directions
 	float xLimit = self.toVideoClip.windowController.movieSize.width;
 	float yLimit = self.toVideoClip.windowController.movieSize.height;
@@ -83,19 +79,33 @@
 	// going too high, however, ends up confusing the reverse distortion solver on outlandish solutions and lines get messed up
 	// 100 worked fine for most videos but had problems in some places on an 8 mm fisheye video
 	// 50 isn't without issues but it's a good compromise between not extending lines far enough and making them buggy/jagged
-	
-	for (float x = -padding; x <= xLimit+padding; x += interval) {
-		tempy = m*x+b;
-		if (tempy >= -padding && tempy <= yLimit + padding) {
-			[distortedPoints addObject:[NSValue valueWithPoint:[self.toVideoClip.calibration distortPoint:NSMakePoint(x,tempy)]]];  // regular intervals in the x direction
-			//[distortedPointsTEMP addObject:[NSValue valueWithPoint:NSMakePoint(x,tempy)]];  // regular intervals in the x direction
+
+	float dx = frontScreenCoordsUndistorted.x - backScreenCoordsUndistorted.x;
+	if (fabsf(dx) < 0.5f) {
+		// Vertical line: x is constant; sample along y at that fixed x value
+		float fixedX = frontScreenCoordsUndistorted.x;
+		if (fixedX >= -padding && fixedX <= xLimit + padding) {
+			for (float y = -padding; y <= yLimit+padding; y += interval) {
+				[distortedPoints addObject:[NSValue valueWithPoint:[self.toVideoClip.calibration distortPoint:NSMakePoint(fixedX,y)]]];
+			}
 		}
-	}
-	for (float y = -padding; y <= yLimit+padding; y += interval) {
-		tempx = (y-b)/m;
-		if (tempx >= -padding && tempx <= xLimit + padding) {
-			[distortedPoints addObject:[NSValue valueWithPoint:[self.toVideoClip.calibration distortPoint:NSMakePoint(tempx,y)]]];	// regular intervals in the y direction
-			//[distortedPointsTEMP addObject:[NSValue valueWithPoint:NSMakePoint(tempx,y)]];	// regular intervals in the y direction
+	} else {
+		// get m and b for the line y = mx + b describing the undistorted hintline
+		float m = (frontScreenCoordsUndistorted.y - backScreenCoordsUndistorted.y) / dx;
+		float b = frontScreenCoordsUndistorted.y - m*frontScreenCoordsUndistorted.x;
+		for (float x = -padding; x <= xLimit+padding; x += interval) {
+			tempy = m*x+b;
+			if (tempy >= -padding && tempy <= yLimit + padding) {
+				[distortedPoints addObject:[NSValue valueWithPoint:[self.toVideoClip.calibration distortPoint:NSMakePoint(x,tempy)]]];  // regular intervals in the x direction
+				//[distortedPointsTEMP addObject:[NSValue valueWithPoint:NSMakePoint(x,tempy)]];  // regular intervals in the x direction
+			}
+		}
+		for (float y = -padding; y <= yLimit+padding; y += interval) {
+			tempx = (y-b)/m;
+			if (tempx >= -padding && tempx <= xLimit + padding) {
+				[distortedPoints addObject:[NSValue valueWithPoint:[self.toVideoClip.calibration distortPoint:NSMakePoint(tempx,y)]]];	// regular intervals in the y direction
+				//[distortedPointsTEMP addObject:[NSValue valueWithPoint:NSMakePoint(tempx,y)]];	// regular intervals in the y direction
+			}
 		}
 	}
 

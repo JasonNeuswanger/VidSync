@@ -43,12 +43,12 @@
 	NSPoint screenPoint = NSMakePoint([self.screenX floatValue],[self.screenY floatValue]);
 	NSPoint undistortedScreenPoint = [self.calibration undistortPoint:screenPoint];
 	NSXMLElement *mainElement = [[NSXMLElement alloc] initWithName:@"screenpoint"];
-	[mainElement addAttribute:[NSXMLNode attributeWithName:@"x" stringValue:[nf stringFromNumber:self.screenX]]];
-	[mainElement addAttribute:[NSXMLNode attributeWithName:@"y" stringValue:[nf stringFromNumber:self.screenY]]];
-	[mainElement addAttribute:[NSXMLNode attributeWithName:@"xu" stringValue:[nf stringFromNumber:[NSNumber numberWithFloat:undistortedScreenPoint.x]]]];
-	[mainElement addAttribute:[NSXMLNode attributeWithName:@"yu" stringValue:[nf stringFromNumber:[NSNumber numberWithFloat:undistortedScreenPoint.y]]]];
-	[mainElement addAttribute:[NSXMLNode attributeWithName:@"worldHcoord" stringValue:[nf stringFromNumber:self.worldHcoord]]];
-	[mainElement addAttribute:[NSXMLNode attributeWithName:@"worldVcoord" stringValue:[nf stringFromNumber:self.worldVcoord]]];
+	[mainElement addAttribute:[NSXMLNode attributeWithName:@"x" stringValue:[nf stringFromNumber:self.screenX] ?: @""]];
+	[mainElement addAttribute:[NSXMLNode attributeWithName:@"y" stringValue:[nf stringFromNumber:self.screenY] ?: @""]];
+	[mainElement addAttribute:[NSXMLNode attributeWithName:@"xu" stringValue:[nf stringFromNumber:[NSNumber numberWithFloat:undistortedScreenPoint.x]] ?: @""]];
+	[mainElement addAttribute:[NSXMLNode attributeWithName:@"yu" stringValue:[nf stringFromNumber:[NSNumber numberWithFloat:undistortedScreenPoint.y]] ?: @""]];
+	[mainElement addAttribute:[NSXMLNode attributeWithName:@"worldHcoord" stringValue:[nf stringFromNumber:self.worldHcoord] ?: @""]];
+	[mainElement addAttribute:[NSXMLNode attributeWithName:@"worldVcoord" stringValue:[nf stringFromNumber:self.worldVcoord] ?: @""]];
 	return mainElement;
 }
 

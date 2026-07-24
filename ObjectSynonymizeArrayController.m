@@ -56,6 +56,7 @@
 
 - (IBAction) synonymize:(id)sender;
 {
+	if ([[self selectedObjects] count] == 0 || [[mainObjectsController selectedObjects] count] == 0) return;
 	if ([UtilityFunctions ConfirmAction:@"Are you sure you want to combine these two objects into one?" withTitle:nil]) {
         VSTrackedObject *deadSynonym = [[self selectedObjects] objectAtIndex:0];
         VSTrackedObject *survivingSynonym = [[mainObjectsController selectedObjects] objectAtIndex:0];

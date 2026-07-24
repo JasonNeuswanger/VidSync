@@ -39,6 +39,7 @@
 
 - (void) remove:(id)sender
 {
+	if ([[self selectedObjects] count] == 0) return;
 	VSDistortionLine *lineToRemove = [[self selectedObjects] objectAtIndex:0];
 	VideoWindowController *__weak vwc = lineToRemove.calibration.videoClip.windowController;
 	[super remove:lineToRemove];
@@ -47,6 +48,7 @@
 
 - (IBAction) goToLine:(id)sender
 {
+	if ([[self selectedObjects] count] == 0) return;
 	NSString *timecodeString = [[[self selectedObjects] objectAtIndex:0] timecode];
 	[document goToMasterTime:[UtilityFunctions CMTimeFromString:timecodeString]];
 }
