@@ -52,7 +52,7 @@
 - (void)awakeFromInsert
 {
 	[self addObserver:self forKeyPath:@"color" options:0 context:NULL];
-	[super awakeFromFetch];
+	[super awakeFromInsert];
 }
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context

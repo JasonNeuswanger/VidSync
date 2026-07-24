@@ -392,10 +392,13 @@ int refractionRootFunc_f(const gsl_vector* x, void* params, gsl_vector* f)
 	
 	negativeInterfaceNormal = VSMakePoint3D(interfaceNormal.x * -1.0, interfaceNormal.y * -1.0, interfaceNormal.z * -1.0);
 	
-	const double thetaBackIn   = acos(VSPoint3DDot(interfaceNormal, VSSubtractPoint3D(p->realPosition, backIntersection)) / VSPoint3DNorm(VSSubtractPoint3D(p->realPosition, backIntersection)));
-	const double thetaBackOut  = acos(VSPoint3DDot(negativeInterfaceNormal, VSSubtractPoint3D(frontIntersection, backIntersection)) / VSPoint3DNorm(VSSubtractPoint3D(frontIntersection, backIntersection)));
-	const double thetaFrontIn  = acos(VSPoint3DDot(interfaceNormal, VSSubtractPoint3D(backIntersection, frontIntersection)) / VSPoint3DNorm(VSSubtractPoint3D(backIntersection, frontIntersection)));
-	const double thetaFrontOut = acos(VSPoint3DDot(negativeInterfaceNormal, VSSubtractPoint3D(p->camPosition, frontIntersection)) / VSPoint3DNorm(VSSubtractPoint3D(p->camPosition, frontIntersection)));
+	double normBack  = VSPoint3DNorm(VSSubtractPoint3D(p->realPosition, backIntersection));
+	double normMid   = VSPoint3DNorm(VSSubtractPoint3D(frontIntersection, backIntersection));
+	double normFront = VSPoint3DNorm(VSSubtractPoint3D(p->camPosition, frontIntersection));
+	const double thetaBackIn   = (normBack  > 0.0) ? acos(fmax(-1.0, fmin(1.0, VSPoint3DDot(interfaceNormal,         VSSubtractPoint3D(p->realPosition,    backIntersection))  / normBack ))) : M_PI_2;
+	const double thetaBackOut  = (normMid   > 0.0) ? acos(fmax(-1.0, fmin(1.0, VSPoint3DDot(negativeInterfaceNormal, VSSubtractPoint3D(frontIntersection,   backIntersection))  / normMid  ))) : M_PI_2;
+	const double thetaFrontIn  = (normMid   > 0.0) ? acos(fmax(-1.0, fmin(1.0, VSPoint3DDot(interfaceNormal,         VSSubtractPoint3D(backIntersection,    frontIntersection)) / normMid  ))) : M_PI_2;
+	const double thetaFrontOut = (normFront > 0.0) ? acos(fmax(-1.0, fmin(1.0, VSPoint3DDot(negativeInterfaceNormal, VSSubtractPoint3D(p->camPosition,       frontIntersection)) / normFront))) : M_PI_2;
 	
 	double rootFunction1, rootFunction2, rootFunction3, rootFunction4;
 	rootFunction1 = p->n2 * sin(thetaBackOut) - p->n1 * sin(thetaBackIn);       // Snell's law for the first intersection
@@ -1849,6 +1852,7 @@ int refractionRootFunc_f(const gsl_vector* x, void* params, gsl_vector* f)
 		// cvFindCornerSubPix(videoFrameSingleChannelIpl, foundCorners, numCorners, cvSize(cornerSubPixWindowSize,cornerSubPixWindowSize), cvSize(-1,-1), cvTermCriteria( CV_TERMCRIT_ITER | CV_TERMCRIT_EPS, 20, 0.01 ));
 		cv::cornerSubPix(videoFrameImage, foundCornersVec, cv::Size(cornerSubPixWindowSize,cornerSubPixWindowSize), cv::Size(-1,-1), cv::TermCriteria(cv::TermCriteria::EPS, 50, 0.01));
 	}
+	if (foundCornersVec.size() == 0) return clickedPoint;  // no corner found in search area; return the original click point unmodified
 	NSPoint snappedPoint = NSMakePoint(snapSearchOrigin.x + foundCornersVec[0].x,([self.videoClip clipHeight] - (snapSearchOrigin.y + foundCornersVec[0].y)));
 	return snappedPoint;
 }

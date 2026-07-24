@@ -256,10 +256,16 @@
 {
 	// This calculates the closest point of approach of an arbitrary number of 3D lines.  The formula comes from Wikipedia.
 	// It's the last formula on this page: http://en.wikipedia.org/wiki/Line-line_intersection
-	
+
+	if (numLines < 2) {  // fewer than 2 lines cannot define an intersection; matrix would be singular or zero
+		*meanPLD = 0.0;
+		VSPoint3D zero = {0.0, 0.0, 0.0};
+		return zero;
+	}
+
 	// I need to first loop through and calculate the CPA.
 	// Then, I can loop through the lines one by one and calculate their distances from the CPA, and average those to get the error index.
-	
+
 	double I_vvt[9] = {0,0,0,0,0,0,0,0,0};      // 3x3 matrix (as a row-by-row 9 vector) holding the running total of I_3x3 - v_i * Transpose(v_i)
 	double I_vvtp[3] = {0,0,0};                 // 3-vector holding the running total of (I_3x3 - v_i * Transpose(v_i)).p
 	double p[3];
@@ -330,9 +336,10 @@
 	double x2_x1[3] = {line.back.x - line.front.x, line.back.y - line.front.y, line.back.z - line.front.z};
 	double x1_x0_nrm = cblas_dnrm2(3,x1_x0,1);
 	double x2_x1_nrm = cblas_dnrm2(3,x2_x1,1);
+	if (x2_x1_nrm == 0.0) return 0.0;  // degenerate zero-length line; distance is undefined, return 0
 	double dotprod = cblas_ddot(3, x1_x0, 1, x2_x1, 1);
 	double dsquared = (x1_x0_nrm * x1_x0_nrm * x2_x1_nrm * x2_x1_nrm - dotprod*dotprod) / (x2_x1_nrm*x2_x1_nrm);
-	return sqrt(dsquared);
+	return sqrt(fmax(0.0, dsquared));  // fmax guards against small negative values from floating-point rounding
 }
 
 

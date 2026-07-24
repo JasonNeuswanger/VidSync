@@ -46,7 +46,7 @@
 - (void) awakeFromInsert
 {
 	[self startObservers];
-	[super awakeFromFetch];
+	[super awakeFromInsert];
 }
 
 - (void) startObservers
