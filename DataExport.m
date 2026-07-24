@@ -191,7 +191,7 @@
 	if (includeProjectName) [pathStrings addObject:[UtilityFunctions sanitizeFileNameString:self.project.name]];
 	if (includeCurrentDate) [pathStrings addObject:[UtilityFunctions stringFromDateTime:now format:@"yyy-MM-dd"]];
 	if (includeCurrentTime) [pathStrings addObject:[UtilityFunctions stringFromDateTime:now format:@"HH:mm:ss"]];
-	if (![customText isEqualToString:@""]) [pathStrings addObject:customText];
+	if (customText != nil && ![customText isEqualToString:@""]) [pathStrings addObject:customText];
 	NSString *fileName = [pathStrings componentsJoinedByString:@" - "]; // doing this from an array avoids annoying trailing dashes etc
 	if ([fileName isEqualToString:@""]) fileName = @"Untitled";	// give it a default if all naming values are turned off
 	[filePath appendString:fileName];

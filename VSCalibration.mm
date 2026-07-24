@@ -985,6 +985,7 @@ int refractionRootFunc_f(const gsl_vector* x, void* params, gsl_vector* f)
 		totalResidual += sqrt(xdiff*xdiff + ydiff*ydiff);
 	}
 	long numPoints = ([whichSurface isEqualToString:@"Front"]) ? [self.pointsFront count] : [self.pointsBack count];
+	if (numPoints == 0) return;  // no calibration points; residual is undefined
 	NSNumber *residualPerPoint = [NSNumber numberWithFloat:(totalResidual / numPoints)];
 	([whichSurface isEqualToString:@"Front"]) ? self.residualFrontPixel = residualPerPoint : self.residualBackPixel = residualPerPoint;
 }
@@ -1005,6 +1006,7 @@ int refractionRootFunc_f(const gsl_vector* x, void* params, gsl_vector* f)
 		totalResidual += sqrt(xdiff*xdiff + ydiff*ydiff);
 	}
 	long numPoints = [points count];
+	if (numPoints == 0) return;  // no calibration points; residual is undefined
 	NSNumber *residualPerPoint = [NSNumber numberWithFloat:(totalResidual / numPoints)];
 	([whichSurface isEqualToString:@"Front"]) ? self.residualFrontWorld = residualPerPoint : self.residualBackWorld = residualPerPoint;
 }
@@ -1113,6 +1115,7 @@ int refractionRootFunc_f(const gsl_vector* x, void* params, gsl_vector* f)
 		temppt[1] = [point.apparentWorldVcoord doubleValue] - worldCentroid.y;
 		totalWorldNorm += cblas_dnrm2(2,temppt,1);
 	}
+	if (totalScreenNorm == 0.0 || totalWorldNorm == 0.0) return;  // all points are identical; normalization is undefined
 	const double screenScaleFactor = sqrt(2.0) / (totalScreenNorm / [points count]);
 	const double worldScaleFactor = sqrt(2.0) / (totalWorldNorm / [points count]);
 	
@@ -1964,7 +1967,9 @@ int refractionRootFunc_f(const gsl_vector* x, void* params, gsl_vector* f)
 	double initial_RMS_error, final_RMS_error;
 	initial_RMS_error = sqrt(initial_cost_function_value/totalPointCount);
 	final_RMS_error=sqrt(final_cost_function_value/totalPointCount);
-	self.distortionReductionAchieved = [NSNumber numberWithDouble:(initial_RMS_error - final_RMS_error) / initial_RMS_error];
+	self.distortionReductionAchieved = (initial_RMS_error > 0.0)
+		? [NSNumber numberWithDouble:(initial_RMS_error - final_RMS_error) / initial_RMS_error]
+		: [NSNumber numberWithDouble:0.0];  // guard: no initial error means 0% reduction
 	self.distortionRemainingPerPoint = [NSNumber numberWithDouble:final_RMS_error];
 	/*
 	 NSLog(@"Distortion cost function was reduced by %1.2f percent.",100*(initial_cost_function_value - final_cost_function_value) / initial_cost_function_value);

@@ -670,6 +670,10 @@ static void *AVSPPlayerCurrentTimeContext = &AVSPPlayerCurrentTimeContext;
 		[[NSNotificationCenter defaultCenter] removeObserver:self];
 	} @catch (id exception) {
 	}
+	@try {
+		[[NSNotificationCenter defaultCenter] removeObserver:videoClipArrayController];  // registered on videoClipArrayController, not self, so removeObserver:self above doesn't cover it
+	} @catch (id exception) {
+	}
 	[self carefullyRemoveObserver:self forKeyPath:@"portraitSubject"];
 	[self carefullyRemoveObserver:syncedPlaybackView forKeyPath:@"bookmarkIsSet1"];
 	[self carefullyRemoveObserver:syncedPlaybackView forKeyPath:@"bookmarkIsSet2"];
