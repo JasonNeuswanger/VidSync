@@ -36,9 +36,9 @@
 - (NSXMLNode *) representationAsXMLNode	// partial implementation
 {
 	NSXMLElement *mainElement = [[NSXMLElement alloc] initWithName:@"distortionPoint"];
-	[mainElement addAttribute:[NSXMLNode attributeWithName:@"index" stringValue:[self.index stringValue]]];
-	[mainElement addAttribute:[NSXMLNode attributeWithName:@"x" stringValue:[self.screenX stringValue]]];
-	[mainElement addAttribute:[NSXMLNode attributeWithName:@"y" stringValue:[self.screenY stringValue]]];
+	[mainElement addAttribute:[NSXMLNode attributeWithName:@"index" stringValue:[self.index stringValue] ?: @""]];
+	[mainElement addAttribute:[NSXMLNode attributeWithName:@"x" stringValue:[self.screenX stringValue] ?: @""]];
+	[mainElement addAttribute:[NSXMLNode attributeWithName:@"y" stringValue:[self.screenY stringValue] ?: @""]];
 	return mainElement;
 }
 

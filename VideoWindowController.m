@@ -509,15 +509,15 @@
 			CMTime actualCopiedTime;
 			NSError *err;
 			CGImageRef fullScreenImage = [assetImageGenerator copyCGImageAtTime:movieTime actualTime:&actualCopiedTime error:&err];
-			CGImageRef portraitImage = CGImageCreateWithImageInRect(fullScreenImage,imageRect);
-			CGImageRelease(fullScreenImage);  // copyCGImageAtTime follows Create rule; release after CGImageCreateWithImageInRect copies it
 			if (err != nil) [NSApp presentError:err];
-
-			NSImage *__strong returnImage = [[NSImage alloc] initWithCGImage:portraitImage size:NSZeroSize];
-			CGImageRelease(portraitImage);  // NSImage retains it internally; release our Create reference
-			VSTrackedObject *__weak currentObject = [[[[self document] trackedObjectsController] selectedObjects] firstObject];
-			
-			[[[self document] objectsPortraitsArrayController] addImage:returnImage ofObject:currentObject fromSourceClip:self.videoClip inRect:imageRect withTimecode:[[self document] currentMasterTimeString]];
+			if (fullScreenImage != NULL) {
+				CGImageRef portraitImage = CGImageCreateWithImageInRect(fullScreenImage,imageRect);
+				CGImageRelease(fullScreenImage);  // copyCGImageAtTime follows Create rule; release after CGImageCreateWithImageInRect copies it
+				NSImage *__strong returnImage = [[NSImage alloc] initWithCGImage:portraitImage size:NSZeroSize];
+				CGImageRelease(portraitImage);  // NSImage retains it internally; release our Create reference
+				VSTrackedObject *__weak currentObject = [[[[self document] trackedObjectsController] selectedObjects] firstObject];
+				[[[self document] objectsPortraitsArrayController] addImage:returnImage ofObject:currentObject fromSourceClip:self.videoClip inRect:imageRect withTimecode:[[self document] currentMasterTimeString]];
+			}
 		}
 		self.videoClip.project.document.portraitSubject = nil;
 		[self refreshOverlay];

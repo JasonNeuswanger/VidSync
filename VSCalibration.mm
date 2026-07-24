@@ -1534,6 +1534,7 @@ int refractionRootFunc_f(const gsl_vector* x, void* params, gsl_vector* f)
 
  - (cv::Point2f) centroidOfCvPoints:(std::vector<cv::Point2f> &)points
  {
+	 if (points.empty()) return cv::Point2f(0.0f, 0.0f);
 	 double xtot = 0.0;
 	 double ytot = 0.0;
 	 for (int i=0; i<points.size(); i++) {
@@ -1567,17 +1568,10 @@ int refractionRootFunc_f(const gsl_vector* x, void* params, gsl_vector* f)
 
 - (int) indexOfPointEqualTo:(cv::Point2f &)position inCvPoints:(std::vector<cv::Point2f> &)points
 {
-	int theIndex = 0;
-	int i = 0;
-	bool found = false;
-	while (!found) {
-		if (position.x == points[i].x && position.y == points[i].y) {
-			theIndex = i;
-			found = true;
-		}
-		i++;
+	for (int i = 0; i < (int)points.size(); i++) {
+		if (position.x == points[i].x && position.y == points[i].y) return i;
 	}
-	return theIndex;
+	return [self indexOfNearestPointTo:position inCvPoints:points bestDistance:nil];
 }
 
 - (std::vector<cv::Point2f>) buildLineFromPoints:(std::vector<cv::Point2f> &)allPoints byExtending:(int)startPointInd inDirectionOf:(int)dirPointInd
@@ -1709,6 +1703,7 @@ int refractionRootFunc_f(const gsl_vector* x, void* params, gsl_vector* f)
 	CGImageRef videoFrameCG = [self.videoClip.project.document stillCGImageFromVSVideoClip:self.videoClip atMasterTime:[self.videoClip.project.document currentMasterTime] showOverlay:FALSE];
 	cv::Mat videoFrameImage;
 	CGImageToMat(videoFrameCG, videoFrameImage); // included from <opencv2/imgcodecs/macosx.h>
+	CGImageRelease(videoFrameCG);  // videoFrameCG data has been copied into videoFrameImage; release our Create reference
 	videoFrameImage.reshape(1);	// convert to single-channel for feature tracking
 	cvtColor(videoFrameImage, videoFrameImage, cv::COLOR_BGR2GRAY);
 	
@@ -1729,7 +1724,8 @@ int refractionRootFunc_f(const gsl_vector* x, void* params, gsl_vector* f)
 	for (int i = 0; i < foundCorners.size(); i++) {
 		[self.autodetectedPoints addObject:[NSValue valueWithPoint:NSMakePoint(foundCorners[i].x,foundCorners[i].y)]];
 	}
-	
+	if (foundCorners.empty()) return;  // no corners detected; nothing to build lines from
+
 	// Build the first distortion line
 	int centerIndex, nextIndex;
 	// Manually seed the start of the line creation algorithm if the user has entered exactly one line with exactly two points as the seed.
@@ -1749,7 +1745,8 @@ int refractionRootFunc_f(const gsl_vector* x, void* params, gsl_vector* f)
 		nextIndex = [self indexOfNearestPointTo:foundCorners[centerIndex] inCvPoints:foundCorners bestDistance:nil];
 	}
 	std::vector<cv::Point2f> firstLine = [self buildLineFromPoints:foundCorners byExtending:centerIndex inDirectionOf:nextIndex];
-	
+	if (firstLine.size() < 2) return;  // too few aligned corners to build a valid grid line
+
 	// I'm not adding the first line to the object model here, because it would be duplicated later when crossing the crossing lines, and it's easier to just not add it here
 	// than to skip over adding it there.
 	
@@ -1788,7 +1785,8 @@ int refractionRootFunc_f(const gsl_vector* x, void* params, gsl_vector* f)
 	}
 	
 	// Now build the set of crossing lines for the middle crossing line, completing the grid.  We start with the whole block and the indices switched, to catch the first line.
-	
+	if (midCrossingLine.size() < 2) return;  // midCrossingLine was not populated or too short; guard against empty vector access
+
 	vec = cv::Point2f(midCrossingLine[0].x - midCrossingLine[1].x,midCrossingLine[0].y - midCrossingLine[1].y);
 	newDir = cv::Point2f(-vec.y,vec.x);
 	rotatedTargetGuess = cv::Point2f(midCrossingLine[0].x + newDir.x, midCrossingLine[0].y + newDir.y);
