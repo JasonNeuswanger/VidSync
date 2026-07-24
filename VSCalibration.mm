@@ -1186,13 +1186,13 @@ int refractionRootFunc_f(const gsl_vector* x, void* params, gsl_vector* f)
 	double normalizingMatrix[9] = {screenScaleFactor, 0, 0, 0, screenScaleFactor, 0, -screenScaleFactor*screenCentroid.x, -screenScaleFactor*screenCentroid.y, 1};       // Normalizes screen coordinates.
 	double denormalizingMatrix[9] = {1/worldScaleFactor, 0, 0, 0, 1/worldScaleFactor, 0, worldCentroid.x, worldCentroid.y, 1};                                          // De-normalizes quadrat coordinates.
 	double halfway[9];
+	memcpy(x_r, p, 9 * sizeof (double));			// copy normalized p into x_r for residual before denormalization overwrites it
 	[VSCalibration rightMultiply3x3Matrix:p trans:CblasNoTrans by3x3Matrix:normalizingMatrix trans:CblasNoTrans intoResultingMatrix:halfway];
 	[VSCalibration rightMultiply3x3Matrix:denormalizingMatrix trans:CblasNoTrans by3x3Matrix:halfway trans:CblasNoTrans intoResultingMatrix:p];
-	
+
 	// Now we can calculate the inverse of the new p as normal in the non-normalized coordinates.
-	
+
 	memcpy(pinv, p, 9 * sizeof (double));			// copy p into pinv for inversion
-	memcpy(x_r, p, 9 * sizeof (double));			// copy p into x_r for use calculating residuals
 	[VSCalibration invert3x3Matrix:pinv];	// place the inverse of p into pinv
 	
 	double residual = [self leastSquaresResidualWithA:a_r x:x_r rowsA:numRows];	// the least squares residual of the calibration
