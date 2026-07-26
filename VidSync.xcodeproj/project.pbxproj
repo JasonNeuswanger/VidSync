@@ -50,6 +50,7 @@
 		968A74B825C296C80054E701 /* libgsl.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 968A74B725C296780054E701 /* libgsl.a */; };
 		968A74BB25C29C500054E701 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 968A74BA25C29C500054E701 /* Images.xcassets */; };
 		968DF6BB3015CFF5004640DF /* VSChessboardDetector.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 968DF6BA3015CFF5004640DF /* VSChessboardDetector.cpp */; };
+		968DF6BE3015FE72004640DF /* VSBindableTabView.m in Sources */ = {isa = PBXBuildFile; fileRef = 968DF6BD3015FE72004640DF /* VSBindableTabView.m */; };
 		969065B5116AEA0B002B3F20 /* ObjectSynonymizeArrayController.m in Sources */ = {isa = PBXBuildFile; fileRef = 969065B4116AEA0B002B3F20 /* ObjectSynonymizeArrayController.m */; };
 		9690663D116AFB08002B3F20 /* TypeIndexNameSortedArrayController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9690663C116AFB08002B3F20 /* TypeIndexNameSortedArrayController.m */; };
 		9695B87918BC4F4100D15C38 /* VSAVPlayerView.m in Sources */ = {isa = PBXBuildFile; fileRef = 9695B87818BC4F4100D15C38 /* VSAVPlayerView.m */; };
@@ -483,6 +484,8 @@
 		968A767725C2A9480054E701 /* gsl_blas_types.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gsl_blas_types.h; sourceTree = "<group>"; };
 		968DF6B93015CFAA004640DF /* VSChessboardDetector.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = VSChessboardDetector.hpp; sourceTree = "<group>"; };
 		968DF6BA3015CFF5004640DF /* VSChessboardDetector.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = VSChessboardDetector.cpp; sourceTree = "<group>"; };
+		968DF6BC3015FE62004640DF /* VSBindableTabView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = VSBindableTabView.h; sourceTree = "<group>"; };
+		968DF6BD3015FE72004640DF /* VSBindableTabView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = VSBindableTabView.m; sourceTree = "<group>"; };
 		969065B3116AEA0B002B3F20 /* ObjectSynonymizeArrayController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ObjectSynonymizeArrayController.h; sourceTree = "<group>"; };
 		969065B4116AEA0B002B3F20 /* ObjectSynonymizeArrayController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObjectSynonymizeArrayController.m; sourceTree = "<group>"; };
 		9690663B116AFB08002B3F20 /* TypeIndexNameSortedArrayController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TypeIndexNameSortedArrayController.h; sourceTree = "<group>"; };
@@ -1226,6 +1229,8 @@
 				96B766B918BEB26D005EB380 /* Synced Playback Panel Views */,
 				96B766BA18BEB2A4005EB380 /* Portrait Views */,
 				96A8734618BF36B5000D1B75 /* Value Transformers */,
+				968DF6BC3015FE62004640DF /* VSBindableTabView.h */,
+				968DF6BD3015FE72004640DF /* VSBindableTabView.m */,
 			);
 			name = "View Classes";
 			sourceTree = "<group>";
@@ -1348,6 +1353,7 @@
 				96AD259F10AA0B8F00FA1217 /* VSCalibration.mm in Sources */,
 				96AD296710ACEDBD00FA1217 /* VSCalibrationPoint.m in Sources */,
 				96AD2FB010B37D4400FA1217 /* VS2DMatrixToStringTransformer.m in Sources */,
+				968DF6BE3015FE72004640DF /* VSBindableTabView.m in Sources */,
 				96AD316310B78C2100FA1217 /* VSVisibleItem.m in Sources */,
 				96AD316A10B78DBB00FA1217 /* VSTrackedObjectType.m in Sources */,
 				961A2F4E18B43FCE009EA198 /* VideoControlButton.m in Sources */,

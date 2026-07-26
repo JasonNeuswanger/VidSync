@@ -2072,9 +2072,15 @@ static const int kMinPlumblinePoints = 6;
 	const double residualPerPoint = sqrt(totalSquaredResidual / (double)totalPoints);
 	// Written through the entity rather than as a property, so the app still runs against a
 	// document model that predates this attribute; the value is simply not recorded then.
+	// The displayed value is read through -distortionHoldOutResidualOrNil rather than the
+	// attribute, so that it survives a document model without the attribute. That accessor is a
+	// plain method and generates no change notification of its own, so one is sent by hand or
+	// the bound field would keep showing the previous calibration's figure.
+	[self willChangeValueForKey:@"distortionHoldOutResidualOrNil"];
 	if ([[[self entity] attributesByName] objectForKey:@"distortionHoldOutResidual"] != nil) {
 		[self setValue:[NSNumber numberWithDouble:residualPerPoint] forKey:@"distortionHoldOutResidual"];
 	}
+	[self didChangeValueForKey:@"distortionHoldOutResidualOrNil"];
 }
 
 - (NSNumber *) distortionHoldOutResidualOrNil
