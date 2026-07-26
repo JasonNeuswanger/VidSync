@@ -227,16 +227,20 @@ NSPoint project2DPoint(NSPoint pt, double projectionMatrix[9])
 			free(params.frontFacePlanes);
 			// Calculate the hint lines
 			for (VSEventScreenPoint *screenPoint in calibratedScreenPoints) [screenPoint calculateHintLines];
-			// Calculate the new Mean PLD (point-line distance)        VSLine3D lines[numLines];
-			VSLine3D lines[numLines];
-			for (int i=0; i<numLines; i++) lines[i] = [[[calibratedScreenPoints allObjects] objectAtIndex:i] computeLine3D:YES];
-			double PLD;
-			[UtilityFunctions intersectionOfNumber:numLines of3DLines:lines meanPLD:&PLD];
-			self.meanPLD = [NSNumber numberWithDouble:PLD];
+			// meanPLD is left as calculate3DCoordsLinear set it, which is the quantity equation 4 of
+			// Neuswanger et al. (2016) defines: the mean distance from the CPA to the lines it was calculated
+			// from. This used to be overwritten here by rebuilding the lines from each camera's *reprojected*
+			// screen point, which was wrong twice over. reprojectedScreenPoint: returns coordinates that are
+			// already undistorted, and computeLine3D passes them through projectScreenPoint:toQuadratSurface:,
+			// which undistorts a second time. And even without that, lines rebuilt from reprojected points do
+			// not measure how far apart the user's two sightlines were; they mostly measure how inconsistent
+			// the independently fitted front and back homographies are with each other, which is already
+			// reported per calibration as cameraMeanPLD.
 		} else {    // if not using iterative intersections, just set the world coords to the linear result
 			self.worldX = [NSNumber numberWithDouble:linearIntersectionPoint.x];
 			self.worldY = [NSNumber numberWithDouble:linearIntersectionPoint.y];
 			self.worldZ = [NSNumber numberWithDouble:linearIntersectionPoint.z];
+			self.reprojectionErrorNorm = nil;   // never computed on this path; leaving it would report a stale value from a previous solve
 		}
 		
 		// Now calculate the distance from the point to the nearest camera
@@ -259,6 +263,9 @@ NSPoint project2DPoint(NSPoint pt, double projectionMatrix[9])
 		self.worldX = nil;
 		self.worldY = nil;
 		self.worldZ = nil;
+		self.meanPLD = nil;                 // clear the diagnostics too, so a point that has lost its second
+		self.reprojectionErrorNorm = nil;   // view doesn't keep reporting the errors from when it still had one
+		self.nearestCameraDistance = nil;
 	}
 	if ([self.screenPoints count] > 0) {                        // After updating a point (whether 3D or not) set the project file to know it was updated sinece last export.
 		VSEventScreenPoint *pt = [self.screenPoints anyObject]; // The purpose of this is for my code that reads VidSync Document files directly to check progress of analysis by colleagues in a whole folder.
@@ -275,9 +282,18 @@ NSPoint project2DPoint(NSPoint pt, double projectionMatrix[9])
 
 - (VSPoint3D) calculate3DCoordsLinear
 {
-	size_t numLines = [self.screenPoints count];
+	// Only screen points on calibrated clips define a usable line of sight, and only those are counted by
+	// calculate3DCoords above. Iterating all of self.screenPoints instead let an uncalibrated clip contribute
+	// a meaningless line to both the CPA and the mean PLD.
+	NSArray *screenPointsToUse = [[self calibratedScreenPoints] allObjects];
+	size_t numLines = [screenPointsToUse count];
+	if (numLines < 2) {     // fewer than two sightlines cannot define an intersection, and lines[0] would be a zero-length array
+		self.meanPLD = nil;
+		VSPoint3D zero = {0.0, 0.0, 0.0};
+		return zero;
+	}
 	VSLine3D lines[numLines];
-	for (int i=0; i<numLines; i++) lines[i] = [[[self.screenPoints allObjects] objectAtIndex:i] computeLine3D:NO];
+	for (int i=0; i<numLines; i++) lines[i] = [[screenPointsToUse objectAtIndex:i] computeLine3D:NO];
 	double PLD;
 	VSPoint3D intersection = [UtilityFunctions intersectionOfNumber:numLines of3DLines:lines meanPLD:&PLD];
 	self.meanPLD = [NSNumber numberWithDouble:PLD];
