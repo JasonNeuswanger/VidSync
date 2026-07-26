@@ -487,6 +487,7 @@
 		968DF6BC3015FE62004640DF /* VSBindableTabView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = VSBindableTabView.h; sourceTree = "<group>"; };
 		968DF6BD3015FE72004640DF /* VSBindableTabView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = VSBindableTabView.m; sourceTree = "<group>"; };
 		968DF6C03016845E004640DF /* VidSyncProject 1.30.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "VidSyncProject 1.30.xcdatamodel"; sourceTree = "<group>"; };
+		968DF6C13016C3AD004640DF /* VidSyncProject 1.31.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "VidSyncProject 1.31.xcdatamodel"; sourceTree = "<group>"; };
 		969065B3116AEA0B002B3F20 /* ObjectSynonymizeArrayController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ObjectSynonymizeArrayController.h; sourceTree = "<group>"; };
 		969065B4116AEA0B002B3F20 /* ObjectSynonymizeArrayController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObjectSynonymizeArrayController.m; sourceTree = "<group>"; };
 		9690663B116AFB08002B3F20 /* TypeIndexNameSortedArrayController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TypeIndexNameSortedArrayController.h; sourceTree = "<group>"; };
@@ -1672,6 +1673,7 @@
 		96AE98861165348400118398 /* VidSyncProject.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
+				968DF6C13016C3AD004640DF /* VidSyncProject 1.31.xcdatamodel */,
 				968DF6C03016845E004640DF /* VidSyncProject 1.30.xcdatamodel */,
 				9643132E2630D01100837CE1 /* VidSyncProject 1.29.xcdatamodel */,
 				96090A161CAB838D00E98599 /* VidSyncProject 1.28.xcdatamodel */,
