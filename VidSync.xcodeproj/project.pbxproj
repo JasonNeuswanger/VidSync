@@ -49,6 +49,7 @@
 		968A74B325C1CFC40054E701 /* opencv2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 968A74B225C1CFC30054E701 /* opencv2.framework */; };
 		968A74B825C296C80054E701 /* libgsl.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 968A74B725C296780054E701 /* libgsl.a */; };
 		968A74BB25C29C500054E701 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 968A74BA25C29C500054E701 /* Images.xcassets */; };
+		968DF6BB3015CFF5004640DF /* VSChessboardDetector.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 968DF6BA3015CFF5004640DF /* VSChessboardDetector.cpp */; };
 		969065B5116AEA0B002B3F20 /* ObjectSynonymizeArrayController.m in Sources */ = {isa = PBXBuildFile; fileRef = 969065B4116AEA0B002B3F20 /* ObjectSynonymizeArrayController.m */; };
 		9690663D116AFB08002B3F20 /* TypeIndexNameSortedArrayController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9690663C116AFB08002B3F20 /* TypeIndexNameSortedArrayController.m */; };
 		9695B87918BC4F4100D15C38 /* VSAVPlayerView.m in Sources */ = {isa = PBXBuildFile; fileRef = 9695B87818BC4F4100D15C38 /* VSAVPlayerView.m */; };
@@ -480,6 +481,8 @@
 		968A75C525C2A5870054E701 /* gsl_sf_elementary.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gsl_sf_elementary.h; sourceTree = "<group>"; };
 		968A765425C2A9480054E701 /* gsl_blas.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gsl_blas.h; sourceTree = "<group>"; };
 		968A767725C2A9480054E701 /* gsl_blas_types.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gsl_blas_types.h; sourceTree = "<group>"; };
+		968DF6B93015CFAA004640DF /* VSChessboardDetector.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = VSChessboardDetector.hpp; sourceTree = "<group>"; };
+		968DF6BA3015CFF5004640DF /* VSChessboardDetector.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = VSChessboardDetector.cpp; sourceTree = "<group>"; };
 		969065B3116AEA0B002B3F20 /* ObjectSynonymizeArrayController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ObjectSynonymizeArrayController.h; sourceTree = "<group>"; };
 		969065B4116AEA0B002B3F20 /* ObjectSynonymizeArrayController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObjectSynonymizeArrayController.m; sourceTree = "<group>"; };
 		9690663B116AFB08002B3F20 /* TypeIndexNameSortedArrayController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TypeIndexNameSortedArrayController.h; sourceTree = "<group>"; };
@@ -1178,6 +1181,8 @@
 				96AD259E10AA0B8F00FA1217 /* VSCalibration.mm */,
 				96A8734A18BFD4E0000D1B75 /* VSVisibleItem Classes */,
 				96A8734B18BFD5AB000D1B75 /* Other Visible Items */,
+				968DF6B93015CFAA004640DF /* VSChessboardDetector.hpp */,
+				968DF6BA3015CFF5004640DF /* VSChessboardDetector.cpp */,
 			);
 			name = "Model Classes";
 			sourceTree = "<group>";
@@ -1348,6 +1353,7 @@
 				961A2F4E18B43FCE009EA198 /* VideoControlButton.m in Sources */,
 				96AD322E10B7D70E00FA1217 /* VSTrackedEventType.m in Sources */,
 				96E1284410F57EF900DAF12C /* TrackedObjectArrayController.m in Sources */,
+				968DF6BB3015CFF5004640DF /* VSChessboardDetector.cpp in Sources */,
 				96E1284E10F678C900DAF12C /* VSTrackedObject.m in Sources */,
 				96E128DC10FC418B00DAF12C /* TrackedEventArrayController.m in Sources */,
 				9612EC2B18B9426700BBED62 /* MainProjectWindow.m in Sources */,

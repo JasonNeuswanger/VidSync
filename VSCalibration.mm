@@ -28,6 +28,7 @@
 #import "gsl/gsl_multimin.h"
 
 #import "VSCalibration.h"
+#import "VSChessboardDetector.hpp"
 
 #pragma mark
 #pragma mark C Functions for Distortion Correction
@@ -1697,13 +1698,40 @@ int refractionRootFunc_f(const gsl_vector* x, void* params, gsl_vector* f)
 
 - (void) autodetectChessboardPlumblinesLattice
 {
-	// Placeholder for the saddle-point detection and lattice assembly pipeline. Until that lands,
-	// say so plainly rather than appearing to succeed while producing no plumblines.
+	// Stage A only so far: detect the corners and show them. Lattice basis estimation and grid
+	// assembly come next; until they land this method deliberately creates no plumblines, so that
+	// the corner detection can be judged on its own against the legacy method's point cloud.
+
+	// Make sure the user can see the detected points rather than wondering whether anything happened.
+	[[[NSUserDefaultsController sharedUserDefaultsController] values] setValue:[NSNumber numberWithBool:TRUE] forKey:@"showDistortionOverlay"];
+
+	CGImageRef videoFrameCG = [self.videoClip.project.document stillCGImageFromVSVideoClip:self.videoClip atMasterTime:[self.videoClip.project.document currentMasterTime] showOverlay:FALSE];
+	// Do NOT release videoFrameCG; see the ownership note in autodetectChessboardPlumblinesLegacy.
+	cv::Mat videoFrameImage;
+	CGImageToMat(videoFrameCG, videoFrameImage); // included from <opencv2/imgcodecs/macosx.h>
+	cv::Mat gray;
+	if (videoFrameImage.channels() == 1) {
+		gray = videoFrameImage;
+	} else {
+		cvtColor(videoFrameImage, gray, cv::COLOR_BGR2GRAY);
+	}
+
+	vidsync::CornerDetectionResult detection = vidsync::detectChessboardCorners(gray);
+
+	// OpenCV puts the origin at the top left; VidSync puts it at the bottom left.
+	const double clipHeight = [self.videoClip clipHeight];
+	self.autodetectedPoints = [NSMutableSet setWithCapacity:detection.corners.size()];
+	for (size_t i = 0; i < detection.corners.size(); i++) {
+		const cv::Point2f p = detection.corners[i].position;
+		[self.autodetectedPoints addObject:[NSValue valueWithPoint:NSMakePoint(p.x, clipHeight - p.y)]];
+	}
+	[self.videoClip.windowController refreshOverlay];
+
 	NSAlert *alert = [[NSAlert alloc] init];
-	[alert setMessageText:@"Lattice plumbline detection is not implemented yet."];
-	[alert setInformativeText:@"Set the plumbline detection method back to \"Legacy\" to use the existing chessboard detection algorithm."];
+	[alert setMessageText:[NSString stringWithFormat:@"Detected %lu chessboard corners.", (unsigned long)detection.corners.size()]];
+	[alert setInformativeText:[NSString stringWithFormat:@"The saddle response produced %d candidates, of which %lu passed appearance scoring and sub-pixel refinement. Estimated cell size: %.1f px.\n\nThe detected corners are drawn on the video overlay. Lattice assembly is not implemented yet, so no plumblines were created; switch the detection method back to \"Legacy\" to build plumblines.", detection.saddleCandidateCount, (unsigned long)detection.corners.size(), detection.estimatedCellSize]];
 	[alert addButtonWithTitle:@"Ok"];
-	[alert setAlertStyle:NSAlertStyleWarning];
+	[alert setAlertStyle:NSAlertStyleInformational];
 	[alert runModal];
 }
 
