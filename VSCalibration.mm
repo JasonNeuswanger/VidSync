@@ -36,11 +36,12 @@
 
 double orthogonalRegressionLineCostFunction(NSPoint line[], const size_t numLinePoints)
 // This is a cost function measuring the "straightness" of a line based on orthogonal distance regression.
-// It returns the sums of squared residuals from the line, and places the length of the line (the distance
-// between its endpoints) in linePixelLength.  The formula comes from a 2005 post on the Ask Dr. Math forum,
-// at http://mathforum.org/library/drmath/view/68362.html
+// It returns the sum of squared perpendicular residuals from the best-fit line.  The formula for the
+// best-fit angle comes from a 2005 post on the Ask Dr. Math forum, at
+// http://mathforum.org/library/drmath/view/68362.html
 {
-	// Find the centroid of the line
+	if (numLinePoints < 3) return 0.0;  // two points are collinear by definition, and one has no line to fit
+	// Find the centroid of the line, which the best-fit line passes through
 	NSPoint centroid = NSMakePoint(0.0,0.0);
 	for (int i = 0; i < numLinePoints; i++) {
 		centroid.x += line[i].x;
@@ -55,12 +56,18 @@ double orthogonalRegressionLineCostFunction(NSPoint line[], const size_t numLine
 		mainsum += (line[i].x - centroid.x) * (line[i].y - centroid.y);
 		mainsqsum += (pow((line[i].x - centroid.x),2.0) - pow((line[i].y - centroid.y),2.0));
 	}
-	// Calculate the best-fit angle and sum of squared perpendicular distances
+	if (mainsum == 0.0 && mainsqsum == 0.0) return 0.0;  // every point is at the centroid, so atan2 would be undefined
+	// Calculate the best-fit angle and sum of squared perpendicular distances.  The residuals are measured
+	// about the centroid rather than about the line's x-intercept.  Both describe the same line, but the
+	// intercept form is xInt = centroid.x - centroid.y/tan(theta), which diverges as theta approaches zero:
+	// for an exactly horizontal line tan(theta) is 0, xInt is infinite, and infinity times sin(0) made the
+	// whole cost function NaN, poisoning the entire 13-parameter fit from one bad plumbline.
 	const double theta = 0.5 * atan2(2.0 * mainsum, mainsqsum);
-	const double xInt = centroid.x - centroid.y / tan(theta);
+	const double sinTheta = sin(theta);
+	const double cosTheta = cos(theta);
 	double ssq = 0.0;
 	for (int i = 0; i < numLinePoints; i++) {
-		ssq += pow(-(line[i].x - xInt) * sin(theta) + line[i].y * cos(theta),2.0);
+		ssq += pow(-(line[i].x - centroid.x) * sinTheta + (line[i].y - centroid.y) * cosTheta,2.0);
 	}
 	return ssq;
 }
