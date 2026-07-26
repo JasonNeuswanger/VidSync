@@ -92,7 +92,7 @@ public:
     CV_WRAP
     IntelligentScissorsMB& applyImage(InputArray image);
 
-    /** @brief Specify custom features of imput image
+    /** @brief Specify custom features of input image
      *
      * Customized advanced variant of applyImage() call.
      *
@@ -121,7 +121,7 @@ public:
      *
      * @param targetPt The target point
      * @param[out] contour The list of pixels which contains optimal path between the source and the target points of the image. Type is CV_32SC2 (compatible with `std::vector<Point>`)
-     * @param backward Flag to indicate reverse order of retrived pixels (use "true" value to fetch points from the target to the source point)
+     * @param backward Flag to indicate reverse order of retrieved pixels (use "true" value to fetch points from the target to the source point)
      */
     CV_WRAP void getContour(const Point& targetPt, OutputArray contour, bool backward = false) const;
 

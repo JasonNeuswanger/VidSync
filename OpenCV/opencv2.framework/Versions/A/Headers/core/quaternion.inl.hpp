@@ -28,7 +28,7 @@
 #define OPENCV_CORE_QUATERNION_INL_HPP
 
 #ifndef OPENCV_CORE_QUATERNION_HPP
-#erorr This is not a standalone header. Include quaternion.hpp instead.
+#error This is not a standalone header. Include quaternion.hpp instead.
 #endif
 
 //@cond IGNORE
@@ -54,7 +54,7 @@ Quat<T> Quat<T>::createFromAngleAxis(const T angle, const Vec<T, 3> &axis)
     {
         CV_Error(Error::StsBadArg, "this quaternion does not represent a rotation");
     }
-    const T angle_half = angle * 0.5;
+    const T angle_half = angle * T(0.5);
     w = std::cos(angle_half);
     const T sin_v = std::sin(angle_half);
     const T sin_norm = sin_v / vNorm;
@@ -79,35 +79,35 @@ Quat<T> Quat<T>::createFromRotMat(InputArray _R)
     T trace = R(0, 0) + R(1, 1) + R(2, 2);
     if (trace > 0)
     {
-        S = std::sqrt(trace + 1) * 2;
+        S = std::sqrt(trace + 1) * T(2);
         x = (R(1, 2) - R(2, 1)) / S;
         y = (R(2, 0) - R(0, 2)) / S;
         z = (R(0, 1) - R(1, 0)) / S;
-        w = -0.25 * S;
+        w = -T(0.25) * S;
     }
     else if (R(0, 0) > R(1, 1) && R(0, 0) > R(2, 2))
     {
 
-        S = std::sqrt(1.0 + R(0, 0) - R(1, 1) - R(2, 2)) * 2;
-        x = -0.25 * S;
+        S = std::sqrt(T(1.0) + R(0, 0) - R(1, 1) - R(2, 2)) * T(2);
+        x = -T(0.25) * S;
         y = -(R(1, 0) + R(0, 1)) / S;
         z = -(R(0, 2) + R(2, 0)) / S;
         w = (R(1, 2) - R(2, 1)) / S;
     }
     else if (R(1, 1) > R(2, 2))
     {
-        S = std::sqrt(1.0 - R(0, 0) + R(1, 1) - R(2, 2)) * 2;
+        S = std::sqrt(T(1.0) - R(0, 0) + R(1, 1) - R(2, 2)) * T(2);
         x = (R(0, 1) + R(1, 0)) / S;
-        y = 0.25 * S;
+        y = T(0.25) * S;
         z = (R(1, 2) + R(2, 1)) / S;
         w = (R(0, 2) - R(2, 0)) / S;
     }
     else
     {
-        S = std::sqrt(1.0 - R(0, 0) - R(1, 1) + R(2, 2)) * 2;
+        S = std::sqrt(T(1.0) - R(0, 0) - R(1, 1) + R(2, 2)) * T(2);
         x = (R(0, 2) + R(2, 0)) / S;
         y = (R(1, 2) + R(2, 1)) / S;
-        z = 0.25 * S;
+        z = T(0.25) * S;
         w = -(R(0, 1) - R(1, 0)) / S;
     }
     return Quat<T> (w, x, y, z);
@@ -268,7 +268,7 @@ inline Quat<T>& Quat<T>::operator/=(const T a)
 template <typename T>
 inline Quat<T> Quat<T>::operator/(const T a) const
 {
-    const T a_inv = 1.0 / a;
+    const T a_inv = T(1.0) / a;
     return Quat<T>(w * a_inv, x * a_inv, y * a_inv, z * a_inv);
 }
 
@@ -745,8 +745,8 @@ Quat<T> Quat<T>::lerp(const Quat<T> &q0, const Quat<T> &q1, const T t)
 template <typename T>
 Quat<T> Quat<T>::slerp(const Quat<T> &q0, const Quat<T> &q1, const T t, QuatAssumeType assumeUnit, bool directChange)
 {
-    Quatd v0(q0);
-    Quatd v1(q1);
+    Quat<T> v0(q0);
+    Quat<T> v1(q1);
     if (!assumeUnit)
     {
         v0 = v0.normalize();
@@ -754,7 +754,7 @@ Quat<T> Quat<T>::slerp(const Quat<T> &q0, const Quat<T> &q1, const T t, QuatAssu
     }
     T cosTheta = v0.dot(v1);
     constexpr T DOT_THRESHOLD = 0.995;
-    if (cosTheta > DOT_THRESHOLD)
+    if (std::abs(cosTheta) > DOT_THRESHOLD)
     {
         return nlerp(v0, v1, t, QUAT_ASSUME_UNIT);
     }
@@ -843,7 +843,7 @@ Quat<T> Quat<T>::interPoint(const Quat<T> &q0, const Quat<T> &q1,
 template <typename T>
 Quat<T> Quat<T>::spline(const Quat<T> &q0, const Quat<T> &q1, const Quat<T> &q2, const Quat<T> &q3, const T t, QuatAssumeType assumeUnit)
 {
-    Quatd v0(q0), v1(q1), v2(q2), v3(q3);
+    Quat<T> v0(q0), v1(q1), v2(q2), v3(q3);
     if (!assumeUnit)
     {
         v0 = v0.normalize();
@@ -880,7 +880,7 @@ Quat<T> createFromAxisRot(int axis, const T theta)
     CV_Assert(0);
 }
 
-static bool isIntAngleType(QuatEnum::EulerAnglesType eulerAnglesType)
+inline bool isIntAngleType(QuatEnum::EulerAnglesType eulerAnglesType)
 {
     return eulerAnglesType < QuatEnum::EXT_XYZ;
 }

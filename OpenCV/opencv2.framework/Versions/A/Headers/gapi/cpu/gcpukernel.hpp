@@ -2,11 +2,16 @@
 // It is subject to the license terms in the LICENSE file found in the top-level directory
 // of this distribution and at http://opencv.org/license.html.
 //
-// Copyright (C) 2018-2020 Intel Corporation
+// Copyright (C) 2018-2022 Intel Corporation
 
 
 #ifndef OPENCV_GAPI_GCPUKERNEL_HPP
 #define OPENCV_GAPI_GCPUKERNEL_HPP
+
+#if defined _MSC_VER
+#pragma warning(push)
+#pragma warning(disable: 4702)  // "Unreachable code" on postprocess(...) call inside OCVCallHelper
+#endif
 
 #include <functional>
 #include <unordered_map>
@@ -28,18 +33,14 @@ namespace gimpl
 {
     // Forward-declare an internal class
     class GCPUExecutable;
-
-    namespace render
-    {
-    namespace ocv
-    {
-        class GRenderExecutable;
-    }
-    }
 } // namespace gimpl
 
 namespace gapi
 {
+/**
+ * @brief This namespace contains G-API CPU backend functions,
+ * structures, and symbols.
+ */
 namespace cpu
 {
     /**
@@ -129,7 +130,6 @@ protected:
     std::unordered_map<std::size_t, GRunArgP> m_results;
 
     friend class gimpl::GCPUExecutable;
-    friend class gimpl::render::ocv::GRenderExecutable;
 };
 
 class GAPI_EXPORTS GCPUKernel
@@ -187,6 +187,11 @@ template<> struct get_in<cv::GArray<cv::GMat> >: public get_in<cv::GArray<cv::Ma
 
 //FIXME(dm): GArray<Scalar>/GArray<GScalar> conversion should be done more gracefully in the system
 template<> struct get_in<cv::GArray<cv::GScalar> >: public get_in<cv::GArray<cv::Scalar> >
+{
+};
+
+// FIXME(dm): GArray<vector<U>>/GArray<GArray<U>> conversion should be done more gracefully in the system
+template<typename U> struct get_in<cv::GArray<cv::GArray<U>> >: public get_in<cv::GArray<std::vector<U>> >
 {
 };
 
@@ -438,7 +443,12 @@ struct OCVStCallHelper<Impl, std::tuple<Ins...>, std::tuple<Outs...>> :
     template<int... IIs, int... OIs>
     static void call_impl(GCPUContext &ctx, detail::Seq<IIs...>, detail::Seq<OIs...>)
     {
-        auto& st = *ctx.state().get<std::shared_ptr<typename Impl::State>>();
+        auto state_ptr = ctx.state().get<std::shared_ptr<typename Impl::State>>();
+        if (state_ptr == nullptr) {
+            CV_Error(cv::Error::StsNullPtr, "Stateful kernel's state is not initialized. "
+                     "Make sure the setup() function properly initializes the state.");
+        }
+        auto& st = *state_ptr;
         call_and_postprocess<decltype(get_in<Ins>::get(ctx, IIs))...>
             ::call(st, get_in<Ins>::get(ctx, IIs)..., get_out<Outs>::get(ctx, OIs)...);
     }
@@ -487,7 +497,7 @@ public:
 #define GAPI_OCV_KERNEL_ST(Name, API, State)                   \
     struct Name: public cv::GCPUStKernelImpl<Name, API, State> \
 
-
+/// @private
 class gapi::cpu::GOCVFunctor : public gapi::GFunctor
 {
 public:
@@ -529,5 +539,9 @@ gapi::cpu::GOCVFunctor gapi::cpu::ocv_kernel(const Callable& c)
 //! @endcond
 
 } // namespace cv
+
+#if defined _MSC_VER
+#pragma warning(pop)
+#endif
 
 #endif // OPENCV_GAPI_GCPUKERNEL_HPP

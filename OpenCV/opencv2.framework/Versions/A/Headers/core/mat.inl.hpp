@@ -51,7 +51,7 @@
 
 #ifdef _MSC_VER
 #pragma warning( push )
-#pragma warning( disable: 4127 )
+#pragma warning( disable: 4127 5054 )
 #endif
 
 #if defined(CV_SKIP_DISABLE_CLANG_ENUM_WARNINGS)
@@ -100,22 +100,25 @@ inline Size _InputArray::getSz() const { return sz; }
 
 inline _InputArray::_InputArray() { init(0 + NONE, 0); }
 inline _InputArray::_InputArray(int _flags, void* _obj) { init(_flags, _obj); }
-inline _InputArray::_InputArray(const Mat& m) { init(MAT+ACCESS_READ, &m); }
-inline _InputArray::_InputArray(const std::vector<Mat>& vec) { init(STD_VECTOR_MAT+ACCESS_READ, &vec); }
-inline _InputArray::_InputArray(const UMat& m) { init(UMAT+ACCESS_READ, &m); }
-inline _InputArray::_InputArray(const std::vector<UMat>& vec) { init(STD_VECTOR_UMAT+ACCESS_READ, &vec); }
+inline _InputArray::_InputArray(const Mat& m) { init(+MAT+ACCESS_READ, &m); }
+inline _InputArray::_InputArray(const std::vector<Mat>& vec) { init(+STD_VECTOR_MAT+ACCESS_READ, &vec); }
+inline _InputArray::_InputArray(const UMat& m) { init(+UMAT+ACCESS_READ, &m); }
+inline _InputArray::_InputArray(const std::vector<UMat>& vec) { init(+STD_VECTOR_UMAT+ACCESS_READ, &vec); }
 
 template<typename _Tp> inline
 _InputArray::_InputArray(const std::vector<_Tp>& vec)
-{ init(FIXED_TYPE + STD_VECTOR + traits::Type<_Tp>::value + ACCESS_READ, &vec); }
+{
+    CV_CheckLE(vec.size(), static_cast<size_t>(std::numeric_limits<int>::max()), "Must not be larger than INT_MAX");
+    init(FIXED_TYPE + STD_VECTOR + traits::Type<_Tp>::value + ACCESS_READ, &vec);
+}
 
 template<typename _Tp, std::size_t _Nm> inline
 _InputArray::_InputArray(const std::array<_Tp, _Nm>& arr)
-{ init(FIXED_TYPE + FIXED_SIZE + STD_ARRAY + traits::Type<_Tp>::value + ACCESS_READ, arr.data(), Size(1, _Nm)); }
+{ init(FIXED_TYPE + FIXED_SIZE + MATX + traits::Type<_Tp>::value + ACCESS_READ, arr.data(), Size(1, _Nm)); }
 
 template<std::size_t _Nm> inline
 _InputArray::_InputArray(const std::array<Mat, _Nm>& arr)
-{ init(STD_ARRAY_MAT + ACCESS_READ, arr.data(), Size(1, _Nm)); }
+{ init(+STD_ARRAY_MAT + ACCESS_READ, arr.data(), Size(1, _Nm)); }
 
 inline
 _InputArray::_InputArray(const std::vector<bool>& vec)
@@ -145,16 +148,19 @@ inline _InputArray::_InputArray(const double& val)
 { init(FIXED_TYPE + FIXED_SIZE + MATX + CV_64F + ACCESS_READ, &val, Size(1,1)); }
 
 inline _InputArray::_InputArray(const cuda::GpuMat& d_mat)
-{ init(CUDA_GPU_MAT + ACCESS_READ, &d_mat); }
+{ init(+CUDA_GPU_MAT + ACCESS_READ, &d_mat); }
 
 inline _InputArray::_InputArray(const std::vector<cuda::GpuMat>& d_mat)
-{	init(STD_VECTOR_CUDA_GPU_MAT + ACCESS_READ, &d_mat);}
+{ init(+STD_VECTOR_CUDA_GPU_MAT + ACCESS_READ, &d_mat);}
+
+inline _InputArray::_InputArray(const cuda::GpuMatND& d_mat)
+{ init(+CUDA_GPU_MATND + ACCESS_READ, &d_mat); }
 
 inline _InputArray::_InputArray(const ogl::Buffer& buf)
-{ init(OPENGL_BUFFER + ACCESS_READ, &buf); }
+{ init(+OPENGL_BUFFER + ACCESS_READ, &buf); }
 
 inline _InputArray::_InputArray(const cuda::HostMem& cuda_mem)
-{ init(CUDA_HOST_MEM + ACCESS_READ, &cuda_mem); }
+{ init(+CUDA_HOST_MEM + ACCESS_READ, &cuda_mem); }
 
 template<typename _Tp> inline
 _InputArray _InputArray::rawIn(const std::vector<_Tp>& vec)
@@ -169,7 +175,7 @@ template<typename _Tp, std::size_t _Nm> inline
 _InputArray _InputArray::rawIn(const std::array<_Tp, _Nm>& arr)
 {
     _InputArray v;
-    v.flags = FIXED_TYPE + FIXED_SIZE + STD_ARRAY + traits::Type<_Tp>::value + ACCESS_READ;
+    v.flags = FIXED_TYPE + FIXED_SIZE + MATX + traits::Type<_Tp>::value + ACCESS_READ;
     v.obj = (void*)arr.data();
     v.sz = Size(1, _Nm);
     return v;
@@ -191,18 +197,19 @@ inline bool _InputArray::isUMatVector() const  { return kind() == _InputArray::S
 inline bool _InputArray::isMatx() const { return kind() == _InputArray::MATX; }
 inline bool _InputArray::isVector() const { return kind() == _InputArray::STD_VECTOR ||
                                                    kind() == _InputArray::STD_BOOL_VECTOR ||
-                                                   kind() == _InputArray::STD_ARRAY; }
+                                                   (kind() == _InputArray::MATX && (sz.width <= 1 || sz.height <= 1)); }
 inline bool _InputArray::isGpuMat() const { return kind() == _InputArray::CUDA_GPU_MAT; }
 inline bool _InputArray::isGpuMatVector() const { return kind() == _InputArray::STD_VECTOR_CUDA_GPU_MAT; }
+inline bool _InputArray::isGpuMatND() const { return kind() == _InputArray::CUDA_GPU_MATND; }
 
 ////////////////////////////////////////////////////////////////////////////////////////
 
-inline _OutputArray::_OutputArray() { init(NONE + ACCESS_WRITE, 0); }
+inline _OutputArray::_OutputArray() { init(+NONE + ACCESS_WRITE, 0); }
 inline _OutputArray::_OutputArray(int _flags, void* _obj) { init(_flags + ACCESS_WRITE, _obj); }
-inline _OutputArray::_OutputArray(Mat& m) { init(MAT+ACCESS_WRITE, &m); }
-inline _OutputArray::_OutputArray(std::vector<Mat>& vec) { init(STD_VECTOR_MAT + ACCESS_WRITE, &vec); }
-inline _OutputArray::_OutputArray(UMat& m) { init(UMAT + ACCESS_WRITE, &m); }
-inline _OutputArray::_OutputArray(std::vector<UMat>& vec) { init(STD_VECTOR_UMAT + ACCESS_WRITE, &vec); }
+inline _OutputArray::_OutputArray(Mat& m) { init(+MAT+ACCESS_WRITE, &m); }
+inline _OutputArray::_OutputArray(std::vector<Mat>& vec) { init(+STD_VECTOR_MAT + ACCESS_WRITE, &vec); }
+inline _OutputArray::_OutputArray(UMat& m) { init(+UMAT + ACCESS_WRITE, &m); }
+inline _OutputArray::_OutputArray(std::vector<UMat>& vec) { init(+STD_VECTOR_UMAT + ACCESS_WRITE, &vec); }
 
 template<typename _Tp> inline
 _OutputArray::_OutputArray(std::vector<_Tp>& vec)
@@ -210,11 +217,11 @@ _OutputArray::_OutputArray(std::vector<_Tp>& vec)
 
 template<typename _Tp, std::size_t _Nm> inline
 _OutputArray::_OutputArray(std::array<_Tp, _Nm>& arr)
-{ init(FIXED_TYPE + FIXED_SIZE + STD_ARRAY + traits::Type<_Tp>::value + ACCESS_WRITE, arr.data(), Size(1, _Nm)); }
+{ init(FIXED_TYPE + FIXED_SIZE + MATX + traits::Type<_Tp>::value + ACCESS_WRITE, arr.data(), Size(1, _Nm)); }
 
 template<std::size_t _Nm> inline
 _OutputArray::_OutputArray(std::array<Mat, _Nm>& arr)
-{ init(STD_ARRAY_MAT + ACCESS_WRITE, arr.data(), Size(1, _Nm)); }
+{ init(+STD_ARRAY_MAT + ACCESS_WRITE, arr.data(), Size(1, _Nm)); }
 
 template<typename _Tp> inline
 _OutputArray::_OutputArray(std::vector<std::vector<_Tp> >& vec)
@@ -242,7 +249,7 @@ _OutputArray::_OutputArray(const std::vector<_Tp>& vec)
 
 template<typename _Tp, std::size_t _Nm> inline
 _OutputArray::_OutputArray(const std::array<_Tp, _Nm>& arr)
-{ init(FIXED_TYPE + FIXED_SIZE + STD_ARRAY + traits::Type<_Tp>::value + ACCESS_WRITE, arr.data(), Size(1, _Nm)); }
+{ init(FIXED_TYPE + FIXED_SIZE + MATX + traits::Type<_Tp>::value + ACCESS_WRITE, arr.data(), Size(1, _Nm)); }
 
 template<std::size_t _Nm> inline
 _OutputArray::_OutputArray(const std::array<Mat, _Nm>& arr)
@@ -269,16 +276,19 @@ _OutputArray::_OutputArray(const _Tp* vec, int n)
 { init(FIXED_TYPE + FIXED_SIZE + MATX + traits::Type<_Tp>::value + ACCESS_WRITE, vec, Size(n, 1)); }
 
 inline _OutputArray::_OutputArray(cuda::GpuMat& d_mat)
-{ init(CUDA_GPU_MAT + ACCESS_WRITE, &d_mat); }
+{ init(+CUDA_GPU_MAT + ACCESS_WRITE, &d_mat); }
 
 inline _OutputArray::_OutputArray(std::vector<cuda::GpuMat>& d_mat)
-{	init(STD_VECTOR_CUDA_GPU_MAT + ACCESS_WRITE, &d_mat);}
+{ init(+STD_VECTOR_CUDA_GPU_MAT + ACCESS_WRITE, &d_mat);}
+
+inline _OutputArray::_OutputArray(cuda::GpuMatND& d_mat)
+{ init(+CUDA_GPU_MATND + ACCESS_WRITE, &d_mat); }
 
 inline _OutputArray::_OutputArray(ogl::Buffer& buf)
-{ init(OPENGL_BUFFER + ACCESS_WRITE, &buf); }
+{ init(+OPENGL_BUFFER + ACCESS_WRITE, &buf); }
 
 inline _OutputArray::_OutputArray(cuda::HostMem& cuda_mem)
-{ init(CUDA_HOST_MEM + ACCESS_WRITE, &cuda_mem); }
+{ init(+CUDA_HOST_MEM + ACCESS_WRITE, &cuda_mem); }
 
 inline _OutputArray::_OutputArray(const Mat& m)
 { init(FIXED_TYPE + FIXED_SIZE + MAT + ACCESS_WRITE, &m); }
@@ -295,6 +305,8 @@ inline _OutputArray::_OutputArray(const std::vector<UMat>& vec)
 inline _OutputArray::_OutputArray(const cuda::GpuMat& d_mat)
 { init(FIXED_TYPE + FIXED_SIZE + CUDA_GPU_MAT + ACCESS_WRITE, &d_mat); }
 
+inline _OutputArray::_OutputArray(const cuda::GpuMatND& d_mat)
+{ init(+FIXED_TYPE + FIXED_SIZE + CUDA_GPU_MATND + ACCESS_WRITE, &d_mat); }
 
 inline _OutputArray::_OutputArray(const ogl::Buffer& buf)
 { init(FIXED_TYPE + FIXED_SIZE + OPENGL_BUFFER + ACCESS_WRITE, &buf); }
@@ -315,7 +327,7 @@ template<typename _Tp, std::size_t _Nm> inline
 _OutputArray _OutputArray::rawOut(std::array<_Tp, _Nm>& arr)
 {
     _OutputArray v;
-    v.flags = FIXED_TYPE + FIXED_SIZE + STD_ARRAY + traits::Type<_Tp>::value + ACCESS_WRITE;
+    v.flags = FIXED_TYPE + FIXED_SIZE + MATX + traits::Type<_Tp>::value + ACCESS_WRITE;
     v.obj = (void*)arr.data();
     v.sz = Size(1, _Nm);
     return v;
@@ -325,10 +337,10 @@ _OutputArray _OutputArray::rawOut(std::array<_Tp, _Nm>& arr)
 
 inline _InputOutputArray::_InputOutputArray() { init(0+ACCESS_RW, 0); }
 inline _InputOutputArray::_InputOutputArray(int _flags, void* _obj) { init(_flags+ACCESS_RW, _obj); }
-inline _InputOutputArray::_InputOutputArray(Mat& m) { init(MAT+ACCESS_RW, &m); }
-inline _InputOutputArray::_InputOutputArray(std::vector<Mat>& vec) { init(STD_VECTOR_MAT+ACCESS_RW, &vec); }
-inline _InputOutputArray::_InputOutputArray(UMat& m) { init(UMAT+ACCESS_RW, &m); }
-inline _InputOutputArray::_InputOutputArray(std::vector<UMat>& vec) { init(STD_VECTOR_UMAT+ACCESS_RW, &vec); }
+inline _InputOutputArray::_InputOutputArray(Mat& m) { init(+MAT+ACCESS_RW, &m); }
+inline _InputOutputArray::_InputOutputArray(std::vector<Mat>& vec) { init(+STD_VECTOR_MAT+ACCESS_RW, &vec); }
+inline _InputOutputArray::_InputOutputArray(UMat& m) { init(+UMAT+ACCESS_RW, &m); }
+inline _InputOutputArray::_InputOutputArray(std::vector<UMat>& vec) { init(+STD_VECTOR_UMAT+ACCESS_RW, &vec); }
 
 template<typename _Tp> inline
 _InputOutputArray::_InputOutputArray(std::vector<_Tp>& vec)
@@ -336,11 +348,11 @@ _InputOutputArray::_InputOutputArray(std::vector<_Tp>& vec)
 
 template<typename _Tp, std::size_t _Nm> inline
 _InputOutputArray::_InputOutputArray(std::array<_Tp, _Nm>& arr)
-{ init(FIXED_TYPE + FIXED_SIZE + STD_ARRAY + traits::Type<_Tp>::value + ACCESS_RW, arr.data(), Size(1, _Nm)); }
+{ init(FIXED_TYPE + FIXED_SIZE + MATX + traits::Type<_Tp>::value + ACCESS_RW, arr.data(), Size(1, _Nm)); }
 
 template<std::size_t _Nm> inline
 _InputOutputArray::_InputOutputArray(std::array<Mat, _Nm>& arr)
-{ init(STD_ARRAY_MAT + ACCESS_RW, arr.data(), Size(1, _Nm)); }
+{ init(+STD_ARRAY_MAT + ACCESS_RW, arr.data(), Size(1, _Nm)); }
 
 template<typename _Tp> inline
 _InputOutputArray::_InputOutputArray(std::vector<std::vector<_Tp> >& vec)
@@ -368,7 +380,7 @@ _InputOutputArray::_InputOutputArray(const std::vector<_Tp>& vec)
 
 template<typename _Tp, std::size_t _Nm> inline
 _InputOutputArray::_InputOutputArray(const std::array<_Tp, _Nm>& arr)
-{ init(FIXED_TYPE + FIXED_SIZE + STD_ARRAY + traits::Type<_Tp>::value + ACCESS_RW, arr.data(), Size(1, _Nm)); }
+{ init(FIXED_TYPE + FIXED_SIZE + MATX + traits::Type<_Tp>::value + ACCESS_RW, arr.data(), Size(1, _Nm)); }
 
 template<std::size_t _Nm> inline
 _InputOutputArray::_InputOutputArray(const std::array<Mat, _Nm>& arr)
@@ -395,13 +407,16 @@ _InputOutputArray::_InputOutputArray(const _Tp* vec, int n)
 { init(FIXED_TYPE + FIXED_SIZE + MATX + traits::Type<_Tp>::value + ACCESS_RW, vec, Size(n, 1)); }
 
 inline _InputOutputArray::_InputOutputArray(cuda::GpuMat& d_mat)
-{ init(CUDA_GPU_MAT + ACCESS_RW, &d_mat); }
+{ init(+CUDA_GPU_MAT + ACCESS_RW, &d_mat); }
+
+inline _InputOutputArray::_InputOutputArray(cuda::GpuMatND& d_mat)
+{ init(+CUDA_GPU_MATND + ACCESS_RW, &d_mat); }
 
 inline _InputOutputArray::_InputOutputArray(ogl::Buffer& buf)
-{ init(OPENGL_BUFFER + ACCESS_RW, &buf); }
+{ init(+OPENGL_BUFFER + ACCESS_RW, &buf); }
 
 inline _InputOutputArray::_InputOutputArray(cuda::HostMem& cuda_mem)
-{ init(CUDA_HOST_MEM + ACCESS_RW, &cuda_mem); }
+{ init(+CUDA_HOST_MEM + ACCESS_RW, &cuda_mem); }
 
 inline _InputOutputArray::_InputOutputArray(const Mat& m)
 { init(FIXED_TYPE + FIXED_SIZE + MAT + ACCESS_RW, &m); }
@@ -424,6 +439,9 @@ inline _InputOutputArray::_InputOutputArray(const std::vector<cuda::GpuMat>& d_m
 template<> inline _InputOutputArray::_InputOutputArray(std::vector<cuda::GpuMat>& d_mat)
 { init(FIXED_TYPE + FIXED_SIZE + STD_VECTOR_CUDA_GPU_MAT + ACCESS_RW, &d_mat);}
 
+inline _InputOutputArray::_InputOutputArray(const cuda::GpuMatND& d_mat)
+{ init(+FIXED_TYPE + FIXED_SIZE + CUDA_GPU_MATND + ACCESS_RW, &d_mat); }
+
 inline _InputOutputArray::_InputOutputArray(const ogl::Buffer& buf)
 { init(FIXED_TYPE + FIXED_SIZE + OPENGL_BUFFER + ACCESS_RW, &buf); }
 
@@ -443,7 +461,7 @@ template<typename _Tp, std::size_t _Nm> inline
 _InputOutputArray _InputOutputArray::rawInOut(std::array<_Tp, _Nm>& arr)
 {
     _InputOutputArray v;
-    v.flags = FIXED_TYPE + FIXED_SIZE + STD_ARRAY + traits::Type<_Tp>::value + ACCESS_RW;
+    v.flags = FIXED_TYPE + FIXED_SIZE + MATX + traits::Type<_Tp>::value + ACCESS_RW;
     v.obj = (void*)arr.data();
     v.sz = Size(1, _Nm);
     return v;
@@ -460,7 +478,7 @@ CV__DEBUG_NS_END
 
 template<typename _Tp> inline
 Mat::Mat(const std::vector<_Tp>& vec, bool copyData)
-    : flags(MAGIC_VAL + traits::Type<_Tp>::value + CV_MAT_CONT_FLAG), dims(2), rows((int)vec.size()),
+    : flags(+MAGIC_VAL + traits::Type<_Tp>::value + CV_MAT_CONT_FLAG), dims(2), rows((int)vec.size()),
       cols(1), data(0), datastart(0), dataend(0), datalimit(0), allocator(0), u(0), size(&rows), step(0)
 {
     if(vec.empty())
@@ -497,7 +515,7 @@ Mat::Mat(const std::initializer_list<int> sizes, const std::initializer_list<_Tp
 
 template<typename _Tp, std::size_t _Nm> inline
 Mat::Mat(const std::array<_Tp, _Nm>& arr, bool copyData)
-    : flags(MAGIC_VAL + traits::Type<_Tp>::value + CV_MAT_CONT_FLAG), dims(2), rows((int)arr.size()),
+    : flags(+MAGIC_VAL + traits::Type<_Tp>::value + CV_MAT_CONT_FLAG), dims(2), rows((int)arr.size()),
       cols(1), data(0), datastart(0), dataend(0), datalimit(0), allocator(0), u(0), size(&rows), step(0)
 {
     if(arr.empty())
@@ -514,7 +532,7 @@ Mat::Mat(const std::array<_Tp, _Nm>& arr, bool copyData)
 
 template<typename _Tp, int n> inline
 Mat::Mat(const Vec<_Tp, n>& vec, bool copyData)
-    : flags(MAGIC_VAL + traits::Type<_Tp>::value + CV_MAT_CONT_FLAG), dims(2), rows(n), cols(1), data(0),
+    : flags(+MAGIC_VAL + traits::Type<_Tp>::value + CV_MAT_CONT_FLAG), dims(2), rows(n), cols(1), data(0),
       datastart(0), dataend(0), datalimit(0), allocator(0), u(0), size(&rows), step(0)
 {
     if( !copyData )
@@ -530,7 +548,7 @@ Mat::Mat(const Vec<_Tp, n>& vec, bool copyData)
 
 template<typename _Tp, int m, int n> inline
 Mat::Mat(const Matx<_Tp,m,n>& M, bool copyData)
-    : flags(MAGIC_VAL + traits::Type<_Tp>::value + CV_MAT_CONT_FLAG), dims(2), rows(m), cols(n), data(0),
+    : flags(+MAGIC_VAL + traits::Type<_Tp>::value + CV_MAT_CONT_FLAG), dims(2), rows(m), cols(n), data(0),
       datastart(0), dataend(0), datalimit(0), allocator(0), u(0), size(&rows), step(0)
 {
     if( !copyData )
@@ -546,7 +564,7 @@ Mat::Mat(const Matx<_Tp,m,n>& M, bool copyData)
 
 template<typename _Tp> inline
 Mat::Mat(const Point_<_Tp>& pt, bool copyData)
-    : flags(MAGIC_VAL + traits::Type<_Tp>::value + CV_MAT_CONT_FLAG), dims(2), rows(2), cols(1), data(0),
+    : flags(+MAGIC_VAL + traits::Type<_Tp>::value + CV_MAT_CONT_FLAG), dims(2), rows(2), cols(1), data(0),
       datastart(0), dataend(0), datalimit(0), allocator(0), u(0), size(&rows), step(0)
 {
     if( !copyData )
@@ -565,7 +583,7 @@ Mat::Mat(const Point_<_Tp>& pt, bool copyData)
 
 template<typename _Tp> inline
 Mat::Mat(const Point3_<_Tp>& pt, bool copyData)
-    : flags(MAGIC_VAL + traits::Type<_Tp>::value + CV_MAT_CONT_FLAG), dims(2), rows(3), cols(1), data(0),
+    : flags(+MAGIC_VAL + traits::Type<_Tp>::value + CV_MAT_CONT_FLAG), dims(2), rows(3), cols(1), data(0),
       datastart(0), dataend(0), datalimit(0), allocator(0), u(0), size(&rows), step(0)
 {
     if( !copyData )
@@ -585,7 +603,7 @@ Mat::Mat(const Point3_<_Tp>& pt, bool copyData)
 
 template<typename _Tp> inline
 Mat::Mat(const MatCommaInitializer_<_Tp>& commaInitializer)
-    : flags(MAGIC_VAL + traits::Type<_Tp>::value + CV_MAT_CONT_FLAG), dims(0), rows(0), cols(0), data(0),
+    : flags(+MAGIC_VAL + traits::Type<_Tp>::value + CV_MAT_CONT_FLAG), dims(0), rows(0), cols(0), data(0),
       datastart(0), dataend(0), allocator(0), u(0), size(&rows)
 {
     *this = commaInitializer.operator Mat_<_Tp>();
@@ -863,6 +881,33 @@ const _Tp* Mat::ptr(const int* idx) const
     return (const _Tp*)p;
 }
 
+template<int n> inline
+uchar* Mat::ptr(const Vec<int, n>& idx)
+{
+    return Mat::ptr(idx.val);
+}
+
+template<int n> inline
+const uchar* Mat::ptr(const Vec<int, n>& idx) const
+{
+    return Mat::ptr(idx.val);
+}
+
+template<typename _Tp, int n> inline
+_Tp* Mat::ptr(const Vec<int, n>& idx)
+{
+    CV_DbgAssert( elemSize() == sizeof(_Tp) );
+    return Mat::ptr<_Tp>(idx.val);
+}
+
+template<typename _Tp, int n> inline
+const _Tp* Mat::ptr(const Vec<int, n>& idx) const
+{
+    CV_DbgAssert( elemSize() == sizeof(_Tp) );
+    return Mat::ptr<_Tp>(idx.val);
+}
+
+
 template<typename _Tp> inline
 _Tp& Mat::at(int i0, int i1)
 {
@@ -989,6 +1034,17 @@ MatConstIterator_<_Tp> Mat::begin() const
 }
 
 template<typename _Tp> inline
+std::reverse_iterator<MatConstIterator_<_Tp>> Mat::rbegin() const
+{
+    if (empty())
+        return std::reverse_iterator<MatConstIterator_<_Tp>>();
+    CV_DbgAssert( elemSize() == sizeof(_Tp) );
+    MatConstIterator_<_Tp> it((const Mat_<_Tp>*)this);
+    it += total();
+    return std::reverse_iterator<MatConstIterator_<_Tp>> (it);
+}
+
+template<typename _Tp> inline
 MatConstIterator_<_Tp> Mat::end() const
 {
     if (empty())
@@ -997,6 +1053,15 @@ MatConstIterator_<_Tp> Mat::end() const
     MatConstIterator_<_Tp> it((const Mat_<_Tp>*)this);
     it += total();
     return it;
+}
+
+template<typename _Tp> inline
+std::reverse_iterator<MatConstIterator_<_Tp>> Mat::rend() const
+{
+    if (empty())
+        return std::reverse_iterator<MatConstIterator_<_Tp>>();
+    CV_DbgAssert( elemSize() == sizeof(_Tp) );
+    return std::reverse_iterator<MatConstIterator_<_Tp>>((const Mat_<_Tp>*)this);
 }
 
 template<typename _Tp> inline
@@ -1009,6 +1074,17 @@ MatIterator_<_Tp> Mat::begin()
 }
 
 template<typename _Tp> inline
+std::reverse_iterator<MatIterator_<_Tp>> Mat::rbegin()
+{
+    if (empty())
+        return std::reverse_iterator<MatIterator_<_Tp>>();
+    CV_DbgAssert( elemSize() == sizeof(_Tp) );
+    MatIterator_<_Tp> it((Mat_<_Tp>*)this);
+    it += total();
+    return std::reverse_iterator<MatIterator_<_Tp>>(it);
+}
+
+template<typename _Tp> inline
 MatIterator_<_Tp> Mat::end()
 {
     if (empty())
@@ -1017,6 +1093,15 @@ MatIterator_<_Tp> Mat::end()
     MatIterator_<_Tp> it((Mat_<_Tp>*)this);
     it += total();
     return it;
+}
+
+template<typename _Tp> inline
+std::reverse_iterator<MatIterator_<_Tp>> Mat::rend()
+{
+    if (empty())
+        return std::reverse_iterator<MatIterator_<_Tp>>();
+    CV_DbgAssert( elemSize() == sizeof(_Tp) );
+    return std::reverse_iterator<MatIterator_<_Tp>>(MatIterator_<_Tp>((Mat_<_Tp>*)this));
 }
 
 template<typename _Tp, typename Functor> inline
@@ -1116,11 +1201,11 @@ void Mat::push_back(const std::vector<_Tp>& v)
 ///////////////////////////// MatSize ////////////////////////////
 
 inline
-MatSize::MatSize(int* _p)
+MatSize::MatSize(int* _p) CV_NOEXCEPT
     : p(_p) {}
 
 inline
-int MatSize::dims() const
+int MatSize::dims() const CV_NOEXCEPT
 {
     return (p - 1)[0];
 }
@@ -1153,13 +1238,13 @@ int& MatSize::operator[](int i)
 }
 
 inline
-MatSize::operator const int*() const
+MatSize::operator const int*() const CV_NOEXCEPT
 {
     return p;
 }
 
 inline
-bool MatSize::operator != (const MatSize& sz) const
+bool MatSize::operator != (const MatSize& sz) const CV_NOEXCEPT
 {
     return !(*this == sz);
 }
@@ -1169,25 +1254,25 @@ bool MatSize::operator != (const MatSize& sz) const
 ///////////////////////////// MatStep ////////////////////////////
 
 inline
-MatStep::MatStep()
+MatStep::MatStep() CV_NOEXCEPT
 {
     p = buf; p[0] = p[1] = 0;
 }
 
 inline
-MatStep::MatStep(size_t s)
+MatStep::MatStep(size_t s) CV_NOEXCEPT
 {
     p = buf; p[0] = s; p[1] = 0;
 }
 
 inline
-const size_t& MatStep::operator[](int i) const
+const size_t& MatStep::operator[](int i) const CV_NOEXCEPT
 {
     return p[i];
 }
 
 inline
-size_t& MatStep::operator[](int i)
+size_t& MatStep::operator[](int i) CV_NOEXCEPT
 {
     return p[i];
 }
@@ -1210,7 +1295,7 @@ inline MatStep& MatStep::operator = (size_t s)
 ////////////////////////////// Mat_<_Tp> ////////////////////////////
 
 template<typename _Tp> inline
-Mat_<_Tp>::Mat_()
+Mat_<_Tp>::Mat_() CV_NOEXCEPT
     : Mat()
 {
     flags = (flags & ~CV_MAT_TYPE_MASK) + traits::Type<_Tp>::value;
@@ -1687,9 +1772,21 @@ MatConstIterator_<_Tp> Mat_<_Tp>::begin() const
 }
 
 template<typename _Tp> inline
+std::reverse_iterator<MatConstIterator_<_Tp>> Mat_<_Tp>::rbegin() const
+{
+    return Mat::rbegin<_Tp>();
+}
+
+template<typename _Tp> inline
 MatConstIterator_<_Tp> Mat_<_Tp>::end() const
 {
     return Mat::end<_Tp>();
+}
+
+template<typename _Tp> inline
+std::reverse_iterator<MatConstIterator_<_Tp>> Mat_<_Tp>::rend() const
+{
+    return Mat::rend<_Tp>();
 }
 
 template<typename _Tp> inline
@@ -1699,9 +1796,21 @@ MatIterator_<_Tp> Mat_<_Tp>::begin()
 }
 
 template<typename _Tp> inline
+std::reverse_iterator<MatIterator_<_Tp>> Mat_<_Tp>::rbegin()
+{
+    return Mat::rbegin<_Tp>();
+}
+
+template<typename _Tp> inline
 MatIterator_<_Tp> Mat_<_Tp>::end()
 {
     return Mat::end<_Tp>();
+}
+
+template<typename _Tp> inline
+std::reverse_iterator<MatIterator_<_Tp>> Mat_<_Tp>::rend()
+{
+    return Mat::rend<_Tp>();
 }
 
 template<typename _Tp> template<typename Functor> inline
@@ -1999,7 +2108,7 @@ SparseMatConstIterator_<_Tp> SparseMat::end() const
 template<typename _Tp> inline
 SparseMat_<_Tp>::SparseMat_()
 {
-    flags = MAGIC_VAL + traits::Type<_Tp>::value;
+    flags = +MAGIC_VAL + traits::Type<_Tp>::value;
 }
 
 template<typename _Tp> inline
@@ -2902,7 +3011,7 @@ MatCommaInitializer_<_Tp>::operator Mat_<_Tp>() const
 }
 
 
-template<typename _Tp, typename T2> static inline
+template<typename _Tp, typename T2> CV_DEPRECATED_EXTERNAL static inline
 MatCommaInitializer_<_Tp> operator << (const Mat_<_Tp>& m, T2 val)
 {
     MatCommaInitializer_<_Tp> commaInitializer((Mat_<_Tp>*)&m);
@@ -2931,6 +3040,12 @@ Mat_<_Tp>& Mat_<_Tp>::operator = (const MatExpr& e)
 {
     e.op->assign(e, *this, traits::Type<_Tp>::value);
     return *this;
+}
+
+template<typename _Tp> inline
+MatExpr Mat_<_Tp>::zeros(int _ndims, const int* _sizes)
+{
+    return Mat::zeros(_ndims, _sizes, traits::Type<_Tp>::value);
 }
 
 template<typename _Tp> inline
@@ -3157,18 +3272,13 @@ const Mat_<_Tp>& operator /= (const Mat_<_Tp>& a, const MatExpr& b)
 
 template<typename _Tp> inline
 UMat::UMat(const std::vector<_Tp>& vec, bool copyData)
-: flags(MAGIC_VAL + traits::Type<_Tp>::value + CV_MAT_CONT_FLAG), dims(2), rows((int)vec.size()),
-cols(1), allocator(0), usageFlags(USAGE_DEFAULT), u(0), offset(0), size(&rows)
+    : flags(+MAGIC_VAL + traits::Type<_Tp>::value + CV_MAT_CONT_FLAG), dims(2), rows((int)vec.size()),
+      cols(1), allocator(0), usageFlags(USAGE_DEFAULT), u(0), offset(0), size(&rows)
 {
+    CV_UNUSED(copyData); // parameter kept for backward compatibility
     if(vec.empty())
         return;
-    if( !copyData )
-    {
-        // !!!TODO!!!
-        CV_Error(Error::StsNotImplemented, "");
-    }
-    else
-        Mat((int)vec.size(), 1, traits::Type<_Tp>::value, (uchar*)&vec[0]).copyTo(*this);
+    Mat((int)vec.size(), 1, traits::Type<_Tp>::value, (uchar*)&vec[0]).copyTo(*this);
 }
 
 inline

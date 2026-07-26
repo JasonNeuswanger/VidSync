@@ -1,4 +1,4 @@
-/***********************************************************************
+/*M*********************************************************************
  * Software License Agreement (BSD License)
  *
  * Copyright 2008-2009  Marius Muja (mariusm@cs.ubc.ca). All rights reserved.
@@ -99,8 +99,8 @@ float search_with_ground_truth(NNIndex<Distance>& index, const Matrix<typename D
     KNNResultSet<DistanceType> resultSet(nn+skipMatches);
     SearchParams searchParams(checks);
 
-    std::vector<int> indices(nn+skipMatches);
-    std::vector<DistanceType> dists(nn+skipMatches);
+    cv::AutoBuffer<int> indices(nn+skipMatches);
+    cv::AutoBuffer<DistanceType> dists(nn+skipMatches);
     int* neighbors = &indices[skipMatches];
 
     int correct = 0;
@@ -246,7 +246,6 @@ void test_index_precisions(NNIndex<Distance>& index, const Matrix<typename Dista
     float p2;
 
     int c1 = 1;
-    float p1;
 
     float time;
     DistanceType dist;
@@ -270,7 +269,6 @@ void test_index_precisions(NNIndex<Distance>& index, const Matrix<typename Dista
         precision = precisions[i];
         while (p2<precision) {
             c1 = c2;
-            p1 = p2;
             c2 *=2;
             p2 = search_with_ground_truth(index, inputData, testData, matches, nn, c2, time, dist, distance, skipMatches);
             if ((maxTime> 0)&&(time > maxTime)&&(p2<precision)) return;

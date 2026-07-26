@@ -1,0 +1,10 @@
+# The OpenCV static framework binary is ~199 MB, far over GitHub's 100 MB file
+# limit, so it is stored in Git LFS.
+#
+# This file must stay committed. Git only runs the LFS smudge filter on paths
+# matched here, so without it a clone leaves a 134-byte pointer on disk where the
+# binary should be and Xcode fails with "Unknown file type in .../opencv2".
+# That is exactly what happened between 2021 and 2026: the LFS object was pushed
+# and intact the whole time, but no .gitattributes was ever committed, so no
+# checkout ever materialized it.
+OpenCV/opencv2.framework/Versions/A/opencv2 filter=lfs diff=lfs merge=lfs -text

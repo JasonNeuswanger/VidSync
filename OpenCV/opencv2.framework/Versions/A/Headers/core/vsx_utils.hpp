@@ -257,8 +257,27 @@ VSX_IMPL_1VRG(vec_udword2, vec_udword2, vpopcntd, vec_popcntu)
 VSX_IMPL_1VRG(vec_udword2, vec_dword2,  vpopcntd, vec_popcntu)
 
 // converts between single and double-precision
-VSX_REDIRECT_1RG(vec_float4,  vec_double2, vec_cvfo, __builtin_vsx_xvcvdpsp)
-VSX_REDIRECT_1RG(vec_double2, vec_float4,  vec_cvfo, __builtin_vsx_xvcvspdp)
+// vec_floate and vec_doubleo are available since Power10 and z14
+#if defined(__POWER10__) || (defined(__powerpc64__) && defined(__ARCH_PWR10__))
+//  Use VSX double<->float conversion instructions (if supported by the architecture)
+    VSX_REDIRECT_1RG(vec_float4,  vec_double2, vec_cvfo, vec_floate)
+    VSX_REDIRECT_1RG(vec_double2, vec_float4,  vec_cvfo, vec_doubleo)
+#else
+//  Fallback: implement vec_cvfo using scalar operations (to ensure successful linking)
+    static inline vec_float4 vec_cvfo(const vec_double2& a)
+    {
+        float r0 = static_cast<float>(reinterpret_cast<const double*>(&a)[0]);
+        float r1 = static_cast<float>(reinterpret_cast<const double*>(&a)[1]);
+        return (vec_float4){r0, 0.f, r1, 0.f};
+    }
+
+    static inline vec_double2 vec_cvfo(const vec_float4& a)
+    {
+        double r0 = static_cast<double>(reinterpret_cast<const float*>(&a)[0]);
+        double r1 = static_cast<double>(reinterpret_cast<const float*>(&a)[2]);
+        return (vec_double2){r0, r1};
+    }
+#endif
 
 // converts word and doubleword to double-precision
 #undef vec_ctd
@@ -324,6 +343,7 @@ VSX_IMPL_1RG(vec_udword2, vec_float4,  xvcvspuxds, vec_ctulo)
 #define VSX_IMPL_CONVERT(rt, rg, fnm) \
 VSX_FINLINE(rt) fnm(const rg& a) { return __builtin_convertvector(a, rt); }
 
+#ifndef vec_permi
 #if __clang_major__ < 5
 // implement vec_permi in a dirty way
 #   define VSX_IMPL_CLANG_4_PERMI(Tvec)                                                 \
@@ -351,12 +371,14 @@ VSX_FINLINE(rt) fnm(const rg& a) { return __builtin_convertvector(a, rt); }
 // vec_xxpermdi is missing little-endian supports in clang 4 just like gcc4
 #   define vec_permi(a, b, c) vec_xxpermdi(b, a, (3 ^ (((c) & 1) << 1 | (c) >> 1)))
 #endif // __clang_major__ < 5
+#endif
 
 // shift left double by word immediate
 #ifndef vec_sldw
 #   define vec_sldw vec_xxsldwi
 #endif
 
+#if __clang_major__ < 13
 // Implement vec_rsqrt since clang only supports vec_rsqrte
 #ifndef vec_rsqrt
     VSX_FINLINE(vec_float4) vec_rsqrt(const vec_float4& a)
@@ -380,6 +402,7 @@ VSX_FINLINE(vec_udword2) vec_promote(unsigned long long a, int b)
     ret[b & 1] = a;
     return ret;
 }
+#endif
 
 // vec_popcnt should return unsigned but clang has different thought just like gcc in vec_vpopcnt
 #define VSX_IMPL_POPCNTU(Tvec, Tvec2, ucast)   \
@@ -394,10 +417,6 @@ VSX_REDIRECT_1RG(vec_uchar16, vec_uchar16, vec_popcntu, vec_popcnt)
 VSX_REDIRECT_1RG(vec_ushort8, vec_ushort8, vec_popcntu, vec_popcnt)
 VSX_REDIRECT_1RG(vec_uint4,   vec_uint4,   vec_popcntu, vec_popcnt)
 VSX_REDIRECT_1RG(vec_udword2, vec_udword2, vec_popcntu, vec_popcnt)
-
-// converts between single and double precision
-VSX_REDIRECT_1RG(vec_float4,  vec_double2, vec_cvfo, __builtin_vsx_xvcvdpsp)
-VSX_REDIRECT_1RG(vec_double2, vec_float4,  vec_cvfo, __builtin_vsx_xvcvspdp)
 
 // converts word and doubleword to double-precision
 #ifdef vec_ctd
@@ -497,11 +516,13 @@ VSX_IMPL_CONV_EVEN_2_4(vec_uint4,  vec_double2, vec_ctu, vec_ctuo)
     VSX_FINLINE(rt) fnm(const rg& a, int only_truncate) \
     {                                                   \
         assert(only_truncate == 0);                     \
-        CV_UNUSED(only_truncate);                            \
+        CV_UNUSED(only_truncate);                       \
         return fn2(a);                                  \
     }
     VSX_IMPL_CONV_2VARIANT(vec_int4,   vec_float4,  vec_cts, vec_cts)
+    VSX_IMPL_CONV_2VARIANT(vec_uint4,  vec_float4,  vec_ctu, vec_ctu)
     VSX_IMPL_CONV_2VARIANT(vec_float4, vec_int4,    vec_ctf, vec_ctf)
+    VSX_IMPL_CONV_2VARIANT(vec_float4, vec_uint4,   vec_ctf, vec_ctf)
     // define vec_cts for converting double precision to signed doubleword
     // which isn't compatible with xlc but its okay since Eigen only uses it for gcc
     VSX_IMPL_CONV_2VARIANT(vec_dword2, vec_double2, vec_cts, vec_ctsl)
@@ -682,7 +703,8 @@ VSX_IMPL_LOAD_L8(vec_double2, double)
 #endif
 
 // absolute difference
-#ifndef vec_absd
+#ifndef _ARCH_PWR9
+#   undef vec_absd
 #   define vec_absd(a, b) vec_sub(vec_max(a, b), vec_min(a, b))
 #endif
 

@@ -116,7 +116,7 @@ cv::flann::L2 - Squared Euclidean distance functor, optimized version.
 
 cv::flann::L1 - Manhattan distance functor, optimized version.
 
-cv::flann::MinkowskiDistance -  The Minkowsky distance functor.
+cv::flann::MinkowskiDistance -  The Minkowski distance functor.
 This is highly optimised with loop unrolling.
 The computation of squared root at the end is omitted for efficiency.
 
@@ -175,9 +175,9 @@ public:
 
         /** @brief Constructs a nearest neighbor search index for a given dataset.
 
-        @param features Matrix of containing the features(points) to index. The size of the matrix is
+        @param features Matrix containing the features(points) to index. The size of the matrix is
         num_features x feature_dimensionality and the data type of the elements in the matrix must
-        coincide with the type of the index.
+        match the type of the index.
         @param params Structure containing the index parameters. The type of index that will be
         constructed depends on the type of this parameter. See the description.
         @param distance

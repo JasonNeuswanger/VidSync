@@ -35,11 +35,46 @@ CV_EXPORTS_W std::vector<VideoCaptureAPIs> getCameraBackends();
 /** @brief Returns list of available backends which works via `cv::VideoCapture(filename)` */
 CV_EXPORTS_W std::vector<VideoCaptureAPIs> getStreamBackends();
 
+/** @brief Returns list of available backends which works via `cv::VideoCapture(buffer)` */
+CV_EXPORTS_W std::vector<VideoCaptureAPIs> getStreamBufferedBackends();
+
 /** @brief Returns list of available backends which works via `cv::VideoWriter()` */
 CV_EXPORTS_W std::vector<VideoCaptureAPIs> getWriterBackends();
 
 /** @brief Returns true if backend is available */
-CV_EXPORTS bool hasBackend(VideoCaptureAPIs api);
+CV_EXPORTS_W bool hasBackend(VideoCaptureAPIs api);
+
+/** @brief Returns true if backend is built in (false if backend is used as plugin) */
+CV_EXPORTS_W bool isBackendBuiltIn(VideoCaptureAPIs api);
+
+/** @brief Returns description and ABI/API version of videoio plugin's camera interface */
+CV_EXPORTS_W std::string getCameraBackendPluginVersion(
+    VideoCaptureAPIs api,
+    CV_OUT int& version_ABI,
+    CV_OUT int& version_API
+);
+
+/** @brief Returns description and ABI/API version of videoio plugin's stream capture interface */
+CV_EXPORTS_W std::string getStreamBackendPluginVersion(
+    VideoCaptureAPIs api,
+    CV_OUT int& version_ABI,
+    CV_OUT int& version_API
+);
+
+/** @brief Returns description and ABI/API version of videoio plugin's buffer capture interface */
+CV_EXPORTS_W std::string getStreamBufferedBackendPluginVersion(
+    VideoCaptureAPIs api,
+    CV_OUT int& version_ABI,
+    CV_OUT int& version_API
+);
+
+/** @brief Returns description and ABI/API version of videoio plugin's writer interface */
+CV_EXPORTS_W std::string getWriterBackendPluginVersion(
+    VideoCaptureAPIs api,
+    CV_OUT int& version_ABI,
+    CV_OUT int& version_API
+);
+
 
 //! @}
 }} // namespace
