@@ -1718,20 +1718,62 @@ int refractionRootFunc_f(const gsl_vector* x, void* params, gsl_vector* f)
 
 	vidsync::CornerDetectionResult detection = vidsync::detectChessboardCorners(gray);
 
+	// If the user has drawn exactly one line with exactly two points, treat it as a hint about
+	// where the board is and which way its grid runs, overriding the automatic search. This is
+	// the same seeding convention the legacy method uses, and it is the escape hatch for the
+	// frames where no automatic board-finder will pick the right region.
+	// Unlike the legacy method this does not delete the seed line after reading it: nothing is
+	// produced yet, so consuming the hint would just force the user to redraw it every run. The
+	// deletion belongs with the code that creates plumblines.
+	vidsync::LatticeSeedHint hint;
+	if ([self.distortionLines count] == 1 && [[[self.distortionLines anyObject] distortionPoints] count] == 2) {
+		NSArray *seedPoints = [[[self.distortionLines anyObject] distortionPoints] allObjects];
+		VSDistortionPoint *seedPoint1 = [seedPoints objectAtIndex:0];
+		VSDistortionPoint *seedPoint2 = [seedPoints objectAtIndex:1];
+		// Seed points are stored in VidSync coordinates; the detector works in OpenCV's.
+		hint.provided = true;
+		hint.from = cv::Point2f([seedPoint1.screenX floatValue], (float)[self.videoClip clipHeight] - [seedPoint1.screenY floatValue]);
+		hint.to = cv::Point2f([seedPoint2.screenX floatValue], (float)[self.videoClip clipHeight] - [seedPoint2.screenY floatValue]);
+	}
+
+	vidsync::SeedLattice seed = vidsync::findSeedLattice(detection.corners, detection.estimatedCellSize,
+														 cv::Size(gray.cols, gray.rows), hint);
+
+	// Show the seed lattice when there is one, otherwise fall back to the raw corner cloud so
+	// there is always something to look at when diagnosing a failure.
 	// OpenCV puts the origin at the top left; VidSync puts it at the bottom left.
 	const double clipHeight = [self.videoClip clipHeight];
 	self.autodetectedPoints = [NSMutableSet setWithCapacity:detection.corners.size()];
-	for (size_t i = 0; i < detection.corners.size(); i++) {
-		const cv::Point2f p = detection.corners[i].position;
-		[self.autodetectedPoints addObject:[NSValue valueWithPoint:NSMakePoint(p.x, clipHeight - p.y)]];
+	if (seed.valid) {
+		for (size_t i = 0; i < seed.cornerIndex.size(); i++) {
+			const cv::Point2f p = detection.corners[seed.cornerIndex[i]].position;
+			[self.autodetectedPoints addObject:[NSValue valueWithPoint:NSMakePoint(p.x, clipHeight - p.y)]];
+		}
+	} else {
+		for (size_t i = 0; i < detection.corners.size(); i++) {
+			const cv::Point2f p = detection.corners[i].position;
+			[self.autodetectedPoints addObject:[NSValue valueWithPoint:NSMakePoint(p.x, clipHeight - p.y)]];
+		}
 	}
 	[self.videoClip.windowController refreshOverlay];
 
 	NSAlert *alert = [[NSAlert alloc] init];
-	[alert setMessageText:[NSString stringWithFormat:@"Detected %lu chessboard corners.", (unsigned long)detection.corners.size()]];
-	[alert setInformativeText:[NSString stringWithFormat:@"The saddle response produced %d candidates, of which %lu passed appearance scoring and sub-pixel refinement. Estimated cell size: %.1f px.\n\nThe detected corners are drawn on the video overlay. Lattice assembly is not implemented yet, so no plumblines were created; switch the detection method back to \"Legacy\" to build plumblines.", detection.saddleCandidateCount, (unsigned long)detection.corners.size(), detection.estimatedCellSize]];
+	if (seed.valid) {
+		[alert setMessageText:[NSString stringWithFormat:@"Seed lattice: %lu of %lu corners.", (unsigned long)seed.cornerIndex.size(), (unsigned long)detection.corners.size()]];
+		[alert setAlertStyle:NSAlertStyleInformational];
+	} else {
+		[alert setMessageText:[NSString stringWithFormat:@"No seed lattice found among %lu corners.", (unsigned long)detection.corners.size()]];
+		[alert setAlertStyle:NSAlertStyleWarning];
+	}
+	[alert setInformativeText:[NSString stringWithFormat:@"%@\n\nCorner detection: %d saddle candidates, %d rejected by the cheap appearance pass, %lu accepted. Median nearest-neighbor spacing among accepted corners: %.1f px (this should be close to the visible cell pitch; far below it means spurious detections).%@\n\nThe overlay shows the %@. Grid growth is not implemented yet, so no plumblines were created; switch the detection method back to \"Legacy\" to build plumblines.",
+							   [NSString stringWithUTF8String:seed.status.c_str()],
+							   detection.saddleCandidateCount,
+							   detection.prefilterRejectedCount,
+							   (unsigned long)detection.corners.size(),
+							   detection.estimatedCellSize,
+							   hint.provided ? @"\n\nUsed your two-point line as a seed hint." : @"",
+							   seed.valid ? @"seed lattice" : @"full corner cloud"]];
 	[alert addButtonWithTitle:@"Ok"];
-	[alert setAlertStyle:NSAlertStyleInformational];
 	[alert runModal];
 }
 
