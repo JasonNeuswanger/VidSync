@@ -134,16 +134,13 @@
 	if (self.videoClip.isMasterClipOf == self.videoClip.project) {
 		// Master clip setup
 		[self updateMasterTimeScrubberTicks];
-	} else {
-		// If this isn't the masterClip, and the masterClip is loaded, and this one's timecode doesn't match, give an error
-		if ([self.videoClip.project.masterClip.timeScale intValue] != 0 && [self.videoClip.timeScale intValue] != [self.videoClip.project.masterClip.timeScale intValue]) {
-			[UtilityFunctions delayCallback:^{
-				NSString *wrongFramerateWarning = [NSString stringWithFormat:@"WARNING! The timescale (related to the framerate) for video clip %@ is %@, which does not match the master clip (%@) timescale of %@. VidSync will still try to run, but video navigation and measurement behavior may be unpredictable and inaccurate. It is HIGHLY recommended that you use a video editing program to convert your video clips to the same framerate before doing any analysis.",self.videoClip.clipName,self.videoClip.timeScale,self.videoClip.project.masterClip.clipName,self.videoClip.project.masterClip.timeScale];
-				[UtilityFunctions InformUser:wrongFramerateWarning withTitle:@"Wrong timescaleframerate"];
-			} forTotalSeconds:0.5];
-			
-		}
 	}
+
+	// A mismatch used to raise a modal alert here. It now shows as persistent red text on the Project tab
+	// instead, because the mismatch is expected to appear transiently whenever clips are re-encoded one at a
+	// time, and a modal on every load in between is worse than useless. The condition is also now the clips'
+	// actual frame rates rather than their timescales, which are related but not the same thing.
+	[self.videoClip.project updateFrameRateWarning];
 	
 	if (self.videoClip.isMasterClipOf == self.videoClip.project && self.videoClip.project.currentTimecode) {	// If the master clip is loaded and there's a saved current time, go to it
 		// Use 0.5-second tolerance for restoration: exact seeks at mid-video block the main

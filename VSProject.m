@@ -52,6 +52,40 @@
 @dynamic updatedSinceLastExport;
 
 @synthesize document;
+@synthesize frameRateWarning;
+
+- (void) updateFrameRateWarning
+{
+	// Clips whose frame rates disagree cannot be synchronized to better than the beat between them, and the
+	// sub-frame offset between the two cameras drifts through the video instead of staying a fixed bias, so the
+	// synchronization error is not even constant. A rate of zero means the clip has not finished loading or its
+	// rate is not advertised, which is also worth saying rather than silently comparing against nothing.
+	float firstKnownRate = 0.0f;
+	BOOL ratesDisagree = NO;
+	BOOL anyRateUnknown = NO;
+	NSUInteger loadedClipCount = 0;
+	for (VSVideoClip *clip in self.videoClips) {
+		if (clip.windowController == nil) continue;   // not loaded yet; it will call back here when it is
+		loadedClipCount += 1;
+		const float rate = [clip frameRate];
+		if (rate <= 0.0f) {
+			anyRateUnknown = YES;
+		} else if (firstKnownRate == 0.0f) {
+			firstKnownRate = rate;
+		} else if (fabsf(rate - firstKnownRate) > 0.01f) {   // tolerance absorbs 29.97 reported slightly differently by different encoders
+			ratesDisagree = YES;
+		}
+	}
+	if (loadedClipCount < 2) {
+		self.frameRateWarning = @"";
+	} else if (ratesDisagree) {
+		self.frameRateWarning = @"Clips have different frame rates!";
+	} else if (anyRateUnknown) {
+		self.frameRateWarning = @"A clip's frame rate is unknown!";
+	} else {
+		self.frameRateWarning = @"";
+	}
+}
 
 - (NSDate *) dateCreatedAsNSDate
 {

@@ -58,6 +58,12 @@
 @property (strong) NSMutableSet *trackedObjects;
 @property (strong) NSMutableSet *trackedEvents;
 
+// Warning text for the Project tab, empty when there is nothing to warn about. Not stored: frame rates come
+// from each clip's AVAssetTrack, which is not available until the clip loads and is not KVO-observable through
+// Core Data, so this is recalculated by -updateFrameRateWarning whenever a clip finishes loading or is removed.
+@property (strong) NSString *frameRateWarning;
+- (void) updateFrameRateWarning;
+
 - (NSDate *) dateCreatedAsNSDate;
 - (NSDate *) dateLastSavedAsNSDate;
 

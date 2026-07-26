@@ -97,6 +97,7 @@
 			}
 			for (VSVideoClip *clip in document.project.videoClips) [clip.windowController processSynchronizationStatus];
 		}
+		[document.project updateFrameRateWarning];   // the clip that disagreed may have been the one just deleted
 		[document refreshOverlaysOfAllClips:self];
 	}
 }
