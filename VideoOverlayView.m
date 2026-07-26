@@ -344,10 +344,19 @@
 	NSBezierPath *tipsToTipsPath = [NSBezierPath bezierPath];
 	NSBezierPath *correctedTipsToTipsPath = [NSBezierPath bezierPath];
 	NSBezierPath *correctedLinesPath = [NSBezierPath bezierPath];
+	// Stretches of a plumbline with no digitized points in between, drawn dashed rather than
+	// solid. See the note on gap detection where the lines are assembled below.
+	NSBezierPath *gapLinesPath = [NSBezierPath bezierPath];
+	NSBezierPath *correctedGapLinesPath = [NSBezierPath bezierPath];
 	[connectingLinesPath setLineWidth:lineWidth];
 	[tipsToTipsPath setLineWidth:lineWidth];
 	[correctedTipsToTipsPath setLineWidth:lineWidth];
 	[correctedLinesPath setLineWidth:lineWidth];
+	[gapLinesPath setLineWidth:lineWidth];
+	[correctedGapLinesPath setLineWidth:lineWidth];
+	CGFloat gapDashPattern[2] = {3.0, 5.0};
+	[gapLinesPath setLineDash:gapDashPattern count:2 phase:0.0];
+	[correctedGapLinesPath setLineDash:gapDashPattern count:2 phase:0.0];
 	
 	[distortedPointColor setFill];
 	
@@ -383,10 +392,45 @@
 			
 			distortionPoints = [[distortionLine.distortionPoints allObjects] sortedArrayUsingDescriptors:[NSArray arrayWithObject:indexDescriptor]]; // all points on current line, sorted by index
 			
+			// A plumbline can leave the frame and come back. Under barrel distortion a row near the
+			// top of the image bows upward, exits through the top edge, and reappears at both ends,
+			// so only its two arms are visible. Those arms lie on one straight line in the world and
+			// are deliberately stored as one line: fitting them together forces them to be collinear,
+			// which is a stronger and more useful constraint than fitting each arm separately, and
+			// their far endpoints carry the most distortion information of any points in the frame.
+			// Drawing a solid segment across the gap would wrongly suggest corners were found there,
+			// so measure the line's usual point spacing and dash anything far longer than it.
+			double medianSpacing = 0.0;
+			if ([distortionPoints count] > 3) {
+				NSMutableArray *spacings = [NSMutableArray arrayWithCapacity:[distortionPoints count] - 1];
+				for (int i = 1; i < [distortionPoints count]; i++) {
+					VSDistortionPoint *previous = [distortionPoints objectAtIndex:i - 1];
+					VSDistortionPoint *current = [distortionPoints objectAtIndex:i];
+					double dx = [current.screenX doubleValue] - [previous.screenX doubleValue];
+					double dy = [current.screenY doubleValue] - [previous.screenY doubleValue];
+					[spacings addObject:[NSNumber numberWithDouble:sqrt(dx * dx + dy * dy)]];
+				}
+				[spacings sortUsingSelector:@selector(compare:)];
+				medianSpacing = [[spacings objectAtIndex:[spacings count] / 2] doubleValue];
+			}
+			NSPoint previousPointOnLine = NSZeroPoint;
+			NSPoint previousCorrectedPointOnLine = NSZeroPoint;
+			
 			for (int i = 0; i < [distortionPoints count]; i++) {
 				distortionPoint = [distortionPoints objectAtIndex:i];
 				
 				point = [vwc convertVideoToOverlayCoords:NSMakePoint([distortionPoint.screenX floatValue],[distortionPoint.screenY floatValue])];
+				
+				// Three times the usual spacing: the real excursions measure eight to fifty times it,
+				// while neighbouring spacings vary by well under two even where the fisheye compresses
+				// cells hardest, so there is a wide margin either side of this.
+				BOOL segmentIsGap = NO;
+				if (i > 0 && medianSpacing > 0.0) {
+					VSDistortionPoint *previous = [distortionPoints objectAtIndex:i - 1];
+					double dx = [distortionPoint.screenX doubleValue] - [previous.screenX doubleValue];
+					double dy = [distortionPoint.screenY doubleValue] - [previous.screenY doubleValue];
+					segmentIsGap = (sqrt(dx * dx + dy * dy) > 3.0 * medianSpacing);
+				}
 				
 				if (i == 0) [tipsToTipsPath moveToPoint:point];
 				if ([vwc.videoClip.calibration hasDistortionCorrection] && [distortionPoints count] >= 2) {
@@ -396,9 +440,14 @@
 						firstPoint = uPoint;
 						[correctedLinesPath moveToPoint:uPoint];
 						[correctedTipsToTipsPath moveToPoint:uPoint];
+					} else if (segmentIsGap) {
+						[correctedGapLinesPath moveToPoint:previousCorrectedPointOnLine];
+						[correctedGapLinesPath lineToPoint:uPoint];
+						[correctedLinesPath moveToPoint:uPoint];
 					} else {
 						[correctedLinesPath lineToPoint:uPoint];
 					}
+					previousCorrectedPointOnLine = uPoint;
 					if (i == [distortionPoints count] - 1) {
 						[correctedTipsToTipsPath lineToPoint:uPoint]; // Connect the end of the line straight back to its beginning in one segment, so any curvature is easily observed.
 					}
@@ -408,9 +457,14 @@
 				if ([distortionPoints count] > 1) {															// if it is the first point, move the bezier path to there
 					if (showConnectingLines && i == 0) {
 						[connectingLinesPath moveToPoint:point];
+					} else if (showConnectingLines && i > 0 && segmentIsGap) {							// the line left the frame and came back; show that rather than implying points
+						[gapLinesPath moveToPoint:previousPointOnLine];
+						[gapLinesPath lineToPoint:point];
+						[connectingLinesPath moveToPoint:point];
 					} else if (showConnectingLines && i > 0) {												// if it's not the first point, draw a line to the previous point
 						[connectingLinesPath lineToPoint:point];
 					}
+					previousPointOnLine = point;
 					if (showTipToTipLines && [distortionPoints count] > 2 && i == [distortionPoints count]-1) { // if it's the last of more than 2 points, draw a line back to the start
 						[tipsToTipsPath lineToPoint:point];
 					}
@@ -454,6 +508,7 @@
 		[tipsToTipsPath stroke];
 		[connectingLineColor setStroke];
 		[connectingLinesPath stroke];
+		[gapLinesPath stroke];
 	}
 	[distortedPointColor setFill];
 	[pointDotsPath fill];
@@ -464,6 +519,7 @@
 		[correctedTipsToTipsPath stroke];
 		[correctedLineColor setStroke];
 		[correctedLinesPath stroke];
+		[correctedGapLinesPath stroke];
 	}
 	
 	// Draw the selection indicator if we're drawing a clip with a current selection
