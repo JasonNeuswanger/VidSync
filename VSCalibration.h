@@ -173,7 +173,12 @@ int redistortionRootFunc_fdf(const gsl_vector* x, void* params, gsl_vector* f, g
 //- (cv::Point2f) centroidOfCvPoints:(std::vector<cv::Point2f>)points;
 //- std::vector<cv::Point2f> buildLineFromPoints:std::vector<cv::Point2f>allPoints byExtending:(int)startPointInd inDirectionOf:(int)dirPointInd;
 
+// autodetectChessboardPlumblines dispatches to one of the implementations below based on the
+// "plumblineDetectionMethod" user default. Both are kept in the shipping build so the new method
+// can be compared against the old one on the same frame before the old one is retired.
 - (void) autodetectChessboardPlumblines;
+- (void) autodetectChessboardPlumblinesLegacy;
+- (void) autodetectChessboardPlumblinesLattice;
 - (BOOL) hasDistortionCorrection;
 - (NSPoint) distortPoint:(NSPoint)undistortedPoint;
 - (NSPoint) undistortPoint:(NSPoint)distortedPoint;

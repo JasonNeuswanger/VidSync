@@ -120,6 +120,10 @@
 	[initialValueDict setObject:[NSKeyedArchiver archivedDataWithRootObject:[NSColor redColor] requiringSecureCoding:FALSE error:nil] forKey:@"distortionPointsColor"];
 	
 	// initial values for automatic plumbline detection algorithm for distortion correction
+	// "Legacy" = the goodFeaturesToTrack + nearest-neighbor walk method used since 2009.
+	// "Lattice" = the saddle-point + lattice-assembly replacement (under construction).
+	// The chessboardDetection* settings below apply only to the Legacy method.
+	[initialValueDict setObject:@"Legacy" forKey:@"plumblineDetectionMethod"];
 	[initialValueDict setObject:[NSNumber numberWithBool:FALSE] forKey:@"showDirectOpenCVOutputWindow"];
 	[initialValueDict setObject:[NSNumber numberWithDouble:0.2] forKey:@"chessboardDetectionCandidateDistanceTolerance"];
 	[initialValueDict setObject:[NSNumber numberWithInt:2000] forKey:@"chessboardDetectionMaxNumCorners"];

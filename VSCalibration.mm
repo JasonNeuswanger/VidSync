@@ -1684,6 +1684,31 @@ int refractionRootFunc_f(const gsl_vector* x, void* params, gsl_vector* f)
 
 - (void) autodetectChessboardPlumblines
 {
+	// Dispatch to whichever detection method the user has selected. Both methods remain in the build
+	// so they can be run against the same frame and compared; the Legacy method stays the default
+	// until the Lattice method has been shown to match or beat it across a corpus of real frames.
+	NSString *method = [[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"plumblineDetectionMethod"];
+	if ([method isEqualToString:@"Lattice"]) {
+		[self autodetectChessboardPlumblinesLattice];
+	} else {
+		[self autodetectChessboardPlumblinesLegacy];
+	}
+}
+
+- (void) autodetectChessboardPlumblinesLattice
+{
+	// Placeholder for the saddle-point detection and lattice assembly pipeline. Until that lands,
+	// say so plainly rather than appearing to succeed while producing no plumblines.
+	NSAlert *alert = [[NSAlert alloc] init];
+	[alert setMessageText:@"Lattice plumbline detection is not implemented yet."];
+	[alert setInformativeText:@"Set the plumbline detection method back to \"Legacy\" to use the existing chessboard detection algorithm."];
+	[alert addButtonWithTitle:@"Ok"];
+	[alert setAlertStyle:NSAlertStyleWarning];
+	[alert runModal];
+}
+
+- (void) autodetectChessboardPlumblinesLegacy
+{
 	// Make sure user can see whatever's being autodetected, and doesn't think no plumblines were found when actually just the display is turned off.
 	[[[NSUserDefaultsController sharedUserDefaultsController] values] setValue:[NSNumber numberWithBool:TRUE] forKey:@"showDistortionOverlay"];
 	
@@ -1787,8 +1812,10 @@ int refractionRootFunc_f(const gsl_vector* x, void* params, gsl_vector* f)
 			[self.videoClip.project.document.distortionLinesController addNewAutodetectedLineWithPoints:&crossingLine];
 		}
 		if (i == floor(firstLine.size()/2.0)) {   // When we get to the middle, store a copy of the middle crossing line to use for generating the ones crossing the crossing lines
-			[self.videoClip.project.document.distortionLinesController addNewAutodetectedLineWithPoints:&crossingLine];
-			midCrossingLine = [self buildLineFromPoints:foundCorners byExtending:baseIndex inDirectionOf:nextIndex];
+			// This used to also add crossingLine to the model a second time, duplicating the middle line in
+			// the distortion fit (and sneaking it in even when it was shorter than minLineLength). It also
+			// rebuilt an identical line instead of copying the one just computed.
+			midCrossingLine = crossingLine;
 		}
 	}
 	
