@@ -113,6 +113,45 @@ SeedLattice findSeedLattice(const std::vector<CornerCandidate> &corners,
                             cv::Size imageSize,
                             const LatticeSeedHint &hint);
 
+// --- Stage D: grow the seed outward over the whole board ----------------------------
+
+// Every corner the grid could be extended to, each with its integer grid coordinate.
+// Holes are permitted: a site with no acceptable corner is simply absent.
+struct GrownLattice {
+    std::vector<int> cornerIndex;   // Indices into the corner vector passed in.
+    std::vector<cv::Point2i> ij;
+    int minI, maxI, minJ, maxJ;
+    int rounds;                     // Expansion rounds run before nothing more could be added.
+    std::string status;
+    bool valid;
+
+    GrownLattice() : minI(0), maxI(0), minJ(0), maxJ(0), rounds(0), valid(false) {}
+};
+
+// Extends the seed lattice outward one ring at a time. Each candidate site's position is
+// predicted from the corners already placed around it, preferring predictors that cancel
+// the curvature radial distortion imposes on grid lines, and a corner is accepted only if
+// it lies close to that prediction relative to the local cell spacing.
+GrownLattice growLattice(const std::vector<CornerCandidate> &corners,
+                         const SeedLattice &seed,
+                         cv::Size imageSize);
+
+// --- Plumblines ---------------------------------------------------------------------
+
+// An ordered run of corners that lie on one straight line in the world, which is what the
+// distortion fit consumes. Curvature in the image is the distortion to be solved for.
+struct Plumbline {
+    std::vector<cv::Point2f> points;   // Ordered along the line, OpenCV image coordinates.
+    bool isRow;                        // True for constant j, false for constant i.
+    int index;                         // The constant lattice coordinate of this line.
+};
+
+// Emits one plumbline per lattice row and column holding at least minPoints corners.
+// Holes are not breaks: corners either side of a missing site are still collinear.
+std::vector<Plumbline> extractPlumblines(const std::vector<CornerCandidate> &corners,
+                                         const GrownLattice &lattice,
+                                         int minPoints);
+
 }   // namespace vidsync
 
 #endif /* VSChessboardDetector_hpp */

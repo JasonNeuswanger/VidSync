@@ -481,6 +481,36 @@ public:
         }
     }
 
+    // As nearestWithin, but ignoring corners already claimed by another lattice site.
+    int nearestWithinExcluding(const cv::Point2f &p, double radius, const std::vector<bool> &excluded) const
+    {
+        const double radiusSq = radius * radius;
+        const long long bx = (long long)std::floor(p.x / cell_);
+        const long long by = (long long)std::floor(p.y / cell_);
+        int best = -1;
+        double bestSq = radiusSq;
+        const int span = (int)std::ceil(radius / cell_);
+        for (long long gx = bx - span; gx <= bx + span; gx++) {
+            for (long long gy = by - span; gy <= by + span; gy++) {
+                std::map<long long, std::vector<size_t> >::const_iterator it = buckets_.find(gx * 1000000LL + gy);
+                if (it == buckets_.end()) continue;
+                for (size_t k = 0; k < it->second.size(); k++) {
+                    const size_t slot = it->second[k];
+                    if (slot < excluded.size() && excluded[slot]) continue;
+                    const cv::Point2f &q = corners_[subset_[slot]].position;
+                    const double dx = p.x - q.x;
+                    const double dy = p.y - q.y;
+                    const double dsq = dx * dx + dy * dy;
+                    if (dsq < bestSq) {
+                        bestSq = dsq;
+                        best = (int)slot;
+                    }
+                }
+            }
+        }
+        return best;
+    }
+
     // Returns the position within `subset` of the nearest corner to p inside radius, or -1.
     int nearestWithin(const cv::Point2f &p, double radius) const
     {
@@ -1131,6 +1161,304 @@ SeedLattice findSeedLattice(const std::vector<CornerCandidate> &corners,
     seed.status = message.str();
     seed.valid = true;
     return seed;
+}
+
+// --- Stage D: grid growth -----------------------------------------------------------
+
+namespace {
+
+// How close a corner must lie to its predicted position to be accepted, as a fraction of
+// the local cell spacing. This doubles as the smoothness test: when three corners are
+// already placed along a line the prediction is the constant-third-difference
+// extrapolation, so the residual against it *is* the third difference, which stays near
+// zero along a smoothly curving grid line however strong the curvature.
+const double kGrowthTolerance = 0.30;
+
+// Guards against a runaway walk into clutter beyond the board.
+const int kMaxGrowthRounds = 200;
+const int kMaxLatticeSpan = 400;
+
+long long siteKey(int i, int j)
+{
+    return (long long)(i + 100000) * 1000000LL + (long long)(j + 100000);
+}
+
+// Component-wise median, which shrugs off one bad prediction among several.
+cv::Point2f medianPoint(std::vector<cv::Point2f> &values)
+{
+    const size_t n = values.size();
+    std::vector<float> xs(n), ys(n);
+    for (size_t i = 0; i < n; i++) {
+        xs[i] = values[i].x;
+        ys[i] = values[i].y;
+    }
+    std::sort(xs.begin(), xs.end());
+    std::sort(ys.begin(), ys.end());
+    return cv::Point2f(xs[n / 2], ys[n / 2]);
+}
+
+struct SitePrediction {
+    cv::Point2f position;
+    double spacing;   // Local cell spacing near this site, for scaling the tolerance.
+    int tier;         // 3 curvature-aware, 2 linear, 1 basis-only, 0 none.
+};
+
+// Predicts where the corner at (i, j) should be, from the corners already placed nearby.
+//
+// Predictions are tiered rather than pooled, because a weak predictor mixed into an
+// average drags a good one off. Tier 3 covers the two forms that cancel curvature to
+// second order: the constant-third-difference extrapolation along a line, and the
+// parallelogram rule, which is exact for any affine grid. Tier 2 is straight-line
+// extrapolation from two corners, which under fisheye is biased outward on the convex
+// side. Tier 1 steps one basis vector from a single neighbour and is a last resort,
+// biased for the same reason.
+SitePrediction predictSite(const std::map<long long, int> &siteToCorner,
+                           const std::vector<CornerCandidate> &corners,
+                           int i, int j,
+                           const cv::Point2f &u, const cv::Point2f &v)
+{
+    SitePrediction result;
+    result.position = cv::Point2f(0.0f, 0.0f);
+    result.spacing = 0.0;
+    result.tier = 0;
+
+    const int di[4] = {1, -1, 0, 0};
+    const int dj[4] = {0, 0, 1, -1};
+
+    std::vector<cv::Point2f> tier3, tier2, tier1;
+    std::vector<double> spacings;
+
+    for (int d = 0; d < 4; d++) {
+        // Corners lying back along this axis from the site, at one, two and three steps.
+        const cv::Point2f *p1 = 0;
+        const cv::Point2f *p2 = 0;
+        const cv::Point2f *p3 = 0;
+        std::map<long long, int>::const_iterator it;
+        it = siteToCorner.find(siteKey(i - di[d], j - dj[d]));
+        if (it != siteToCorner.end()) p1 = &corners[it->second].position;
+        it = siteToCorner.find(siteKey(i - 2 * di[d], j - 2 * dj[d]));
+        if (it != siteToCorner.end()) p2 = &corners[it->second].position;
+        it = siteToCorner.find(siteKey(i - 3 * di[d], j - 3 * dj[d]));
+        if (it != siteToCorner.end()) p3 = &corners[it->second].position;
+
+        if (p1 && p2) spacings.push_back(vectorLength(cv::Point2f(p1->x - p2->x, p1->y - p2->y)));
+
+        if (p1 && p2 && p3) {
+            tier3.push_back(cv::Point2f(p3->x - 3.0f * p2->x + 3.0f * p1->x,
+                                        p3->y - 3.0f * p2->y + 3.0f * p1->y));
+        } else if (p1 && p2) {
+            tier2.push_back(cv::Point2f(2.0f * p1->x - p2->x, 2.0f * p1->y - p2->y));
+        } else if (p1) {
+            const cv::Point2f step = (d < 2) ? cv::Point2f(u.x * di[d], u.y * di[d])
+                                             : cv::Point2f(v.x * dj[d], v.y * dj[d]);
+            tier1.push_back(cv::Point2f(p1->x + step.x, p1->y + step.y));
+        }
+    }
+
+    // Parallelogram rule over each pair of perpendicular directions: with the three other
+    // corners of a cell known, the fourth follows exactly for an affine grid.
+    const int cornerI[4] = {1, 1, -1, -1};
+    const int cornerJ[4] = {1, -1, 1, -1};
+    for (int c = 0; c < 4; c++) {
+        std::map<long long, int>::const_iterator a = siteToCorner.find(siteKey(i - cornerI[c], j));
+        std::map<long long, int>::const_iterator b = siteToCorner.find(siteKey(i, j - cornerJ[c]));
+        std::map<long long, int>::const_iterator ab = siteToCorner.find(siteKey(i - cornerI[c], j - cornerJ[c]));
+        if (a == siteToCorner.end() || b == siteToCorner.end() || ab == siteToCorner.end()) continue;
+        const cv::Point2f &pa = corners[a->second].position;
+        const cv::Point2f &pb = corners[b->second].position;
+        const cv::Point2f &pab = corners[ab->second].position;
+        tier3.push_back(cv::Point2f(pa.x + pb.x - pab.x, pa.y + pb.y - pab.y));
+        spacings.push_back(vectorLength(cv::Point2f(pa.x - pab.x, pa.y - pab.y)));
+    }
+
+    std::vector<cv::Point2f> *chosen = 0;
+    if (!tier3.empty()) { chosen = &tier3; result.tier = 3; }
+    else if (!tier2.empty()) { chosen = &tier2; result.tier = 2; }
+    else if (!tier1.empty()) { chosen = &tier1; result.tier = 1; }
+    if (!chosen) return result;
+
+    result.position = medianPoint(*chosen);
+    if (spacings.empty()) {
+        result.spacing = std::min(vectorLength(u), vectorLength(v));
+    } else {
+        std::sort(spacings.begin(), spacings.end());
+        result.spacing = spacings[spacings.size() / 2];
+    }
+    return result;
+}
+
+}   // anonymous namespace
+
+GrownLattice growLattice(const std::vector<CornerCandidate> &corners,
+                         const SeedLattice &seed,
+                         cv::Size imageSize)
+{
+    GrownLattice grown;
+    if (!seed.valid || seed.cornerIndex.empty()) {
+        grown.status = "No seed lattice to grow from.";
+        return grown;
+    }
+
+    // Every corner is a candidate for placement, so the lookup covers the whole cloud.
+    std::vector<int> all;
+    all.reserve(corners.size());
+    for (size_t i = 0; i < corners.size(); i++) all.push_back((int)i);
+    const double cellSize = std::min(vectorLength(seed.basis.u), vectorLength(seed.basis.v));
+    PointLookup lookup(corners, all, std::max(cellSize * kGrowthTolerance, 1.0));
+
+    std::map<long long, int> siteToCorner;
+    std::vector<bool> claimed(corners.size(), false);
+    for (size_t k = 0; k < seed.cornerIndex.size(); k++) {
+        siteToCorner[siteKey(seed.ij[k].x, seed.ij[k].y)] = seed.cornerIndex[k];
+        claimed[seed.cornerIndex[k]] = true;
+    }
+    const size_t seedSize = siteToCorner.size();
+
+    int minI = seed.ij[0].x, maxI = seed.ij[0].x, minJ = seed.ij[0].y, maxJ = seed.ij[0].y;
+    for (size_t k = 0; k < seed.ij.size(); k++) {
+        minI = std::min(minI, seed.ij[k].x);
+        maxI = std::max(maxI, seed.ij[k].x);
+        minJ = std::min(minJ, seed.ij[k].y);
+        maxJ = std::max(maxJ, seed.ij[k].y);
+    }
+
+    int round = 0;
+    for (; round < kMaxGrowthRounds; round++) {
+        // Collect the empty sites adjacent to filled ones. Gathering the whole ring before
+        // placing anything keeps the result independent of the order sites are visited,
+        // which the old nearest-neighbour walk was notoriously sensitive to.
+        std::vector<cv::Point2i> frontier;
+        {
+            std::map<long long, bool> seen;
+            const int di[4] = {1, -1, 0, 0};
+            const int dj[4] = {0, 0, 1, -1};
+            for (std::map<long long, int>::const_iterator it = siteToCorner.begin();
+                 it != siteToCorner.end(); ++it) {
+                const int i = (int)(it->first / 1000000LL) - 100000;
+                const int j = (int)(it->first % 1000000LL) - 100000;
+                for (int d = 0; d < 4; d++) {
+                    const int ni = i + di[d];
+                    const int nj = j + dj[d];
+                    if (ni < minI - kMaxLatticeSpan || ni > maxI + kMaxLatticeSpan) continue;
+                    if (nj < minJ - kMaxLatticeSpan || nj > maxJ + kMaxLatticeSpan) continue;
+                    const long long key = siteKey(ni, nj);
+                    if (siteToCorner.count(key)) continue;
+                    if (seen.count(key)) continue;
+                    seen[key] = true;
+                    frontier.push_back(cv::Point2i(ni, nj));
+                }
+            }
+        }
+        if (frontier.empty()) break;
+
+        // Score every frontier site first, then commit. Where two sites want the same
+        // corner, the better fit takes it and the other is left for a later round.
+        std::map<int, size_t> cornerClaim;      // corner index -> index into `proposals`
+        std::vector<cv::Point2i> proposalSite;
+        std::vector<int> proposalCorner;
+        std::vector<double> proposalResidual;
+
+        for (size_t f = 0; f < frontier.size(); f++) {
+            const int i = frontier[f].x;
+            const int j = frontier[f].y;
+            const SitePrediction pred = predictSite(siteToCorner, corners, i, j, seed.basis.u, seed.basis.v);
+            if (pred.tier == 0 || pred.spacing <= 1e-6) continue;
+            if (pred.position.x < 0.0f || pred.position.y < 0.0f ||
+                pred.position.x >= imageSize.width || pred.position.y >= imageSize.height) continue;
+
+            const double tolerance = kGrowthTolerance * pred.spacing;
+            const int slot = lookup.nearestWithinExcluding(pred.position, tolerance, claimed);
+            if (slot < 0) continue;
+            const int cornerIdx = all[slot];
+            const cv::Point2f &p = corners[cornerIdx].position;
+            const double residual = vectorLength(cv::Point2f(p.x - pred.position.x, p.y - pred.position.y));
+
+            std::map<int, size_t>::iterator existing = cornerClaim.find(cornerIdx);
+            if (existing != cornerClaim.end()) {
+                if (residual < proposalResidual[existing->second]) {
+                    proposalSite[existing->second] = frontier[f];
+                    proposalResidual[existing->second] = residual;
+                }
+                continue;
+            }
+            cornerClaim[cornerIdx] = proposalSite.size();
+            proposalSite.push_back(frontier[f]);
+            proposalCorner.push_back(cornerIdx);
+            proposalResidual.push_back(residual);
+        }
+
+        if (proposalCorner.empty()) break;
+
+        for (size_t k = 0; k < proposalCorner.size(); k++) {
+            siteToCorner[siteKey(proposalSite[k].x, proposalSite[k].y)] = proposalCorner[k];
+            claimed[proposalCorner[k]] = true;
+            minI = std::min(minI, proposalSite[k].x);
+            maxI = std::max(maxI, proposalSite[k].x);
+            minJ = std::min(minJ, proposalSite[k].y);
+            maxJ = std::max(maxJ, proposalSite[k].y);
+        }
+    }
+
+    for (std::map<long long, int>::const_iterator it = siteToCorner.begin(); it != siteToCorner.end(); ++it) {
+        grown.cornerIndex.push_back(it->second);
+        grown.ij.push_back(cv::Point2i((int)(it->first / 1000000LL) - 100000,
+                                       (int)(it->first % 1000000LL) - 100000));
+    }
+    grown.minI = minI;
+    grown.maxI = maxI;
+    grown.minJ = minJ;
+    grown.maxJ = maxJ;
+    grown.rounds = round;
+    grown.valid = true;
+
+    const int spanI = maxI - minI + 1;
+    const int spanJ = maxJ - minJ + 1;
+    std::ostringstream message;
+    message.setf(std::ios::fixed);
+    message.precision(0);
+    message << "Grew " << seedSize << " seed corners to " << grown.cornerIndex.size() << " over "
+            << round << " rounds, spanning " << spanI << " x " << spanJ << " cells ("
+            << (spanI * spanJ - (int)grown.cornerIndex.size()) << " holes). Used "
+            << grown.cornerIndex.size() * 100 / (corners.empty() ? 1 : corners.size())
+            << "% of the " << corners.size() << " detected corners.";
+    grown.status = message.str();
+    return grown;
+}
+
+std::vector<Plumbline> extractPlumblines(const std::vector<CornerCandidate> &corners,
+                                         const GrownLattice &lattice,
+                                         int minPoints)
+{
+    std::vector<Plumbline> lines;
+    if (!lattice.valid) return lines;
+
+    // Rows share a j and vary in i; columns the other way. A missing site is not a break,
+    // since the corners either side of it still lie on the same straight world line.
+    for (int pass = 0; pass < 2; pass++) {
+        const bool isRow = (pass == 0);
+        const int from = isRow ? lattice.minJ : lattice.minI;
+        const int to = isRow ? lattice.maxJ : lattice.maxI;
+        for (int fixed = from; fixed <= to; fixed++) {
+            std::vector<std::pair<int, int> > along;   // varying coordinate, corner index
+            for (size_t k = 0; k < lattice.ij.size(); k++) {
+                if (isRow) {
+                    if (lattice.ij[k].y != fixed) continue;
+                    along.push_back(std::make_pair(lattice.ij[k].x, lattice.cornerIndex[k]));
+                } else {
+                    if (lattice.ij[k].x != fixed) continue;
+                    along.push_back(std::make_pair(lattice.ij[k].y, lattice.cornerIndex[k]));
+                }
+            }
+            if ((int)along.size() < minPoints) continue;
+            std::sort(along.begin(), along.end());
+            Plumbline line;
+            line.isRow = isRow;
+            line.index = fixed;
+            for (size_t k = 0; k < along.size(); k++) line.points.push_back(corners[along[k].second].position);
+            lines.push_back(line);
+        }
+    }
+    return lines;
 }
 
 }   // namespace vidsync

@@ -1696,6 +1696,11 @@ int refractionRootFunc_f(const gsl_vector* x, void* params, gsl_vector* f)
 	}
 }
 
+// Shortest run of lattice corners worth emitting as a plumbline. Short lines carry little
+// information about distortion but count equally in the orthogonal-regression cost, so the
+// floor is a little above the legacy method's.
+static const int kMinPlumblinePoints = 6;
+
 - (void) autodetectChessboardPlumblinesLattice
 {
 	// Stage A only so far: detect the corners and show them. Lattice basis estimation and grid
@@ -1739,12 +1744,23 @@ int refractionRootFunc_f(const gsl_vector* x, void* params, gsl_vector* f)
 	vidsync::SeedLattice seed = vidsync::findSeedLattice(detection.corners, detection.estimatedCellSize,
 														 cv::Size(gray.cols, gray.rows), hint);
 
-	// Show the seed lattice when there is one, otherwise fall back to the raw corner cloud so
-	// there is always something to look at when diagnosing a failure.
+	vidsync::GrownLattice lattice;
+	std::vector<vidsync::Plumbline> plumblines;
+	if (seed.valid) {
+		lattice = vidsync::growLattice(detection.corners, seed, cv::Size(gray.cols, gray.rows));
+		if (lattice.valid) plumblines = vidsync::extractPlumblines(detection.corners, lattice, kMinPlumblinePoints);
+	}
+
+	// Show whatever we got furthest with, so a failure always leaves something to diagnose from.
 	// OpenCV puts the origin at the top left; VidSync puts it at the bottom left.
 	const double clipHeight = [self.videoClip clipHeight];
 	self.autodetectedPoints = [NSMutableSet setWithCapacity:detection.corners.size()];
-	if (seed.valid) {
+	if (lattice.valid) {
+		for (size_t i = 0; i < lattice.cornerIndex.size(); i++) {
+			const cv::Point2f p = detection.corners[lattice.cornerIndex[i]].position;
+			[self.autodetectedPoints addObject:[NSValue valueWithPoint:NSMakePoint(p.x, clipHeight - p.y)]];
+		}
+	} else if (seed.valid) {
 		for (size_t i = 0; i < seed.cornerIndex.size(); i++) {
 			const cv::Point2f p = detection.corners[seed.cornerIndex[i]].position;
 			[self.autodetectedPoints addObject:[NSValue valueWithPoint:NSMakePoint(p.x, clipHeight - p.y)]];
@@ -1755,24 +1771,46 @@ int refractionRootFunc_f(const gsl_vector* x, void* params, gsl_vector* f)
 			[self.autodetectedPoints addObject:[NSValue valueWithPoint:NSMakePoint(p.x, clipHeight - p.y)]];
 		}
 	}
+
+	// Now that plumblines are actually being produced, the two-point seed line has served its
+	// purpose and would otherwise be left behind as a stray two-point line in the fit.
+	if (hint.provided && !plumblines.empty()) {
+		[[self managedObjectContext] deleteObject:[self.distortionLines anyObject]];
+	}
+
+	NSUInteger pointsCreated = 0;
+	for (size_t i = 0; i < plumblines.size(); i++) {
+		std::vector<cv::Point2f> flipped;
+		flipped.reserve(plumblines[i].points.size());
+		for (size_t k = 0; k < plumblines[i].points.size(); k++) {
+			flipped.push_back(cv::Point2f(plumblines[i].points[k].x,
+										  (float)clipHeight - plumblines[i].points[k].y));
+		}
+		pointsCreated += flipped.size();
+		[self.videoClip.project.document.distortionLinesController addNewAutodetectedLineWithPoints:&flipped];
+	}
+
+	if (!plumblines.empty()) self.videoClip.project.distortionDisplayMode = @"Uncorrected";
 	[self.videoClip.windowController refreshOverlay];
 
 	NSAlert *alert = [[NSAlert alloc] init];
-	if (seed.valid) {
-		[alert setMessageText:[NSString stringWithFormat:@"Seed lattice: %lu of %lu corners.", (unsigned long)seed.cornerIndex.size(), (unsigned long)detection.corners.size()]];
+	if (!plumblines.empty()) {
+		[alert setMessageText:[NSString stringWithFormat:@"Created %lu plumblines from %lu corners.", (unsigned long)plumblines.size(), (unsigned long)pointsCreated]];
 		[alert setAlertStyle:NSAlertStyleInformational];
+	} else if (seed.valid) {
+		[alert setMessageText:@"Found the board but could not build plumblines from it."];
+		[alert setAlertStyle:NSAlertStyleWarning];
 	} else {
-		[alert setMessageText:[NSString stringWithFormat:@"No seed lattice found among %lu corners.", (unsigned long)detection.corners.size()]];
+		[alert setMessageText:[NSString stringWithFormat:@"No lattice found among %lu corners.", (unsigned long)detection.corners.size()]];
 		[alert setAlertStyle:NSAlertStyleWarning];
 	}
-	[alert setInformativeText:[NSString stringWithFormat:@"%@\n\nCorner detection: %d saddle candidates, %d rejected by the cheap appearance pass, %lu accepted. Median nearest-neighbor spacing among accepted corners: %.1f px (this should be close to the visible cell pitch; far below it means spurious detections).%@\n\nThe overlay shows the %@. Grid growth is not implemented yet, so no plumblines were created; switch the detection method back to \"Legacy\" to build plumblines.",
+	[alert setInformativeText:[NSString stringWithFormat:@"%@\n\n%@\n\nCorner detection: %d saddle candidates, %d rejected by the cheap appearance pass, %lu accepted.%@\n\nPlumblines are appended to any already present, so you can reposition the board and run this again at another timecode to cover more of the frame. Curve-fit refinement, which removes leftover outliers and recovers missed corners, is not implemented yet.",
 							   [NSString stringWithUTF8String:seed.status.c_str()],
+							   lattice.valid ? [NSString stringWithUTF8String:lattice.status.c_str()] : @"Grid growth did not run.",
 							   detection.saddleCandidateCount,
 							   detection.prefilterRejectedCount,
 							   (unsigned long)detection.corners.size(),
-							   detection.estimatedCellSize,
-							   hint.provided ? @"\n\nUsed your two-point line as a seed hint." : @"",
-							   seed.valid ? @"seed lattice" : @"full corner cloud"]];
+							   hint.provided ? @"\n\nUsed your two-point line as a seed hint, and removed it after use." : @""]];
 	[alert addButtonWithTitle:@"Ok"];
 	[alert runModal];
 }
