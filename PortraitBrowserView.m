@@ -30,6 +30,18 @@
 - (void) awakeFromNib
 {
     [super awakeFromNib];
+
+    // NSCollectionView.selectable defaults to NO, and these browsers are archived in the
+    // XIB as plain <customView> elements with only a custom class, so none of NSCollectionView's
+    // Interface Builder settings (including "Selectable") are stored in the nib. Without this,
+    // clicking an item never updates selectionIndexPaths, so NSCollectionViewItem's setSelected:
+    // and the didSelectItemsAtIndexPaths: delegate callbacks never fire and no selection is
+    // ever visible. Multiple selection is enabled because the Delete handler in
+    // portraitBrowserViewDeleteSelectedItems: is written to remove a whole set of portraits.
+    self.selectable = YES;
+    self.allowsMultipleSelection = YES;
+    self.allowsEmptySelection = YES;
+
     if (self.collectionViewLayout == nil) {
         NSCollectionViewFlowLayout *layout = [[NSCollectionViewFlowLayout alloc] init];
         layout.itemSize = NSMakeSize(180, 130);
@@ -43,8 +55,31 @@
     }
 }
 
+- (void)keyDown:(NSEvent *)event
+{
+    // Delete (backspace=51) or Forward Delete (117) removes selected portraits
+    if ((event.keyCode == 51 || event.keyCode == 117) && self.selectionIndexPaths.count > 0) {
+        if ([self.delegate respondsToSelector:@selector(portraitBrowserViewDeleteSelectedItems:)]) {
+            [(id<PortraitBrowserViewDelegate>)self.delegate portraitBrowserViewDeleteSelectedItems:self];
+        }
+    } else {
+        [super keyDown:event];
+    }
+}
+
+- (BOOL)acceptsFirstResponder
+{
+    return YES;
+}
+
 - (void)mouseDown:(NSEvent *)event
 {
+    // Claim first responder before super processes selection, so that
+    // (a) setSelected:/didSelectItemsAtIndexPaths: fire while we ARE the key view,
+    // and (b) subsequent keyDown: events (e.g. Delete) reach this view, not
+    // whatever editable field held focus before the click.
+    [self.window makeFirstResponder:self];
+
     if (event.clickCount == 2) {
         NSPoint point = [self convertPoint:event.locationInWindow fromView:nil];
         NSIndexPath *indexPath = [self indexPathForItemAtPoint:point];

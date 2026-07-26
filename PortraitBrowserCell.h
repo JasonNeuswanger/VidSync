@@ -24,4 +24,6 @@
 
 @interface PortraitBrowserCell : NSCollectionViewItem
 
+@property BOOL showObjectCaption;
+
 @end

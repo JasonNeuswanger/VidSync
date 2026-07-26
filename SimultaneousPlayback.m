@@ -217,7 +217,7 @@
 #pragma mark Utility Functions for Playback
 
 - (void) reSync
-{	
+{
 	CMTime currentMasterTime = [self currentMasterTime];
 	for (VSVideoClip *clip in [self.project.videoClips allObjects]) {
 		if (!clip.isMasterClipOf && [clip respondsToSyncedControls]) {	// if the clip is sync-locked, and isn't the master clip, then sync it
@@ -226,6 +226,22 @@
 			[clip.windowController.playerView.player seekToTime:CMTimeSubtract(currentMasterTime,offset) toleranceBefore:kCMTimeZero toleranceAfter:kCMTimeZero];
 		}
 		[clip.windowController refreshOverlay];	// refresh the overlay whenever the time changes
+	}
+}
+
+// Same as reSync but with 0.5-second seek tolerance instead of exact (kCMTimeZero).
+// Used during document restore where frame-perfect accuracy is not needed and exact
+// seeks at mid-video positions would block the main thread via the decoder.
+- (void) reSyncApproximate
+{
+	CMTime currentMasterTime = [self currentMasterTime];
+	CMTime tolerance = CMTimeMakeWithSeconds(0.5, 600);
+	for (VSVideoClip *clip in [self.project.videoClips allObjects]) {
+		if (!clip.isMasterClipOf && [clip respondsToSyncedControls]) {
+			CMTime offset = [UtilityFunctions CMTimeFromString:clip.syncOffset];
+			[clip.windowController.playerView.player seekToTime:CMTimeSubtract(currentMasterTime,offset) toleranceBefore:tolerance toleranceAfter:tolerance];
+		}
+		[clip.windowController refreshOverlay];
 	}
 }
 

@@ -30,10 +30,21 @@
 - (void) awakeFromNib {
 	[self setEntityName:@"VSTrackedObjectPortrait"];
 	[self setSortDescriptors:@[[NSSortDescriptor sortDescriptorWithKey:@"trackedObject.index" ascending:YES]]];
-	[super awakeFromNib];  // registers cell class, sets dataSource, adds KVO observer for arrangedObjects
+	zoomDefaultsKey = @"allPortraitsBrowserZoom";
+	[super awakeFromNib];  // sets automaticallyRearrangesObjects=NO and adds arrangedObjects KVO
 	NSError *error;
-	[self fetchWithRequest:nil merge:NO error:&error];  // populates arrangedObjects → KVO fires → reloadData
+	[self fetchWithRequest:nil merge:NO error:&error];  // populates arrangedObjects → KVO fires → refreshCollectionView
 	if (error != nil) [NSApp presentError:error];
+}
+
+- (NSCollectionViewItem *)collectionView:(NSCollectionView *)collectionView itemForRepresentedObjectAtIndexPath:(NSIndexPath *)indexPath
+{
+    // Set showObjectCaption BEFORE representedObject: setRepresentedObject: reads the flag
+    // to build the caption string, so setting it afterward has no effect.
+    PortraitBrowserCell *item = (PortraitBrowserCell *)[collectionView makeItemWithIdentifier:@"PortraitBrowserCell" forIndexPath:indexPath];
+    item.showObjectCaption = YES;
+    item.representedObject = [[self arrangedObjects] objectAtIndex:[indexPath item]];
+    return item;
 }
 
 // Returns portrait data grouped by tracked object, for potential future use in sectioned display

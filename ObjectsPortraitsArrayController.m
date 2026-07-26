@@ -28,16 +28,10 @@
 @implementation ObjectsPortraitsArrayController
 
 - (void) awakeFromNib {
-    
-//    [portraitBrowserView setIntercellSpacing:NSMakeSize(2.0f,2.0f)];
-//    [portraitBrowserView setCellSize:NSMakeSize(200.0f,125.0f)];
-    
+    zoomDefaultsKey = @"objectsPortraitsBrowserZoom";
+    [super awakeFromNib];
 }
 
-
-- (void) refreshImageBrowserView {
-	
-}
 
 
 - (void) addImage:(NSImage *)image ofObject:(VSTrackedObject *)object fromSourceClip:(VSVideoClip *)sourceVideoClip inRect:(NSRect)rect withTimecode:(NSString *)timecode {
@@ -49,7 +43,7 @@
     [newPortrait setImage:image];
     [self addObject:newPortrait];
     [[self managedObjectContext] processPendingChanges];
-    [self refreshImageBrowserView];
+    [self refreshCollectionView];
 }
 
 @end

@@ -94,6 +94,7 @@ NSPoint quadratCoords2Dfrom3D(const VSPoint3D *quadratCoords3D, const char axisH
 - (void) updateVisibleTimeRange
 {
 	if ([[self.videoClip.project.masterClip timeScale] intValue] > 0) {
+		_pendingTimeRangeRetry = NO;
 		CMTime startTime = [UtilityFunctions CMTimeFromString:self.point.timecode];
 		CMTime solidDuration = CMTimeMake([self.point.trackedEvent.type.duration doubleValue] * [[self.videoClip.project.masterClip timeScale] longValue], [[self.videoClip.project.masterClip timeScale] intValue]);
 		fadingDuration = CMTimeMake([self.point.trackedEvent.type.fadeTime doubleValue] * [[self.videoClip.project.masterClip timeScale] longValue], [[self.videoClip.project.masterClip timeScale] intValue]);
@@ -101,14 +102,24 @@ NSPoint quadratCoords2Dfrom3D(const VSPoint3D *quadratCoords3D, const char axisH
 		fadingStartTime = CMTimeAdd(startTime,solidDuration);
 		totalTimeRange = CMTimeRangeMake(startTime,totalDuration);
 		fadingTimeRange = CMTimeRangeMake(fadingStartTime,fadingDuration);
-	} else {    // if the master clip hasn't loaded yet, wait and try again
+	} else if (!_pendingTimeRangeRetry) {
+		// Master clip not yet loaded. Schedule one retry and mark it pending so we never
+		// accumulate multiple timers per point. The old approach called
+		// cancelPreviousPerformRequestsWithTarget: here, which scans every pending run-loop
+		// timer and becomes O(N²) across N screen points — causing the beachball on reopen.
 		fadingDuration = CMTimeMake(0, 30);
 		fadingStartTime = CMTimeMake(0, 30);
 		totalTimeRange = CMTimeRangeMake(fadingStartTime, fadingDuration);
 		fadingDuration = CMTimeMake(0, 30);
-		[NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(updateVisibleTimeRange) object:nil];  // coalesce retries
-		[self performSelector:@selector(updateVisibleTimeRange) withObject:nil afterDelay:0.3f];
+		_pendingTimeRangeRetry = YES;
+		[self performSelector:@selector(_retryUpdateVisibleTimeRange) withObject:nil afterDelay:0.3f];
 	}
+}
+
+- (void) _retryUpdateVisibleTimeRange
+{
+	_pendingTimeRangeRetry = NO;
+	[self updateVisibleTimeRange];
 }
 
 - (void) updateCalibrationFrameCoords
@@ -295,7 +306,9 @@ NSPoint quadratCoords2Dfrom3D(const VSPoint3D *quadratCoords3D, const char axisH
 
 - (void) dealloc
 {
-	[NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(updateVisibleTimeRange) object:nil];
+	if (_pendingTimeRangeRetry) {
+		[NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(_retryUpdateVisibleTimeRange) object:nil];
+	}
 	[self carefullyRemoveObserver:self forKeyPath:@"point.timecode"];
 }
 

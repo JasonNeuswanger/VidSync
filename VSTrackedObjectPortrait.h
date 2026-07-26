@@ -38,6 +38,7 @@
 @property (strong) VSVideoClip *sourceVideoClip;
 
 - (void) setImage:(NSImage *)imageSource;
+- (NSImage *) image;
 
 
 // Methods to conform to the informal protocol IKImageBrowserItem

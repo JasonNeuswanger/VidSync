@@ -30,10 +30,11 @@
 NSPoint quadratCoords2Dfrom3D(const VSPoint3D *quadratCoords3D, const char axisHorizontal, const char axisVertical);
 
 @interface VSEventScreenPoint : NSManagedObject {
-	
+
 	CMTimeRange totalTimeRange, fadingTimeRange;
 	CMTime fadingStartTime, fadingDuration;
-	
+	BOOL _pendingTimeRangeRetry;
+
 }
 
 @property (strong) NSNumber *screenX;

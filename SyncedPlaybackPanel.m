@@ -53,6 +53,42 @@
 {
 	[document syncedPlaybackPanelAwokeFromNib];
 	self.initialFirstResponder = nil;
+	// Restore saved position. NSWindow frame autosave doesn't reliably work for
+	// non-titled windows, so we maintain our own copy in user defaults.
+	NSString *saved = [[NSUserDefaults standardUserDefaults] stringForKey:@"SyncedPlaybackPanelFrame"];
+	if (saved.length > 0) {
+		NSRect frame = NSRectFromString(saved);
+		NSRect visible = [[NSScreen mainScreen] visibleFrame];
+		if (!NSIsEmptyRect(frame) && !NSIsEmptyRect(NSIntersectionRect(frame, visible))) {
+			[self setFrame:frame display:NO];
+		}
+	}
+}
+
+- (void)close
+{
+	[[NSUserDefaults standardUserDefaults] setObject:NSStringFromRect(self.frame) forKey:@"SyncedPlaybackPanelFrame"];
+	[super close];
+}
+
+- (BOOL)validateUserInterfaceItem:(id<NSValidatedUserInterfaceItem>)item
+{
+    // Borderless windows have no close button, so NSWindow's default validation
+    // returns NO for performClose:. Override to keep File > Close enabled.
+    if (item.action == @selector(performClose:)) return YES;
+    return [super validateUserInterfaceItem:item];
+}
+
+- (IBAction)performClose:(id)sender
+{
+    // File > Close should close the document, not just this panel.
+    // Delegate to whichever window controller owns the document close.
+    for (NSWindowController *wc in document.windowControllers) {
+        if (wc.shouldCloseDocument) {
+            [wc.window performClose:sender];
+            return;
+        }
+    }
 }
 
 - (IBAction)makeKeyAndOrderFront:(id)sender

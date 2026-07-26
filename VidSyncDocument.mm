@@ -131,8 +131,12 @@ static void *AVSPPlayerCurrentTimeContext = &AVSPPlayerCurrentTimeContext;
 		if (vwc != nil) [self addWindowController:vwc];
 	}
 	
+	// Explicitly bring the main window to front. Video windows use orderFrontRegardless and always
+	// appear; without this call the main window can be skipped during crash-recovery restoration.
+	[[mainWindowController window] makeKeyAndOrderFront:self];
+
 	[self addObserver:self forKeyPath:@"portraitSubject" options:NSKeyValueObservingOptionNew context:NULL];
-	
+
 	[[NSNotificationCenter defaultCenter] addObserver:self
 									 selector:@selector(movieTimeDidChange:)
 										name:AVPlayerItemTimeJumpedNotification
@@ -175,6 +179,11 @@ static void *AVSPPlayerCurrentTimeContext = &AVSPPlayerCurrentTimeContext;
 		[trackedObjectTypesController setSortDescriptors:[NSArray arrayWithObject:nameDescriptor]];
 		[distortionLinesController setSortDescriptors:[NSArray arrayWithObject:timecodeDescriptor]];
 		[distortionPointsController setSortDescriptors:[NSArray arrayWithObject:indexDescriptor]];
+		// Wire ourselves as the action delegate for portrait browsers so double-click and
+		// delete events reach the document. The array controllers are the NSCollectionView
+		// dataSource/delegate; they forward those action events on to us.
+		objectsPortraitsArrayController.portraitActionDelegate = self;
+		allPortraitsArrayController.portraitActionDelegate = self;
 		NSMutableAttributedString *portraitWindowOpenButtonTitle =[[NSMutableAttributedString alloc] initWithAttributedString:[[NSMutableAttributedString alloc] initWithString:@"\uf030"]];
 		[portraitWindowOpenButtonTitle addAttribute:NSFontAttributeName value:[NSFont fontWithName:@"FontAwesome" size:12.0f] range:NSMakeRange(0,1)];
 		[allPortraitBrowserOpenButton setAttributedTitle:portraitWindowOpenButtonTitle];
@@ -625,6 +634,19 @@ static void *AVSPPlayerCurrentTimeContext = &AVSPPlayerCurrentTimeContext;
     [[portrait.sourceVideoClip.windowController window] makeKeyAndOrderFront:self];
 }
 
+- (void)portraitBrowserViewDeleteSelectedItems:(NSCollectionView *)browserView
+{
+    if (![browserView.dataSource isKindOfClass:[PortraitsArrayController class]]) return;
+    PortraitsArrayController *controller = (PortraitsArrayController *)browserView.dataSource;
+    NSArray<NSIndexPath *> *sorted = [[browserView.selectionIndexPaths allObjects]
+        sortedArrayUsingComparator:^(NSIndexPath *a, NSIndexPath *b) {
+            return [@(b.item) compare:@(a.item)];
+        }];
+    for (NSIndexPath *indexPath in sorted) {
+        [controller removeObjectAtArrangedObjectIndex:indexPath.item];
+    }
+}
+
 #pragma mark
 #pragma mark Help
 
@@ -681,6 +703,17 @@ static void *AVSPPlayerCurrentTimeContext = &AVSPPlayerCurrentTimeContext;
 	[self carefullyRemoveObserver:self forKeyPath:@"portraitSubject"];
 	[self carefullyRemoveObserver:syncedPlaybackView forKeyPath:@"bookmarkIsSet1"];
 	[self carefullyRemoveObserver:syncedPlaybackView forKeyPath:@"bookmarkIsSet2"];
+
+	// Close floating panels that were loaded from the main XIB but are not registered
+	// as document window controllers. Without this, visible panels retain Core Data bindings
+	// that keep the document's managed object context alive after close, causing a beachball
+	// and binding conflicts when the next document opens.
+	for (NSWindow *panel in [[NSApp windows] copy]) {
+		if ([panel isKindOfClass:[NSPanel class]] && panel.isVisible) {
+			[panel close];
+		}
+	}
+
 	[super close];
 }
 

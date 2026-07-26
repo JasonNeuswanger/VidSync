@@ -146,15 +146,19 @@
 	}
 	
 	if (self.videoClip.isMasterClipOf == self.videoClip.project && self.videoClip.project.currentTimecode) {	// If the master clip is loaded and there's a saved current time, go to it
-		// The next three lines set the number of ticks in the synced playback scrubber to approximately 1 per minute
-		[self.videoClip.windowController.playerView.player seekToTime:[UtilityFunctions CMTimeFromString:self.videoClip.project.currentTimecode] toleranceBefore:kCMTimeZero toleranceAfter:kCMTimeZero];
-		[self.videoClip.project.document reSync];
+		// Use 0.5-second tolerance for restoration: exact seeks at mid-video block the main
+		// thread via the video decoder. Frame-perfect accuracy isn't needed at session restore;
+		// the user can re-seek precisely. The async seek fires AVPlayerItemTimeJumpedNotification
+		// which calls reSync (exact) once the seek actually completes.
+		CMTime restoreTolerance = CMTimeMakeWithSeconds(0.5, 600);
+		[self.videoClip.windowController.playerView.player seekToTime:[UtilityFunctions CMTimeFromString:self.videoClip.project.currentTimecode] toleranceBefore:restoreTolerance toleranceAfter:restoreTolerance];
+		[self.videoClip.project.document reSyncApproximate];
 	}
-	
+
 	self.videoClip.project.document.videoClipArrayController.mainTableView.needsDisplay = YES;
-	
+
 	// Synchronize the document once the new clip is loaded
-	if (self.videoClip.syncIsLocked) [self.videoClip.project.document reSync];
+	if (self.videoClip.syncIsLocked) [self.videoClip.project.document reSyncApproximate];
 	
 	// If the master clip just loaded, wait until all VSEventScreenPoints should have loaded their visible durations (they're on a 0.3s timer waiting for the masterclip) and then refresh the screen
 	[self.document performSelector:@selector(refreshOverlaysOfAllClips:) withObject:self afterDelay:0.6f];
@@ -911,6 +915,22 @@
 	CMTimeRange masterTimeRange = [[[self.videoClip.project.masterClip.windowController.videoAsset tracksWithMediaType:AVMediaTypeVideo] firstObject] timeRange];
 	NSInteger masterTimeDurationMinutes = round(CMTimeGetSeconds(masterTimeRange.duration)/60.0f);
 	[self.videoClip.project.document.syncedPlaybackScrubber setNumberOfTickMarks:masterTimeDurationMinutes+1];  // adds 1 extra tickmark because there's a tick at 0. will be close but not exactly 1 tick/minute now
+}
+
+- (void) close
+{
+	// Pause and disconnect the player before closing. Without this, AVFoundation continues
+	// delivering FigFilePlayer callbacks and seek completion handlers into a document being
+	// torn down, causing main-thread bursts and beachballing on subsequent document open.
+	// Note: do NOT manipulate overlayWindow here. NSWindow.isReleasedWhenClosed is YES by
+	// default, so calling [overlayWindow close] autoreleases it. Combined with the ivar
+	// release in dealloc and the parent window releasing it from childWindows, that becomes
+	// a triple-release crash. AppKit closes child windows automatically when the parent closes.
+	if (playerView != nil) {
+		[playerView.player pause];
+		playerView.player = nil;
+	}
+	[super close];
 }
 
 - (void) dealloc

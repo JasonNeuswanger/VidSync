@@ -24,6 +24,7 @@
 
 
 #import <Cocoa/Cocoa.h>
+#import "PortraitBrowserView.h"
 @class MagnifiedPreviewView;
 @class VideoClipArrayController;
 @class TrackedObjectArrayController;
@@ -46,7 +47,7 @@
 @class AllPortraitsArrayController;
 @class MainProjectWindow;
 
-@interface VidSyncDocument: NSPersistentDocument {
+@interface VidSyncDocument: NSPersistentDocument <NSCollectionViewDelegate, PortraitBrowserViewDelegate> {
 	
 	NSManagedObjectModel *__strong managedObjectModel;
 	
@@ -237,6 +238,7 @@
 - (void) movieTimeDidChange:(NSNotification *)notification;
 - (void) movieRateDidChange;
 - (void) reSync;
+- (void) reSyncApproximate;
 
 @end // VidSyncDocument (SimultaneousPlayback)
 

@@ -31,8 +31,6 @@
     
 }
 
-- (void) refreshImageBrowserView;
-
 - (void) addImage:(NSImage *)image ofObject:(VSTrackedObject *)object fromSourceClip:(VSVideoClip *)sourceVideoClip inRect:(NSRect)rect withTimecode:(NSString *)timecode;
 
 @end

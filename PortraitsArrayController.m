@@ -24,6 +24,8 @@
 
 
 #import "PortraitsArrayController.h"
+#import "PortraitBrowserView.h"
+#import "VSTrackedObjectPortrait.h"
 
 @implementation PortraitsArrayController
 
@@ -44,13 +46,28 @@ static NSCollectionViewFlowLayout *makeDefaultPortraitLayout(void) {
         }
         [portraitBrowserView registerClass:[PortraitBrowserCell class] forItemWithIdentifier:@"PortraitBrowserCell"];
         portraitBrowserView.dataSource = self;
+        portraitBrowserView.delegate = self;
+        // Disable automatic re-sort/re-filter on every Core Data context notification.
+        // With this off, arrangedObjects KVO only fires when the portrait content actually
+        // changes (different selected object, portrait added/deleted) — NOT on every
+        // timer-triggered write to unrelated entities like VSVideoClip. This eliminates
+        // the main-thread stall that caused beachballing after close/reopen.
+        self.automaticallyRearrangesObjects = NO;
         [self addObserver:self forKeyPath:@"arrangedObjects" options:0 context:NULL];
+        if (zoomDefaultsKey != nil) {
+            CGFloat zoom = [[NSUserDefaults standardUserDefaults] floatForKey:zoomDefaultsKey];
+            if (zoom > 0.0) [portraitBrowserView setZoomFactor:zoom];
+            [[NSUserDefaults standardUserDefaults] addObserver:self forKeyPath:zoomDefaultsKey options:NSKeyValueObservingOptionNew context:NULL];
+        }
     }
     if (otherPortraitBrowserView != nil) {
         if (otherPortraitBrowserView.collectionViewLayout == nil) {
             otherPortraitBrowserView.collectionViewLayout = makeDefaultPortraitLayout();
         }
         [otherPortraitBrowserView registerClass:[PortraitBrowserCell class] forItemWithIdentifier:@"PortraitBrowserCell"];
+        // Do NOT set dataSource/delegate here: otherPortraitBrowserView is owned by the
+        // OTHER controller (its portraitBrowserView), which sets those in its own awakeFromNib.
+        // Setting them here would hijack the other controller's view.
     }
 }
 
@@ -58,6 +75,9 @@ static NSCollectionViewFlowLayout *makeDefaultPortraitLayout(void) {
 {
     if ([keyPath isEqualToString:@"arrangedObjects"]) {
         [self refreshCollectionView];
+    } else if (zoomDefaultsKey != nil && [keyPath isEqualToString:zoomDefaultsKey]) {
+        CGFloat zoom = [[NSUserDefaults standardUserDefaults] floatForKey:zoomDefaultsKey];
+        if (zoom > 0.0) [portraitBrowserView setZoomFactor:zoom];
     } else {
         [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
     }
@@ -72,8 +92,18 @@ static NSCollectionViewFlowLayout *makeDefaultPortraitLayout(void) {
 
 - (void) refreshCollectionView
 {
-	[portraitBrowserView reloadData];
-	[otherPortraitBrowserView reloadData];
+    // Save selection before reload; reloadData clears selectionIndexPaths.
+    NSSet<NSIndexPath *> *previousSelection = [portraitBrowserView selectionIndexPaths];
+    [portraitBrowserView reloadData];
+    if (previousSelection.count > 0) {
+        NSInteger count = (NSInteger)[[self arrangedObjects] count];
+        NSMutableSet<NSIndexPath *> *validPaths = [NSMutableSet set];
+        for (NSIndexPath *ip in previousSelection) {
+            if ((NSInteger)ip.item < count) [validPaths addObject:ip];
+        }
+        if (validPaths.count > 0) [portraitBrowserView setSelectionIndexPaths:validPaths];
+    }
+    [otherPortraitBrowserView reloadData];
 }
 
 
@@ -96,11 +126,32 @@ static NSCollectionViewFlowLayout *makeDefaultPortraitLayout(void) {
     return item;
 }
 
+// PortraitBrowserCell draws its own selection border from its setSelected: override, which
+// covers both interactive and programmatic selection, so no didSelectItemsAtIndexPaths: /
+// didDeselectItemsAtIndexPaths: handling is needed here.
+
+#pragma mark PortraitBrowserViewDelegate — forward action events to the document
+
+- (void)portraitBrowserView:(NSCollectionView *)browserView didDoubleClickPortrait:(VSTrackedObjectPortrait *)portrait
+{
+    [self.portraitActionDelegate portraitBrowserView:browserView didDoubleClickPortrait:portrait];
+}
+
+- (void)portraitBrowserViewDeleteSelectedItems:(NSCollectionView *)browserView
+{
+    [self.portraitActionDelegate portraitBrowserViewDeleteSelectedItems:browserView];
+}
+
 - (void) dealloc
 {
     @try {
         [self removeObserver:self forKeyPath:@"arrangedObjects"];
     } @catch (id exception) {}
+    if (zoomDefaultsKey != nil) {
+        @try {
+            [[NSUserDefaults standardUserDefaults] removeObserver:self forKeyPath:zoomDefaultsKey];
+        } @catch (id exception) {}
+    }
 }
 
 @end

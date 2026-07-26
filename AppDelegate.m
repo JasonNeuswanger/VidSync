@@ -33,6 +33,9 @@
 	// I can't put the user defaults initial values here, because it happens after the main nib is loaded
 }
 
+// VidSync requires an existing project file — never open an untitled document on launch.
+- (BOOL)applicationShouldOpenUntitledFile:(NSApplication *)sender { return NO; }
+
 - (NSError*) application:(NSApplication*)application willPresentError:(NSError*)error
 {
 	if (error)

@@ -24,19 +24,26 @@
 
 
 #import <Cocoa/Cocoa.h>
+#import "PortraitBrowserView.h"
 
 @class PortraitBrowserView;
 
 // This class primarily implements methods for viewing a collection of portraits (including conforming to the informal IKImageBrowserDataSource protocol).
 // The subclass ObjectsPortraitsArrayController manages the addition and removal of objects from a single array controller.
 
-@interface PortraitsArrayController : NSArrayController {
+@interface PortraitsArrayController : NSArrayController <NSCollectionViewDataSource, NSCollectionViewDelegate, PortraitBrowserViewDelegate> {
 
     IBOutlet PortraitBrowserView *__weak portraitBrowserView;
-    
+
     IBOutlet PortraitBrowserView *__weak otherPortraitBrowserView; // Hooked up to reference the object's portraits from all portraits, and vice versa, for convenient updating when changes are made
-    
+
+    NSString *zoomDefaultsKey; // Set by subclasses before calling [super awakeFromNib] to wire up the zoom slider
+
 }
+
+// The VidSyncDocument sets itself here so portrait action events (double-click, delete)
+// forwarded from this controller reach the correct handler.
+@property (weak) id<PortraitBrowserViewDelegate> portraitActionDelegate;
 
 - (void) refreshCollectionView;
 

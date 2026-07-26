@@ -1457,6 +1457,8 @@
 				GCC_PREFIX_HEADER = VidSync_Prefix.pch;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				INFOPLIST_FILE = "VidSync-Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = VidSync;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.productivity";
 				INSTALL_PATH = "$(HOME)/Applications";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1468,8 +1470,8 @@
 					"\"$(SRCROOT)/OpenCV\"",
 					"$(PROJECT_DIR)/gsl-2.6-universal",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 11.1;
-				MARKETING_VERSION = 1.721;
+				MACOSX_DEPLOYMENT_TARGET = 14.6;
+				MARKETING_VERSION = 1.8;
 				ONLY_ACTIVE_ARCH = NO;
 				OTHER_CODE_SIGN_FLAGS = "--deep";
 				"OTHER_LDFLAGS[arch=*]" = "";
@@ -1512,6 +1514,8 @@
 				GCC_PREFIX_HEADER = VidSync_Prefix.pch;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				INFOPLIST_FILE = "VidSync-Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = VidSync;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.productivity";
 				INSTALL_PATH = "$(HOME)/Applications";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1523,8 +1527,8 @@
 					"\"$(SRCROOT)/OpenCV\"",
 					"$(PROJECT_DIR)/gsl-2.6-universal",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 11.1;
-				MARKETING_VERSION = 1.721;
+				MACOSX_DEPLOYMENT_TARGET = 14.6;
+				MARKETING_VERSION = 1.8;
 				ONLY_ACTIVE_ARCH = NO;
 				OTHER_CODE_SIGN_FLAGS = "--deep";
 				PRODUCT_BUNDLE_IDENTIFIER = com.jasonneuswanger.VidSyncApp;

@@ -22,8 +22,16 @@
  * SOFTWARE.
  ***********************************************************************************/
 
-@interface PortraitBrowserView : NSCollectionView {
+@class VSTrackedObjectPortrait;
 
-}
+@protocol PortraitBrowserViewDelegate <NSCollectionViewDelegate>
+@optional
+- (void)portraitBrowserView:(NSCollectionView *)browserView didDoubleClickPortrait:(VSTrackedObjectPortrait *)portrait;
+- (void)portraitBrowserViewDeleteSelectedItems:(NSCollectionView *)browserView;
+@end
+
+@interface PortraitBrowserView : NSCollectionView
+
+- (void)setZoomFactor:(CGFloat)zoom;
 
 @end

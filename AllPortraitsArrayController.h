@@ -26,17 +26,8 @@
 #import "PortraitsArrayController.h"
 
 @interface AllPortraitsArrayController : PortraitsArrayController {
-	
+
 }
-
-// - (NSDictionary *) imageBrowser:(IKImageBrowserView *)aBrowser groupAtIndex:(NSUInteger)index;
-
-// - (NSUInteger) numberOfGroupsInImageBrowser:(IKImageBrowserView *)aBrowser;
-
-// Methods to conform to NSCollectionViewDataSource protocol
-- (NSInteger)numberOfSectionsInCollectionView:(NSCollectionView *)collectionView;
-- (NSInteger)collectionView:(NSCollectionView *)collectionView numberOfItemsInSection:(NSInteger)section;
-- (NSCollectionViewItem *)collectionView:(NSCollectionView *)collectionView itemForRepresentedObjectAtIndexPath:(NSIndexPath *)indexPath;
 
 - (NSArray *) objectPortraitData;
 

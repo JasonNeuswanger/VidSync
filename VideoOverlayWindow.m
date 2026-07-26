@@ -28,9 +28,29 @@
 
 @implementation VideoOverlayWindow
 
-- (BOOL)canBecomeKeyWindow 
+- (BOOL)canBecomeKeyWindow
 {
 	return YES;
+}
+
+- (BOOL)validateUserInterfaceItem:(id<NSValidatedUserInterfaceItem>)item
+{
+    // Borderless windows have no close button, so NSWindow's default validation
+    // returns NO for performClose:. Override to keep File > Close enabled.
+    if (item.action == @selector(performClose:)) return YES;
+    return [super validateUserInterfaceItem:item];
+}
+
+- (IBAction)performClose:(id)sender
+{
+    // File > Close should close the document, not just this video window.
+    NSDocument *doc = (NSDocument *)self.windowController.document;
+    for (NSWindowController *wc in doc.windowControllers) {
+        if (wc.shouldCloseDocument) {
+            [wc.window performClose:sender];
+            return;
+        }
+    }
 }
 
 @end
