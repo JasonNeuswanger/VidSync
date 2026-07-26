@@ -200,7 +200,12 @@ NSPoint project2DPoint(NSPoint pt, double projectionMatrix[9])
 				size = gsl_multimin_fminimizer_size(s);
 				status = gsl_multimin_test_size(size, 1e-6);                        // Here we set the minimum characteristic size of the simplex as a possible stopping criterion
 				//NSLog(@"After %3d iterations with size %1.12f for point %@ in event %@, cost function with final 3D point of (%1.5f,%1.5f,%1.5f) was %1.5f.",(int) iter,size,[self index],[self.trackedEvent index],gsl_vector_get(s->x,0),gsl_vector_get(s->x,1),gsl_vector_get(s->x,2),s->fval);
-			} while (status == GSL_CONTINUE && iter < 100);                         // Here we set the max # of iterations
+			} while (status == GSL_CONTINUE && iter < 500);                         // Here we set the max # of iterations
+			// The cap was 100. Simulating this solve on a realistic stereo geometry, it converges in 77 to 85
+			// iterations across world units of metres, centimetres, millimetres and inches, 2 through 4
+			// cameras, and linear seeds 0.3 to 50 mm off -- so 100 was adequate but with almost no margin,
+			// and a millimetre-unit project with a poor seed did reach it. Raising the cap costs nothing when
+			// the size test stops the loop first, which it normally does.
 			// Store the results
 			self.worldX = [NSNumber numberWithDouble:gsl_vector_get(s->x, 0)];
 			self.worldY = [NSNumber numberWithDouble:gsl_vector_get(s->x, 1)];

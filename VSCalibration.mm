@@ -2186,18 +2186,23 @@ static const int kMinPlumblinePoints = 6;
 	s = gsl_multimin_fminimizer_alloc(T, nparams);
 	gsl_multimin_fminimizer_set(s, &minex_func, x, ss);
 	
-	double initial_cost_function_value, final_cost_function_value = 0.0;
+	// Evaluate the cost at the starting point, which is "no distortion correction at all" because every
+	// coefficient starts at zero. This used to be read out of the simplex as s->fval on iteration 1, which is
+	// the best vertex after one iteration has already improved on the start, so the reduction reported below
+	// understated what the fit achieved. It also left the variable uninitialized if the very first iterate
+	// returned an error status and broke out of the loop.
+	double initial_cost_function_value = orthogonalRegressionTotalCostFunction(x, &p);
+	double final_cost_function_value = 0.0;
 	do {
 		iter++;
 		status = gsl_multimin_fminimizer_iterate(s);
 		if (status) break;
 		size = gsl_multimin_fminimizer_size(s);
 		status = gsl_multimin_test_size(size, 1e-10);                        // Here we set the minimum characteristic size of the simplex as a possible stopping criterion, used 1e-10 before
-		
+
 		// Diagnostic code within the loop -- leave here, commented, in case the function ever gives me problems
 		if (status == GSL_SUCCESS || status == GSL_CONTINUE)
 		{
-			if (iter == 1) initial_cost_function_value = s->fval;
 			/*
 			 NSLog(@"Iteration step: %5d %.3f %.3f %10.5e %10.5e %10.5e %10.5e %10.5e %10.5e %10.5e %10.5e %10.5e %10.5e Cost Function f() = %7.10f size = %.20f\n",
 			 (int) iter, gsl_vector_get(s->x, 0) * SCALE_FACTOR_X0, gsl_vector_get(s->x, 1) * SCALE_FACTOR_Y0,gsl_vector_get(s->x, 2) * SCALE_FACTOR_K1,

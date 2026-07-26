@@ -1318,8 +1318,12 @@
 
 - (void)mouseMoved:(NSEvent *)theEvent {
 	NSPoint mousePosition = [self convertPoint:[theEvent locationInWindow] fromView:nil];
-	mousePosition.x = floor(mousePosition.x);   // Here, I'm accounting for a weird behavior in Lion in which mouseMoved events deliver apparently "subpixel" coordinates but
-	mousePosition.y = ceil(mousePosition.y);    // mouseDown doesn't, so the position of a click doesn't match where the mouse had moved to.  The subpixel coordinates weren't real anyway.
+	// The position is deliberately not rounded. It used to be floor()ed in x and ceil()ed in y, dating from a
+	// Lion-era mismatch where mouseMoved reported subpixel coordinates and mouseDown did not. Both report the
+	// same thing now, and rounding only here meant the magnified preview's reticle sat up to one point away
+	// from where a click would actually land -- averaging half a point left and half a point up. Since users
+	// aim by that reticle, the offset went straight into the recorded screen coordinate as a systematic bias
+	// of (+0.5, -0.5) overlay points, which is (+0.5, -0.5) times movieWidth/overlayWidth in video pixels.
 	[vwc updateMagnifiedPreviewWithCenter:[vwc convertOverlayToVideoCoords:mousePosition]];
 	[[vwc window] makeKeyAndOrderFront:nil]; // the delegate is the VideoWindowController
 	[vwc makeOverlayKeyWindow];	// make the overlay the key window, so it receives keyDown events
