@@ -1251,7 +1251,14 @@ int refractionRootFunc_f(const gsl_vector* x, void* params, gsl_vector* f)
 	p.axisHorizontal = [self.axisHorizontal characterAtIndex:0];
 	p.axisVertical   = [self.axisVertical characterAtIndex:0];
 	p.frontSurfaceCoord = [self.planeCoordFront doubleValue];
-	p.backSurfaceCoord = p.frontSurfaceCoord + frontSurfaceThickness;
+	// The two surfaces here are the camera-side and back-plane-side faces of the front frame pane, not the
+	// front and back frame planes (see the note above refractionRootFunc_f). So the pane's thickness has to be
+	// applied in whichever direction the back frame plane lies, which is not necessarily the +axis direction:
+	// nothing stops a user from putting the front plane at 0 and the back plane at -0.439 instead of +0.439.
+	// Adding an unsigned thickness in that case modelled the pane on the camera side of the front plane, which
+	// applies the correction with inverted geometry and roughly doubles the error it exists to remove.
+	const double frontToBack = [self.planeCoordBack doubleValue] - p.frontSurfaceCoord;
+	p.backSurfaceCoord = p.frontSurfaceCoord + copysign(frontSurfaceThickness, frontToBack);
 	p.camPosition = VSMakePoint3D([self.cameraX doubleValue],[self.cameraY doubleValue],[self.cameraZ doubleValue]);
 	p.n1 = [self.mediumRefractiveIndex doubleValue];  // 1.3364;  // index of refraction of the medium between the quadrat planes (typically water)
 	p.n2 = [self.frontQuadratSurfaceRefractiveIndex doubleValue]; // 1.585;  // index of refraction of the front quadrat plane material (such as glass)
