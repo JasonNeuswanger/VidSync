@@ -651,7 +651,23 @@ int refractionRootFunc_f(const gsl_vector* x, void* params, gsl_vector* f)
 	if ([[NSFileManager defaultManager] fileExistsAtPath:previousDirectory isDirectory:&directoryExists] && directoryExists) [savePanel setDirectoryURL:[NSURL fileURLWithPath:previousDirectory]];
 	[savePanel setAllowedFileTypes:[NSArray arrayWithObjects:@"VidSyncQuadrat",nil]];
 	if ([savePanel runModal]) {
-		NSArray *quadratDescription = [NSArray arrayWithObjects:[self.quadratNodesFront string],[self.quadratNodesBack string],self.planeCoordFront,self.planeCoordBack,self.shouldCorrectRefraction, self.frontQuadratSurfaceThickness, self.frontQuadratSurfaceRefractiveIndex, self.mediumRefractiveIndex, nil];
+		// Built explicitly rather than with arrayWithObjects:, which stops at the first nil. Once
+		// shouldCorrectRefraction can be nil to mean "the user has not decided yet", that would silently
+		// truncate the file and drop the thickness and refractive indices with it. Exporting only the first
+		// four entries in that case is deliberate: an unanswered frame has no refraction settings to record,
+		// and every reader here already treats a short file as one without them.
+		NSMutableArray *quadratDescription = [NSMutableArray arrayWithObjects:
+											  ([self.quadratNodesFront string] != nil) ? [self.quadratNodesFront string] : @"",
+											  ([self.quadratNodesBack string] != nil) ? [self.quadratNodesBack string] : @"",
+											  (self.planeCoordFront != nil) ? self.planeCoordFront : [NSNumber numberWithInt:0],
+											  (self.planeCoordBack != nil) ? self.planeCoordBack : [NSNumber numberWithInt:0],
+											  nil];
+		if (self.shouldCorrectRefraction != nil) {
+			[quadratDescription addObject:self.shouldCorrectRefraction];
+			[quadratDescription addObject:(self.frontQuadratSurfaceThickness != nil) ? self.frontQuadratSurfaceThickness : [NSNumber numberWithDouble:0.0]];
+			[quadratDescription addObject:(self.frontQuadratSurfaceRefractiveIndex != nil) ? self.frontQuadratSurfaceRefractiveIndex : [NSNumber numberWithDouble:1.0]];
+			[quadratDescription addObject:(self.mediumRefractiveIndex != nil) ? self.mediumRefractiveIndex : [NSNumber numberWithDouble:1.0]];
+		}
 		[quadratDescription writeToFile:[[savePanel URL] path] atomically:NO];
 	}
 }
@@ -738,24 +754,31 @@ int refractionRootFunc_f(const gsl_vector* x, void* params, gsl_vector* f)
 		}
 		NSNumber *isMasterClip = [NSNumber numberWithBool:[self.videoClip.isMasterClipOf isEqualTo:self.videoClip.project]];	// YES if this is the master clip's calibration, NO otherwise
 		
-		NSArray *fullCalibration = [NSArray arrayWithObjects:
+		// Built explicitly rather than with arrayWithObjects:, which stops at the first nil and would drop
+		// everything after it. That is why the importer's length checks exist, and why the log line below
+		// blames "some object in the list was null". Each entry now has a defined fallback, and the refraction
+		// block is appended only when the user has answered the refraction question, matching the quadrat
+		// description format and the importer's existing "more than 13 entries" test.
+		NSMutableArray *fullCalibration = [NSMutableArray arrayWithObjects:
 							   ([self.quadratNodesFront string] != nil) ? [self.quadratNodesFront string] : @"",
 							   ([self.quadratNodesBack string] != nil) ? [self.quadratNodesBack string] : @"",
 							   (self.planeCoordFront != nil) ? self.planeCoordFront : [NSNumber numberWithInt:0],
 							   (self.planeCoordBack != nil) ? self.planeCoordBack : [NSNumber numberWithInt:0],
-							   self.axisHorizontal,
-							   self.axisVertical,
+							   (self.axisHorizontal != nil) ? self.axisHorizontal : @"x",
+							   (self.axisVertical != nil) ? self.axisVertical : @"z",
 							   pointsFrontArray,
 							   pointsBackArray,
 							   isMasterClip,
-							   self.videoClip.project.calibrationTimecode,
-							   self.shouldCorrectRefraction,
-							   self.frontQuadratSurfaceThickness,
-							   self.frontQuadratSurfaceRefractiveIndex,
-							   self.mediumRefractiveIndex,
+							   (self.videoClip.project.calibrationTimecode != nil) ? self.videoClip.project.calibrationTimecode : @"",
 							   nil
 							   ];
-		if (![fullCalibration writeToFile:[[savePanel URL] path] atomically:YES]) NSLog(@"Error writing calibration file. Some object in the list was null.");
+		if (self.shouldCorrectRefraction != nil) {
+			[fullCalibration addObject:self.shouldCorrectRefraction];
+			[fullCalibration addObject:(self.frontQuadratSurfaceThickness != nil) ? self.frontQuadratSurfaceThickness : [NSNumber numberWithDouble:0.0]];
+			[fullCalibration addObject:(self.frontQuadratSurfaceRefractiveIndex != nil) ? self.frontQuadratSurfaceRefractiveIndex : [NSNumber numberWithDouble:1.0]];
+			[fullCalibration addObject:(self.mediumRefractiveIndex != nil) ? self.mediumRefractiveIndex : [NSNumber numberWithDouble:1.0]];
+		}
+		if (![fullCalibration writeToFile:[[savePanel URL] path] atomically:YES]) NSLog(@"Error writing calibration file.");
 	}
 }
 
@@ -988,8 +1011,33 @@ int refractionRootFunc_f(const gsl_vector* x, void* params, gsl_vector* f)
 		[tooFewPointsAlert runModal];
 	}
 	
+	// The refraction question only arises for a 3D calibration, where the back surface is seen through the front
+	// one. shouldCorrectRefraction is nil when the user has never been asked, which is distinct from having been
+	// asked and said no. Refusing to calibrate until it is answered is the point: the setting is easy to
+	// overlook, it is off unless chosen, and appendix A of Neuswanger et al. (2016) puts the resulting error at
+	// 0.1 to 1 mm, described there as substantially affecting 3D measurements. Answering is remembered with the
+	// calibration and travels with an exported frame description, so anyone reusing the same hardware answers
+	// once rather than once per project.
+	if (calibrateFront && calibrateBack && self.shouldCorrectRefraction == nil) {
+		NSAlert *refractionQuestion = [NSAlert new];
+		[refractionQuestion setMessageText:@"Does light from the back frame surface pass through a solid front surface?"];
+		[refractionQuestion setInformativeText:@"VidSync needs to know before it can calibrate in 3D.\n\nIf your calibration frame has a transparent front face, such as a clear acrylic or glass sheet with the front nodes marked on it, light from the back nodes is refracted twice on its way to the camera and their apparent positions shift. Correcting for that requires the front face's thickness and refractive index, which you can enter under Refraction Correction Settings.\n\nIf your frame is an open wireframe, or the front and back surfaces are not separated by any solid material, no correction is needed.\n\nThis choice is saved with the calibration and is included when you export the frame description, so you only need to make it once per hardware setup."];
+		[refractionQuestion addButtonWithTitle:@"Correct for Refraction"];
+		[refractionQuestion addButtonWithTitle:@"No Solid Front Surface"];
+		[refractionQuestion addButtonWithTitle:@"Cancel"];
+		[[[refractionQuestion buttons] objectAtIndex:2] setKeyEquivalent:@"\033"];   // escape dismisses without answering
+		[refractionQuestion setAlertStyle:NSAlertStyleInformational];
+		NSModalResponse answer = [refractionQuestion runModal];
+		if (answer == NSAlertThirdButtonReturn) return;   // Cancel: leave it unanswered and calibrate nothing
+		self.shouldCorrectRefraction = [NSNumber numberWithBool:(answer == NSAlertFirstButtonReturn)];
+		if ([self.shouldCorrectRefraction boolValue] && [self.frontQuadratSurfaceThickness doubleValue] <= 0.0) {
+			[UtilityFunctions InformUser:@"Refraction correction is now on, but the front surface thickness is still zero, which makes the correction do nothing. Enter the thickness and refractive indices under Refraction Correction Settings, then calibrate again." withTitle:@"Enter the front surface thickness"];
+			return;
+		}
+	}
+
 	// If the points passed all the tests, run the calibration on the appropriate clips. Refraction correcton on the back surface is ignored if it is the only surface.
-	
+
 	if (calibrateFront) {
 		[self calculateMatrix:@"Front" correctRefraction:NO];
 		[self calculateFCMMatrix:@"Front"];
