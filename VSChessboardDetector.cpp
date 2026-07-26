@@ -27,6 +27,7 @@
 #include <algorithm>
 #include <cmath>
 #include <map>
+#include <set>
 #include <sstream>
 
 namespace vidsync {
@@ -233,6 +234,17 @@ bool subPixelSaddle(const cv::Mat &gray32, int x, int y, cv::Point2f *out)
 
 // --- Small helpers ---------------------------------------------------------------
 
+// Local contrast equalization followed by conversion to floats in 0..1. Shared by detection
+// and by the refinement pass, which searches the image again at predicted positions and must
+// see exactly the same pixels the appearance score was calibrated against.
+void prepareImage(const cv::Mat &gray, cv::Mat *gray32)
+{
+    cv::Mat equalized;
+    cv::Ptr<cv::CLAHE> clahe = cv::createCLAHE(kClaheClipLimit, cv::Size(kClaheTileSize, kClaheTileSize));
+    clahe->apply(gray, equalized);
+    equalized.convertTo(*gray32, CV_32F, 1.0 / 255.0);
+}
+
 struct ScoredPixel {
     int x;
     int y;
@@ -324,12 +336,8 @@ CornerDetectionResult detectChessboardCorners(const cv::Mat &gray)
     // Equalize local contrast first. Underwater housings vignette badly and illumination
     // across a submerged board is rarely uniform, so without this a corner in shadow and
     // a corner under glare cannot share a single detection threshold.
-    cv::Mat equalized;
-    cv::Ptr<cv::CLAHE> clahe = cv::createCLAHE(kClaheClipLimit, cv::Size(kClaheTileSize, kClaheTileSize));
-    clahe->apply(gray, equalized);
-
     cv::Mat gray32;
-    equalized.convertTo(gray32, CV_32F, 1.0 / 255.0);
+    prepareImage(gray, &gray32);
 
     // A chessboard corner is a saddle of the intensity surface, where the Hessian
     // determinant is negative. Rocks and other blobs curve the same way in both
@@ -1404,6 +1412,7 @@ GrownLattice growLattice(const std::vector<CornerCandidate> &corners,
         grown.ij.push_back(cv::Point2i((int)(it->first / 1000000LL) - 100000,
                                        (int)(it->first % 1000000LL) - 100000));
     }
+    grown.basis = seed.basis;
     grown.minI = minI;
     grown.maxI = maxI;
     grown.minJ = minJ;
@@ -1459,6 +1468,291 @@ std::vector<Plumbline> extractPlumblines(const std::vector<CornerCandidate> &cor
         }
     }
     return lines;
+}
+
+// --- Stage E: curve-fit refinement --------------------------------------------------
+
+namespace {
+
+// Two passes is almost always enough: the fits improve once the worst outliers are gone,
+// and a third pass has nothing left to find.
+const int kRefinementPasses = 2;
+
+// A corner is expelled when its deviation exceeds this many robust standard deviations of
+// the deviations along its line, but never for a deviation below the absolute floor. Without
+// the floor, a line whose corners all sit within a hundredth of a cell of their estimates
+// would have its own sub-pixel jitter treated as gross error. Measured on real frames, good
+// corners deviate by a median of 0.0025 of a cell and a 99th percentile of 0.016, then there
+// is an empty gap before the one genuinely misplaced corner per frame at 0.07 and 0.106. The
+// floor sits in that gap. Three sigma alone would be about 0.011 here and would cut into the
+// legitimate tail, since the deviations are heavier tailed than a normal distribution; the
+// sigma term only takes over on frames whose corners are noisier than these.
+const double kOutlierSigmas = 3.0;
+const double kMinOutlierDeviation = 0.05;
+
+// How far from a predicted site to accept an already-detected corner, and how far to let a
+// direct image search move, both as fractions of the cell spacing.
+// Both are tight because the prediction is good: leave-one-out estimates land within about
+// 0.0025 of a cell of where corners actually are. A loose search radius lets the image search
+// snap back onto the very corner just expelled, which sits only a few hundredths of a cell
+// away, quietly undoing the expulsion.
+const double kRecoveryMatchFraction = 0.10;
+const double kRecoverySearchFraction = 0.06;
+
+// Estimates where a corner should sit from its two neighbours either side along a line, and
+// returns how far it actually sits from that estimate, as a fraction of the local spacing.
+//
+// The four-point centered estimate (-p[-2] + 4p[-1] + 4p[+1] - p[+2]) / 6 is exact for any
+// cubic, so along a smoothly curving grid line it is unbiased however strong the curvature,
+// and the deviation it reports is close to zero for every corner that belongs there.
+//
+// This replaced fitting a polynomial to the whole line and measuring residuals from it, which
+// the reference design calls for but which does not work here. A cubic cannot represent a
+// fisheye-distorted line exactly, so its residuals carry systematic model error that inflates
+// the robust scale, and a single corner displaced a few pixels along a line 1500 px long is
+// partly absorbed by the fit. Leaving the corner out of its own estimate makes the test local
+// and removes the model error at once.
+bool leaveOneOutDeviations(const std::map<int, int> &alongLine,
+                           const std::vector<CornerCandidate> &corners,
+                           std::map<int, double> *deviations)
+{
+    deviations->clear();
+    for (std::map<int, int>::const_iterator it = alongLine.begin(); it != alongLine.end(); ++it) {
+        const int k = it->first;
+        // The stencil needs both neighbours on each side to be present at consecutive lattice
+        // indices; across a hole the spacing is unequal and the formula does not hold.
+        std::map<int, int>::const_iterator m2 = alongLine.find(k - 2);
+        std::map<int, int>::const_iterator m1 = alongLine.find(k - 1);
+        std::map<int, int>::const_iterator p1 = alongLine.find(k + 1);
+        std::map<int, int>::const_iterator p2 = alongLine.find(k + 2);
+        if (m2 == alongLine.end() || m1 == alongLine.end() ||
+            p1 == alongLine.end() || p2 == alongLine.end()) continue;
+
+        const cv::Point2f &a = corners[m2->second].position;
+        const cv::Point2f &b = corners[m1->second].position;
+        const cv::Point2f &c = corners[p1->second].position;
+        const cv::Point2f &d = corners[p2->second].position;
+        const cv::Point2f estimate((-a.x + 4.0f * b.x + 4.0f * c.x - d.x) / 6.0f,
+                                   (-a.y + 4.0f * b.y + 4.0f * c.y - d.y) / 6.0f);
+        const cv::Point2f &actual = corners[it->second].position;
+        const double spacing = 0.5 * vectorLength(cv::Point2f(c.x - b.x, c.y - b.y));
+        if (spacing < 1e-6) continue;
+        (*deviations)[k] = vectorLength(cv::Point2f(actual.x - estimate.x, actual.y - estimate.y)) / spacing;
+    }
+    return !deviations->empty();
+}
+
+// 1.4826 scales the median absolute deviation to a standard deviation for normally
+// distributed data, and unlike a plain standard deviation it is not inflated by the very
+// outliers being looked for.
+double robustScale(std::vector<double> values)
+{
+    if (values.empty()) return 0.0;
+    std::sort(values.begin(), values.end());
+    return 1.4826 * values[values.size() / 2];
+}
+
+}   // anonymous namespace
+
+RefinementResult refineLattice(std::vector<CornerCandidate> &corners,
+                               const GrownLattice &latticeIn,
+                               const cv::Mat &gray)
+{
+    RefinementResult result;
+    result.lattice = latticeIn;
+    if (!latticeIn.valid || latticeIn.cornerIndex.empty()) {
+        result.status = "No lattice to refine.";
+        return result;
+    }
+
+    cv::Mat gray32;
+    prepareImage(gray, &gray32);
+
+    std::map<long long, int> site;
+    for (size_t k = 0; k < latticeIn.cornerIndex.size(); k++) {
+        site[siteKey(latticeIn.ij[k].x, latticeIn.ij[k].y)] = latticeIn.cornerIndex[k];
+    }
+
+    const cv::Point2f u = latticeIn.basis.u;
+    const cv::Point2f v = latticeIn.basis.v;
+    const double cellSize = std::min(vectorLength(u), vectorLength(v));
+    if (cellSize < 1e-6) {
+        result.status = "Lattice has no usable basis; refinement skipped.";
+        return result;
+    }
+
+    // Corners already placed cannot be reused elsewhere; ones dropped as outliers can be,
+    // since a later pass may find they fit a different site properly.
+    std::vector<bool> claimed(corners.size(), false);
+    for (std::map<long long, int>::const_iterator it = site.begin(); it != site.end(); ++it) {
+        claimed[it->second] = true;
+    }
+
+    int minI = latticeIn.minI, maxI = latticeIn.maxI, minJ = latticeIn.minJ, maxJ = latticeIn.maxJ;
+
+    // Corners already judged not to belong at a given site, so that filling the hole left
+    // behind cannot undo the expulsion that created it.
+    std::map<long long, std::set<int> > rejected;
+    std::map<long long, std::vector<cv::Point2f> > rejectedPositions;
+    int holesFilled = 0;
+
+    for (int pass = 0; pass < kRefinementPasses; pass++) {
+        result.passes = pass + 1;
+        int removedThisPass = 0;
+        int recoveredThisPass = 0;
+        int filledThisPass = 0;
+
+        // --- Expel corners that sit off their line -----------------------------------
+        // A corner belongs to both a row and a column, and being a gross outlier on either
+        // is disqualifying, so the two verdicts are combined before anything is removed.
+        std::map<long long, bool> expel;
+        for (int orientation = 0; orientation < 2; orientation++) {
+            const bool isRow = (orientation == 0);
+            const int from = isRow ? minJ : minI;
+            const int to = isRow ? maxJ : maxI;
+            for (int fixed = from; fixed <= to; fixed++) {
+                std::map<int, int> alongLine;
+                const int varyFrom = isRow ? minI : minJ;
+                const int varyTo = isRow ? maxI : maxJ;
+                for (int varying = varyFrom; varying <= varyTo; varying++) {
+                    const long long key = isRow ? siteKey(varying, fixed) : siteKey(fixed, varying);
+                    std::map<long long, int>::const_iterator it = site.find(key);
+                    if (it != site.end()) alongLine[varying] = it->second;
+                }
+                std::map<int, double> deviations;
+                if (!leaveOneOutDeviations(alongLine, corners, &deviations)) continue;
+                std::vector<double> values;
+                for (std::map<int, double>::const_iterator it = deviations.begin();
+                     it != deviations.end(); ++it) values.push_back(it->second);
+                const double threshold = std::max(kOutlierSigmas * robustScale(values), kMinOutlierDeviation);
+                for (std::map<int, double>::const_iterator it = deviations.begin();
+                     it != deviations.end(); ++it) {
+                    if (it->second <= threshold) continue;
+                    expel[isRow ? siteKey(it->first, fixed) : siteKey(fixed, it->first)] = true;
+                }
+            }
+        }
+        for (std::map<long long, bool>::const_iterator it = expel.begin(); it != expel.end(); ++it) {
+            std::map<long long, int>::iterator found = site.find(it->first);
+            if (found == site.end()) continue;
+            // Remember the pairing, so the hole-filling below cannot simply take the same
+            // corner back: it is still the nearest thing to the position predicted for that
+            // site, which is how it came to be placed there in the first place.
+            rejected[it->first].insert(found->second);
+            rejectedPositions[it->first].push_back(corners[found->second].position);
+            claimed[found->second] = false;
+            site.erase(found);
+            removedThisPass++;
+        }
+
+        // --- Fill holes, and reach one ring beyond the current extent -----------------
+        std::vector<int> allCorners;
+        allCorners.reserve(corners.size());
+        for (size_t k = 0; k < corners.size(); k++) allCorners.push_back((int)k);
+        PointLookup lookup(corners, allCorners, std::max(cellSize * kRecoveryMatchFraction, 1.0));
+
+        for (int j = minJ - 1; j <= maxJ + 1; j++) {
+            for (int i = minI - 1; i <= maxI + 1; i++) {
+                if (site.count(siteKey(i, j))) continue;
+                const SitePrediction predicted = predictSite(site, corners, i, j, u, v);
+                if (predicted.tier < 2 || predicted.spacing <= 1e-6) continue;   // too little context
+                const cv::Point2f p = predicted.position;
+                if (p.x < 1.0f || p.y < 1.0f || p.x >= gray.cols - 1.0f || p.y >= gray.rows - 1.0f) continue;
+
+                const long long key = siteKey(i, j);
+                // Prefer a corner the detector already found near the prediction, unless it
+                // is the one just expelled from this very site.
+                const int slot = lookup.nearestWithinExcluding(p, kRecoveryMatchFraction * predicted.spacing, claimed);
+                if (slot >= 0 && !(rejected.count(key) && rejected[key].count(allCorners[slot]))) {
+                    site[key] = allCorners[slot];
+                    claimed[allCorners[slot]] = true;
+                    filledThisPass++;
+                    continue;
+                }
+
+                // Otherwise look in the image itself. Corners the detector missed are common
+                // near the frame edges, which is exactly where they matter most for measuring
+                // distortion, so it is worth the second look now that the grid says where to
+                // aim. Anything found must still pass the same appearance test as the rest.
+                const int px = (int)(p.x + 0.5f);
+                const int py = (int)(p.y + 0.5f);
+                const int margin = kSubPixelRadius + 1;
+                if (px < margin || py < margin || px >= gray.cols - margin || py >= gray.rows - margin) continue;
+                cv::Point2f refined;
+                if (!subPixelSaddle(gray32, px, py, &refined)) continue;
+                // The index blacklist does not cover a corner manufactured afresh at the same
+                // spot, so compare positions too.
+                bool nearRejected = false;
+                std::map<long long, std::vector<cv::Point2f> >::const_iterator rp = rejectedPositions.find(key);
+                if (rp != rejectedPositions.end()) {
+                    for (size_t r = 0; r < rp->second.size(); r++) {
+                        if (vectorLength(cv::Point2f(refined.x - rp->second[r].x,
+                                                     refined.y - rp->second[r].y)) < 0.03 * predicted.spacing) {
+                            nearRejected = true;
+                            break;
+                        }
+                    }
+                }
+                if (nearRejected) continue;
+                if (vectorLength(cv::Point2f(refined.x - p.x, refined.y - p.y)) >
+                    kRecoverySearchFraction * predicted.spacing) continue;
+                const int radius = std::max(3, (int)(0.4 * predicted.spacing));
+                const int rx = (int)(refined.x + 0.5f);
+                const int ry = (int)(refined.y + 0.5f);
+                if (rx - radius < 0 || ry - radius < 0 || rx + radius >= gray.cols || ry + radius >= gray.rows) continue;
+                const std::vector<QuadrantMask> bank = buildMaskBank(radius, kOrientationCount);
+                if (bestScoreOverOrientations(gray32, rx, ry, bank) < kMinScore) continue;
+
+                CornerCandidate recovered;
+                recovered.position = refined;
+                recovered.score = (float)kMinScore;
+                corners.push_back(recovered);
+                claimed.push_back(true);
+                site[key] = (int)corners.size() - 1;
+                recoveredThisPass++;
+            }
+        }
+
+        result.outliersRemoved += removedThisPass;
+        result.cornersRecovered += recoveredThisPass;
+        holesFilled += filledThisPass;
+
+        for (std::map<long long, int>::const_iterator it = site.begin(); it != site.end(); ++it) {
+            const int i = (int)(it->first / 1000000LL) - 100000;
+            const int j = (int)(it->first % 1000000LL) - 100000;
+            minI = std::min(minI, i);
+            maxI = std::max(maxI, i);
+            minJ = std::min(minJ, j);
+            maxJ = std::max(maxJ, j);
+        }
+
+        if (removedThisPass == 0 && recoveredThisPass == 0 && filledThisPass == 0) break;
+    }
+
+    GrownLattice out;
+    out.basis = latticeIn.basis;
+    for (std::map<long long, int>::const_iterator it = site.begin(); it != site.end(); ++it) {
+        out.cornerIndex.push_back(it->second);
+        out.ij.push_back(cv::Point2i((int)(it->first / 1000000LL) - 100000,
+                                     (int)(it->first % 1000000LL) - 100000));
+    }
+    out.minI = minI;
+    out.maxI = maxI;
+    out.minJ = minJ;
+    out.maxJ = maxJ;
+    out.rounds = latticeIn.rounds;
+    out.valid = true;
+    out.status = latticeIn.status;
+    result.lattice = out;
+
+    std::ostringstream message;
+    message << "Refinement over " << result.passes << " pass" << (result.passes == 1 ? "" : "es")
+            << ": removed " << result.outliersRemoved << " corners lying off their line, filled "
+            << holesFilled << " holes from corners already detected, and recovered "
+            << result.cornersRecovered << " more by searching the image where the grid predicted "
+            << "a corner. Lattice now " << out.cornerIndex.size() << " corners.";
+    result.status = message.str();
+    return result;
 }
 
 }   // namespace vidsync

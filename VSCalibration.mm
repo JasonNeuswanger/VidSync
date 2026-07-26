@@ -1745,10 +1745,17 @@ static const int kMinPlumblinePoints = 6;
 														 cv::Size(gray.cols, gray.rows), hint);
 
 	vidsync::GrownLattice lattice;
+	vidsync::RefinementResult refinement;
 	std::vector<vidsync::Plumbline> plumblines;
 	if (seed.valid) {
 		lattice = vidsync::growLattice(detection.corners, seed, cv::Size(gray.cols, gray.rows));
-		if (lattice.valid) plumblines = vidsync::extractPlumblines(detection.corners, lattice, kMinPlumblinePoints);
+		if (lattice.valid) {
+			// Refinement can append corners it finds in the image, so it works on the detection's
+			// own corner vector and the lattice it returns indexes into the enlarged one.
+			refinement = vidsync::refineLattice(detection.corners, lattice, gray);
+			lattice = refinement.lattice;
+			plumblines = vidsync::extractPlumblines(detection.corners, lattice, kMinPlumblinePoints);
+		}
 	}
 
 	// Show whatever we got furthest with, so a failure always leaves something to diagnose from.
@@ -1804,9 +1811,10 @@ static const int kMinPlumblinePoints = 6;
 		[alert setMessageText:[NSString stringWithFormat:@"No lattice found among %lu corners.", (unsigned long)detection.corners.size()]];
 		[alert setAlertStyle:NSAlertStyleWarning];
 	}
-	[alert setInformativeText:[NSString stringWithFormat:@"%@\n\n%@\n\nCorner detection: %d saddle candidates, %d rejected by the cheap appearance pass, %lu accepted.%@\n\nPlumblines are appended to any already present, so you can reposition the board and run this again at another timecode to cover more of the frame. Curve-fit refinement, which removes leftover outliers and recovers missed corners, is not implemented yet.",
+	[alert setInformativeText:[NSString stringWithFormat:@"%@\n\n%@\n\n%@\n\nCorner detection: %d saddle candidates, %d rejected by the cheap appearance pass, %lu accepted.%@\n\nPlumblines are appended to any already present, so you can reposition the board and run this again at another timecode to cover more of the frame.",
 							   [NSString stringWithUTF8String:seed.status.c_str()],
 							   lattice.valid ? [NSString stringWithUTF8String:lattice.status.c_str()] : @"Grid growth did not run.",
+							   refinement.passes > 0 ? [NSString stringWithUTF8String:refinement.status.c_str()] : @"Refinement did not run.",
 							   detection.saddleCandidateCount,
 							   detection.prefilterRejectedCount,
 							   (unsigned long)detection.corners.size(),

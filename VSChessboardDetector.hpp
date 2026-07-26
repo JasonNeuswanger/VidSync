@@ -120,6 +120,7 @@ SeedLattice findSeedLattice(const std::vector<CornerCandidate> &corners,
 struct GrownLattice {
     std::vector<int> cornerIndex;   // Indices into the corner vector passed in.
     std::vector<cv::Point2i> ij;
+    LatticeBasis basis;             // Carried through from the seed, for predicting new sites.
     int minI, maxI, minJ, maxJ;
     int rounds;                     // Expansion rounds run before nothing more could be added.
     std::string status;
@@ -135,6 +136,29 @@ struct GrownLattice {
 GrownLattice growLattice(const std::vector<CornerCandidate> &corners,
                          const SeedLattice &seed,
                          cv::Size imageSize);
+
+// --- Stage E: curve-fit refinement ---------------------------------------------------
+
+struct RefinementResult {
+    GrownLattice lattice;
+    int outliersRemoved;
+    int cornersRecovered;   // Corners found directly in the image that the detector had missed.
+    int passes;
+    std::string status;
+
+    RefinementResult() : outliersRemoved(0), cornersRecovered(0), passes(0) {}
+};
+
+// Cleans up the grown lattice by fitting a smooth curve to each row and column, discarding
+// corners that sit far off their curve, and then filling the resulting holes -- along with
+// any that growth left -- from the corners already detected, or failing that by searching the
+// image directly at the predicted position.
+//
+// Corners recovered from the image are appended to `corners`, so it is taken by reference and
+// the returned lattice indexes into the enlarged vector.
+RefinementResult refineLattice(std::vector<CornerCandidate> &corners,
+                               const GrownLattice &lattice,
+                               const cv::Mat &gray);
 
 // --- Plumblines ---------------------------------------------------------------------
 
