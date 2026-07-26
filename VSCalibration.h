@@ -189,6 +189,14 @@ int redistortionRootFunc_fdf(const gsl_vector* x, void* params, gsl_vector* f, g
 - (NSPoint) undistortPoint:(NSPoint)distortedPoint;
 - (void) calculateDistortionCorrection;
 
+// Judges a solved set of the 13 distortion parameters before it is stored, and returns nil if it is usable or
+// a user-facing explanation if it is not. The plumbline cost function has degenerate minima that straighten
+// every line by collapsing or exploding the whole image, which its own residual and the held-out diagonal
+// check both structurally fail to detect, so the solution is checked for being a valid reversible mapping over
+// the region the plumblines cover. Fills outWarning when the model is usable there but folds over elsewhere in
+// the frame, which is legitimate but means measurements in those areas rely on extrapolation.
+- (NSString *) reasonToRejectSolvedDistortion:(const double *)solved overPlumblineBox:(NSRect)box warning:(NSString **)outWarning;
+
 // The straightness of the held-back lattice diagonals under the current distortion
 // parameters, in pixels per point, or nil where it has not been measured: an older file, a
 // calibration solved before this check existed, or one built from hand-digitized lines.

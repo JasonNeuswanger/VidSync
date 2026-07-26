@@ -218,6 +218,38 @@ NSPoint undistortPoint(const NSPoint* pt, const double x0, const double y0, cons
 	return NSMakePoint(xu, yu);
 }
 
+void undistortionJacobian(const double xd, const double yd, const double k1, const double k2, const double k3, const double k4, const double k5, const double k6, const double k7, const double p1, const double p2, const double p3, const double p4, double J[4]){
+	// The Jacobian of undistortPoint above, evaluated at an offset (xd, yd) from the distortion centre, returned
+	// row-major as {d(xu)/d(xd), d(xu)/d(yd), d(yu)/d(xd), d(yu)/d(yd)}. Note it does not depend on the centre
+	// itself, only on the offset from it, because the centre cancels out of the derivative.
+	//
+	// It is written in terms of the same s = xd^2 + yd^2 that undistortPoint uses, so that the two stay visibly
+	// consistent. An earlier version was generated in Mathematica from a model whose radial series ran in powers
+	// of r rather than powers of s = r^2, so every radial term was short by one factor of r. The result evaluated
+	// to very nearly the identity matrix at realistic coefficients (about 1.0003 on the diagonal where the true
+	// value is 1.27 at the corner of a wide-angle frame), which starved gsl's hybridsj of curvature and caused
+	// the redistortion convergence failures described in redistortPoint above. It also divided by sqrt(s), so it
+	// was singular at the distortion centre; this form has no division.
+	//
+	// Writing R for the radial series, T for the decentering scale series, and Gx/Gy for the decentering terms:
+	//   xu = xd*R(s) + Gx*T(s)                    yu = yd*R(s) + Gy*T(s)
+	//   d(xu)/d(xd) = R + 2*xd^2*R' + (dGx/dxd)*T + 2*xd*Gx*T'
+	// and so on, using ds/dxd = 2*xd and ds/dyd = 2*yd.
+
+	const double s = xd*xd + yd*yd;
+	const double R  = 1 + k1*s + k2*pow(s,2) + k3*pow(s,3) + k4*pow(s,4) + k5*pow(s,5) + k6*pow(s,6) + k7*pow(s,7);
+	const double Rp = k1 + 2*k2*s + 3*k3*pow(s,2) + 4*k4*pow(s,3) + 5*k5*pow(s,4) + 6*k6*pow(s,5) + 7*k7*pow(s,6);
+	const double T  = 1 + p3*s + p4*s*s;
+	const double Tp = p3 + 2*p4*s;
+	const double Gx = p1*(3*xd*xd + yd*yd) + 2*p2*xd*yd;    // == p1*(s + 2*xd^2) + 2*p2*xd*yd
+	const double Gy = 2*p1*xd*yd + p2*(xd*xd + 3*yd*yd);    // == 2*p1*xd*yd + p2*(s + 2*yd^2)
+
+	J[0] = R + 2*xd*xd*Rp + (6*p1*xd + 2*p2*yd)*T + 2*xd*Gx*Tp;
+	J[1] =     2*xd*yd*Rp + (2*p1*yd + 2*p2*xd)*T + 2*yd*Gx*Tp;
+	J[2] =     2*xd*yd*Rp + (2*p1*yd + 2*p2*xd)*T + 2*xd*Gy*Tp;
+	J[3] = R + 2*yd*yd*Rp + (2*p1*xd + 6*p2*yd)*T + 2*yd*Gy*Tp;
+}
+
 int redistortionRootFunc_f(const gsl_vector* x, void* params, gsl_vector* f) {
 	const double* p = (double*) params;
 	const double xd = gsl_vector_get(x, 0);
@@ -244,53 +276,16 @@ int redistortionRootFunc_f(const gsl_vector* x, void* params, gsl_vector* f) {
 }
 
 int redistortionRootFunc_df(const gsl_vector* x, void* params, gsl_matrix* J) {
+	// The residual in redistortionRootFunc_f is undistortPoint's output minus a constant target, so its Jacobian
+	// is just undistortPoint's. Note p[0] and p[1] hold that target, not the distortion centre, and the Jacobian
+	// does not need the centre anyway.
 	double* p = (double*) params;
-	const double xd = gsl_vector_get(x, 0);  // distorted xd input
-	const double yd = gsl_vector_get(x, 1);  // distorted yd input
-	const double k1 = p[2];
-	const double k2 = p[3];
-	const double k3 = p[4];
-	const double k4 = p[5];
-	const double k5 = p[6];
-	const double k6 = p[7];
-	const double k7 = p[8];
-	const double p1 = p[9];
-	const double p2 = p[10];
-	const double p3 = p[11];
-	const double p4 = p[12];
-	
-	// This Jacobian consists of the derivative of each of the xd and yd elements of the distortion function, with respect to each of xd and yd.
-	//
-	// It is written in terms of the same s = xd^2 + yd^2 that redistortionRootFunc_f above uses, so that the two
-	// stay visibly consistent. The previous version was generated in Mathematica from a model whose radial series
-	// ran in powers of r rather than powers of s = r^2, so every radial term was short by one factor of r. The
-	// result evaluated to very nearly the identity matrix at realistic coefficients (about 1.0003 on the diagonal
-	// where the true value is 1.27 at the corner of a wide-angle frame), leaving gsl's hybridsj with no useful
-	// curvature. That is the likely cause of the long-standing convergence trouble noted in redistortPoint above.
-	// It also divided by sqrt(s), so it was singular at the distortion centre; this form has no division.
-	//
-	// Writing R for the radial series, T for the decentering scale series, and Gx/Gy for the decentering terms:
-	//   xu = xd*R(s) + Gx*T(s)                    yu = yd*R(s) + Gy*T(s)
-	//   d(xu)/d(xd) = R + 2*xd^2*R' + (dGx/dxd)*T + 2*xd*Gx*T'
-	// and so on, using ds/dxd = 2*xd and ds/dyd = 2*yd.
-
-	const double s = xd*xd + yd*yd;
-	const double R  = 1 + k1*s + k2*pow(s,2) + k3*pow(s,3) + k4*pow(s,4) + k5*pow(s,5) + k6*pow(s,6) + k7*pow(s,7);
-	const double Rp = k1 + 2*k2*s + 3*k3*pow(s,2) + 4*k4*pow(s,3) + 5*k5*pow(s,4) + 6*k6*pow(s,5) + 7*k7*pow(s,6);
-	const double T  = 1 + p3*s + p4*s*s;
-	const double Tp = p3 + 2*p4*s;
-	const double Gx = p1*(3*xd*xd + yd*yd) + 2*p2*xd*yd;    // == p1*(s + 2*xd^2) + 2*p2*xd*yd
-	const double Gy = 2*p1*xd*yd + p2*(xd*xd + 3*yd*yd);    // == 2*p1*xd*yd + p2*(s + 2*yd^2)
-
-	const double df00 = R + 2*xd*xd*Rp + (6*p1*xd + 2*p2*yd)*T + 2*xd*Gx*Tp;
-	const double df01 =     2*xd*yd*Rp + (2*p1*yd + 2*p2*xd)*T + 2*yd*Gx*Tp;
-	const double df10 =     2*xd*yd*Rp + (2*p1*yd + 2*p2*xd)*T + 2*xd*Gy*Tp;
-	const double df11 = R + 2*yd*yd*Rp + (2*p1*xd + 6*p2*yd)*T + 2*yd*Gy*Tp;
-
-	gsl_matrix_set(J, 0, 0, df00);
-	gsl_matrix_set(J, 0, 1, df01);
-	gsl_matrix_set(J, 1, 0, df10);
-	gsl_matrix_set(J, 1, 1, df11);
+	double j[4];
+	undistortionJacobian(gsl_vector_get(x, 0), gsl_vector_get(x, 1), p[2], p[3], p[4], p[5], p[6], p[7], p[8], p[9], p[10], p[11], p[12], j);
+	gsl_matrix_set(J, 0, 0, j[0]);
+	gsl_matrix_set(J, 0, 1, j[1]);
+	gsl_matrix_set(J, 1, 0, j[2]);
+	gsl_matrix_set(J, 1, 1, j[3]);
 	return GSL_SUCCESS;
 }
 
@@ -2124,6 +2119,86 @@ static const int kMinPlumblinePoints = 6;
 	return [self valueForKey:@"distortionHoldOutResidual"];
 }
 
+// Bounds for judging whether a solved distortion model is a usable correction or a mathematical artifact.
+// The plumbline cost function is degenerate: because it only asks that certain runs of points come out
+// collinear, and says nothing about scale, it has minima that shrink the whole image toward the distortion
+// centre or blow it up, either of which makes every line trivially straight. Fitting synthetic boards at
+// 0.30 px corner noise found such solutions reaching a residual of 0.0025 px per point, far below the noise
+// floor, with the image collapsed to under a pixel across. Nelder-Mead started from all-zero parameters has
+// not been observed to find them, so this is a guard against a latent hazard rather than a known failure --
+// but nothing prevented one from being stored silently, and a more aggressive optimizer would find them.
+//
+// The determinant of the undistortion map's Jacobian is the discriminating measure. Over the region the
+// plumblines actually cover it came out within [0.85, 1.6] for every good fit measured, and went negative --
+// meaning the map folds the image over itself and is not invertible -- for every collapsed or exploded one.
+static const double kMinAcceptableScaleRatio = 0.25;   // good fits measured 0.99 to 1.12; pathological ones 0.002, 8, 43, 1.6e6
+static const double kMaxAcceptableScaleRatio = 4.0;    // generous enough for a genuine fisheye, whose edge correction can approach 2.7x
+
+- (NSString *) reasonToRejectSolvedDistortion:(const double *)solved overPlumblineBox:(NSRect)box warning:(NSString **)outWarning
+{
+	if (outWarning != NULL) *outWarning = nil;
+	static const char *paramNames[13] = {"center X","center Y","K1","K2","K3","K4","K5","K6","K7","P1","P2","P3","P4"};
+	for (int i = 0; i < 13; i++) {
+		if (!isfinite(solved[i])) return [NSString stringWithFormat:@"The solver produced a value that is not a finite number for %s.", paramNames[i]];
+	}
+	const double x0 = solved[0];
+	const double y0 = solved[1];
+
+	// Sample the map over the region the plumblines actually constrain. Everything outside that region is
+	// extrapolation by a degree-7 polynomial, so it is checked separately and only warned about.
+	const int gridSteps = 24;
+	double minDeterminantInBox = INFINITY;
+	double totalUndistortedRadius = 0.0;
+	double totalDistortedRadius = 0.0;
+	for (int i = 0; i <= gridSteps; i++) {
+		for (int j = 0; j <= gridSteps; j++) {
+			const double gx = NSMinX(box) + NSWidth(box) * ((double) i / gridSteps);
+			const double gy = NSMinY(box) + NSHeight(box) * ((double) j / gridSteps);
+			double J[4];
+			undistortionJacobian(gx - x0, gy - y0, solved[2], solved[3], solved[4], solved[5], solved[6], solved[7], solved[8], solved[9], solved[10], solved[11], solved[12], J);
+			const double determinant = J[0]*J[3] - J[1]*J[2];
+			if (!isfinite(determinant)) return @"The correction's Jacobian determinant is not a finite number, so the model is not usable.";
+			if (determinant < minDeterminantInBox) minDeterminantInBox = determinant;
+			NSPoint gridPoint = NSMakePoint(gx, gy);
+			NSPoint undistorted = undistortPoint(&gridPoint, x0, y0, solved[2], solved[3], solved[4], solved[5], solved[6], solved[7], solved[8], solved[9], solved[10], solved[11], solved[12]);
+			totalUndistortedRadius += hypot(undistorted.x - x0, undistorted.y - y0);
+			totalDistortedRadius += hypot(gx - x0, gy - y0);
+		}
+	}
+
+	if (minDeterminantInBox <= 0.0) {
+		return [NSString stringWithFormat:@"The correction folds the image over itself within the area your plumblines cover, so it is not a valid, reversible mapping. The smallest Jacobian determinant there is %1.3g, and it must stay above zero.", minDeterminantInBox];
+	}
+	if (totalDistortedRadius > 0.0) {
+		const double scaleRatio = totalUndistortedRadius / totalDistortedRadius;
+		if (scaleRatio < kMinAcceptableScaleRatio || scaleRatio > kMaxAcceptableScaleRatio) {
+			return [NSString stringWithFormat:@"The correction rescales the image by a factor of %1.3g about the distortion centre, which is far outside the plausible range of %1.2g to %1.2g. Straightening the plumblines by shrinking or expanding the whole image is a known degenerate solution of this fit rather than a real lens correction.", scaleRatio, kMinAcceptableScaleRatio, kMaxAcceptableScaleRatio];
+		}
+	}
+
+	// Now the same determinant check over the whole frame. A good fit can legitimately fail this while passing
+	// the check above, because the high-order radial terms are unconstrained wherever the board never reached
+	// and a degree-7 polynomial extrapolates badly. That does not invalidate the calibration, but it does mean
+	// measurements in those areas run through a correction that is locally non-invertible, so say so.
+	double minDeterminantInFrame = INFINITY;
+	const double clipW = [self.videoClip clipWidth];
+	const double clipH = [self.videoClip clipHeight];
+	if (clipW > 0.0 && clipH > 0.0) {
+		for (int i = 0; i <= gridSteps; i++) {
+			for (int j = 0; j <= gridSteps; j++) {
+				double J[4];
+				undistortionJacobian(clipW * ((double) i / gridSteps) - x0, clipH * ((double) j / gridSteps) - y0, solved[2], solved[3], solved[4], solved[5], solved[6], solved[7], solved[8], solved[9], solved[10], solved[11], solved[12], J);
+				const double determinant = J[0]*J[3] - J[1]*J[2];
+				if (isfinite(determinant) && determinant < minDeterminantInFrame) minDeterminantInFrame = determinant;
+			}
+		}
+		if (minDeterminantInFrame <= 0.0 && outWarning != NULL) {
+			*outWarning = [NSString stringWithFormat:@"The correction is valid where your plumblines cover, but it folds over somewhere outside that area (smallest Jacobian determinant across the full frame is %1.3g). Measurements near the edges or corners your chessboard never reached are being corrected by extrapolation and may be unreliable. Adding plumblines that reach farther into the corners, at another timecode with the board repositioned, is the fix.", minDeterminantInFrame];
+		}
+	}
+	return nil;
+}
+
 - (void) calculateDistortionCorrection
 {
 	NSArray *plumbLines = [self.distortionLines allObjects];
@@ -2144,7 +2219,15 @@ static const int kMinPlumblinePoints = 6;
 		p.lines[i] = (NSPoint *) malloc(p.lineLengths[i]*sizeof(NSPoint));
 		for (int j = 0; j < p.lineLengths[i]; j++) p.lines[i][j] = NSMakePoint([[[pointsInLine objectAtIndex:j] screenX] floatValue],[[[pointsInLine objectAtIndex:j] screenY] floatValue]);
 	}
-	
+
+	if (totalPointCount == 0) {   // with nothing to fit, the per-point residuals below would divide by zero
+		for (int i = 0; i < p.numLines; i++) free(p.lines[i]);
+		free(p.lines);
+		free(p.lineLengths);
+		[UtilityFunctions InformUser:@"There are no plumbline points to fit a distortion model to. Detect or draw some plumblines first." withTitle:@"Nothing to fit"];
+		return;
+	}
+
 	// Set up and perform the minimization
 	
 	const gsl_multimin_fminimizer_type *T = gsl_multimin_fminimizer_nmsimplex2;
@@ -2215,20 +2298,64 @@ static const int kMinPlumblinePoints = 6;
 	// The min step size set above of 1e-10 is what actually stops the algorithm usually
 	
 	final_cost_function_value = s->fval;
-	
-	self.distortionCenterX = [NSNumber numberWithDouble:gsl_vector_get(s->x, 0) * SCALE_FACTOR_X0];
-	self.distortionCenterY = [NSNumber numberWithDouble:gsl_vector_get(s->x, 1) * SCALE_FACTOR_Y0];
-	self.distortionK1 = [NSNumber numberWithDouble:gsl_vector_get(s->x, 2) * SCALE_FACTOR_K1];
-	self.distortionK2 = [NSNumber numberWithDouble:gsl_vector_get(s->x, 3) * SCALE_FACTOR_K2];
-	self.distortionK3 = [NSNumber numberWithDouble:gsl_vector_get(s->x, 4) * SCALE_FACTOR_K3];
-	self.distortionK4 = [NSNumber numberWithDouble:gsl_vector_get(s->x, 5) * SCALE_FACTOR_K4];
-	self.distortionK5 = [NSNumber numberWithDouble:gsl_vector_get(s->x, 6) * SCALE_FACTOR_K5];
-	self.distortionK6 = [NSNumber numberWithDouble:gsl_vector_get(s->x, 7) * SCALE_FACTOR_K6];
-	self.distortionK7 = [NSNumber numberWithDouble:gsl_vector_get(s->x, 8) * SCALE_FACTOR_K7];
-	self.distortionP1 = [NSNumber numberWithDouble:gsl_vector_get(s->x, 9) * SCALE_FACTOR_P1];
-	self.distortionP2 = [NSNumber numberWithDouble:gsl_vector_get(s->x, 10) * SCALE_FACTOR_P2];
-	self.distortionP3 = [NSNumber numberWithDouble:gsl_vector_get(s->x, 11) * SCALE_FACTOR_P3];
-	self.distortionP4 = [NSNumber numberWithDouble:gsl_vector_get(s->x, 12) * SCALE_FACTOR_P4];
+
+	// Pull the solution out of the simplex, denormalized, so it can be judged before anything is committed.
+	const double scaleFactors[13] = {SCALE_FACTOR_X0, SCALE_FACTOR_Y0, SCALE_FACTOR_K1, SCALE_FACTOR_K2, SCALE_FACTOR_K3, SCALE_FACTOR_K4, SCALE_FACTOR_K5, SCALE_FACTOR_K6, SCALE_FACTOR_K7, SCALE_FACTOR_P1, SCALE_FACTOR_P2, SCALE_FACTOR_P3, SCALE_FACTOR_P4};
+	double solved[13];
+	for (int i = 0; i < 13; i++) solved[i] = gsl_vector_get(s->x, i) * scaleFactors[i];
+
+	// The bounding box of the plumbline points is the region the fit actually constrains, and the only region
+	// over which the solved model can be judged rather than extrapolated. Computed here while p is still alive.
+	NSRect plumblineBox = NSZeroRect;
+	if (totalPointCount > 0) {
+		double minX = INFINITY, minY = INFINITY, maxX = -INFINITY, maxY = -INFINITY;
+		for (int i = 0; i < p.numLines; i++) {
+			for (int j = 0; j < p.lineLengths[i]; j++) {
+				minX = fmin(minX, p.lines[i][j].x);   maxX = fmax(maxX, p.lines[i][j].x);
+				minY = fmin(minY, p.lines[i][j].y);   maxY = fmax(maxY, p.lines[i][j].y);
+			}
+		}
+		plumblineBox = NSMakeRect(minX, minY, maxX - minX, maxY - minY);
+	}
+
+	NSString *extrapolationWarning = nil;
+	NSString *rejectionReason = [self reasonToRejectSolvedDistortion:solved overPlumblineBox:plumblineBox warning:&extrapolationWarning];
+
+	gsl_vector_free(x);
+	gsl_vector_free(ss);
+	gsl_multimin_fminimizer_free (s);
+
+	for (int i = 0; i < p.numLines; i++) free(p.lines[i]);
+	free(p.lines);
+	free(p.lineLengths);
+
+	if (rejectionReason != nil) {
+		// Leave the previously stored parameters, whatever they were, untouched. Storing a solution that fails
+		// these checks would silently corrupt every measurement made afterward, and the fit's own residual
+		// cannot detect it: a collapsed map makes the plumblines straighter than the noise floor allows, and
+		// even the held-out diagonal check passes, because collapsing straightens the diagonals too.
+		NSAlert *alert = [NSAlert new];
+		[alert setMessageText:@"Distortion correction rejected"];
+		[alert setInformativeText:[NSString stringWithFormat:@"%@\n\nYour previous distortion parameters have been left in place. Try again with more plumblines, spread more widely over the frame, or with fewer radial terms.", rejectionReason]];
+		[alert addButtonWithTitle:@"Ok"];
+		[alert setAlertStyle:NSAlertStyleCritical];
+		[alert runModal];
+		return;
+	}
+
+	self.distortionCenterX = [NSNumber numberWithDouble:solved[0]];
+	self.distortionCenterY = [NSNumber numberWithDouble:solved[1]];
+	self.distortionK1 = [NSNumber numberWithDouble:solved[2]];
+	self.distortionK2 = [NSNumber numberWithDouble:solved[3]];
+	self.distortionK3 = [NSNumber numberWithDouble:solved[4]];
+	self.distortionK4 = [NSNumber numberWithDouble:solved[5]];
+	self.distortionK5 = [NSNumber numberWithDouble:solved[6]];
+	self.distortionK6 = [NSNumber numberWithDouble:solved[7]];
+	self.distortionK7 = [NSNumber numberWithDouble:solved[8]];
+	self.distortionP1 = [NSNumber numberWithDouble:solved[9]];
+	self.distortionP2 = [NSNumber numberWithDouble:solved[10]];
+	self.distortionP3 = [NSNumber numberWithDouble:solved[11]];
+	self.distortionP4 = [NSNumber numberWithDouble:solved[12]];
 	/*
 	 NSLog(@"Setting paramaters to (x0,y0) = (%1@,%1@), K1=%10@, K2=%10@, K3=%10@, K4=%10@, K5=%10@, K6=%10@, K7=%10@, P1=%10@, P2=%10@, P3=%10@, P4=%10@",self.distortionCenterX,self.distortionCenterY,self.distortionK1,self.distortionK2,self.distortionK3,self.distortionK4,self.distortionK5,self.distortionK6,self.distortionK7,self.distortionP1,self.distortionP2,self.distortionP3,self.distortionP4);
 	 NSLog(@"Final cost function value for %@ after %lu interations (last step size %10.5e) is %1.3f\n\n",self.videoClip.clipName,iter,size,final_cost_function_value);
@@ -2244,16 +2371,13 @@ static const int kMinPlumblinePoints = 6;
 	/*
 	 NSLog(@"Distortion cost function was reduced by %1.2f percent.",100*(initial_cost_function_value - final_cost_function_value) / initial_cost_function_value);
 	 */
-	gsl_vector_free(x);
-	gsl_vector_free(ss);
-	gsl_multimin_fminimizer_free (s);
-	
-	for (int i = 0; i < p.numLines; i++) free(p.lines[i]);
-	free(p.lines);
-	free(p.lineLengths);
-	
 	self.videoClip.project.distortionDisplayMode = @"Corrected";
 	[self.videoClip.windowController refreshOverlay];
+
+	// The solution was good enough to keep, but may still be unreliable outside the board's coverage.
+	if (extrapolationWarning != nil) {
+		[UtilityFunctions InformUser:extrapolationWarning withTitle:@"Distortion correction accepted, with a caveat"];
+	}
 }
 
 #pragma mark
