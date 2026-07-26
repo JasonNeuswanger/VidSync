@@ -1706,7 +1706,12 @@ int refractionRootFunc_f(const gsl_vector* x, void* params, gsl_vector* f)
 	CGImageRef videoFrameCG = [self.videoClip.project.document stillCGImageFromVSVideoClip:self.videoClip atMasterTime:[self.videoClip.project.document currentMasterTime] showOverlay:FALSE];
 	cv::Mat videoFrameImage;
 	CGImageToMat(videoFrameCG, videoFrameImage); // included from <opencv2/imgcodecs/macosx.h>
-	CGImageRelease(videoFrameCG);  // videoFrameCG data has been copied into videoFrameImage; release our Create reference
+	// Do NOT release videoFrameCG. stillCGImageFromVSVideoClip: returns the result of
+	// -[NSImage CGImageForProposedRect:context:hints:], which follows the Get Rule and does not
+	// transfer ownership; the image is owned by the NSImage's backing NSCGImageSnapshotRep, which
+	// releases it when that autoreleased NSImage deallocs. Releasing here freed the image early and
+	// crashed later in -[NSCGImageSnapshotRep dealloc] on the next autorelease pool drain. The
+	// Create reference from copyCGImageAtTime: is already balanced inside stillCGImageFromVSVideoClip:.
 	videoFrameImage.reshape(1);	// convert to single-channel for feature tracking
 	cvtColor(videoFrameImage, videoFrameImage, cv::COLOR_BGR2GRAY);
 	
