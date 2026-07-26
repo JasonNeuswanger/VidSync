@@ -716,9 +716,10 @@ struct SeedPatch {
     std::vector<cv::Point2i> ij;
     int extentI;
     int extentJ;
+    int duplicatesDropped;
     bool conflict;
 
-    SeedPatch() : extentI(0), extentJ(0), conflict(false) {}
+    SeedPatch() : extentI(0), extentJ(0), duplicatesDropped(0), conflict(false) {}
 };
 
 // Keeps the points in `subset` that behave like sites of the lattice (u, v), takes the
@@ -795,6 +796,10 @@ SeedPatch labelSeedPatch(const std::vector<CornerCandidate> &corners,
     const cv::Point2i stepIJ[4] = {cv::Point2i(1, 0), cv::Point2i(-1, 0), cv::Point2i(0, 1), cv::Point2i(0, -1)};
     std::vector<cv::Point2i> label(subset.size(), cv::Point2i(0, 0));
     std::vector<bool> labelled(subset.size(), false);
+    // How far each corner sat from the position the lattice predicted for it. This is the
+    // criterion for resolving two corners that claim the same site: the one that landed
+    // closer to where the grid says it should be is the real one.
+    std::vector<double> arrivalError(subset.size(), 1e30);
     size_t root = 0;
     for (size_t k = 0; k < subset.size(); k++) {
         if (component[k] == bestComponent) { root = k; break; }
@@ -802,6 +807,7 @@ SeedPatch labelSeedPatch(const std::vector<CornerCandidate> &corners,
     std::vector<size_t> queue;
     queue.push_back(root);
     labelled[root] = true;
+    arrivalError[root] = 0.0;
     for (size_t q = 0; q < queue.size(); q++) {
         const size_t k = queue[q];
         for (int d = 0; d < 4; d++) {
@@ -813,10 +819,73 @@ SeedPatch labelSeedPatch(const std::vector<CornerCandidate> &corners,
                 // the tolerance is wrong. Report it rather than quietly averaging.
                 if (label[n] != expected) patch.conflict = true;
             } else {
+                const cv::Point2f predicted(corners[subset[k]].position.x + steps[d].x,
+                                            corners[subset[k]].position.y + steps[d].y);
                 label[n] = expected;
                 labelled[n] = true;
+                arrivalError[n] = vectorLength(cv::Point2f(corners[subset[n]].position.x - predicted.x,
+                                                           corners[subset[n]].position.y - predicted.y));
                 queue.push_back((size_t)n);
             }
+        }
+    }
+
+    // How good a claim a corner has on its site. Appearance carries most of the weight,
+    // because telling a real corner from a scratch is precisely what that score measures.
+    // Arrival error is only a tie-breaker: under strong fisheye the straight-line prediction
+    // from a neighbour is systematically offset from the true corner, since the grid curves
+    // between them, so on its own it favours whichever point sits in the direction the
+    // curvature bends and will happily prefer a scratch to the corner beside it. Expressing
+    // the error as a fraction of a cell puts the two terms on a comparable scale.
+    const double cellSize = std::min(vectorLength(u), vectorLength(v));
+    std::vector<double> claimQuality(subset.size(), -1e30);
+    for (size_t k = 0; k < subset.size(); k++) {
+        if (!labelled[k]) continue;
+        claimQuality[k] = corners[subset[k]].score - (cellSize > 1e-6 ? arrivalError[k] / cellSize : 0.0);
+    }
+
+    // One corner per lattice site. A scratch or scuff close to a real corner passes the
+    // lattice-consistency test exactly as the real corner does, because it lies within the
+    // matching tolerance of the same four neighbours, so both end up labelled. The conflict
+    // test above cannot see this: it fires when one corner is reached with two different
+    // coordinates, not when two corners claim one coordinate.
+    std::map<long long, size_t> siteOwner;
+    for (size_t k = 0; k < subset.size(); k++) {
+        if (!labelled[k]) continue;
+        const long long key = (long long)label[k].x * 1000000LL + (long long)label[k].y;
+        std::map<long long, size_t>::iterator it = siteOwner.find(key);
+        if (it == siteOwner.end()) {
+            siteOwner[key] = k;
+            continue;
+        }
+        const size_t incumbent = it->second;
+        if (claimQuality[k] > claimQuality[incumbent]) {
+            labelled[incumbent] = false;
+            it->second = k;
+        } else {
+            labelled[k] = false;
+        }
+        patch.duplicatesDropped++;
+    }
+
+    // Two corners closer together than half a cell cannot both be lattice sites whatever
+    // coordinates they were given, so this also catches a near-duplicate that happened to be
+    // labelled with a neighbouring index rather than the same one.
+    const double minSeparation = 0.5 * std::min(vectorLength(u), vectorLength(v));
+    for (size_t k = 0; k < subset.size(); k++) {
+        if (!labelled[k]) continue;
+        for (size_t m = k + 1; m < subset.size(); m++) {
+            if (!labelled[m]) continue;
+            const cv::Point2f &p = corners[subset[k]].position;
+            const cv::Point2f &q = corners[subset[m]].position;
+            if (vectorLength(cv::Point2f(p.x - q.x, p.y - q.y)) >= minSeparation) continue;
+            if (claimQuality[m] > claimQuality[k]) {
+                labelled[k] = false;
+                patch.duplicatesDropped++;
+                break;
+            }
+            labelled[m] = false;
+            patch.duplicatesDropped++;
         }
     }
 
@@ -1051,7 +1120,12 @@ SeedLattice findSeedLattice(const std::vector<CornerCandidate> &corners,
     message << "u = (" << bestU.x << ", " << bestU.y << "), |u| = " << vectorLength(bestU) << " px; "
             << "v = (" << bestV.x << ", " << bestV.y << "), |v| = " << vectorLength(bestV) << " px. "
             << "Seed patch: " << seed.cornerIndex.size() << " corners spanning "
-            << bestPatch.extentI << " x " << bestPatch.extentJ << " cells. Centered window "
+            << bestPatch.extentI << " x " << bestPatch.extentJ << " cells";
+    if (bestPatch.duplicatesDropped > 0) {
+        message << " (" << bestPatch.duplicatesDropped << " near-duplicate corner"
+                << (bestPatch.duplicatesDropped == 1 ? "" : "s") << " dropped)";
+    }
+    message << ". Centered window "
             << (int)bestSide << " px = " << (bestStep > 1e-6 ? bestSide / bestStep : 0.0)
             << " cells; histogram peak sharpness " << bestSharpness << ". Tried:" << attempts.str();
     seed.status = message.str();
