@@ -687,10 +687,27 @@ int refractionRootFunc_f(const gsl_vector* x, void* params, gsl_vector* f)
 	}
 }
 
+- (BOOL) hasQuadratNodeCoordinates
+{
+	NSCharacterSet *blank = [NSCharacterSet whitespaceAndNewlineCharacterSet];
+	return ([[[self.quadratNodesFront string] stringByTrimmingCharactersInSet:blank] length] > 0
+		 || [[[self.quadratNodesBack string] stringByTrimmingCharactersInSet:blank] length] > 0);
+}
+
 - (void) loadQuadratDescriptionExample
 {
+	// Loading the example replaces both node coordinate lists wholesale, and it is a single click right next to
+	// the import and export buttons, so it is easy to hit by mistake after typing in a frame's coordinates.
+	if ([self hasQuadratNodeCoordinates]) {
+		BOOL shouldOverwrite = [UtilityFunctions ConfirmAction:@"Loading the example will replace the calibration frame node coordinates you have already entered, for both the front and back surfaces. This cannot be undone." withTitle:@"Overwrite your frame coordinates with the example?"];
+		if (!shouldOverwrite) return;
+	}
 	NSString *filePath = [[NSBundle mainBundle] pathForResource:@"Example Quadrat" ofType:@"VidSyncQuadrat"];
 	NSArray *quadratDescription = [[NSArray alloc] initWithContentsOfFile:filePath];
+	if (![quadratDescription isKindOfClass:[NSArray class]] || [quadratDescription count] < 4) {
+		[UtilityFunctions InformUser:@"The bundled example calibration frame description could not be read." withTitle:@"Example Unavailable"];
+		return;
+	}
 	self.quadratNodesFront = [[NSAttributedString alloc] initWithString:[quadratDescription objectAtIndex:0]];
 	self.quadratNodesBack = [[NSAttributedString alloc] initWithString:[quadratDescription objectAtIndex:1]];
 	self.planeCoordFront = [quadratDescription objectAtIndex:2];
