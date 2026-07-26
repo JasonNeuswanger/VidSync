@@ -259,13 +259,34 @@ int redistortionRootFunc_df(const gsl_vector* x, void* params, gsl_matrix* J) {
 	const double p3 = p[11];
 	const double p4 = p[12];
 	
-	// This Jacobian consists of the derivative of each of the xd and yd elements of the distortion function, with respect to each of xd and yd.  Calculated and converted into C code using Mathematica.
-	
-	const double df00 = 1 + k1*sqrt(pow(xd,2) + pow(yd,2)) + k2*(pow(xd,2) + pow(yd,2)) + k3*pow(pow(xd,2) + pow(yd,2),1.5) + k4*pow(pow(xd,2) + pow(yd,2),2) + k5*pow(pow(xd,2) + pow(yd,2),2.5) + k6*pow(pow(xd,2) + pow(yd,2),3) + k7*pow(pow(xd,2) + pow(yd,2),3.5) + (6*p1*xd + 2*p2*yd)*(1 + p3*(pow(xd,2) + pow(yd,2)) + p4*pow(pow(xd,2) + pow(yd,2),2)) + xd*(2*k2*xd + (k1*xd)/sqrt(pow(xd,2) + pow(yd,2)) + 3*k3*xd*sqrt(pow(xd,2) + pow(yd,2)) + 4*k4*xd*(pow(xd,2) + pow(yd,2)) + 5*k5*xd*pow(pow(xd,2) + pow(yd,2),1.5) + 6*k6*xd*pow(pow(xd,2) + pow(yd,2),2) + 7*k7*xd*pow(pow(xd,2) + pow(yd,2),2.5)) + (2*p3*xd + 4*p4*xd*(pow(xd,2) + pow(yd,2)))*(2*p2*xd*yd + p1*(3*pow(xd,2) + pow(yd,2)));
-	const double df01 = (2*p2*xd + 2*p1*yd)*(1 + p3*(pow(xd,2) + pow(yd,2)) + p4*pow(pow(xd,2) + pow(yd,2),2)) + xd*(2*k2*yd + (k1*yd)/sqrt(pow(xd,2) + pow(yd,2)) + 3*k3*yd*sqrt(pow(xd,2) + pow(yd,2)) + 4*k4*yd*(pow(xd,2) + pow(yd,2)) + 5*k5*yd*pow(pow(xd,2) + pow(yd,2),1.5) + 6*k6*yd*pow(pow(xd,2) + pow(yd,2),2) + 7*k7*yd*pow(pow(xd,2) + pow(yd,2),2.5)) + (2*p3*yd + 4*p4*yd*(pow(xd,2) + pow(yd,2)))*(2*p2*xd*yd + p1*(3*pow(xd,2) + pow(yd,2)));
-	const double df10 = (2*p2*xd + 2*p1*yd)*(1 + p3*(pow(xd,2) + pow(yd,2)) + p4*pow(pow(xd,2) + pow(yd,2),2)) + yd*(2*k2*xd + (k1*xd)/sqrt(pow(xd,2) + pow(yd,2)) + 3*k3*xd*sqrt(pow(xd,2) + pow(yd,2)) + 4*k4*xd*(pow(xd,2) + pow(yd,2)) + 5*k5*xd*pow(pow(xd,2) + pow(yd,2),1.5) + 6*k6*xd*pow(pow(xd,2) + pow(yd,2),2) + 7*k7*xd*pow(pow(xd,2) + pow(yd,2),2.5)) + (2*p3*xd + 4*p4*xd*(pow(xd,2) + pow(yd,2)))*(2*p1*xd*yd + p2*(pow(xd,2) + 3*pow(yd,2)));
-	const double df11 = 1 + k1*sqrt(pow(xd,2) + pow(yd,2)) + k2*(pow(xd,2) + pow(yd,2)) + k3*pow(pow(xd,2) + pow(yd,2),1.5) + k4*pow(pow(xd,2) + pow(yd,2),2) + k5*pow(pow(xd,2) + pow(yd,2),2.5) + k6*pow(pow(xd,2) + pow(yd,2),3) + k7*pow(pow(xd,2) + pow(yd,2),3.5) + (2*p1*xd + 6*p2*yd)*(1 + p3*(pow(xd,2) + pow(yd,2)) + p4*pow(pow(xd,2) + pow(yd,2),2)) + yd*(2*k2*yd + (k1*yd)/sqrt(pow(xd,2) + pow(yd,2)) + 3*k3*yd*sqrt(pow(xd,2) + pow(yd,2)) + 4*k4*yd*(pow(xd,2) + pow(yd,2)) + 5*k5*yd*pow(pow(xd,2) + pow(yd,2),1.5) + 6*k6*yd*pow(pow(xd,2) + pow(yd,2),2) + 7*k7*yd*pow(pow(xd,2) + pow(yd,2),2.5)) + (2*p3*yd + 4*p4*yd*(pow(xd,2) + pow(yd,2)))*(2*p1*xd*yd + p2*(pow(xd,2) + 3*pow(yd,2)));
-	
+	// This Jacobian consists of the derivative of each of the xd and yd elements of the distortion function, with respect to each of xd and yd.
+	//
+	// It is written in terms of the same s = xd^2 + yd^2 that redistortionRootFunc_f above uses, so that the two
+	// stay visibly consistent. The previous version was generated in Mathematica from a model whose radial series
+	// ran in powers of r rather than powers of s = r^2, so every radial term was short by one factor of r. The
+	// result evaluated to very nearly the identity matrix at realistic coefficients (about 1.0003 on the diagonal
+	// where the true value is 1.27 at the corner of a wide-angle frame), leaving gsl's hybridsj with no useful
+	// curvature. That is the likely cause of the long-standing convergence trouble noted in redistortPoint above.
+	// It also divided by sqrt(s), so it was singular at the distortion centre; this form has no division.
+	//
+	// Writing R for the radial series, T for the decentering scale series, and Gx/Gy for the decentering terms:
+	//   xu = xd*R(s) + Gx*T(s)                    yu = yd*R(s) + Gy*T(s)
+	//   d(xu)/d(xd) = R + 2*xd^2*R' + (dGx/dxd)*T + 2*xd*Gx*T'
+	// and so on, using ds/dxd = 2*xd and ds/dyd = 2*yd.
+
+	const double s = xd*xd + yd*yd;
+	const double R  = 1 + k1*s + k2*pow(s,2) + k3*pow(s,3) + k4*pow(s,4) + k5*pow(s,5) + k6*pow(s,6) + k7*pow(s,7);
+	const double Rp = k1 + 2*k2*s + 3*k3*pow(s,2) + 4*k4*pow(s,3) + 5*k5*pow(s,4) + 6*k6*pow(s,5) + 7*k7*pow(s,6);
+	const double T  = 1 + p3*s + p4*s*s;
+	const double Tp = p3 + 2*p4*s;
+	const double Gx = p1*(3*xd*xd + yd*yd) + 2*p2*xd*yd;    // == p1*(s + 2*xd^2) + 2*p2*xd*yd
+	const double Gy = 2*p1*xd*yd + p2*(xd*xd + 3*yd*yd);    // == 2*p1*xd*yd + p2*(s + 2*yd^2)
+
+	const double df00 = R + 2*xd*xd*Rp + (6*p1*xd + 2*p2*yd)*T + 2*xd*Gx*Tp;
+	const double df01 =     2*xd*yd*Rp + (2*p1*yd + 2*p2*xd)*T + 2*yd*Gx*Tp;
+	const double df10 =     2*xd*yd*Rp + (2*p1*yd + 2*p2*xd)*T + 2*xd*Gy*Tp;
+	const double df11 = R + 2*yd*yd*Rp + (2*p1*xd + 6*p2*yd)*T + 2*yd*Gy*Tp;
+
 	gsl_matrix_set(J, 0, 0, df00);
 	gsl_matrix_set(J, 0, 1, df01);
 	gsl_matrix_set(J, 1, 0, df10);
