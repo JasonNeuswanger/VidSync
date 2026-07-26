@@ -434,6 +434,7 @@ int refractionRootFunc_f(const gsl_vector* x, void* params, gsl_vector* f)
 @dynamic distortionLines;
 
 @synthesize autodetectedPoints;
+@synthesize holdOutDiagonals;
 
 @dynamic matrixQuadratFrontToScreen;
 @dynamic matrixQuadratBackToScreen;
@@ -1797,6 +1798,24 @@ static const int kMinPlumblinePoints = 6;
 		[self.videoClip.project.document.distortionLinesController addNewAutodetectedLineWithPoints:&flipped];
 	}
 
+	// Keep the lattice diagonals aside so the next distortion solve can be checked against
+	// directions it was not fitted to. Cleared when no lattice was built, so a stale set from a
+	// previous run cannot be reported against fresh parameters.
+	if (lattice.valid) {
+		std::vector<std::vector<cv::Point2f> > diagonals = vidsync::extractDiagonalRuns(detection.corners, lattice, kMinPlumblinePoints);
+		NSMutableArray *stored = [NSMutableArray arrayWithCapacity:diagonals.size()];
+		for (size_t i = 0; i < diagonals.size(); i++) {
+			NSMutableArray *run = [NSMutableArray arrayWithCapacity:diagonals[i].size()];
+			for (size_t k = 0; k < diagonals[i].size(); k++) {
+				[run addObject:[NSValue valueWithPoint:NSMakePoint(diagonals[i][k].x, clipHeight - diagonals[i][k].y)]];
+			}
+			[stored addObject:run];
+		}
+		self.holdOutDiagonals = stored;
+	} else {
+		self.holdOutDiagonals = nil;
+	}
+
 	if (!plumblines.empty()) self.videoClip.project.distortionDisplayMode = @"Uncorrected";
 	[self.videoClip.windowController refreshOverlay];
 
@@ -2021,6 +2040,49 @@ static const int kMinPlumblinePoints = 6;
 	return snappedPoint;
 }
 
+// Measures how straight the held-back lattice diagonals come out under the parameters just
+// solved. Those diagonals pass through the same corners as the rows and columns, but the
+// constraint that they in particular are collinear was never optimized against, so this
+// reports whether the model straightens a direction it was not fitted to.
+//
+// It is not a true out-of-sample test, since the corners themselves were used; what is held
+// out is the constraint, not the data. So it will catch a model that has bent the image in a
+// way that keeps rows and columns straight while distorting other directions, which the fit's
+// own residual structurally cannot see, but not overfitting to the corner positions.
+//
+// Cost is negligible: one pass with the final parameters, where the solver has already done
+// thousands. undistortPoint is closed form, unlike redistortPoint, so nothing iterates here.
+- (void) measureHoldOutStraightness
+{
+	if ([self.holdOutDiagonals count] == 0) return;
+	double totalSquaredResidual = 0.0;
+	NSUInteger totalPoints = 0;
+	for (NSArray *run in self.holdOutDiagonals) {
+		const NSUInteger count = [run count];
+		if (count < 3) continue;   // two points are collinear by definition
+		NSPoint *undistorted = (NSPoint *) malloc(count * sizeof(NSPoint));
+		for (NSUInteger k = 0; k < count; k++) {
+			undistorted[k] = [self undistortPoint:[[run objectAtIndex:k] pointValue]];
+		}
+		totalSquaredResidual += orthogonalRegressionLineCostFunction(undistorted, count);
+		totalPoints += count;
+		free(undistorted);
+	}
+	if (totalPoints == 0) return;
+	const double residualPerPoint = sqrt(totalSquaredResidual / (double)totalPoints);
+	// Written through the entity rather than as a property, so the app still runs against a
+	// document model that predates this attribute; the value is simply not recorded then.
+	if ([[[self entity] attributesByName] objectForKey:@"distortionHoldOutResidual"] != nil) {
+		[self setValue:[NSNumber numberWithDouble:residualPerPoint] forKey:@"distortionHoldOutResidual"];
+	}
+}
+
+- (NSNumber *) distortionHoldOutResidualOrNil
+{
+	if ([[[self entity] attributesByName] objectForKey:@"distortionHoldOutResidual"] == nil) return nil;
+	return [self valueForKey:@"distortionHoldOutResidual"];
+}
+
 - (void) calculateDistortionCorrection
 {
 	NSArray *plumbLines = [self.distortionLines allObjects];
@@ -2132,6 +2194,7 @@ static const int kMinPlumblinePoints = 6;
 		? [NSNumber numberWithDouble:(initial_RMS_error - final_RMS_error) / initial_RMS_error]
 		: [NSNumber numberWithDouble:0.0];  // guard: no initial error means 0% reduction
 	self.distortionRemainingPerPoint = [NSNumber numberWithDouble:final_RMS_error];
+	[self measureHoldOutStraightness];
 	/*
 	 NSLog(@"Distortion cost function was reduced by %1.2f percent.",100*(initial_cost_function_value - final_cost_function_value) / initial_cost_function_value);
 	 */

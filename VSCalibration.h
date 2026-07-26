@@ -90,6 +90,11 @@ int redistortionRootFunc_fdf(const gsl_vector* x, void* params, gsl_vector* f, g
 
 @property (strong) NSMutableSet *autodetectedPoints;
 
+// The lattice diagonals from the last autodetection, as NSArrays of NSValue-wrapped NSPoints.
+// Transient and not saved: they exist only to be measured against once the distortion
+// parameters are next solved, and are meaningless for a set of hand-digitized plumblines.
+@property (strong) NSArray *holdOutDiagonals;
+
 @property (strong) NSArray *matrixQuadratFrontToScreen;
 @property (strong) NSArray *matrixQuadratBackToScreen;
 @property (strong) NSArray *matrixScreenToQuadratFront;
@@ -183,6 +188,11 @@ int redistortionRootFunc_fdf(const gsl_vector* x, void* params, gsl_vector* f, g
 - (NSPoint) distortPoint:(NSPoint)undistortedPoint;
 - (NSPoint) undistortPoint:(NSPoint)distortedPoint;
 - (void) calculateDistortionCorrection;
+
+// The straightness of the held-back lattice diagonals under the current distortion
+// parameters, in pixels per point, or nil where it has not been measured: an older file, a
+// calibration solved before this check existed, or one built from hand-digitized lines.
+- (NSNumber *) distortionHoldOutResidualOrNil;
 
 - (void) refractionCorrectApparentPositionOfBackQuadratPoint:(VSCalibrationPoint*)point;
 

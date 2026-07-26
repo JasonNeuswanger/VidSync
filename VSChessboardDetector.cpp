@@ -1755,4 +1755,37 @@ RefinementResult refineLattice(std::vector<CornerCandidate> &corners,
     return result;
 }
 
+std::vector<std::vector<cv::Point2f> > extractDiagonalRuns(const std::vector<CornerCandidate> &corners,
+                                                           const GrownLattice &lattice,
+                                                           int minPoints)
+{
+    std::vector<std::vector<cv::Point2f> > runs;
+    if (!lattice.valid) return runs;
+
+    std::map<long long, int> site;
+    for (size_t k = 0; k < lattice.ij.size(); k++) {
+        site[siteKey(lattice.ij[k].x, lattice.ij[k].y)] = lattice.cornerIndex[k];
+    }
+
+    // Both diagonal families: constant i-j runs one way, constant i+j the other.
+    for (int family = 0; family < 2; family++) {
+        const int step = (family == 0) ? 1 : -1;
+        const int fromConstant = (family == 0) ? lattice.minI - lattice.maxJ : lattice.minI + lattice.minJ;
+        const int toConstant = (family == 0) ? lattice.maxI - lattice.minJ : lattice.maxI + lattice.maxJ;
+        for (int constant = fromConstant; constant <= toConstant; constant++) {
+            std::vector<cv::Point2f> run;
+            for (int i = lattice.minI; i <= lattice.maxI; i++) {
+                const int j = (family == 0) ? (i - constant) : (constant - i);
+                if (j < lattice.minJ || j > lattice.maxJ) continue;
+                std::map<long long, int>::const_iterator it = site.find(siteKey(i, j));
+                if (it == site.end()) continue;
+                run.push_back(corners[it->second].position);
+            }
+            (void)step;
+            if ((int)run.size() >= minPoints) runs.push_back(run);
+        }
+    }
+    return runs;
+}
+
 }   // namespace vidsync

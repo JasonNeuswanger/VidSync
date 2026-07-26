@@ -176,6 +176,20 @@ std::vector<Plumbline> extractPlumblines(const std::vector<CornerCandidate> &cor
                                          const GrownLattice &lattice,
                                          int minPoints);
 
+// The lattice diagonals, as ordered point sequences. Any arithmetic run of lattice sites is
+// collinear on a planar board, so these are straight world lines exactly as rows and columns
+// are, and they pass through the same corners.
+//
+// They are deliberately not fed to the distortion fit. Within a Brown-Conrady model, which is
+// a radially symmetric map plus small tangential terms, several hundred points on fifty lines
+// already overdetermine thirteen parameters, and every extra line costs a proportional share
+// of every iteration of the solver. Held back instead, they measure whether the fitted model
+// straightens directions it was never asked to straighten -- something the fit's own residual
+// cannot report, since that can always be lowered by having fewer or shorter lines.
+std::vector<std::vector<cv::Point2f> > extractDiagonalRuns(const std::vector<CornerCandidate> &corners,
+                                                           const GrownLattice &lattice,
+                                                           int minPoints);
+
 }   // namespace vidsync
 
 #endif /* VSChessboardDetector_hpp */
