@@ -76,9 +76,9 @@ double orthogonalRegressionLineCostFunction(NSPoint line[], const size_t numLine
 double orthogonalRegressionTotalCostFunction(const gsl_vector *v, void *params){
 	// This function measures the total "straightness" of all the lines.  Its arguments are formatted
 	// in such a way that it can be set as the function to minimize using the multimin features of the GNU
-	// scientific library.  It returns the sum of the squared residuals from an orthogonal regression on all
-	// the lines, divided by the total length of all the lines (without this division, te total residual can be minimized by
-	// shrinking all the lines to 0 size instead of just straightening them).
+	// scientific library.  It returns the plain sum of the squared residuals from an orthogonal regression on
+	// all the lines, with no normalization -- see the note at the return statement for why the old division by
+	// total line length was removed, and why nothing replaced it.
 	// First, interpret the "parameters," which in this case means the pointer to the struct holding the plumbline data
 	Plumblines* p = (Plumblines*) params;
 	// Prepare the variables being adjusted to minimize the cost function -- the distortion parameters
@@ -186,10 +186,17 @@ NSPoint redistortPoint(const NSPoint* pt, const double x0, const double y0, cons
 			}
 			status = gsl_multiroot_test_residual(s->f, 1e-7);
 		} while (status == GSL_CONTINUE && iter < 1000);
+		// Running out of iterations with the residual still above tolerance is just as much a failure of this
+		// starting guess as an error return from the iterator. Only the latter used to be counted, so a guess
+		// that stalled at the iteration cap was accepted as if it had converged, and the remaining guesses were
+		// never tried.
+		if (status != GSL_SUCCESS) failed = true;
 		if (!failed) {
 			break;
 		}
 	}
+	// If every guess failed we fall through with whatever the last one reached, which is the best available
+	// answer; the caller is drawing an overlay, not measuring, so an imprecise point beats no point at all.
 	
 //	double resid = sqrt(pow(gsl_vector_get(s->f, 0),2) + pow(gsl_vector_get(s->f, 1),2));
 	
@@ -2210,12 +2217,16 @@ static const double kMaxAcceptableScaleRatio = 4.0;    // generous enough for a 
 	p.numLines = [plumbLines count];
 	p.lines = (NSPoint **) malloc(p.numLines*sizeof(NSPoint *));
 	p.lineLengths = (size_t *) malloc(p.numLines*sizeof(size_t *));
-	int totalPointCount = 0; // Total # of points on all plumblines, for use calculating the average remaining distortion per point.
-	// This will double-count screen points used in both horizontal and vertical lines. That is by design.
+	// Total # of points on plumblines that can actually contribute a residual, for use calculating the average
+	// remaining distortion per point. Runs shorter than three points are collinear by definition and contribute
+	// nothing to the cost, so counting them would silently deflate the reported per-point residual by treating
+	// them as perfectly straightened. This will double-count screen points used in both horizontal and vertical
+	// lines. That is by design.
+	int totalPointCount = 0;
 	for (int i = 0; i < p.numLines; i++) {
 		NSArray *pointsInLine = [[[[plumbLines objectAtIndex:i] distortionPoints] allObjects] sortedArrayUsingDescriptors:[NSArray arrayWithObject:pointIndexSortDescriptor]];
 		p.lineLengths[i] = [pointsInLine count];
-		totalPointCount += p.lineLengths[i];
+		if (p.lineLengths[i] >= 3) totalPointCount += p.lineLengths[i];
 		p.lines[i] = (NSPoint *) malloc(p.lineLengths[i]*sizeof(NSPoint));
 		for (int j = 0; j < p.lineLengths[i]; j++) p.lines[i][j] = NSMakePoint([[[pointsInLine objectAtIndex:j] screenX] floatValue],[[[pointsInLine objectAtIndex:j] screenY] floatValue]);
 	}
@@ -2224,7 +2235,7 @@ static const double kMaxAcceptableScaleRatio = 4.0;    // generous enough for a 
 		for (int i = 0; i < p.numLines; i++) free(p.lines[i]);
 		free(p.lines);
 		free(p.lineLengths);
-		[UtilityFunctions InformUser:@"There are no plumbline points to fit a distortion model to. Detect or draw some plumblines first." withTitle:@"Nothing to fit"];
+		[UtilityFunctions InformUser:@"There are no plumblines with enough points to fit a distortion model to. A plumbline needs at least three points to say anything about straightness. Detect or draw some longer plumblines first." withTitle:@"Nothing to fit"];
 		return;
 	}
 

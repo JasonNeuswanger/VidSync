@@ -149,11 +149,15 @@ NSPoint project2DPoint(NSPoint pt, double projectionMatrix[9])
 // searches for a 3-D position that minimizes the total squared reprojection (pixel) error over all video clips, which is a better 3-D position estimate than the linear one.
 {
 	NSSet *calibratedScreenPoints = [self calibratedScreenPoints];
-	size_t numLines = (size_t) [calibratedScreenPoints count];
+	// Snapshot the set as an array once. NSSet does not promise a stable enumeration order between separate
+	// -allObjects calls, and this used to be called afresh on every loop iteration below, which both relied on
+	// that unpromised stability and rebuilt the array numLines times.
+	NSArray *calibratedScreenPointArray = [calibratedScreenPoints allObjects];
+	size_t numLines = (size_t) [calibratedScreenPointArray count];
 	if (numLines > 1) {
 		// Get a starting guess at the 3-D point position from the old linear "closest point of approach" method
 		VSPoint3D linearIntersectionPoint = [self calculate3DCoordsLinear];
-		if ([((VSEventScreenPoint *)[[calibratedScreenPoints allObjects] objectAtIndex:0]).videoClip.project.useIterativeTriangulation boolValue]) {
+		if ([((VSEventScreenPoint *)[calibratedScreenPointArray objectAtIndex:0]).videoClip.project.useIterativeTriangulation boolValue]) {
 			// Load up the parameter array for the nonlinear root solver with all the info it needs to calculate the pixel error cost function
 			VSPointSolverParams params;
 			params.numCameras = numLines;
@@ -165,7 +169,7 @@ NSPoint project2DPoint(NSPoint pt, double projectionMatrix[9])
 			params.undistortedScreenPoints = (NSPoint *) malloc(numLines*sizeof(NSPoint));
 			VSEventScreenPoint *screenPoint;
 			for (int i = 0; i < numLines; i++) {
-				screenPoint = [[calibratedScreenPoints allObjects] objectAtIndex:i];
+				screenPoint = [calibratedScreenPointArray objectAtIndex:i];
 				params.camPositions[i].x = [screenPoint.videoClip.calibration.cameraX doubleValue];
 				params.camPositions[i].y = [screenPoint.videoClip.calibration.cameraY doubleValue];
 				params.camPositions[i].z = [screenPoint.videoClip.calibration.cameraZ doubleValue];
