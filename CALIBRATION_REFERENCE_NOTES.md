@@ -1002,3 +1002,68 @@ One: run this spectrum across the 67-document corpus, since this is one camera o
 lens, and the answer may differ at 17 mm. Two: fit the ten-parameter model and judge it on the known
 lengths through `distcal.py`, not on residuals. The Python fitter is the prerequisite for both, and
 is now within reach.
+
+## A working fitter, and held-out model comparison
+
+`tools/pooltest/fitter.py` fits the plumbline objective with any subset of the 13 parameters active,
+and scores candidates on **held-out lines**. It needs numpy and scipy from `~/.venvs/vidsync`; see
+the README in that folder. Whole lines are held out, never points within a line, because a line's
+residual is defined relative to its own fit.
+
+Two implementation notes that mattered. The per-line loop was replaced by `reduceat`/`repeat` so all
+47 lines are reduced at once, which took a full 13-parameter fit from 213 s to about 5 s and made
+cross-validation possible at all. And a trust-region least-squares pass on the residual vector,
+followed by Nelder-Mead as an independent check, converges from 7 of 8 random restarts to the same
+optimum.
+
+### The fitter beats VidSync's own solver, and that is a problem before it is a benefit
+
+Fitting all 13 parameters to the far set reaches **0.8208 px against VidSync's 0.9173** -- but that
+solution **fails the acceptance gate** on scale ratio (4.23 against the 4.0 limit). The extra
+reduction is bought by shrinking the undistorted image, exactly the degeneracy documented above.
+Every flexible model behaved this way, so comparing models at unconstrained optima compares
+solutions the application would refuse to store. The fitter therefore appends penalty residuals that
+are zero on the feasible side, keeping the search inside the gate. Gated, the 13-parameter fit
+reaches 0.8438 px -- still 8% better than the shipped solver, within the feasible region.
+
+### Held-out comparison, gate enforced throughout
+
+Left camera, far set, 47 lines, 640 points, 6-fold cross-validation over lines:
+
+| model | params | in-sample | **held-out** | condition |
+|---|---|---|---|---|
+| full 13 | 13 | **0.8438** | 0.9984 | 3.18e8 |
+| k1-k6 + p1-p4 | 12 | 0.8484 | 0.9947 | 4.86e7 |
+| k1-k5 + p1-p4 | 11 | 0.8550 | 1.0360 | 4.41e6 |
+| **k1-k4 + p1-p4** | **10** | 0.8556 | **0.9806** | **3.38e5** |
+| k1-k3 + p1-p4 | 9 | 0.9705 | 1.1610 | 1.21e5 |
+| k1-k4 + p1,p2 | 8 | 0.9278 | 1.1177 | 1.98e5 |
+| k1-k4 only | 6 | 1.0902 | 1.2508 | 1.99e5 |
+| k1-k7 only | 9 | 1.0683 | 1.2705 | 2.32e8 |
+
+**The ten-parameter model generalizes best.** It beats the full 13 by 1.8% on held-out lines while
+using three fewer parameters and improving the conditioning 940-fold. The in-sample column runs the
+other way -- the full model wins there -- which is textbook overfitting and is exactly why held-out
+scoring was needed. This corroborates the linearized identifiability result above by an independent
+route: that analysis said dropping k5-k7 costs 0.075 px, half the noise floor, and this one says it
+costs nothing at all out of sample.
+
+Dropping further is clearly wrong. k1-k3 loses 18% held-out, and the tangential terms are load-bearing
+in generalization too: p3 and p4 are worth 14% and the whole tangential block 28%.
+
+### What is not yet established
+
+The 1.8% held-out margin between 13 and 10 parameters is small, from one camera on one plumbline set
+with 47 lines, and it is not obviously outside cross-validation noise on its own. It is believable
+mainly because a completely different method agreed. Two things remain before changing the shipped
+model, and this project's history insists on both, a better residual having three times accompanied
+worse measurements:
+
+1. Run the comparison across the 67-document corpus. This is the 8 mm fisheye, the most extreme lens;
+   at 17 mm distortion is 4.5 times smaller and the answer may differ.
+2. Judge the ten-parameter model on the **known lengths** through `distcal.py`, not on residuals.
+
+There is also a second, independent candidate improvement: the shipped Nelder-Mead leaves about 8%
+of the achievable residual on the table even within the gate, because it stalls on a problem
+conditioned at 3e8. Reducing to ten parameters fixes the conditioning, so the two changes reinforce
+each other. Both still need the known-length test.
