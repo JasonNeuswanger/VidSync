@@ -470,3 +470,79 @@ wherever it is best detected — filling the frame, which improves radial covera
 severity of 18.2 px, squarely inside the 17 mm population (16.2-20.3) and nowhere near the 8 mm
 one (81.1-90.6). Either the sheet's focal length is wrong for that site or the document is
 carrying a calibration from a 17 mm session. Worth checking before that file is used.
+
+## The gauge is harmless to the geometry, but the refinement's objective is in the wrong space
+
+Asked whether the "flattened" image produced by undistortion might contain a warp that the
+two-plane homographies cannot represent, over and above leftover distortion.
+
+**It cannot, and that is a theorem.** By the fundamental theorem of projective geometry, a
+bijective map of the plane that carries collinear points to collinear points is necessarily a
+projective transformation. There is no third category: no line-preserving-but-non-projective
+warp exists. So if undistortion genuinely straightens every straight world line, the flattened
+image differs from a true perspective image by exactly a homography `G`. Then the map from
+undistorted image to any world plane is `G^-1` composed with a plane back-projection — a
+homography — so `Hf` and `Hb` are exact, the line joining `Hf(s)` and `Hb(s)` is the true
+physical ray, and the whole two-plane construction is exact *including* the gauge. Nothing needs
+to be done about the scale degeneracy in the distortion parameters; the homographies eat it.
+
+The theorem's hypotheses are where the real failure modes live, and each is already instrumented:
+
+* **Bijectivity.** If the undistortion folds over, the theorem does not apply. This is exactly
+  what the Tier 1 acceptance gate tests with `min det J > 0` over the plumbline bounding box. The
+  gate is enforcing the theorem's precondition, not just guarding against silly numbers.
+* **Every direction, not only the sampled ones.** Straightness is enforced on two near-orthogonal
+  families from a single board pose, so a map could straighten rows and columns while bending
+  diagonals. That is what the held-out diagonal residual measures. On `2016-08-13-2 Chena` it is
+  1.42 and 0.98 px against in-sample 1.33 and 1.27, so diagonals are as straight as rows and the
+  map really is a collineation.
+* **Only where plumblines reach.** Outside the covered radius the constraint is vacuous and gauge
+  wander becomes real error. This was measured: it accounted for the entire apparent range effect
+  in the section above, a fake trend of 0.50 to 0.86 px.
+* **Exactness.** By the converse of the theorem, residual non-straightness is *precisely* the part
+  no homography can absorb. The dichotomy is clean: gauge is free, residual is charged in full.
+  All the effort belongs on the residual, none on normalizing the parameters.
+
+### What is genuinely wrong: the refinement minimizes in undistorted pixels
+
+`VSPoint.m` accumulates the iterative refinement's cost in *undistorted* coordinates, summed over
+cameras:
+
+```
+cost += pow(reprojectedScreenPoint.x - p->undistortedScreenPoints[i].x, 2) + ...
+```
+
+Click noise is isotropic in *raw* pixels. Undistortion magnifies it by the local Jacobian, so a
+given physical click error of `d` contributes `|J d|^2`, not `|d|^2`. Measured as
+`sqrt(det J)` at the points where measurements were actually clicked (`tools/pooltest/gauge.py`):
+
+| document | camera | mean magnification | range over the frame |
+|---|---|---|---|
+| 2012 pool test | Left | 1.0268 | 1.000 - 1.103 |
+| 2012 pool test | Right | 1.0230 | 1.000 - 1.074 |
+| 2016-08-13-2 Chena, 8 mm | Right | 1.4390 | 1.000 - 3.310 |
+| 2016-08-13-2 Chena, 8 mm | Left | 1.2660 | 1.001 - 3.056 |
+
+Two separate effects:
+
+* **Within a camera**, magnification runs 1.00 at the centre to 3.31 at the corner on the 8 mm
+  fisheye, so a peripheral click is weighted **11x** a central one purely for where it sits in the
+  frame. This is *not* a gauge artifact — it is present with a perfect calibration, because
+  distortion has a varying Jacobian by definition. It is a plain misspecification of the
+  least-squares objective, and it biases the solution toward satisfying peripheral clicks.
+* **Between cameras**, the ratio is 1.1366 on the fisheye file, so the right camera's residuals
+  count 29% more than the left's. Part of this is real and part is arbitrary gauge.
+
+On the pool test the ratio is 1.0036, a 0.7% weighting error — negligible, and the reason the
+pool test **cannot validate a fix for this**. The files where it bites are the wide fisheye ones,
+which have no ground truth.
+
+The first-order fix is cheap: minimize `|J^-1 (reprojected - observed)|^2`, which restores the
+objective to the space the noise lives in. `undistortionJacobian()` already exists, extracted for
+the redistortion solver, and this costs one 2x2 solve per camera per iteration. The exact
+alternative — redistorting the reprojected point and comparing in raw pixels — would put a
+`redistortPoint` multiroot solve inside the optimizer loop and is far too slow.
+
+**Not yet implemented, and deliberately so:** the effect is invisible on the only data set with
+ground truth. Validating it needs a synthetic test — the pool test's geometry and known lengths,
+with a fisheye-magnitude distortion imposed on the clicks — before any change is shipped.
