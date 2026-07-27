@@ -114,6 +114,44 @@ ORDER BY o.ZNAME2, e.Z_PK, p.ZINDEX;
 
 Every event has exactly two points, so the measured length is the distance between them.
 
+### The 2016 export, and what it enables
+
+`~/Library/CloudStorage/Dropbox/Chena Project Synced/Papers/2010 3D Video Methods/2012 Pool Test - 2016 CalA.xml`
+
+The results exported from this file in 2016 while preparing the paper, using calibration A —
+the same calibration the current document uses. It holds far more than the 3D coordinates: for
+every click it records the raw screen position, the undistorted position, and the projections
+onto both calibration frame planes, plus both cameras' full calibrations and distortion
+parameters. That makes it a self-contained testbed. Any triangulation method can be evaluated
+straight from the frame-plane coordinates without reimplementing the homographies.
+
+Points match the current document on the pair (event index, point index); neither is unique
+alone. Note the event index is `ZINDEX` on the event row, not `ZINDEX1`.
+
+### Two results measured from it, 2026-07-26
+
+**Everything since 2016 is a small net gain.** Comparing the published coordinates against the
+current document, per-point positions moved by a median of 0.26 mm, and mean absolute length
+error went from 1.03 mm to 0.99 mm over all 1010 measurements — better on the four harder
+objects, unchanged on the two easy ones. Worth knowing for its own sake, and worth noting that
+a substantially better distortion correction bought only 4%: the remaining error is not
+dominated by the distortion model.
+
+**The iterative reprojection refinement earns its place.** Recomputing every measurement as the
+plain closest point of approach of the two sightlines, and comparing against the stored
+iteratively refined result:
+
+| | mean abs. error | sd |
+|---|---|---|
+| iterative refinement (as shipped) | **1.03 mm** | 1.97 |
+| linear CPA only | 1.35 mm | 5.10 |
+
+Better on every object, and far more stable — the linear method's standard deviation on the
+longest target is 15.3 mm against 3.6. This confirms on real data what the paper asserts, and
+means the refinement step is load-bearing rather than cosmetic. Anything that makes it valid in
+cases it currently is not, such as filming through an aquarium wall, is improving a step that
+demonstrably matters.
+
 ### How to use it
 
 Judge any change on bias and standard deviation per object, split by `ZNEARESTCAMERADISTANCE`
