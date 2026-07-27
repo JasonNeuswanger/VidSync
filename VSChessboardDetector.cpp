@@ -1577,6 +1577,25 @@ const int kRefinementPasses = 2;
 const double kOutlierSigmas = 3.0;
 const double kMinOutlierDeviation = 0.05;
 
+// The same idea applied to the whole-line fit, which is coarser and so needs looser bounds: it
+// carries the fisheye curvature the local stencil cancels exactly, and it is being asked to
+// judge corners at the ends of short, holey runs where there is least support. Measured on
+// real frames, a camera whose lines were judged clean by eye had a worst deviation of 0.08 of
+// a cell, while the camera with visibly wrong endpoints had a cluster between 0.19 and 0.47.
+// The absolute floor sits between those.
+//
+// Unlike the local test, the scale here is pooled over every line in the lattice rather than
+// measured per line. Measured per line it defeats itself: the short, strongly curved runs in
+// the frame corners have a baseline scatter of 0.033 to 0.052 of a cell against 0.005 on a
+// long central line, both because a quartic fits a short sharply curved arc less well and
+// because those regions have the worst contrast. Five sigma of a per-line scale is then 0.24
+// to 0.38 there, comfortably above the very outliers being looked for, so the lines most in
+// need of the test were the ones exempted from it. Pooling gives a scale set by the whole
+// image, which still lets a genuinely noisy frame raise its own threshold without letting one
+// bad line excuse itself.
+const double kWholeLineOutlierSigmas = 5.0;
+const double kMinWholeLineDeviation = 0.13;
+
 // How far from a predicted site to accept an already-detected corner, and how far to let a
 // direct image search move, both as fractions of the cell spacing.
 // Both are tight because the prediction is good: leave-one-out estimates land within about
@@ -1682,6 +1701,148 @@ double robustScale(std::vector<double> values)
     return 1.4826 * values[values.size() / 2];
 }
 
+// Solves a small symmetric system by Gaussian elimination with partial pivoting. Sized for
+// polynomial normal equations, so n is 4 or 5 and the cost is irrelevant.
+bool solveSmall(std::vector<std::vector<double> > a, std::vector<double> b, std::vector<double> *out)
+{
+    const size_t n = b.size();
+    for (size_t c = 0; c < n; c++) {
+        size_t pivot = c;
+        for (size_t r = c + 1; r < n; r++) if (std::fabs(a[r][c]) > std::fabs(a[pivot][c])) pivot = r;
+        if (std::fabs(a[pivot][c]) < 1e-12) return false;
+        std::swap(a[c], a[pivot]); std::swap(b[c], b[pivot]);
+        for (size_t r = 0; r < n; r++) {
+            if (r == c) continue;
+            const double f = a[r][c] / a[c][c];
+            for (size_t k = c; k < n; k++) a[r][k] -= f * a[c][k];
+            b[r] -= f * b[c];
+        }
+    }
+    out->assign(n, 0.0);
+    for (size_t i = 0; i < n; i++) (*out)[i] = b[i] / a[i][i];
+    return true;
+}
+
+// Weighted polynomial fit of v against t, returning the coefficients.
+bool weightedPolyFit(const std::vector<double> &t, const std::vector<double> &v,
+                     const std::vector<double> &w, int degree, std::vector<double> *coeffs)
+{
+    const size_t m = degree + 1;
+    std::vector<std::vector<double> > a(m, std::vector<double>(m, 0.0));
+    std::vector<double> b(m, 0.0);
+    for (size_t s = 0; s < t.size(); s++) {
+        double powers[8];
+        powers[0] = 1.0;
+        for (size_t i = 1; i < m; i++) powers[i] = powers[i - 1] * t[s];
+        for (size_t i = 0; i < m; i++) {
+            for (size_t j = 0; j < m; j++) a[i][j] += w[s] * powers[i] * powers[j];
+            b[i] += w[s] * v[s] * powers[i];
+        }
+    }
+    return solveSmall(a, b, coeffs);
+}
+
+double evaluatePoly(const std::vector<double> &c, double x)
+{
+    double acc = 0.0;
+    for (size_t i = c.size(); i > 0; i--) acc = acc * x + c[i - 1];
+    return acc;
+}
+
+const int kWholeLineDegree = 4;
+const size_t kWholeLineMinPoints = 9;
+
+// Deviation of each corner from a curve fitted to the whole line without it, as a fraction of
+// the local spacing.
+//
+// This complements leaveOneOutDeviations rather than replacing it. That test is local, needing
+// three or four corners at consecutive lattice indices, which is exactly what the crowded,
+// low-contrast regions near a fisheye frame's corners cannot supply: runs there are short and
+// full of holes, so the corners most likely to be misplaced are the ones it can least often
+// judge. Fitting the whole line needs no particular corner to be present and so reaches them.
+//
+// A comment on leaveOneOutDeviations records that fitting a polynomial to the line was tried
+// and abandoned, because a cubic cannot represent a fisheye-distorted line exactly and the
+// resulting systematic error inflates the robust scale. That is right for an absolute
+// threshold and is why the caller compares against a multiple of the line's own median
+// deviation as well: model error raises every corner on the line together, so a threshold
+// measured in units of that line's own scatter sees through it, while a corner belonging to a
+// neighbouring line still stands out. Degree four rather than three, since the extra term
+// costs nothing and absorbs more of the curvature.
+bool wholeLineDeviations(const std::map<int, int> &alongLine,
+                         const std::vector<CornerCandidate> &corners,
+                         std::map<int, double> *deviations)
+{
+    deviations->clear();
+    if (alongLine.size() < kWholeLineMinPoints) return false;
+
+    std::vector<int> keys;
+    std::vector<cv::Point2f> pts;
+    for (std::map<int, int>::const_iterator it = alongLine.begin(); it != alongLine.end(); ++it) {
+        keys.push_back(it->first);
+        pts.push_back(corners[it->second].position);
+    }
+    const size_t n = pts.size();
+
+    // Work in the line's own frame, so the curve is a function rather than a near-vertical
+    // relation the fit cannot represent.
+    double cx = 0.0, cy = 0.0;
+    for (size_t i = 0; i < n; i++) { cx += pts[i].x; cy += pts[i].y; }
+    cx /= (double)n; cy /= (double)n;
+    double sxy = 0.0, sqd = 0.0;
+    for (size_t i = 0; i < n; i++) {
+        const double dx = pts[i].x - cx, dy = pts[i].y - cy;
+        sxy += dx * dy; sqd += dx * dx - dy * dy;
+    }
+    const double theta = 0.5 * std::atan2(2.0 * sxy, sqd);
+    const double ct = std::cos(theta), st = std::sin(theta);
+
+    std::vector<double> t(n), v(n);
+    double span = 0.0;
+    for (size_t i = 0; i < n; i++) {
+        const double dx = pts[i].x - cx, dy = pts[i].y - cy;
+        t[i] = dx * ct + dy * st;
+        v[i] = -dx * st + dy * ct;
+        if (std::fabs(t[i]) > span) span = std::fabs(t[i]);
+    }
+    if (span < 1e-6) return false;
+    for (size_t i = 0; i < n; i++) t[i] /= span;   // conditioning: keep the powers near unity
+
+    std::vector<double> spacing(n, 0.0);
+    for (size_t i = 0; i < n; i++) {
+        const size_t a = (i == 0) ? 0 : i - 1;
+        const size_t b = (i + 1 < n) ? i + 1 : n - 1;
+        const double d = vectorLength(cv::Point2f(pts[b].x - pts[a].x, pts[b].y - pts[a].y));
+        const int steps = keys[b] - keys[a];
+        spacing[i] = (steps > 0) ? d / steps : 0.0;
+    }
+
+    for (size_t held = 0; held < n; held++) {
+        std::vector<double> ft, fv, fw;
+        for (size_t i = 0; i < n; i++) {
+            if (i == held) continue;
+            ft.push_back(t[i]); fv.push_back(v[i]); fw.push_back(1.0);
+        }
+        if (ft.size() < (size_t)kWholeLineDegree + 2) continue;
+        std::vector<double> c;
+        // Two reweighting rounds, so that other misplaced corners on the same line do not drag
+        // the curve toward themselves and hide the one being tested.
+        for (int round = 0; round < 3; round++) {
+            if (!weightedPolyFit(ft, fv, fw, kWholeLineDegree, &c)) { c.clear(); break; }
+            if (round == 2) break;
+            std::vector<double> resid(ft.size());
+            for (size_t i = 0; i < ft.size(); i++) resid[i] = std::fabs(fv[i] - evaluatePoly(c, ft[i]));
+            std::vector<double> sorted = resid;
+            std::sort(sorted.begin(), sorted.end());
+            const double scale = std::max(sorted[sorted.size() / 2], 1e-6);
+            for (size_t i = 0; i < ft.size(); i++) fw[i] = (resid[i] < 3.0 * scale) ? 1.0 : 0.05;
+        }
+        if (c.empty() || spacing[held] < 1e-6) continue;
+        (*deviations)[keys[held]] = std::fabs(v[held] - evaluatePoly(c, t[held])) / spacing[held];
+    }
+    return !deviations->empty();
+}
+
 }   // anonymous namespace
 
 RefinementResult refineLattice(std::vector<CornerCandidate> &corners,
@@ -1736,6 +1897,8 @@ RefinementResult refineLattice(std::vector<CornerCandidate> &corners,
         // A corner belongs to both a row and a column, and being a gross outlier on either
         // is disqualifying, so the two verdicts are combined before anything is removed.
         std::map<long long, bool> expel;
+        std::vector<std::pair<long long, double> > wholeLineDeviation;
+        std::vector<double> wholeLineValues;
         for (int orientation = 0; orientation < 2; orientation++) {
             const bool isRow = (orientation == 0);
             const int from = isRow ? minJ : minI;
@@ -1749,19 +1912,47 @@ RefinementResult refineLattice(std::vector<CornerCandidate> &corners,
                     std::map<long long, int>::const_iterator it = site.find(key);
                     if (it != site.end()) alongLine[varying] = it->second;
                 }
+                // Two independent verdicts, and a corner failing either is expelled. The local
+                // stencil is the sharper test but can only judge corners with three or four
+                // neighbours at consecutive indices; the whole-line fit is blunter but reaches
+                // the ends of short, holey runs, which is where corners get misassigned.
                 std::map<int, double> deviations;
-                if (!leaveOneOutDeviations(alongLine, corners, &deviations)) continue;
-                std::vector<double> values;
-                for (std::map<int, double>::const_iterator it = deviations.begin();
-                     it != deviations.end(); ++it) values.push_back(it->second);
-                const double threshold = std::max(kOutlierSigmas * robustScale(values), kMinOutlierDeviation);
-                for (std::map<int, double>::const_iterator it = deviations.begin();
-                     it != deviations.end(); ++it) {
-                    if (it->second <= threshold) continue;
-                    expel[isRow ? siteKey(it->first, fixed) : siteKey(fixed, it->first)] = true;
+                if (leaveOneOutDeviations(alongLine, corners, &deviations)) {
+                    std::vector<double> values;
+                    for (std::map<int, double>::const_iterator it = deviations.begin();
+                         it != deviations.end(); ++it) values.push_back(it->second);
+                    const double threshold = std::max(kOutlierSigmas * robustScale(values), kMinOutlierDeviation);
+                    for (std::map<int, double>::const_iterator it = deviations.begin();
+                         it != deviations.end(); ++it) {
+                        if (it->second <= threshold) continue;
+                        expel[isRow ? siteKey(it->first, fixed) : siteKey(fixed, it->first)] = true;
+                    }
+                }
+
+                // Collected now and judged once every line has been measured, so the scale can
+                // be pooled over the whole lattice.
+                std::map<int, double> wholeLine;
+                if (wholeLineDeviations(alongLine, corners, &wholeLine)) {
+                    for (std::map<int, double>::const_iterator it = wholeLine.begin();
+                         it != wholeLine.end(); ++it) {
+                        wholeLineDeviation.push_back(std::make_pair(
+                            isRow ? siteKey(it->first, fixed) : siteKey(fixed, it->first), it->second));
+                        wholeLineValues.push_back(it->second);
+                    }
                 }
             }
         }
+
+        // Now that every line has been measured, judge the whole-line deviations against one
+        // scale drawn from all of them.
+        if (!wholeLineValues.empty()) {
+            const double threshold = std::max(kWholeLineOutlierSigmas * robustScale(wholeLineValues),
+                                              kMinWholeLineDeviation);
+            for (size_t i = 0; i < wholeLineDeviation.size(); i++) {
+                if (wholeLineDeviation[i].second > threshold) expel[wholeLineDeviation[i].first] = true;
+            }
+        }
+
         for (std::map<long long, bool>::const_iterator it = expel.begin(); it != expel.end(); ++it) {
             std::map<long long, int>::iterator found = site.find(it->first);
             if (found == site.end()) continue;
