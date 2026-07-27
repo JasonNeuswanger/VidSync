@@ -546,3 +546,84 @@ alternative — redistorting the reprojected point and comparing in raw pixels �
 **Not yet implemented, and deliberately so:** the effect is invisible on the only data set with
 ground truth. Validating it needs a synthetic test — the pool test's geometry and known lengths,
 with a fisheye-magnitude distortion imposed on the clicks — before any change is shipped.
+
+## Known-length data on distorted video, and an exact offline triangulation harness
+
+`tools/pooltest/jacweight.py` recomputes every measurement from the raw screen clicks, using the
+homographies, camera positions and distortion parameters stored in the document. It is validated
+two ways: it reproduces the app's cached front-plane projections to 8e-13 over 1840 clicks, and
+its reproduction of the shipped iterative refinement matches the stored 3D coordinates to
+**0.0000 mm on every point**. Any A/B on triangulation can be run through it with confidence.
+
+### More known-length reference data
+
+Beyond the 2012 pool test, two Drift Model documents carry objects whose names give a true
+length, and both are on far more distorted video than the pool test:
+
+| document | lens | type | n | undistortion magnification (mean, max) |
+|---|---|---|---|---|
+| `2015-09-04-1 Clearwater` | 8 mm fisheye | `Length Tests` | 14 | 1.31, 2.92 |
+| `2015-06-22-1 Clearwater` | 13 mm | `Frame Test` | 57 | 1.10, 1.72 |
+| 2012 pool test | — | — | 1010 | 1.03, 1.10 |
+
+`2015-09-04-1 Clearwater Backup pre-VidSync1.8` holds the same 14 measurements under an earlier
+calibration whose right-camera plumbline fit is better (1.12 px against 2.31), which makes it a
+recalibration robustness check rather than independent evidence.
+
+**Units differ between projects.** The pool test works in metres, the Drift Model documents in
+millimetres. This is easy to get wrong in a way that manufactures a result: the pool test's
+stored `cameraMeanPLD` of 0.001 looks vanishingly small next to Clearwater's 3.9 but is 1.0 mm.
+
+### Jacobian weighting of the refinement: real but too small to ship
+
+Weighting each reprojection residual by the inverse undistortion Jacobian, so the objective sits
+in the raw-pixel space where click noise is isotropic:
+
+| data | magnification (max) | current | weighted | wins | sign test |
+|---|---|---|---|---|---|
+| 8 mm, 14 lengths | 2.92 | 2.971 | **2.829** | 10/14 | p = 0.18 |
+| 8 mm, recalibrated | 3.04 | 3.426 | **3.217** | 12/14 | p = 0.013 |
+| 13 mm, 57 lengths | 1.72 | 3.167 | 3.176 | 34/57 | p = 0.19 |
+| pool test, 1010 | 1.10 | 0.990 | 0.989 | 516/1010 | p = 0.51 |
+
+(mean absolute error, mm)
+
+The dose-response is right: the effect appears only where the magnification is large, and the
+pool test is a clean negative control confirming the harness does not manufacture differences.
+But the only clear win is on one 14-measurement set, its apparent replicate is the same clicks,
+and pooled over both field files the gain is 3.128 to 3.107 mm — 0.7%. **Not implemented.** It
+would need either more known-length data on wide lenses or a synthetic test.
+
+### The finding that matters more: the refinement's benefit is not universal
+
+The same runs compared the shipped iterative refinement against plain closest-point-of-approach,
+and the direction reverses between the pool test and the field rigs:
+
+| data | n | linear CPA | iterative (shipped) | |
+|---|---|---|---|---|
+| pool test | 1010 | 1.458 | **0.990** | refinement wins, p = 0.001 |
+| field files pooled | 71 | **2.638** | 3.128 | linear wins, p = 0.032 |
+
+By rms the field gap is wider still, 4.035 against 5.062. This qualifies the earlier conclusion
+recorded above that "the iterative refinement earns its place" — it earns it decisively on the
+pool test and appears to lose on both field documents that can be checked. The refinement is on
+by default.
+
+Camera-centre quality relative to *working distance* does not order the results: the 13 mm file
+has a better centre fit than the 8 mm one (0.23% against 1.52% of median range) and shows the
+same reversal. Relative to *frame separation* it does, which is the more defensible
+normalization anyway, since a sightline's angular error is a node position error divided by the
+separation:
+
+| document | cameraMeanPLD | frame separation | ratio |
+|---|---|---|---|
+| pool test | 0.72 mm | 439 mm | **0.16%** |
+| 2015-06-22-1 Clearwater | 2.32 mm | 200 mm | 1.16% |
+| 2015-09-04-1 Clearwater | 4.68 mm | 196 mm | 2.39% |
+
+The refinement is anchored on a single fitted camera centre, so it should help when that anchor
+is a low-variance constraint and hurt when it is biased. A seven-to-fifteen-fold difference in
+how well the pinhole model holds, relative to the geometry defining the rays, is a plausible
+mechanism. **This is post hoc, fitted to two files on one side and one on the other, and should
+not be acted on until tested.** The honest next step is more known-length data from field rigs
+with the wide separation, or a synthetic experiment with a controlled non-central camera.
