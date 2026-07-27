@@ -99,22 +99,23 @@
 	return [UtilityFunctions CMStringFromTime:self.windowController.videoTrack.asset.duration];
 }
 
+// These all report the clip's displayed size rather than its encoded naturalSize, so that rotated
+// (i.e. vertical phone) video is described the way it actually appears rather than sideways.
+
 - (NSString *) clipResolution
 {
-	CGSize rawClipResolution = self.windowController.videoTrack.naturalSize;
-	return [NSString stringWithFormat:@"%dx%d",(int) rawClipResolution.width,(int) rawClipResolution.height];
+	CGSize clipResolution = self.windowController.movieSize;
+	return [NSString stringWithFormat:@"%dx%d",(int) clipResolution.width,(int) clipResolution.height];
 }
 
 - (double) clipHeight  // pixel height of the video clip
 {
-	CGSize rawClipResolution = self.windowController.videoTrack.naturalSize;
-	return rawClipResolution.height;
+	return self.windowController.movieSize.height;
 }
 
 - (double) clipWidth  // pixel width of the video clip
 {
-	CGSize rawClipResolution = self.windowController.videoTrack.naturalSize;
-	return rawClipResolution.width;
+	return self.windowController.movieSize.width;
 }
 
 - (BOOL) isAtCalibrationTime

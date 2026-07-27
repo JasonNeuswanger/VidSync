@@ -154,7 +154,7 @@
 {
 	//    NSLog(@"in updatePreviewFrameFromPlayerItem, previewMovieLayer's timecode is %@",[UtilityFunctions CMStringFromTime:previewMovieLayer.player.currentTime]);
 	lastPlayerItem = playerItem;
-	CGSize movieSize = [[[playerItem.asset tracksWithMediaType:AVMediaTypeVideo] firstObject] naturalSize];
+	CGSize movieSize = [VideoWindowController displaySizeOfVideoTrack:[[playerItem.asset tracksWithMediaType:AVMediaTypeVideo] firstObject]];
 	float mag = [[[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"previewMagnification"] floatValue];
 	[previewMovieView setFrame:NSMakeRect(0.0,0.0,movieSize.width*mag,movieSize.height*mag)];
 	previewMovieContainer.bounds = NSRectToCGRect([previewMovieView bounds]);

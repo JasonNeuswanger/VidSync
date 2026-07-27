@@ -74,6 +74,8 @@
 @property (assign) NSPoint portraitDragCurrentCoords;
 @property (strong) NSString *shouldShowPortraitFrame;
 
++ (CGSize) displaySizeOfVideoTrack:(AVAssetTrack *)track;	// naturalSize with the track's rotation applied, i.e. the size the video is actually drawn at
+
 - (VideoWindowController *)initWithVideoClip:(VSVideoClip *)inVideoClip inManagedObjectContext:(NSManagedObjectContext *)moc;
 - (void)setUpPlaybackOfAsset:(AVAsset *)asset withKeys:(NSArray *)keys;
 - (AVAsset *) playableAssetForClipName:(NSString *)clipName atPath:(NSString *)filePath;

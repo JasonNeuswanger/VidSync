@@ -1094,75 +1094,116 @@ SeedLattice findSeedLattice(const std::vector<CornerCandidate> &corners,
         const double sharpness = displacementPeaks(corners, subset, fineRadius, kFineHistogramBins,
                                                    kPeakMinFraction, &peaks);
         attempts << " peaks=" << peaks.size();
-        cv::Point2f u, v;
-        if (!selectBasis(peaks, &u, &v)) {
-            attempts << " no basis]";
-            continue;
-        }
-        attempts << " |u|=" << vectorLength(u) << " |v|=" << vectorLength(v);
-
-        // A real two-dimensional lattice also shows peaks at the cell diagonals. A row of
-        // evenly spaced bolts or a grating is periodic in one direction only and has none, so
-        // finding one is enough to rule that out. Requiring both was too strict under strong
-        // fisheye, where the longer diagonal displacement smears across more bins than the
-        // basis vectors do.
+        // Try every plausible pair of histogram peaks, not just the two strongest. In contaminated
+        // frames the diagonals can outvote the true row and column steps, but a lower-ranked peak pair
+        // can still form the correct aligned basis.
+        std::vector<HistogramPeak> sortedPeaks = peaks;
+        std::sort(sortedPeaks.begin(), sortedPeaks.end(), byPeakCountDescending);
+        bool foundCandidateInWindow = false;
         double strongest = 0.0;
-        for (size_t i = 0; i < peaks.size(); i++) if (peaks[i].count > strongest) strongest = peaks[i].count;
-        const double diagonalTolerance = 0.3 * std::min(vectorLength(u), vectorLength(v));
-        const cv::Point2f sum(u.x + v.x, u.y + v.y);
-        const cv::Point2f diff(u.x - v.x, u.y - v.y);
-        int diagonalsInRange = 0;
-        int diagonalsFound = 0;
-        if (vectorLength(sum) < fineRadius) {
-            diagonalsInRange++;
-            if (peakExistsNear(peaks, sum, diagonalTolerance, kDiagonalMinFraction * strongest)) diagonalsFound++;
-        }
-        if (vectorLength(diff) < fineRadius) {
-            diagonalsInRange++;
-            if (peakExistsNear(peaks, diff, diagonalTolerance, kDiagonalMinFraction * strongest)) diagonalsFound++;
-        }
-        if (diagonalsInRange > 0 && diagonalsFound == 0) {
-            attempts << " no diagonals]";
-            continue;
-        }
+        for (size_t i = 0; i < sortedPeaks.size(); i++) if (sortedPeaks[i].count > strongest) strongest = sortedPeaks[i].count;
 
-        // A hint fixes the first basis direction outright: the user has said which way the
-        // grid runs, which beats any automatic choice.
-        if (hint.provided) {
-            const cv::Point2f hinted(hint.to.x - hint.from.x, hint.to.y - hint.from.y);
-            if (vectorLength(hinted) > 1e-3) {
-                const double cross = (double)hinted.x * v.y - (double)hinted.y * v.x;
-                if (std::fabs(cross) / (vectorLength(hinted) * vectorLength(v)) >= kMinSinAngle) u = hinted;
+        for (size_t i = 0; i < sortedPeaks.size(); i++) {
+            for (size_t j = i + 1; j < sortedPeaks.size(); j++) {
+                cv::Point2f u = sortedPeaks[i].displacement;
+                cv::Point2f v = sortedPeaks[j].displacement;
+                const double lenU = vectorLength(u);
+                const double lenV = vectorLength(v);
+                if (lenU < 1e-6 || lenV < 1e-6) continue;
+                const double initialCross = (double)u.x * v.y - (double)u.y * v.x;
+                if (std::fabs(initialCross) / (lenU * lenV) < kMinSinAngle) continue;
+
+                // Lagrange reduction, so the basis describes the smallest cell rather than a sheared
+                // multiple of it. This matches selectBasis(), but is kept inline here because each
+                // peak pair needs to be reduced and scored independently.
+                for (int iteration = 0; iteration < 8; iteration++) {
+                    bool changed = false;
+                    if (vectorLength(cv::Point2f(v.x - u.x, v.y - u.y)) < vectorLength(v)) {
+                        v = cv::Point2f(v.x - u.x, v.y - u.y);
+                        changed = true;
+                    } else if (vectorLength(cv::Point2f(v.x + u.x, v.y + u.y)) < vectorLength(v)) {
+                        v = cv::Point2f(v.x + u.x, v.y + u.y);
+                        changed = true;
+                    }
+                    if (vectorLength(v) < vectorLength(u)) std::swap(u, v);
+                    if (!changed) break;
+                }
+
+                const double a = vectorLength(u);
+                const double b = vectorLength(v);
+                if (a < 1e-6 || b < 1e-6) continue;
+                if (b / a > kBasisLengthRatioMax) continue;
+                const double cross = (double)u.x * v.y - (double)u.y * v.x;
+                if (std::fabs(cross) / (a * b) < kMinSinAngle) continue;
+
+                if (u.x < 0.0f || (std::fabs(u.x) < 1e-6 && u.y < 0.0f)) u = cv::Point2f(-u.x, -u.y);
+                if ((double)u.x * v.y - (double)u.y * v.x < 0.0) v = cv::Point2f(-v.x, -v.y);
+
+                // A real two-dimensional lattice also shows peaks at the cell diagonals. A row of
+                // evenly spaced bolts or a grating is periodic in one direction only and has none, so
+                // finding one is enough to rule that out. Requiring both was too strict under strong
+                // fisheye, where the longer diagonal displacement smears across more bins than the
+                // basis vectors do.
+                const double diagonalTolerance = 0.3 * std::min(vectorLength(u), vectorLength(v));
+                const cv::Point2f sum(u.x + v.x, u.y + v.y);
+                const cv::Point2f diff(u.x - v.x, u.y - v.y);
+                int diagonalsInRange = 0;
+                int diagonalsFound = 0;
+                if (vectorLength(sum) < fineRadius) {
+                    diagonalsInRange++;
+                    if (peakExistsNear(sortedPeaks, sum, diagonalTolerance, kDiagonalMinFraction * strongest)) diagonalsFound++;
+                }
+                if (vectorLength(diff) < fineRadius) {
+                    diagonalsInRange++;
+                    if (peakExistsNear(sortedPeaks, diff, diagonalTolerance, kDiagonalMinFraction * strongest)) diagonalsFound++;
+                }
+                if (diagonalsInRange > 0 && diagonalsFound == 0) continue;
+
+                // A hint fixes the first basis direction outright: the user has said which way the
+                // grid runs, which beats any automatic choice.
+                if (hint.provided) {
+                    const cv::Point2f hinted(hint.to.x - hint.from.x, hint.to.y - hint.from.y);
+                    if (vectorLength(hinted) > 1e-3) {
+                        const double hintCross = (double)hinted.x * v.y - (double)hinted.y * v.x;
+                        if (std::fabs(hintCross) / (vectorLength(hinted) * vectorLength(v)) >= kMinSinAngle) u = hinted;
+                    }
+                }
+
+                const SeedPatch patch = labelSeedPatch(corners, subset, u, v);
+                const double misalignment = basisMisalignmentDegrees(u, v);
+                const bool aligned = (misalignment <= kMaxBasisMisalignmentDegrees);
+                foundCandidateInWindow = true;
+                if (patch.conflict) {
+                    sawConflict = true;
+                    continue;
+                }
+
+                // Alignment outranks patch size. Comparing on patch size alone let a single window
+                // that had locked onto the grid diagonals beat two windows that agreed with each other
+                // on the true basis, purely by growing a larger patch from it -- 16 corners against 7.
+                // Every row and column downstream then ran diagonally across the board. A window whose
+                // basis is diagonal is not a better reading of the same grid; it is a reading of a
+                // different grid, so no patch grown from it should be allowed to win.
+                if (!haveBasis || (aligned && !bestAligned) ||
+                    (aligned == bestAligned && patch.cornerIndex.size() > bestPatch.cornerIndex.size())) {
+                    bestPatch = patch;
+                    bestU = u;
+                    bestV = v;
+                    bestSide = side;
+                    bestStep = step;
+                    bestSharpness = sharpness;
+                    bestAligned = aligned;
+                    bestMisalignment = misalignment;
+                    haveBasis = true;
+                }
             }
         }
 
-        const SeedPatch patch = labelSeedPatch(corners, subset, u, v);
-        const double misalignment = basisMisalignmentDegrees(u, v);
-        const bool aligned = (misalignment <= kMaxBasisMisalignmentDegrees);
-        attempts << " off-axis=" << misalignment << "deg patch=" << patch.cornerIndex.size()
-                 << (patch.conflict ? " CONFLICT]" : "]");
-        if (patch.conflict) {
-            sawConflict = true;
-            continue;
-        }
-
-        // Alignment outranks patch size. Comparing on patch size alone let a single window
-        // that had locked onto the grid diagonals beat two windows that agreed with each other
-        // on the true basis, purely by growing a larger patch from it -- 16 corners against 7.
-        // Every row and column downstream then ran diagonally across the board. A window whose
-        // basis is diagonal is not a better reading of the same grid; it is a reading of a
-        // different grid, so no patch grown from it should be allowed to win.
-        if (!haveBasis || (aligned && !bestAligned) ||
-            (aligned == bestAligned && patch.cornerIndex.size() > bestPatch.cornerIndex.size())) {
-            bestPatch = patch;
-            bestU = u;
-            bestV = v;
-            bestSide = side;
-            bestStep = step;
-            bestSharpness = sharpness;
-            bestAligned = aligned;
-            bestMisalignment = misalignment;
-            haveBasis = true;
+        if (!foundCandidateInWindow) {
+            attempts << " no basis]";
+        } else {
+            attempts << " best |u|=" << vectorLength(bestU) << " |v|=" << vectorLength(bestV)
+                     << " off-axis=" << bestMisalignment << "deg patch=" << bestPatch.cornerIndex.size() << "]";
         }
         // Only stop early on a patch that is both big enough and aligned; otherwise a large
         // diagonal patch found first would end the search before an aligned window is tried.
@@ -1197,6 +1238,18 @@ SeedLattice findSeedLattice(const std::vector<CornerCandidate> &corners,
         message << "Basis found (|u| = " << vectorLength(bestU) << " px, |v| = " << vectorLength(bestV)
                 << " px) but only " << bestPatch.cornerIndex.size() << " corners form a connected "
                 << "lattice, so the basis is probably wrong. Tried:" << attempts.str();
+        seed.status = message.str();
+        return seed;
+    }
+
+    if (!hint.provided && !bestAligned) {
+        std::ostringstream message;
+        message.setf(std::ios::fixed);
+        message.precision(1);
+        message << "Best automatic basis runs " << bestMisalignment << " deg off the image axes, "
+                << "which is probably the chessboard diagonals rather than its rows and columns. "
+                << "Draw a two-point seed line along one true grid step and run detection again. Tried:"
+                << attempts.str();
         seed.status = message.str();
         return seed;
     }

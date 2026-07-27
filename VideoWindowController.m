@@ -25,6 +25,10 @@
 
 #import "VideoWindowController.h"
 
+// Height of the strip of sync controls above the video at the top of the window's content area,
+// matching the gap between the content view and the AVPlayerView in VideoClipWindow.xib.
+static const CGFloat VSVideoControlStripHeight = 26.0f;
+
 
 @implementation VideoWindowController
 
@@ -109,6 +113,16 @@
 	return nil;
 }
 
++ (CGSize) displaySizeOfVideoTrack:(AVAssetTrack *)track
+{
+	// A track's naturalSize is its encoded frame size, which ignores the rotation flag phones set on
+	// vertical video; a portrait iPhone clip is stored as 1920x1080 with a 90-degree preferredTransform.
+	// AVPlayerView honors that transform when it draws, so anything that has to line up with what's on
+	// screen (window sizing, the measurement overlay, exported frames) needs the transformed size.
+	CGSize rotatedSize = CGSizeApplyAffineTransform(track.naturalSize, track.preferredTransform);
+	return CGSizeMake(fabs(rotatedSize.width), fabs(rotatedSize.height));
+}
+
 - (void)setUpPlaybackOfAsset:(AVAsset *)asset withKeys:(NSArray *)keys // modified from Apple's AVSimplePlayer example
 {
 	// This method is called when the AVAsset for our URL has completing the loading of the values of the specified array of keys.
@@ -117,6 +131,7 @@
 	assetImageGenerator = [AVAssetImageGenerator assetImageGeneratorWithAsset:asset];  // first, initializing the asset image generator quickly for screenshots etc later
 	assetImageGenerator.requestedTimeToleranceBefore = kCMTimeZero;
 	assetImageGenerator.requestedTimeToleranceAfter = kCMTimeZero;
+	assetImageGenerator.appliesPreferredTrackTransform = YES;  // otherwise frames grabbed from rotated (i.e. vertical phone) video come out sideways, unlike what AVPlayerView shows
 	videoTrack = [[asset tracksWithMediaType:AVMediaTypeVideo] firstObject];
 	videoAsset = asset;
 	playerItem = [AVPlayerItem playerItemWithAsset:asset];
@@ -125,7 +140,7 @@
 	
 	playerLayer = [AVPlayerLayer playerLayerWithPlayer:playerView.player];
 	
-	movieSize = videoTrack.naturalSize;
+	movieSize = [VideoWindowController displaySizeOfVideoTrack:videoTrack];
 	if (self.videoClip.windowFrame == nil) [self resizeVideoToFactor:1.0];  // Load new videos at full size
 	
 	[self fitVideoOverlay];
@@ -817,12 +832,22 @@
 
 - (void) resizeVideoToFactor:(float)sizeFactor
 {
-	NSSize newSize = NSMakeSize(sizeFactor*movieSize.width,sizeFactor*movieSize.height+26);
-	NSSize minSize = [[self window] minSize];
-	if (newSize.width < minSize.width) newSize.width = minSize.width;
-	if (newSize.height < minSize.height) newSize.height = minSize.height;
-	[[self window] setContentSize:newSize];
-	[self refreshOverlay];
+	if (movieSize.width <= 0.0f || movieSize.height <= 0.0f) return;	// no video loaded yet
+
+	// The requested size is deliberately not clamped to the screen. These presets exist to put the video
+	// at a known scale for digitizing, so 100% has to keep meaning one video pixel per point even when
+	// that runs a tall vertical clip off the bottom of a small display.
+	NSWindow *window = [self window];
+	NSSize videoSize = NSMakeSize(sizeFactor*movieSize.width,sizeFactor*movieSize.height);
+
+	// The strip of controls above the video sets a floor on the window's width, below which the video
+	// just gets pillarboxed inside the window; fitVideoOverlay keeps it at the right scale either way.
+	// minSize is a frame size, so it has to be converted before being compared to a content size.
+	NSSize minContentSize = [window contentRectForFrameRect:NSMakeRect(0.0f,0.0f,window.minSize.width,window.minSize.height)].size;
+	NSSize newContentSize = NSMakeSize(MAX(videoSize.width,minContentSize.width),
+									   MAX(videoSize.height + VSVideoControlStripHeight,minContentSize.height));
+	[window setContentSize:newContentSize];
+	[self fitVideoOverlay];		// setContentSize: doesn't notify the delegate when the size is unchanged, so don't rely on windowDidResize: for this
 }
 
 #pragma mark
