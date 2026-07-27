@@ -240,6 +240,49 @@ Calibration B, taken 0.3 m farther out, giving 1.4% error at long range where Ca
 widening the camera baseline all attack it. Nothing in the reconstruction mathematics, given
 these inputs, appears to.
 
+### The camera centre is doing real work, and removing it costs the whole gain
+
+The proposal was to reformulate the iterative refinement so it does not need a camera position:
+for a candidate 3D point, find the screen point whose two-plane sightline passes through it, by
+fixing the depth parameter t and solving `(1-t)Hf(s) + t Hb(s) = (Px,Pz)` for s. The motive was
+that a single perspective centre is wrong whenever light bends before reaching the camera —
+through an aquarium wall, or an off-centre dome port — which is exactly the case VidSync's
+two-plane method is otherwise built to handle.
+
+Implemented and run over all 1010 measurements against the two existing methods:
+
+| triangulation | mean abs. error | bias | sd |
+|---|---|---|---|
+| linear CPA | 1.368 mm | +1.127 | 5.18 |
+| iterative, via camera centre (as shipped) | **1.036 mm** | +0.925 | 1.97 |
+| iterative, camera-free | 1.372 mm | +1.127 | 5.16 |
+
+The camera-free version lands back on the linear CPA and throws away the entire benefit of
+refining. The inner Newton solve is not at fault: it converged on all 4040 calls, and at the CPA
+seed its screen residual is a median 0.48 px against the camera-centre method's 1.83 px. That
+gap is the explanation. The camera-free objective is nearly satisfied wherever the CPA already
+is, because a screen-space residual measured along a sightline is close to the point-to-line
+distance that CPA minimizes, so there is almost nothing for it to move.
+
+The camera centre is not a convenience standing in for the true ray geometry. It is estimated
+from all twenty back-node sightlines at once, and using it replaces a per-point ray direction —
+derived from two homographies evaluated at a single noisy screen location — with a low-variance
+global anchor. That variance reduction is the 24% gain. Removing the centre removes the
+constraint that was providing it.
+
+So the reformulation as proposed is dead. What survives is the question it raises: if the value
+lies in an aggregate constraint rather than in centrality, a per-camera ray model that is
+aggregate but *not* required to pass through one point would keep the variance reduction while
+remaining valid under refraction. Through a flat wall or a dome port the ray bundle is not
+central, but it is smooth and low-dimensional, so a regularized ray field fitted to all the
+calibration sightlines is the natural successor. That is research rather than a fix, and it is
+untested.
+
+Note also that the pinhole assumption is already measurably imperfect here, with no aquarium
+wall involved: the back-node sightlines miss their own fitted centre by a median of 0.65 and
+0.83 mm for the two cameras, and up to 1.70 mm, against measurement errors of about 1 mm. Some
+of that is calibration noise rather than genuine non-central geometry.
+
 ### How to use it
 
 Judge any change on bias and standard deviation per object, split by `ZNEARESTCAMERADISTANCE`
