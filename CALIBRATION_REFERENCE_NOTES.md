@@ -798,3 +798,67 @@ so sightlines are extrapolated well beyond the calibrated volume. With n = 14 th
 but it is the third time in this project that a better calibration residual has accompanied worse
 measurements. Fitting distortion to all available plumbline sets at once looks safer than fitting
 to any single one.
+
+### Radial-leverage confound tested and refuted; the penalty's shape now points at refraction
+
+A symmetric transfer penalty proves only that the model is **misspecified**. If Brown-Conrady could
+represent the true map exactly, both fits would recover the same parameters up to gauge and neither
+would lose on the other's data. Given misspecification, two differently-weighted samples settle at
+different compromises and each looks worse under the other's weighting -- no range dependence
+required. Since the far set has more lines (47 against 33) and a fisheye compresses the extra board
+area toward the frame edge, differential radial leverage was the leading alternative explanation.
+
+**It is not what happened.** The two sets' radial distributions are proportionally almost identical:
+
+| radius band | near, share | far, share | ratio |
+|---|---|---|---|
+| 0-300 | 6.8% | 5.9% | 0.87 |
+| 300-500 | 14.2% | 14.1% | 0.99 |
+| 500-700 | 22.8% | 24.1% | 1.06 |
+| 700-900 | 35.0% | 35.0% | 1.00 |
+| 900-1100 | 21.1% | 20.9% | 0.99 |
+
+The far set has uniformly more points (640 against 351), not points redistributed outward. Because
+the objective is an unweighted sum over points, matched proportions mean matched effective radial
+weighting, so differential leverage cannot be the mechanism.
+
+**And the penalty has the right shape for refraction.** Broken down by radius, the excess of the
+foreign fit over the own fit, in both directions:
+
+| radius band | near lines | far lines |
+|---|---|---|
+| 0-300 | 0.347 | 0.000 |
+| 300-500 | 0.578 | 0.139 |
+| 500-700 | 0.000 | 0.212 |
+| 700-900 | 0.334 | 0.576 |
+| 900-1100 | **0.728** | **0.692** |
+
+Noisy in the inner bands, but the two outermost bands show a large penalty in *both* directions and
+the trend is upward. A refractive term scales as sin(theta) and is radial, so it should grow toward
+the edge and be symmetric -- which is what this is.
+
+Also confirmed from the same table: own-fit residuals grow from 0.42-0.44 px at the centre to
+0.89-1.13 px at the edge, against a corner-noise floor of 0.15-0.20 px. The edge residual is
+therefore model misspecification, not noise, and because the objective is an unweighted sum of
+squares **the fit is dominated by the frame edge**, where it fits worst. That is a design
+consequence worth knowing, though inverse-variance weighting would amount to down-weighting the
+model's own failure and is not obviously an improvement.
+
+### The decisive control, and it needs no new footage
+
+With coverage and radial sampling both excluded, the surviving alternatives are board pose and board
+non-flatness presenting differently at the two distances. The control that removes both:
+
+**Split one set's lines into two disjoint halves, fit each in VidSync, and cross-evaluate.** The far
+set's 47 lines split 23/24 gives roughly 320 points per half, closely matching the near set's 351.
+Same range, same frame, same pose, same flatness, same lighting, same detection pass -- only the
+line subset differs, and it differs *less* than near-versus-far does. This measures the null
+distribution of the transfer penalty directly.
+
+- Penalty near 0.45 px -> the effect is subset-to-subset disagreement in a misspecified model, and
+  distance dependence is bounded below it. The recommendation becomes "fit to all lines available."
+- Penalty much smaller, say under 0.15 px -> the near-versus-far 0.45 px is attributable to
+  distance, and this rig has a measured refraction budget of about 0.9 mm rms in its working range.
+
+Two extra solves in an already-open document, and it settles a question three rounds of analysis
+have not.
