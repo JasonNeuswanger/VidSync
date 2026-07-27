@@ -133,9 +133,19 @@ alone. Note the event index is `ZINDEX` on the event row, not `ZINDEX1`.
 **Everything since 2016 is a small net gain.** Comparing the published coordinates against the
 current document, per-point positions moved by a median of 0.26 mm, and mean absolute length
 error went from 1.03 mm to 0.99 mm over all 1010 measurements — better on the four harder
-objects, unchanged on the two easy ones. Worth knowing for its own sake, and worth noting that
-a substantially better distortion correction bought only 4%: the remaining error is not
-dominated by the distortion model.
+objects, unchanged on the two easy ones.
+
+Do not read that 4% as evidence that distortion correction matters little in general. It is
+specific to this file, and for two reasons: the 2012 pool test was shot on a camera with only
+mild radial distortion, and its chessboard was already digitized cleanly by the old detector, so
+there was little on the table either way. The 2015–2016 field videos were shot on far wider
+lenses with much more distortion, and it is there that the detector work pays.
+
+The useful consequence is the opposite of what the number first suggests. Because distortion is
+nearly a non-factor here, this file isolates the *geometry* — the homographies, the two-plane
+sightline construction, the triangulation and the calibration frame itself. It is the right
+platform for testing geometric ideas precisely because the distortion term is close to
+controlled.
 
 **The iterative reprojection refinement earns its place.** Recomputing every measurement as the
 plain closest point of approach of the two sightlines, and comparing against the stored
@@ -151,6 +161,41 @@ longest target is 15.3 mm against 3.6. This confirms on real data what the paper
 means the refinement step is load-bearing rather than cosmetic. Anything that makes it valid in
 cases it currently is not, such as filming through an aquarium wall, is improving a step that
 demonstrably matters.
+
+### The bias is driven by range, not by target length
+
+Table 1 of the paper shows absolute error growing with target length, and the Discussion
+attributes it to a warped reconstructed space in which a longer object accumulates
+proportionally more error. Measured against range, that reading does not survive.
+
+Correlation of the scale error (measured ÷ true − 1) with camera distance is **+0.618**; with
+true target length it is **+0.084**. The apparent length effect is confounding: the longer
+targets did not fit in frame close up, so they were filmed farther away. Holding length exactly
+constant by using only the 688 measurements of the 50.8 mm target:
+
+| mean camera distance | n | scale error |
+|---|---|---|
+| under 500 mm | 183 | **+0.006%** |
+| 500–700 mm | 241 | +0.282% |
+| 700–900 mm | 80 | +0.203% |
+| 900–1200 mm | 30 | +0.192% |
+| 1200–1600 mm | 45 | +0.717% |
+| over 1600 mm | 109 | **+1.586%** |
+
+Conversely, holding distance to a 400–900 mm band, the scale error across the four length
+classes is 0.24%, 0.17%, 0.32% and 0.10% — no trend.
+
+Inside the calibrated depth range the measurements are essentially unbiased; the bias appears
+and grows as the target moves beyond the frame. That signature — error growing with range
+rather than with size — is what an angular error in the lines of sight produces. A small
+position error at each calibration plane, divided by the 0.439 m separation between them, is an
+angular error in the sightline, and its effect on a triangulated point grows with distance. It
+is not what a scale error in the reconstructed space would produce, which would be a constant
+proportional error at every range.
+
+This points at the accuracy of the two homographies, and at their consistency with each other,
+as the dominant remaining error source in this file — not at the distortion model, and not at
+the triangulation search.
 
 ### How to use it
 
