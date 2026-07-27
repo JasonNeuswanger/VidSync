@@ -1434,17 +1434,6 @@ GrownLattice growLattice(const std::vector<CornerCandidate> &corners,
     return grown;
 }
 
-namespace {
-
-// How many lattice cells a run may bridge in one step before it is split in two. A step of 1
-// is two adjacent corners; anything up to this leaves at most three consecutive corners
-// missing, which the surrounding corners on both sides still vouch for. Measured on real
-// frames, ordinary holes from a missed corner or two span 2 to 4 cells and are worth keeping,
-// while the joins that turned out to be untrustworthy spanned 8, 10 and 21.
-const int kMaxBridgedCells = 4;
-
-}   // anonymous namespace
-
 std::vector<Plumbline> extractPlumblines(const std::vector<CornerCandidate> &corners,
                                          const GrownLattice &lattice,
                                          int minPoints)
@@ -1452,14 +1441,8 @@ std::vector<Plumbline> extractPlumblines(const std::vector<CornerCandidate> &cor
     std::vector<Plumbline> lines;
     if (!lattice.valid) return lines;
 
-    // Rows share a j and vary in i; columns the other way. A short hole is not a break, since
-    // the corners either side of it still lie on the same straight world line -- but only if
-    // they really are the same line. Across a long hole the lattice indices on the far side
-    // were established by growing around the hole through neighbouring lines, never through
-    // it, so nothing has verified that the two fragments share a row. One slip in that
-    // detour and the fragments belong to different rows, and the fit is then handed a line
-    // that is genuinely bent and asked to straighten it. Real frames from an 8 mm fisheye
-    // produced joins spanning up to 21 cells and 929 px, arcing right across the frame.
+    // Rows share a j and vary in i; columns the other way. A missing site is not a break,
+    // since the corners either side of it still lie on the same straight world line.
     for (int pass = 0; pass < 2; pass++) {
         const bool isRow = (pass == 0);
         const int from = isRow ? lattice.minJ : lattice.minI;
@@ -1477,22 +1460,11 @@ std::vector<Plumbline> extractPlumblines(const std::vector<CornerCandidate> &cor
             }
             if ((int)along.size() < minPoints) continue;
             std::sort(along.begin(), along.end());
-            // Split into fragments wherever the hole is too long to vouch for, then emit each
-            // fragment that still has enough corners to be worth fitting.
-            size_t start = 0;
-            for (size_t k = 0; k <= along.size(); k++) {
-                const bool breakHere = (k == along.size()) ||
-                                       (k > 0 && along[k].first - along[k - 1].first > kMaxBridgedCells);
-                if (!breakHere) continue;
-                if ((int)(k - start) >= minPoints) {
-                    Plumbline line;
-                    line.isRow = isRow;
-                    line.index = fixed;
-                    for (size_t m = start; m < k; m++) line.points.push_back(corners[along[m].second].position);
-                    lines.push_back(line);
-                }
-                start = k;
-            }
+            Plumbline line;
+            line.isRow = isRow;
+            line.index = fixed;
+            for (size_t k = 0; k < along.size(); k++) line.points.push_back(corners[along[k].second].position);
+            lines.push_back(line);
         }
     }
     return lines;
@@ -1540,24 +1512,6 @@ const double kRecoverySearchFraction = 0.06;
 // the robust scale, and a single corner displaced a few pixels along a line 1500 px long is
 // partly absorbed by the fit. Leaving the corner out of its own estimate makes the test local
 // and removes the model error at once.
-// Fetches the corner at a lattice index along the line, or reports it missing.
-bool cornerAlongLine(const std::map<int, int> &alongLine, const std::vector<CornerCandidate> &corners,
-                     int index, cv::Point2f *out)
-{
-    std::map<int, int>::const_iterator it = alongLine.find(index);
-    if (it == alongLine.end()) return false;
-    *out = corners[it->second].position;
-    return true;
-}
-
-// Puts a one-sided estimate's deviation on the same footing as a centered one, so both kinds
-// can share a single robust scale and threshold. With independent per-corner noise of standard
-// deviation s, the centered residual has standard deviation sqrt(1 + 34/36) = 1.394 s, while
-// the three-point one-sided residual has sqrt(1 + 19) = 4.472 s. One-sided deviations are
-// divided by the ratio so that a corner which is merely noisy reads the same either way, and
-// only a corner that is genuinely displaced stands out.
-const double kOneSidedDeviationScale = 1.394 / 4.472;
-
 bool leaveOneOutDeviations(const std::map<int, int> &alongLine,
                            const std::vector<CornerCandidate> &corners,
                            std::map<int, double> *deviations)
@@ -1565,50 +1519,25 @@ bool leaveOneOutDeviations(const std::map<int, int> &alongLine,
     deviations->clear();
     for (std::map<int, int>::const_iterator it = alongLine.begin(); it != alongLine.end(); ++it) {
         const int k = it->first;
-        cv::Point2f m3, m2, m1, p1, p2, p3;
-        const bool haveM1 = cornerAlongLine(alongLine, corners, k - 1, &m1);
-        const bool haveM2 = cornerAlongLine(alongLine, corners, k - 2, &m2);
-        const bool haveM3 = cornerAlongLine(alongLine, corners, k - 3, &m3);
-        const bool haveP1 = cornerAlongLine(alongLine, corners, k + 1, &p1);
-        const bool haveP2 = cornerAlongLine(alongLine, corners, k + 2, &p2);
-        const bool haveP3 = cornerAlongLine(alongLine, corners, k + 3, &p3);
+        // The stencil needs both neighbours on each side to be present at consecutive lattice
+        // indices; across a hole the spacing is unequal and the formula does not hold.
+        std::map<int, int>::const_iterator m2 = alongLine.find(k - 2);
+        std::map<int, int>::const_iterator m1 = alongLine.find(k - 1);
+        std::map<int, int>::const_iterator p1 = alongLine.find(k + 1);
+        std::map<int, int>::const_iterator p2 = alongLine.find(k + 2);
+        if (m2 == alongLine.end() || m1 == alongLine.end() ||
+            p1 == alongLine.end() || p2 == alongLine.end()) continue;
 
-        cv::Point2f estimate;
-        double spacing = 0.0;
-        double scale = 1.0;
-        if (haveM2 && haveM1 && haveP1 && haveP2) {
-            // Centered and preferred: exact for any cubic, so unbiased however strongly the
-            // line curves. Neighbours must sit at consecutive lattice indices, since across a
-            // hole the spacing is unequal and the formula does not hold.
-            estimate = cv::Point2f((-m2.x + 4.0f * m1.x + 4.0f * p1.x - p2.x) / 6.0f,
-                                   (-m2.y + 4.0f * m1.y + 4.0f * p1.y - p2.y) / 6.0f);
-            spacing = 0.5 * vectorLength(cv::Point2f(p1.x - m1.x, p1.y - m1.y));
-        } else if (haveP1 && haveP2 && haveP3) {
-            // Nothing on the left, so extrapolate backwards from the three corners on the
-            // right. Without this the first two and last two corners of every run went
-            // unchecked, which is precisely where a run walks off onto a neighbouring line:
-            // the ends are where the lattice was extended with support on one side only, so
-            // where a mispredicted site had nothing to contradict it. Real frames showed runs
-            // whose last two corners belonged to two different neighbouring lines, deviating
-            // by 0.42 and 0.92 of a cell where a good corner deviates by under 0.016.
-            estimate = cv::Point2f(3.0f * p1.x - 3.0f * p2.x + p3.x,
-                                   3.0f * p1.y - 3.0f * p2.y + p3.y);
-            spacing = vectorLength(cv::Point2f(p2.x - p1.x, p2.y - p1.y));
-            scale = kOneSidedDeviationScale;
-        } else if (haveM1 && haveM2 && haveM3) {
-            estimate = cv::Point2f(3.0f * m1.x - 3.0f * m2.x + m3.x,
-                                   3.0f * m1.y - 3.0f * m2.y + m3.y);
-            spacing = vectorLength(cv::Point2f(m2.x - m1.x, m2.y - m1.y));
-            scale = kOneSidedDeviationScale;
-        } else {
-            continue;   // fewer than three consecutive neighbours on either side; nothing to compare against
-        }
-        // Only three neighbours are used, never two: a two-point linear extrapolation carries
-        // the line's curvature as systematic error, which on a fisheye near the frame edge is
-        // the same size as the displacement being looked for.
-        if (spacing < 1e-6) continue;
+        const cv::Point2f &a = corners[m2->second].position;
+        const cv::Point2f &b = corners[m1->second].position;
+        const cv::Point2f &c = corners[p1->second].position;
+        const cv::Point2f &d = corners[p2->second].position;
+        const cv::Point2f estimate((-a.x + 4.0f * b.x + 4.0f * c.x - d.x) / 6.0f,
+                                   (-a.y + 4.0f * b.y + 4.0f * c.y - d.y) / 6.0f);
         const cv::Point2f &actual = corners[it->second].position;
-        (*deviations)[k] = scale * vectorLength(cv::Point2f(actual.x - estimate.x, actual.y - estimate.y)) / spacing;
+        const double spacing = 0.5 * vectorLength(cv::Point2f(c.x - b.x, c.y - b.y));
+        if (spacing < 1e-6) continue;
+        (*deviations)[k] = vectorLength(cv::Point2f(actual.x - estimate.x, actual.y - estimate.y)) / spacing;
     }
     return !deviations->empty();
 }
@@ -1844,24 +1773,13 @@ std::vector<std::vector<cv::Point2f> > extractDiagonalRuns(const std::vector<Cor
         const int fromConstant = (family == 0) ? lattice.minI - lattice.maxJ : lattice.minI + lattice.minJ;
         const int toConstant = (family == 0) ? lattice.maxI - lattice.minJ : lattice.maxI + lattice.maxJ;
         for (int constant = fromConstant; constant <= toConstant; constant++) {
-            // Split on long holes for the same reason extractPlumblines does: a diagonal
-            // bridging a hole the lattice only ever grew around is not vouched for, and a
-            // hold-out check is worthless if the held-out constraint is itself wrong.
             std::vector<cv::Point2f> run;
-            int lastI = 0;
-            bool haveLast = false;
             for (int i = lattice.minI; i <= lattice.maxI; i++) {
                 const int j = (family == 0) ? (i - constant) : (constant - i);
                 if (j < lattice.minJ || j > lattice.maxJ) continue;
                 std::map<long long, int>::const_iterator it = site.find(siteKey(i, j));
                 if (it == site.end()) continue;
-                if (haveLast && i - lastI > kMaxBridgedCells) {
-                    if ((int)run.size() >= minPoints) runs.push_back(run);
-                    run.clear();
-                }
                 run.push_back(corners[it->second].position);
-                lastI = i;
-                haveLast = true;
             }
             (void)step;
             if ((int)run.size() >= minPoints) runs.push_back(run);
