@@ -1808,6 +1808,11 @@ int refractionRootFunc_f(const gsl_vector* x, void* params, gsl_vector* f)
 // floor is a little above the legacy method's.
 static const int kMinPlumblinePoints = 6;
 
+// A single accidental run of points can satisfy the per-line minimum without providing a
+// calibration. Real chessboard detections should produce several rows and columns; below this,
+// the safest outcome is to leave the file unchanged and show the diagnostic overlay.
+static const size_t kMinAutodetectedPlumblines = 8;
+
 - (void) autodetectChessboardPlumblinesLattice
 {
 	// Stage A only so far: detect the corners and show them. Lattice basis estimation and grid
@@ -1816,6 +1821,30 @@ static const int kMinPlumblinePoints = 6;
 
 	// Make sure the user can see the detected points rather than wondering whether anything happened.
 	[[[NSUserDefaultsController sharedUserDefaultsController] values] setValue:[NSNumber numberWithBool:TRUE] forKey:@"showDistortionOverlay"];
+
+	NSWindow *progressParentWindow = self.videoClip.windowController.window ?: [NSApp mainWindow];
+	NSWindow *progressWindow = [[NSWindow alloc] initWithContentRect:NSMakeRect(0.0, 0.0, 320.0, 108.0)
+														  styleMask:NSWindowStyleMaskTitled
+															backing:NSBackingStoreBuffered
+															  defer:NO];
+	[progressWindow setTitle:@"Detecting Plumblines"];
+	NSView *progressContentView = [progressWindow contentView];
+	NSTextField *progressLabel = [NSTextField labelWithString:@"Detecting chessboard plumblines..."];
+	[progressLabel setFrame:NSMakeRect(24.0, 62.0, 272.0, 20.0)];
+	[progressContentView addSubview:progressLabel];
+	NSProgressIndicator *progressIndicator = [[NSProgressIndicator alloc] initWithFrame:NSMakeRect(144.0, 24.0, 32.0, 32.0)];
+	[progressIndicator setStyle:NSProgressIndicatorSpinningStyle];
+	[progressIndicator setIndeterminate:YES];
+	[progressIndicator startAnimation:nil];
+	[progressContentView addSubview:progressIndicator];
+	if (progressParentWindow != nil) {
+		[progressParentWindow beginSheet:progressWindow completionHandler:nil];
+	} else {
+		[progressWindow center];
+		[progressWindow makeKeyAndOrderFront:nil];
+	}
+	[progressWindow display];
+	[[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode beforeDate:[NSDate dateWithTimeIntervalSinceNow:0.05]];
 
 	CGImageRef videoFrameCG = [self.videoClip.project.document stillCGImageFromVSVideoClip:self.videoClip atMasterTime:[self.videoClip.project.document currentMasterTime] showOverlay:FALSE];
 	// Do NOT release videoFrameCG; see the ownership note in autodetectChessboardPlumblinesLegacy.
@@ -1854,6 +1883,8 @@ static const int kMinPlumblinePoints = 6;
 	vidsync::GrownLattice lattice;
 	vidsync::RefinementResult refinement;
 	std::vector<vidsync::Plumbline> plumblines;
+	size_t rawPlumblineCount = 0;
+	size_t rawPlumblinePointCount = 0;
 	if (seed.valid) {
 		lattice = vidsync::growLattice(detection.corners, seed, cv::Size(gray.cols, gray.rows));
 		if (lattice.valid) {
@@ -1862,8 +1893,26 @@ static const int kMinPlumblinePoints = 6;
 			refinement = vidsync::refineLattice(detection.corners, lattice, gray);
 			lattice = refinement.lattice;
 			plumblines = vidsync::extractPlumblines(detection.corners, lattice, kMinPlumblinePoints);
+			rawPlumblineCount = plumblines.size();
+			for (size_t i = 0; i < plumblines.size(); i++) rawPlumblinePointCount += plumblines[i].points.size();
+			if (plumblines.size() < kMinAutodetectedPlumblines) plumblines.clear();
 		}
 	}
+
+	NSLog(@"Autodetected chessboard plumblines for %@ at %@: frame=%dx%d corners=%lu seed=%d lattice=%d rawLines=%lu rawLinePoints=%lu savedLines=%lu. Seed: %@ Growth: %@ Refinement: %@",
+		  self.videoClip.clipName,
+		  [self.videoClip.project.document currentMasterTimeString],
+		  gray.cols,
+		  gray.rows,
+		  (unsigned long)detection.corners.size(),
+		  seed.valid ? 1 : 0,
+		  lattice.valid ? 1 : 0,
+		  (unsigned long)rawPlumblineCount,
+		  (unsigned long)rawPlumblinePointCount,
+		  (unsigned long)plumblines.size(),
+		  [NSString stringWithUTF8String:seed.status.c_str()],
+		  lattice.valid ? [NSString stringWithUTF8String:lattice.status.c_str()] : @"Grid growth did not run.",
+		  refinement.passes > 0 ? [NSString stringWithUTF8String:refinement.status.c_str()] : @"Refinement did not run.");
 
 	// Show whatever we got furthest with, so a failure always leaves something to diagnose from.
 	// OpenCV puts the origin at the top left; VidSync puts it at the bottom left.
@@ -1892,15 +1941,13 @@ static const int kMinPlumblinePoints = 6;
 		[[self managedObjectContext] deleteObject:[self.distortionLines anyObject]];
 	}
 
-	NSUInteger pointsCreated = 0;
 	for (size_t i = 0; i < plumblines.size(); i++) {
 		std::vector<cv::Point2f> flipped;
 		flipped.reserve(plumblines[i].points.size());
 		for (size_t k = 0; k < plumblines[i].points.size(); k++) {
 			flipped.push_back(cv::Point2f(plumblines[i].points[k].x,
-										  (float)clipHeight - plumblines[i].points[k].y));
+								(float)clipHeight - plumblines[i].points[k].y));
 		}
-		pointsCreated += flipped.size();
 		[self.videoClip.project.document.distortionLinesController addNewAutodetectedLineWithPoints:&flipped];
 	}
 
@@ -1925,27 +1972,10 @@ static const int kMinPlumblinePoints = 6;
 	if (!plumblines.empty()) self.videoClip.project.distortionDisplayMode = @"Uncorrected";
 	[self.videoClip.windowController refreshOverlay];
 
-	NSAlert *alert = [[NSAlert alloc] init];
-	if (!plumblines.empty()) {
-		[alert setMessageText:[NSString stringWithFormat:@"Created %lu plumblines from %lu corners.", (unsigned long)plumblines.size(), (unsigned long)pointsCreated]];
-		[alert setAlertStyle:NSAlertStyleInformational];
-	} else if (seed.valid) {
-		[alert setMessageText:@"Found the board but could not build plumblines from it."];
-		[alert setAlertStyle:NSAlertStyleWarning];
-	} else {
-		[alert setMessageText:[NSString stringWithFormat:@"No lattice found among %lu corners.", (unsigned long)detection.corners.size()]];
-		[alert setAlertStyle:NSAlertStyleWarning];
+	if ([progressWindow sheetParent] != nil) {
+		[[progressWindow sheetParent] endSheet:progressWindow];
 	}
-	[alert setInformativeText:[NSString stringWithFormat:@"%@\n\n%@\n\n%@\n\nCorner detection: %d saddle candidates, %d rejected by the cheap appearance pass, %lu accepted.%@\n\nPlumblines are appended to any already present, so you can reposition the board and run this again at another timecode to cover more of the frame.",
-							   [NSString stringWithUTF8String:seed.status.c_str()],
-							   lattice.valid ? [NSString stringWithUTF8String:lattice.status.c_str()] : @"Grid growth did not run.",
-							   refinement.passes > 0 ? [NSString stringWithUTF8String:refinement.status.c_str()] : @"Refinement did not run.",
-							   detection.saddleCandidateCount,
-							   detection.prefilterRejectedCount,
-							   (unsigned long)detection.corners.size(),
-							   hint.provided ? @"\n\nUsed your two-point line as a seed hint, and removed it after use." : @""]];
-	[alert addButtonWithTitle:@"Ok"];
-	[alert runModal];
+	[progressWindow orderOut:nil];
 }
 
 - (void) autodetectChessboardPlumblinesLegacy
@@ -2636,5 +2666,3 @@ static const double kMaxAcceptableScaleRatio = 4.0;    // generous enough for a 
 }
 
 @end
-
-

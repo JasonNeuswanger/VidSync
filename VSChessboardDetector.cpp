@@ -408,13 +408,15 @@ CornerDetectionResult detectChessboardCorners(const cv::Mat &gray)
         }
 
         double best = 0.0;
+        int goodScaleCount = 0;
         for (int r = 0; r < kScoreRadiusCount; r++) {
             const int radius = kScoreRadii[r];
             if (x - radius < 0 || y - radius < 0 || x + radius >= gray.cols || y + radius >= gray.rows) continue;
             const double s = bestScoreOverOrientations(gray32, x, y, scoreBanks[r]);
             if (s > best) best = s;
+            if (s >= kMinScore) goodScaleCount++;
         }
-        if (best < kMinScore) continue;
+        if (best < kMinScore || goodScaleCount < 2) continue;
 
         CornerCandidate corner;
         if (!subPixelSaddle(gray32, x, y, &corner.position)) continue;
@@ -445,16 +447,14 @@ const double kWindowCells = 10.0;
 const double kWindowWidthFractions[] = {0.5, 0.7, 0.34};
 const int kWindowWidthFractionCount = 3;
 
-// A seed patch this size is good enough to stop enlarging the window.
-const size_t kGoodSeedPatchPoints = 24;
-
 // A basis further off the image axes than this is treated as suspect and only used when no
 // window offers an aligned one. The field protocol calls for the board to be rotated into
 // approximate alignment with the cameras, so a genuine basis is normally within a few degrees
-// of the axes: measured on real footage, good frames come out at 6 to 8 degrees and the one
-// that failed at 40. The threshold sits well clear of both, leaving room for a board set down
-// carelessly while still excluding anything close to diagonal.
-const double kMaxBasisMisalignmentDegrees = 30.0;
+// of the axes. Frames checked during tuning put the true board around 5 to 8 degrees, while
+// scratch/debris lattices that grew into bad plumblines landed around 24 to 40 degrees.
+// Keep this as a domain prior, not as a per-video tuning knob: if the board is deliberately
+// placed at a steep angle, the two-point seed hint should be used.
+const double kMaxBasisMisalignmentDegrees = 15.0;
 
 // The displacement histogram is built twice per window. The first pass uses a radius
 // covering a good fraction of the window, so it finds the lattice step without assuming
@@ -580,6 +580,14 @@ struct HistogramPeak {
 bool byPeakCountDescending(const HistogramPeak &a, const HistogramPeak &b)
 {
     return a.count > b.count;
+}
+
+std::string summarizedAttempts(const std::ostringstream &attempts)
+{
+    const std::string text = attempts.str();
+    const size_t maxLength = 2400;
+    if (text.size() <= maxLength) return text;
+    return text.substr(0, maxLength) + " ...";
 }
 
 // Builds the pairwise-displacement histogram for one window and extracts its peaks.
@@ -1030,78 +1038,99 @@ SeedLattice findSeedLattice(const std::vector<CornerCandidate> &corners,
         sides.push_back(std::min(imageSize.width * kWindowWidthFractions[f], maxSide));
     }
 
-    const cv::Point2f windowCenter = hint.provided ? hint.from : center;
-
     SeedPatch bestPatch;
     cv::Point2f bestU(0.0f, 0.0f), bestV(0.0f, 0.0f);
+    cv::Point2f bestWindowCenter(0.0f, 0.0f);
     double bestSide = 0.0, bestStep = 0.0, bestSharpness = 0.0;
+    double bestPatchScore = -1.0;
     bool haveBasis = false;
     bool bestAligned = false;
     double bestMisalignment = 0.0;
     bool sawConflict = false;
     std::ostringstream attempts;
 
-    for (size_t s = 0; s < sides.size(); s++) {
-        const double side = sides[s];
-        if (side < 32.0) continue;
-
-        std::vector<int> subset;
-        for (size_t i = 0; i < corners.size(); i++) {
-            const cv::Point2f &p = corners[i].position;
-            if (std::fabs(p.x - windowCenter.x) <= side / 2.0 &&
-                std::fabs(p.y - windowCenter.y) <= side / 2.0) subset.push_back((int)i);
-        }
-        attempts.setf(std::ios::fixed);
-        attempts.precision(0);
-        attempts << " [" << (int)side << "px/" << subset.size() << "pts:";
-        if (subset.size() < kWindowMinPoints) {
-            attempts << " too few points]";
-            continue;
-        }
-
-        // First pass: a generous radius, to discover the lattice step rather than assume it.
-        // The step is taken from the *strongest* peak, not the shortest one. On a window
-        // holding only a few dozen corners the histogram is sparse, and "shortest peak above
-        // a fraction of the maximum" will happily select a noise bin at short range, which
-        // then sizes the second pass too small to contain the real basis at all. The nearest
-        // neighbour displacement is by construction the most populated bin, which is a far
-        // sturdier statistic.
-        std::vector<HistogramPeak> coarsePeaks;
-        displacementPeaks(corners, subset, side * kCoarseRadiusFraction, kCoarseHistogramBins,
-                          kCoarsePeakMinFraction, &coarsePeaks);
-        if (coarsePeaks.empty()) {
-            attempts << " no coarse peaks]";
-            continue;
-        }
-        double step = 0.0;
-        double strongestCoarse = -1.0;
-        for (size_t i = 0; i < coarsePeaks.size(); i++) {
-            const double len = vectorLength(coarsePeaks[i].displacement);
-            if (len > 1e-6 && coarsePeaks[i].count > strongestCoarse) {
-                strongestCoarse = coarsePeaks[i].count;
-                step = len;
+    std::vector<cv::Point2f> windowCenters;
+    if (hint.provided) {
+        windowCenters.push_back(hint.from);
+    } else {
+        windowCenters.push_back(center);
+        const double xFractions[] = {0.15, 0.25, 0.35, 0.45, 0.55, 0.65, 0.75, 0.85};
+        const double yFractions[] = {0.25, 0.35, 0.45, 0.55, 0.65, 0.75};
+        for (size_t y = 0; y < sizeof(yFractions) / sizeof(yFractions[0]); y++) {
+            for (size_t x = 0; x < sizeof(xFractions) / sizeof(xFractions[0]); x++) {
+                windowCenters.push_back(cv::Point2f((float)(imageSize.width * xFractions[x]),
+                                                    (float)(imageSize.height * yFractions[y])));
             }
         }
-        if (step <= 1e-6) {
-            attempts << " no usable step]";
-            continue;
-        }
-        attempts << " step=" << step;
+    }
 
-        // Second pass: re-bin tightly around the discovered step, for a precise basis.
-        const double fineRadius = kFineRadiusFactor * step;
-        std::vector<HistogramPeak> peaks;
-        const double sharpness = displacementPeaks(corners, subset, fineRadius, kFineHistogramBins,
-                                                   kPeakMinFraction, &peaks);
-        attempts << " peaks=" << peaks.size();
-        // Try every plausible pair of histogram peaks, not just the two strongest. In contaminated
-        // frames the diagonals can outvote the true row and column steps, but a lower-ranked peak pair
-        // can still form the correct aligned basis.
-        std::vector<HistogramPeak> sortedPeaks = peaks;
-        std::sort(sortedPeaks.begin(), sortedPeaks.end(), byPeakCountDescending);
-        bool foundCandidateInWindow = false;
-        double strongest = 0.0;
-        for (size_t i = 0; i < sortedPeaks.size(); i++) if (sortedPeaks[i].count > strongest) strongest = sortedPeaks[i].count;
+    for (size_t c = 0; c < windowCenters.size(); c++) {
+        const cv::Point2f windowCenter = windowCenters[c];
+        for (size_t s = 0; s < sides.size(); s++) {
+            const double side = sides[s];
+            if (side < 32.0) continue;
+
+            std::vector<int> subset;
+            for (size_t i = 0; i < corners.size(); i++) {
+                const cv::Point2f &p = corners[i].position;
+                if (std::fabs(p.x - windowCenter.x) <= side / 2.0 &&
+                    std::fabs(p.y - windowCenter.y) <= side / 2.0) subset.push_back((int)i);
+            }
+            attempts.setf(std::ios::fixed);
+            attempts.precision(0);
+            attempts << " [" << (int)windowCenter.x << "," << (int)windowCenter.y
+                     << " " << (int)side << "px/" << subset.size() << "pts:";
+            if (subset.size() < kWindowMinPoints) {
+                attempts << " too few points]";
+                continue;
+            }
+
+            // First pass: a generous radius, to discover the lattice step rather than assume it.
+            // The step is taken from the *strongest* peak, not the shortest one. On a window
+            // holding only a few dozen corners the histogram is sparse, and "shortest peak above
+            // a fraction of the maximum" will happily select a noise bin at short range, which
+            // then sizes the second pass too small to contain the real basis at all. The nearest
+            // neighbour displacement is by construction the most populated bin, which is a far
+            // sturdier statistic.
+            std::vector<HistogramPeak> coarsePeaks;
+            displacementPeaks(corners, subset, side * kCoarseRadiusFraction, kCoarseHistogramBins,
+                              kCoarsePeakMinFraction, &coarsePeaks);
+            if (coarsePeaks.empty()) {
+                attempts << " no coarse peaks]";
+                continue;
+            }
+            double step = 0.0;
+            double strongestCoarse = -1.0;
+            for (size_t i = 0; i < coarsePeaks.size(); i++) {
+                const double len = vectorLength(coarsePeaks[i].displacement);
+                if (len > 1e-6 && coarsePeaks[i].count > strongestCoarse) {
+                    strongestCoarse = coarsePeaks[i].count;
+                    step = len;
+                }
+            }
+            if (step <= 1e-6) {
+                attempts << " no usable step]";
+                continue;
+            }
+            attempts << " step=" << step;
+
+            // Second pass: re-bin tightly around the discovered step, for a precise basis. Debris
+            // stuck to the board can create a stronger short-period peak than the true chessboard
+            // pitch, so do not let that shrink the second pass enough to exclude the board's own
+            // row and column displacements.
+            const double fineRadius = kFineRadiusFactor * std::max(step, side / kWindowCells);
+            std::vector<HistogramPeak> peaks;
+            const double sharpness = displacementPeaks(corners, subset, fineRadius, kFineHistogramBins,
+                                                       kPeakMinFraction, &peaks);
+            attempts << " peaks=" << peaks.size();
+            // Try every plausible pair of histogram peaks, not just the two strongest. In contaminated
+            // frames the diagonals can outvote the true row and column steps, but a lower-ranked peak pair
+            // can still form the correct aligned basis.
+            std::vector<HistogramPeak> sortedPeaks = peaks;
+            std::sort(sortedPeaks.begin(), sortedPeaks.end(), byPeakCountDescending);
+            bool foundCandidateInWindow = false;
+            double strongest = 0.0;
+            for (size_t i = 0; i < sortedPeaks.size(); i++) if (sortedPeaks[i].count > strongest) strongest = sortedPeaks[i].count;
 
         for (size_t i = 0; i < sortedPeaks.size(); i++) {
             for (size_t j = i + 1; j < sortedPeaks.size(); j++) {
@@ -1177,21 +1206,26 @@ SeedLattice findSeedLattice(const std::vector<CornerCandidate> &corners,
                     sawConflict = true;
                     continue;
                 }
-
                 // Alignment outranks patch size. Comparing on patch size alone let a single window
                 // that had locked onto the grid diagonals beat two windows that agreed with each other
                 // on the true basis, purely by growing a larger patch from it -- 16 corners against 7.
                 // Every row and column downstream then ran diagonally across the board. A window whose
                 // basis is diagonal is not a better reading of the same grid; it is a reading of a
                 // different grid, so no patch grown from it should be allowed to win.
+                const double spanI = patch.extentI > 1 ? (patch.extentI - 1) * vectorLength(u) : 0.0;
+                const double spanJ = patch.extentJ > 1 ? (patch.extentJ - 1) * vectorLength(v) : 0.0;
+                const double coverage = side > 1e-6 ? std::min(spanI, spanJ) / side : 0.0;
+                const double patchScore = patch.cornerIndex.size() + 10.0 * coverage;
                 if (!haveBasis || (aligned && !bestAligned) ||
-                    (aligned == bestAligned && patch.cornerIndex.size() > bestPatch.cornerIndex.size())) {
+                    (aligned == bestAligned && patchScore > bestPatchScore)) {
                     bestPatch = patch;
                     bestU = u;
                     bestV = v;
+                    bestWindowCenter = windowCenter;
                     bestSide = side;
                     bestStep = step;
                     bestSharpness = sharpness;
+                    bestPatchScore = patchScore;
                     bestAligned = aligned;
                     bestMisalignment = misalignment;
                     haveBasis = true;
@@ -1205,20 +1239,18 @@ SeedLattice findSeedLattice(const std::vector<CornerCandidate> &corners,
             attempts << " best |u|=" << vectorLength(bestU) << " |v|=" << vectorLength(bestV)
                      << " off-axis=" << bestMisalignment << "deg patch=" << bestPatch.cornerIndex.size() << "]";
         }
-        // Only stop early on a patch that is both big enough and aligned; otherwise a large
-        // diagonal patch found first would end the search before an aligned window is tried.
-        if (bestAligned && bestPatch.cornerIndex.size() >= kGoodSeedPatchPoints) break;
+        }
     }
 
     if (!haveBasis) {
         std::ostringstream message;
-        message << "No lattice found in the center of the frame among " << corners.size() << " corners.";
+        message << "No lattice found among " << corners.size() << " corners.";
         if (sawConflict) {
             message << " A basis was found but produced inconsistent grid coordinates, which means "
                     << "the basis or the matching tolerance is wrong.";
         } else {
             message << " No window produced a displacement histogram with two non-collinear peaks "
-                    << "and matching diagonals. Tried:" << attempts.str();
+                    << "and matching diagonals. Tried:" << summarizedAttempts(attempts);
         }
         seed.status = message.str();
         return seed;
@@ -1226,7 +1258,7 @@ SeedLattice findSeedLattice(const std::vector<CornerCandidate> &corners,
 
     seed.basis.u = bestU;
     seed.basis.v = bestV;
-    seed.basis.windowCenter = windowCenter;
+    seed.basis.windowCenter = bestWindowCenter;
     seed.basis.windowSide = (float)bestSide;
     seed.basis.peakSharpness = (float)bestSharpness;
     seed.basis.valid = true;
@@ -1237,7 +1269,7 @@ SeedLattice findSeedLattice(const std::vector<CornerCandidate> &corners,
         message.precision(1);
         message << "Basis found (|u| = " << vectorLength(bestU) << " px, |v| = " << vectorLength(bestV)
                 << " px) but only " << bestPatch.cornerIndex.size() << " corners form a connected "
-                << "lattice, so the basis is probably wrong. Tried:" << attempts.str();
+                << "lattice, so the basis is probably wrong. Tried:" << summarizedAttempts(attempts);
         seed.status = message.str();
         return seed;
     }
@@ -1249,7 +1281,7 @@ SeedLattice findSeedLattice(const std::vector<CornerCandidate> &corners,
         message << "Best automatic basis runs " << bestMisalignment << " deg off the image axes, "
                 << "which is probably the chessboard diagonals rather than its rows and columns. "
                 << "Draw a two-point seed line along one true grid step and run detection again. Tried:"
-                << attempts.str();
+                << summarizedAttempts(attempts);
         seed.status = message.str();
         return seed;
     }
@@ -1275,9 +1307,9 @@ SeedLattice findSeedLattice(const std::vector<CornerCandidate> &corners,
                 << "aligned basis, so check that the rows and columns drawn on screen follow the "
                 << "board rather than its diagonals";
     }
-    message << ". Centered window "
+    message << ". Seed window centered at (" << (int)bestWindowCenter.x << ", " << (int)bestWindowCenter.y << "), "
             << (int)bestSide << " px = " << (bestStep > 1e-6 ? bestSide / bestStep : 0.0)
-            << " cells; histogram peak sharpness " << bestSharpness << ". Tried:" << attempts.str();
+            << " cells; histogram peak sharpness " << bestSharpness << ". Tried:" << summarizedAttempts(attempts);
     seed.status = message.str();
     seed.valid = true;
     return seed;
@@ -1561,6 +1593,33 @@ const int kMaxBridgedCells = 4;
 // through two fragments and assigned one fragment's sites to the wrong side of the other.
 const double kMaxReverseProgressFraction = 0.35;
 
+// A sparse line can still walk monotonically along the basis while hopping sideways onto
+// scratches or onto a neighbouring row/column. Consecutive accepted corners may bridge a
+// few missing lattice cells, but the per-cell screen displacement should remain comparable
+// to the seed basis and mostly aligned with it.
+const double kMinStepLengthFraction = 0.35;
+const double kMaxStepLengthFraction = 1.85;
+const double kMaxPerpendicularStepFraction = 0.70;
+
+bool plumblineStepBreaks(const cv::Point2f &previous,
+                         const cv::Point2f &current,
+                         int latticeGap,
+                         const cv::Point2f &basis,
+                         double basisLength)
+{
+    if (latticeGap <= 0 || basisLength <= 1e-6) return true;
+    const cv::Point2f delta(current.x - previous.x, current.y - previous.y);
+    const double stepLength = vectorLength(delta) / (double)latticeGap;
+    if (stepLength < kMinStepLengthFraction * basisLength ||
+        stepLength > kMaxStepLengthFraction * basisLength) {
+        return true;
+    }
+
+    const double perpendicular = std::fabs(delta.x * basis.y - delta.y * basis.x) /
+                                 (basisLength * (double)latticeGap);
+    return perpendicular > kMaxPerpendicularStepFraction * basisLength;
+}
+
 }   // anonymous namespace
 
 std::vector<Plumbline> extractPlumblines(const std::vector<CornerCandidate> &corners,
@@ -1612,6 +1671,13 @@ std::vector<Plumbline> extractPlumblines(const std::vector<CornerCandidate> &cor
                     const cv::Point2f &p = corners[along[k].second].position;
                     const double progress = (p.x * basis.x + p.y * basis.y) / basisLength;
                     if (havePreviousProgress && progress < previousProgress - reverseTolerance) {
+                        breakHere = true;
+                    } else if (k > 0 &&
+                               plumblineStepBreaks(corners[along[k - 1].second].position,
+                                                   p,
+                                                   along[k].first - along[k - 1].first,
+                                                   basis,
+                                                   basisLength)) {
                         breakHere = true;
                     } else {
                         previousProgress = progress;
