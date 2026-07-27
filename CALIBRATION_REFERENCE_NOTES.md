@@ -197,6 +197,49 @@ This points at the accuracy of the two homographies, and at their consistency wi
 as the dominant remaining error source in this file — not at the distortion model, and not at
 the triangulation search.
 
+### Three things tried against the range bias, none of which worked
+
+All evaluated by refitting from the calibration clicks in the export and re-triangulating all
+1010 measurements, so the calibration points are the training set and the measurements are an
+independent test set.
+
+**Geometric refinement of each homography: no effect.** Replacing the normalized DLT's algebraic
+error with the statistically correct objective — minimizing squared error in the clicked screen
+positions, where the noise actually is — moved the calibration residual from 2.320 to 2.319 px.
+With well-spread points and Hartley normalization, the algebraic and geometric optima coincide
+to four significant figures. Hartley and Zisserman's gold standard matters when the DLT is
+poorly conditioned; here normalization has already done the work. This item can be closed.
+
+**Estimating the frame's true node positions: actively harmful.** Both cameras' residuals are
+worst at the *same* physical nodes, and the world-space displacements they imply agree across
+cameras with correlations of +0.95 and +0.78 — independent click error would give roughly zero.
+Estimating each node's position from that agreement, iterating with a similarity gauge so the
+grid's measured overall size is preserved, cuts the calibration residual four-fold, from 2.32 to
+0.58 px. It then makes every object's measurement error slightly *worse*: 3.93 to 4.18 mm on the
+30-square target, 5.90 to 6.07 on the 48-square. The correlated displacements are therefore not
+frame construction error but something shared between the two views — residual distortion is the
+obvious candidate, since the cameras are similar and view the frame from similar angles. A
+four-fold gain in calibration residual buying a small loss in measurement accuracy is worth
+remembering as a caution about judging calibration changes by their own residual.
+
+**Adjusting the assumed plane separation: negligible.** Every sightline is defined by the
+0.4390 m front-to-back separation, so an error there tilts every ray. Scanning it from 0.429 to
+0.464 m moves the far-field bias from +1.467% to +1.702% — a 2.3% change in the separation buys
+0.07 percentage points. There is no minimum in the plausible range.
+
+**What the bias is not.** At matched range, targets oriented along the viewing axis and across
+it show the same error (+0.33% versus +0.23% in the 500–900 mm band), so the reconstructed space
+is not stretched along the depth axis; it is uniformly scaled, by an amount that grows with
+range. That is the signature of the two cameras' ray bundles converging slightly wrongly, which
+at long range, where the convergence angle is small, turns a fixed angular error into a growing
+depth error.
+
+The remedy the paper already found for this is protocol rather than mathematics: Table 1 shows
+Calibration B, taken 0.3 m farther out, giving 1.4% error at long range where Calibration A gave
+2.1%. Calibrating at the intended working distance, using a larger front-to-back separation, and
+widening the camera baseline all attack it. Nothing in the reconstruction mathematics, given
+these inputs, appears to.
+
 ### How to use it
 
 Judge any change on bias and standard deviation per object, split by `ZNEARESTCAMERADISTANCE`
