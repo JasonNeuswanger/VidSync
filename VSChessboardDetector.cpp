@@ -1555,6 +1555,12 @@ namespace {
 // while the joins that turned out to be untrustworthy spanned 8, 10 and 21.
 const int kMaxBridgedCells = 4;
 
+// A final guard against a row or column whose lattice indices walk backward in screen space.
+// Real distortion bends a line, but it does not make consecutive chessboard corners reverse
+// direction along the row/column basis. Large reversals mean growth reached the same plumbline
+// through two fragments and assigned one fragment's sites to the wrong side of the other.
+const double kMaxReverseProgressFraction = 0.35;
+
 }   // anonymous namespace
 
 std::vector<Plumbline> extractPlumblines(const std::vector<CornerCandidate> &corners,
@@ -1589,12 +1595,29 @@ std::vector<Plumbline> extractPlumblines(const std::vector<CornerCandidate> &cor
             }
             if ((int)along.size() < minPoints) continue;
             std::sort(along.begin(), along.end());
-            // Split into fragments wherever the hole is too long to vouch for, then emit each
-            // fragment that still has enough corners to be worth fitting.
+            // Split into fragments wherever the hole is too long to vouch for, or where the
+            // run walks backward in screen space. The latter catches duplicated fragments that
+            // growth attached to the wrong end of a row/column: their lattice indices are sorted,
+            // but their projected position jumps back across already-emitted points.
+            const cv::Point2f basis = isRow ? lattice.basis.u : lattice.basis.v;
+            const double basisLength = vectorLength(basis);
+            const double reverseTolerance = kMaxReverseProgressFraction * basisLength;
             size_t start = 0;
+            double previousProgress = 0.0;
+            bool havePreviousProgress = false;
             for (size_t k = 0; k <= along.size(); k++) {
-                const bool breakHere = (k == along.size()) ||
-                                       (k > 0 && along[k].first - along[k - 1].first > kMaxBridgedCells);
+                bool breakHere = (k == along.size()) ||
+                                 (k > 0 && along[k].first - along[k - 1].first > kMaxBridgedCells);
+                if (!breakHere && basisLength > 1e-6) {
+                    const cv::Point2f &p = corners[along[k].second].position;
+                    const double progress = (p.x * basis.x + p.y * basis.y) / basisLength;
+                    if (havePreviousProgress && progress < previousProgress - reverseTolerance) {
+                        breakHere = true;
+                    } else {
+                        previousProgress = progress;
+                        havePreviousProgress = true;
+                    }
+                }
                 if (!breakHere) continue;
                 if ((int)(k - start) >= minPoints) {
                     Plumbline line;
@@ -1604,6 +1627,12 @@ std::vector<Plumbline> extractPlumblines(const std::vector<CornerCandidate> &cor
                     lines.push_back(line);
                 }
                 start = k;
+                havePreviousProgress = false;
+                if (k < along.size() && basisLength > 1e-6) {
+                    const cv::Point2f &p = corners[along[k].second].position;
+                    previousProgress = (p.x * basis.x + p.y * basis.y) / basisLength;
+                    havePreviousProgress = true;
+                }
             }
         }
     }
