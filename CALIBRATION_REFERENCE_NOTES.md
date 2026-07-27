@@ -939,3 +939,66 @@ the scale is pinned by the model's own leading term and the held-out lines are m
 units. That requires a reliable 13-plus-parameter optimizer, which pure Python could not deliver
 here; a C implementation with multi-start Nelder-Mead is the enabling step, and `tools/pooltest/`
 already contains C precedent in `fisheye.c` and `order.c`.
+
+## Only four of the seven radial terms are load-bearing, and dropping the rest fixes the conditioning
+
+`tools/pooltest/loadbearing.py`. Measured on the left camera's far plumbline set (47 lines, 640
+points, 8 mm fisheye, the most distorted case available), against its own VidSync fit. Neither
+measurement needs a nonlinear solver.
+
+**Spectrum.** The Jacobian of the straightness residual with respect to the 13 parameters, in the
+solver's own scaled units, has a condition number of **2.6e8**. Only about five eigen-directions move
+the residual by more than the corner noise per unit step -- the image centre (two), one direction
+dominated by k1, one by k7, and one by p4. The remaining eight, including k2 through k6 and p1 to p3
+individually, are far below noise. The radial series runs in powers of s = r^2, so s through s^7 form
+a Vandermonde-like basis over the covered radius range and are nearly collinear as functions on the
+data. (The exact count depends on the arbitrary `SCALE_FACTOR_*` normalization, so lean on the
+penalties below, which do not.)
+
+**Cost of dropping terms**, linearized about the converged fit, each dropped parameter forced to zero
+and the survivors re-optimized. The baseline is the linearized re-optimum of all 13, 0.8749 px, which
+is the like-for-like comparison; corner noise on this set is 0.150 px.
+
+| model | params | rms | excess | condition number |
+|---|---|---|---|---|
+| all 13 | 13 | 0.8749 | — | 2.64e8 |
+| k1-k6 + p1-p4 | 12 | 0.8766 | 0.055 | 3.74e7 |
+| k1-k5 + p1-p4 | 11 | 0.8779 | 0.072 | 3.33e6 |
+| **k1-k4 + p1-p4** | **10** | **0.8781** | **0.075** | **2.11e5** |
+| k1-k3 + p1-p4 | 9 | 0.9406 | 0.346 | 1.46e5 |
+| k1-k4 + p1,p2 | 8 | 0.9205 | 0.286 | 2.09e5 |
+| k1-k4 + p1,p2,p4 | 9 | 0.8816 | 0.109 | 2.10e5 |
+| k1-k7, no tangential | 9 | 1.4221 | 1.121 | — |
+
+**Dropping k5, k6 and k7 costs 0.075 px, half the corner noise, and improves the conditioning
+1250-fold.** Dropping k4 as well costs 0.346 px, above noise, so four radial terms is the sweet spot.
+All four tangential terms earn their place: removing the tangential block entirely costs 1.12 px, and
+even p3 and p4 individually contribute more than a tenth of a pixel.
+
+So the minimal well-supported model here is **x0, y0, k1-k4, p1-p4 -- ten parameters**.
+
+### Why this matters more than the parameter count
+
+The obstacle to fitting in pure Python was never dimension; 13 against 10 is marginal for
+Nelder-Mead. It was **conditioning**. A simplex method degrades badly at a condition number of 2.6e8
+because the simplex collapses along the flat directions, which is exactly the failure seen earlier
+when a pure-Python refit produced an "own fit" worse than a foreign fit on the same data. At 2.1e5
+the problem is ordinary. A 640-point cost evaluation is around a millisecond, so tens of thousands of
+evaluations are seconds, not hours: **the reduced model should be fittable in plain Python, with no C
+and no scipy** (neither numpy nor scipy is installed on any interpreter here, though pip is
+available).
+
+### Why it may matter for the shipped software
+
+The high-order radial terms are also the mechanism behind the degenerate fits. A runaway needs them
+to imitate a constant scale factor over the covered annulus, which is how an unconstrained fit
+reached 0.0037 px per point, and it is why the acceptance gate has to exist. Removing k5 to k7 would
+cost less than the noise, cut the condition number by three orders of magnitude, make the solve
+faster and more reproducible, and probably remove the failure mode the gate currently catches.
+
+**Not yet a recommendation.** Two things must come first, and the project's own history says so
+plainly, since a better calibration residual has three times now accompanied worse measurements.
+One: run this spectrum across the 67-document corpus, since this is one camera on the most extreme
+lens, and the answer may differ at 17 mm. Two: fit the ten-parameter model and judge it on the known
+lengths through `distcal.py`, not on residuals. The Python fitter is the prerequisite for both, and
+is now within reach.
