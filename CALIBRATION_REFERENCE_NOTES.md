@@ -862,3 +862,80 @@ distribution of the transfer penalty directly.
 
 Two extra solves in an already-open document, and it settles a question three rounds of analysis
 have not.
+
+## Residual structure: what is solid, and a correction
+
+### Correction: the plumbline objective is NOT gauge-invariant
+
+Earlier in this work it was asserted that straightness is invariant under any homography applied
+after undistortion, and therefore that the plumbline fit's gauge freedom is free. **The first half
+is wrong and needs retracting.** A homography maps straight lines to straight lines, so it preserves
+the *property* of exact straightness. It does not preserve the *residual value*, because the
+plumbline points are not straight -- they carry the residual -- and a homography rescales those
+deviations along with everything else. Shrinking the undistorted image by a factor lambda scales
+every residual by lambda and the objective by lambda squared.
+
+So the objective has an unbounded downhill direction that improves nothing. The only thing
+preventing a runaway is that Brown-Conrady pins the scale through the leading 1 in its radial
+series, and with seven radial coefficients the series can *approximately* imitate a constant over
+the covered annulus. That is precisely the mechanism behind the unconstrained fits that reached
+0.0037 px per point while being physically degenerate, and it is why the acceptance gate is
+load-bearing rather than cosmetic.
+
+What survives from the earlier argument is the part that rests on the fundamental theorem of
+projective geometry: if a map straightens every line *exactly*, it differs from the truth by a
+homography, and the two-plane homographies absorb that downstream. The geometry is still fine. The
+claim that the objective cannot see the gauge is not.
+
+### Solid: radius and line length both matter, independently
+
+Far set, its own fit, residual binned two ways at once (rms px, n in parentheses):
+
+| radius | short lines | medium | long lines |
+|---|---|---|---|
+| 0-400 | 0.447 (38) | - | 0.360 (38) |
+| 400-600 | 0.582 (31) | 1.076 (30) | 0.626 (61) |
+| 600-800 | 0.814 (10) | 1.214 (97) | 0.679 (82) |
+| 800-1200 | 0.566 (47) | 1.036 (71) | 1.149 (135) |
+
+Reading down the long-line column holds length roughly fixed: residual grows 0.360 to 1.149, a
+factor of 3.2 with radius. Reading across the bottom row holds radius fixed: residual grows 0.566 to
+1.149 with length. **Both effects are real and neither is an artifact of the other.** So the visual
+impression that outer lines fit worse is partly a length illusion, as suspected -- a longer line
+shows the same curvature as a bigger sagitta -- but a genuine radial effect survives at matched
+length. The middle column runs anomalously high and the small cells are noisy, so this table
+supports the direction of both effects but not precise magnitudes.
+
+### Solid: the existing 13 parameters are exhausted
+
+Correlation of the residual with each parameter's displacement direction, in VidSync's own
+unnormalized metric: 0.0001 to 0.0683, largest for x0. The solve is genuinely at its optimum and no
+retuning of the current parameter set can help. Whatever is left needs different basis functions,
+not better optimization.
+
+### NOT established: what a richer model would buy
+
+`tools/pooltest/expressiveness.py` attempts a score test -- at a converged optimum, the reduction
+available from a candidate basis is the residual variance it explains once the existing directions
+are controlled for, which is linear algebra rather than nonlinear refitting. **It is not trustworthy
+yet and its numbers should not be quoted.** Two genuine bugs were found and fixed:
+
+1. The parameter-direction columns span some forty-five orders of magnitude, because the k7
+   derivative carries s^7 and s reaches 1e6 at the frame corner. Orthogonalizing a small candidate
+   against a huge one destroyed every significant digit.
+2. Affine displacement fields are pure gauge but do *not* produce zero columns, for the reason in
+   the correction above: they rescale the residual. The isotropic-scale column comes out exactly
+   parallel to the residual vector and "explains" 100% of it by shrinking the image.
+
+A third symptom remains unexplained: adding 42 independent de-gauged directions to the 13 model
+directions changes the residual by nothing to ten decimal places, and the answer is identical
+whichever order the columns are supplied. Orthogonal projection onto a larger subspace cannot do
+that. Until that is understood the tool proves nothing.
+
+**The clean path instead.** Rather than a score test with this much gauge machinery, fit candidate
+models directly and score them on **held-out lines**. Held-out straightness on lines the fit never
+saw is unambiguous, needs no gauge bookkeeping, and cannot be won by shrinking the image, because
+the scale is pinned by the model's own leading term and the held-out lines are measured in the same
+units. That requires a reliable 13-plus-parameter optimizer, which pure Python could not deliver
+here; a C implementation with multi-start Nelder-Mead is the enabling step, and `tools/pooltest/`
+already contains C precedent in `fisheye.c` and `order.c`.
