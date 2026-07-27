@@ -55,8 +55,18 @@ MODELS = {
 
 # ------------------------------------------------------------------ model
 
-def undistort(xy, theta):
-    """Vectorized Brown-Conrady undistortion. theta is the full 13-vector in raw units."""
+def undistort(xy, theta, sref=0.0):
+    """Vectorized Brown-Conrady undistortion. theta is the full 13-vector in raw units.
+
+    `sref` moves the radial map's fixed point. The shipped form r*(1 + k1 s + ...) forces
+    u'(0) = 1, so it already fixes the scale gauge -- but at r = 0, where there is almost no data.
+    Seven radial terms can therefore imitate any constant over the covered annulus at no cost,
+    which is the runaway the acceptance gate exists to catch.
+
+    Using powers of (s - sref^i) instead makes u(r_ref) = r_ref exactly and frees the slope at the
+    origin. Same seven degrees of freedom, fixed point moved to where the data is, and a near-uniform
+    rescaling over an annulus containing r_ref is no longer representable. sref = 0 reproduces the
+    shipped model exactly."""
     x0, y0 = theta[0], theta[1]
     k = theta[2:9]
     p1, p2, p3, p4 = theta[9], theta[10], theta[11], theta[12]
@@ -65,16 +75,18 @@ def undistort(xy, theta):
     s = xd * xd + yd * yd
     R = np.ones_like(s)
     sp = np.ones_like(s)
+    spref = 1.0
     for ki in k:
         sp = sp * s
-        R = R + ki * sp
+        spref = spref * sref
+        R = R + ki * (sp - spref)
     T = 1.0 + p3 * s + p4 * s * s
     dx = (p1 * (s + 2 * xd * xd) + 2 * p2 * xd * yd) * T
     dy = (2 * p1 * xd * yd + p2 * (s + 2 * yd * yd)) * T
     return np.stack([x0 + xd * R + dx, y0 + yd * R + dy], axis=1)
 
 
-def jac_det(xy, theta):
+def jac_det(xy, theta, sref=0.0):
     x0, y0 = theta[0], theta[1]
     k = theta[2:9]
     p1, p2, p3, p4 = theta[9], theta[10], theta[11], theta[12]
@@ -84,7 +96,7 @@ def jac_det(xy, theta):
     R = np.ones_like(s)
     Rp = np.zeros_like(s)
     for i, ki in enumerate(k, start=1):
-        R = R + ki * s ** i
+        R = R + ki * (s ** i - sref ** i)
         Rp = Rp + i * ki * s ** (i - 1)
     T = 1.0 + p3 * s + p4 * s * s
     Tp = p3 + 2 * p4 * s
@@ -100,13 +112,16 @@ def jac_det(xy, theta):
 class Plumblines:
     """Plumbline points flattened into one array, with the index ranges of each line."""
 
-    def __init__(self, lines):
+    def __init__(self, lines, sref=0.0):
+        self.sref = sref
         self.xy = np.concatenate([np.asarray(L, float) for L in lines], axis=0)
         counts = np.array([len(L) for L in lines])
         self.starts = np.concatenate([[0], np.cumsum(counts)[:-1]])
         self.counts = counts
         self.n = len(self.xy)
         self.nlines = len(lines)
+        d0 = self.xy - self.xy.mean(axis=0)
+        self._rawspread = float(np.sqrt((d0 * d0).sum(axis=1).mean()))
 
     def residuals(self, theta):
         """Signed perpendicular deviation of each point from its own line's total-least-squares
@@ -114,7 +129,7 @@ class Plumblines:
         computed for every line at once: reduceat gives the per-line sums, and repeat scatters
         each line's centroid and angle back over its own points. Fitting is dominated by these
         evaluations, and the segment loop this replaces made cross-validation impractical."""
-        u = undistort(self.xy, theta)
+        u = undistort(self.xy, theta, self.sref)
         cx = np.add.reduceat(u[:, 0], self.starts) / self.counts
         cy = np.add.reduceat(u[:, 1], self.starts) / self.counts
         qx = u[:, 0] - np.repeat(cx, self.counts)
@@ -128,10 +143,36 @@ class Plumblines:
         r = self.residuals(theta)
         return float(np.sqrt(r @ r / len(r)))
 
+    def spread(self, theta):
+        """Rms extent of the undistorted point cloud, relative to the raw one.
+
+        Scales by lambda under any uniform rescaling of the undistorted image, and is measured
+        about the cloud's own centroid rather than the distortion centre so that it does not move
+        when x0, y0 do."""
+        u = undistort(self.xy, theta, self.sref)
+        d = u - u.mean(axis=0)
+        return float(np.sqrt((d * d).sum(axis=1).mean()) / self._rawspread)
+
+    def normalized(self, theta):
+        """Straightness residual divided by the map's own scale.
+
+        The plain objective is not scale-invariant: shrink the undistorted image by lambda and every
+        residual shrinks by lambda, so the fit always gains by shrinking. Brown-Conrady cannot
+        express a pure scale, but with seven radial terms it can imitate one closely enough over the
+        covered annulus that the gain is real -- and it was verified directly here that moving the
+        radial map's fixed point from r = 0 to r = 742 px changed the fitted residual from 0.844 to
+        0.616 px while changing the geometry by 0.67%, the whole difference being a 0.73x rescale.
+
+        Dividing by the spread removes that. What remains cannot be improved by rescaling, so the
+        optimizer has to earn every reduction by actually straightening lines."""
+        return self.residuals(theta) / self.spread(theta)
+
 
 # ------------------------------------------------------------------ fitting
 
 def expand(active_vals, mask, centre):
+    """Assemble the full 13-vector from the active parameters. The gauge is set by the
+    Plumblines object's `sref`, not here; see undistort()."""
     theta = np.zeros(13)
     theta[0], theta[1] = centre
     for v, j in zip(active_vals, mask):
@@ -139,7 +180,7 @@ def expand(active_vals, mask, centre):
     return theta
 
 
-def fit(pl, mask, centre, restarts=6, verbose=False, gated=True):
+def fit(pl, mask, centre, restarts=6, verbose=False, gated=True, scale_invariant=False):
     """Fit the active parameters. Least-squares on the residual vector first, since the objective
     is a sum of squares and a trust-region method exploits that; Nelder-Mead afterwards as an
     independent check that the optimum is real and not an artefact of the derivative estimates.
@@ -160,8 +201,8 @@ def fit(pl, mask, centre, restarts=6, verbose=False, gated=True):
     W = 50.0 * math.sqrt(pl.n)          # heavy enough to dominate, smooth enough to optimize
 
     def penalty(theta):
-        det = jac_det(grid, theta)
-        mags = np.sqrt(np.abs(jac_det(pl.xy, theta)))
+        det = jac_det(grid, theta, pl.sref)
+        mags = np.sqrt(np.abs(jac_det(pl.xy, theta, pl.sref)))
         lo_m, hi_m = mags.min(), mags.max()
         ratio = hi_m / lo_m if lo_m > 0 else 1e6
         return np.array([W * max(0.0, 0.05 - float(det.min())),
@@ -169,7 +210,7 @@ def fit(pl, mask, centre, restarts=6, verbose=False, gated=True):
 
     def resid(v):
         theta = expand(v, mask, centre)
-        r = pl.residuals(theta)
+        r = pl.normalized(theta) if scale_invariant else pl.residuals(theta)
         return np.concatenate([r, penalty(theta)]) if gated else r
 
     def cost(v):
@@ -201,7 +242,9 @@ def fit(pl, mask, centre, restarts=6, verbose=False, gated=True):
         if nm.fun < cost(cand):
             cand = nm.x
         # score on the straightness residual alone; the penalty only shaped the search
-        rms = pl.rms(expand(cand, mask, centre))
+        th_c = expand(cand, mask, centre)
+        rms = (float(np.sqrt(pl.normalized(th_c) @ pl.normalized(th_c) / pl.n))
+               if scale_invariant else pl.rms(th_c))
         if gated and not gate(expand(cand, mask, centre), pl)[0]:
             continue
         if verbose:
@@ -211,15 +254,16 @@ def fit(pl, mask, centre, restarts=6, verbose=False, gated=True):
     return expand(best, mask, centre), best_rms
 
 
-def gate(theta, pl):
+def gate(theta, pl, sref=None):
     """VidSync's acceptance gate: the map must stay a bijection over the plumbline box, and the
     local scale must not run away."""
     lo = pl.xy.min(axis=0)
     hi = pl.xy.max(axis=0)
     gx, gy = np.meshgrid(np.linspace(lo[0], hi[0], 45), np.linspace(lo[1], hi[1], 45))
     grid = np.stack([gx.ravel(), gy.ravel()], axis=1)
-    det = jac_det(grid, theta)
-    mags = np.sqrt(np.abs(jac_det(pl.xy, theta)))
+    sr = pl.sref if sref is None else sref
+    det = jac_det(grid, theta, sr)
+    mags = np.sqrt(np.abs(jac_det(pl.xy, theta, sr)))
     ratio = float(mags.max() / mags.min()) if mags.min() > 0 else np.inf
     ok = bool(np.all(np.isfinite(theta)) and det.min() > 0 and 0.25 < ratio < 4.0)
     return ok, float(det.min()), ratio
@@ -237,7 +281,7 @@ def condition(pl, theta, mask):
     return float(s[0] / s[-1]) if s[-1] > 0 else np.inf
 
 
-def crossval(lines, mask, centre, folds=6, seed=7):
+def crossval(lines, mask, centre, folds=6, seed=7, sref=0.0):
     """Fit on all but one fold of *lines*, score on the held-out lines. Returns the pooled
     held-out rms. Whole lines are held out, never points within a line, because a line's residual
     is defined relative to its own fit."""
@@ -250,8 +294,8 @@ def crossval(lines, mask, centre, folds=6, seed=7):
         train = [lines[i] for i in range(len(lines)) if i not in set(g.tolist())]
         if len(train) < 8 or not test:
             continue
-        th, _ = fit(Plumblines(train), mask, centre, restarts=3)
-        r = Plumblines(test).residuals(th)
+        th, _ = fit(Plumblines(train, sref), mask, centre, restarts=3)
+        r = Plumblines(test, sref).residuals(th)
         num += float(r @ r)
         den += len(r)
     return math.sqrt(num / den) if den else float("nan")

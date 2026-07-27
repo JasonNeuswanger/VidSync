@@ -1126,3 +1126,66 @@ Two candidate improvements survive, and neither is ready:
 The high-power test not yet run is the 2012 pool test: 1010 known lengths rather than 14. Its camera
 has mild distortion, so it is a weak test of radial order specifically, but it is by far the best
 test of whether either change does harm.
+
+## Pinning the scale: the diagnosis was wrong, and the real answer is simpler
+
+The observation that started this was sound -- every gated fit landed exactly on the acceptance
+gate's scale-ratio limit, so the constraint rather than the data was setting the answer. The
+diagnosis attached to it was not. Three iterations were needed to get there, and the dead ends are
+worth recording because each is a plausible thing to try again.
+
+**Attempt 1, adding a constraint R(s_ref) = 1: wrong, and it made the fit five times worse.** The
+shipped form r*(1 + k1 s + ...) *already* fixes the scale gauge, because it forces u'(0) = 1. Adding
+a second condition at r_ref over-constrains the radial map rather than re-gauging it: the true map's
+scale representative with unit slope at the origin does not also fix r_ref, so the polynomial is
+forced to wiggle. Residual went from 0.90 to 4.37 px.
+
+**Attempt 2, moving the fixed point instead of adding one.** Reparameterizing as
+`u(r) = r*(1 + sum k_i (s^i - s_ref^i))` keeps seven degrees of freedom, makes u(r_ref) = r_ref, and
+frees the slope at the origin. This is a genuine re-gauging, and it does block a uniform rescale over
+an annulus containing r_ref. Residual fell from 0.8438 to 0.6161 px -- which looked like progress and
+was not. Checked directly: the best uniform scale relating the two fitted maps is lambda = 0.7323,
+and the pinned map departs from lambda times the shipped map by 13.8 px out of a 2049 px extent, or
+0.67%. **The two fits are the same geometry in different gauges**, and the entire residual change is
+that rescale, predicted 1/B(r_ref) = 0.7318 against 0.7301 observed. Relocating the gauge
+representative changes the reported number without changing anything real.
+
+**Attempt 3, making the objective scale-invariant -- the principled fix, which turns out not to
+matter here.** Dividing the residual by the map's own spread (rms extent of the undistorted cloud
+about its centroid, relative to the raw) gives an objective no rescaling can improve.
+
+| objective | normalized rms | spread | scale ratio | gate |
+|---|---|---|---|---|
+| plain, penalty gate | 0.5495 | 1.5356 | 3.80 | PASS |
+| scale-invariant, penalty gate | 0.5480 | 1.5440 | 3.80 | PASS |
+| scale-invariant, no penalty | 0.5352 | 1.5405 | **4.18** | REJECT |
+
+**The scale degeneracy is not being exploited.** Making the objective scale-invariant changes the
+answer by 0.3%. And the fitted map's spread is 1.54, an *expansion*: undistorting barrel distortion
+necessarily magnifies, and with the leading 1 holding the centre at unit magnification the map cannot
+shrink overall. The runaway is available in principle and is not what is happening in practice.
+
+### What is actually binding: the gate's scale-ratio bound is too tight for the 8 mm fisheye
+
+Removing the penalty, the fit wants a centre-to-edge magnification ratio of **4.18**, against
+`kMaxAcceptableScaleRatio = 4.0`. That is not degeneracy -- undistorting a fisheye to rectilinear
+genuinely stretches the corners several-fold, and the minimum Jacobian determinant stays comfortably
+positive (+1.00) throughout, so the map remains a clean bijection. The gate is clipping a legitimate
+solution.
+
+The min-determinant test is the principled half of the gate: it enforces bijectivity, which is the
+hypothesis the projective-geometry argument needs. The scale-ratio band was an ad hoc sanity check,
+and it is now demonstrably binding on the widest lens in the corpus. Loosening it -- to 6, say, or
+making it depend on fitted distortion magnitude -- is justified.
+
+**Practical scope is narrow.** VidSync's current under-converged Nelder-Mead lands at ratios of
+3.1 to 3.7 on the 8 mm files and passes comfortably. The bound only bites once the solver is
+improved, so this is a prerequisite for that change rather than an independent fix.
+
+### Net effect on the shipping question
+
+The "objective needs a better-specified scale" hypothesis is **withdrawn**. What survives from this
+line is one concrete, small change -- loosen the scale-ratio bound before improving the solver -- and
+a reusable capability in `fitter.py`: an optional scale-invariant objective and an optional radial
+gauge, both off by default, either of which can be re-tested on other lenses where the degeneracy may
+actually bite.
