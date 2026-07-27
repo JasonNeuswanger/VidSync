@@ -627,3 +627,72 @@ how well the pinhole model holds, relative to the geometry defining the rays, is
 mechanism. **This is post hoc, fitted to two files on one side and one on the other, and should
 not be acted on until tested.** The honest next step is more known-length data from field rigs
 with the wide separation, or a synthetic experiment with a controlled non-central camera.
+
+## Two-distance diagnostic: no detectable subject-distance dependence, bounded under ~4%
+
+`2015-09-04-1 Clearwater` was temporarily given two left-camera plumbline sets four seconds
+apart, with the board 1.35x closer in the earlier one (cell size 106.3 against 78.9 px, so 1/Z
+differs by 25.8%). This is Step 1 of the refraction protocol: if the underwater system is
+non-central, its effective distortion carries a term in 1/Z and a fit at one range cannot
+straighten lines at the other.
+
+### The test needs no fitting at all
+
+For a central camera carrying **any** fixed distortion map, the curvature of the image of a
+straight world line is a function of image position and image direction alone, independent of the
+line's distance. Undistortion sends the image of a straight line to a straight line; a straight
+line is fixed by one point and one direction; so two world lines whose images agree in position
+and direction at some pixel have identical undistorted lines and hence identical distorted curves.
+Depth cannot enter.
+
+So distance dependence is directly observable in the raw clicks: measure signed curvature at every
+interior plumbline point, bin by image radius and orientation, and compare the two sets. No
+fitting, no model, no gauge freedom. `tools/pooltest/curvature.py`. The null distribution comes
+from the same data by splitting one set in half — same range, so any disagreement there is corner
+noise plus board pose.
+
+This matters because the direct approach failed. A pure-Python 13-parameter Nelder-Mead refit of
+each set separately did not converge reliably (the near set's "own" residual came out *worse* than
+the other set's fit on the same data, which is impossible at an optimum), and no numpy or scipy is
+available. Curvature sidesteps the optimizer entirely.
+
+### Result: null, robust to window size
+
+Pooled curvature difference, in units of 1e-6 per pixel, against typical edge curvature of
+590-600 in the same units:
+
+| local window | chord span | near vs far | same-range null |
+|---|---|---|---|
+| 3 points | 161-213 px | -3.58 +/- 5.24 (z = -0.68) | -2.24 +/- 8.39 (z = -0.27) |
+| 5 points | 330-454 px | -2.10 +/- 3.00 (z = -0.70) | +1.95 +/- 4.81 (z = 0.41) |
+| 7 points | 509-707 px | +0.56 +/- 2.92 (z = 0.19) | +3.69 +/- 3.47 (z = 1.06) |
+
+Never significant, never larger than the same-range null, and the sign is not even consistent
+across window sizes. At the longest baseline the null exceeds the signal.
+
+**Bound.** The tightest estimate is +0.56 +/- 2.92, so a 2-sigma limit of 6.4 against curvature of
+about 595 — **1.1% of total distortion curvature for a 25.8% change in 1/Z**. Dividing by 0.258,
+the 1/Z-dependent share of this camera's distortion is **under about 4%**, consistent with zero.
+This agrees independently with the 67-document cross-prediction result above, where transferring a
+calibration across a 2.6-fold range change cost under 0.05 px.
+
+**The limitation is leverage, not precision.** Two frames four seconds apart span only 1.35x in
+range, so the bound on the absolute refraction magnitude is inflated 3.9-fold. Repeating with the
+board at the two extremes of the working range — say 0.3 m and 3 m — would give ten times the
+leverage and turn a 4% bound into a 0.4% one. That is the single cheapest way to settle this
+properly, and it needs one clip, not a field season.
+
+### Side observation: the stored parameters match neither set
+
+Evaluated on the near set alone the stored left-camera parameters give 1.809 px, on the far set
+1.555, and on both together 1.649, against a stored `distortionRemainingPerPoint` of 1.8035. They
+are at neither set's optimum — both of the (imperfect) independent refits reached 0.83-1.03 — so
+they appear to be from an earlier point set. Anything read from this file's stored left-camera
+parameters while the two-set arrangement is in place should be treated as stale.
+
+### Shape, for the flat-versus-dome question
+
+On `2016-08-13-2 Chena`, the systematic residual field is radial-dominant but with a real
+tangential component: at r = 700-1200 the radial rms is 3.78 px against 1.97 tangential. That is
+what a *nearly* centred dome would give — mostly radial, with a modest asymmetric part — rather
+than either a clean flat-port radial pattern or a badly decentred dome's strongly conic one.
