@@ -448,6 +448,14 @@ const int kWindowWidthFractionCount = 3;
 // A seed patch this size is good enough to stop enlarging the window.
 const size_t kGoodSeedPatchPoints = 24;
 
+// A basis further off the image axes than this is treated as suspect and only used when no
+// window offers an aligned one. The field protocol calls for the board to be rotated into
+// approximate alignment with the cameras, so a genuine basis is normally within a few degrees
+// of the axes: measured on real footage, good frames come out at 6 to 8 degrees and the one
+// that failed at 40. The threshold sits well clear of both, leaving room for a board set down
+// carelessly while still excluding anything close to diagonal.
+const double kMaxBasisMisalignmentDegrees = 30.0;
+
 // The displacement histogram is built twice per window. The first pass uses a radius
 // covering a good fraction of the window, so it finds the lattice step without assuming
 // it; the second pass re-bins tightly around that step for a precise basis.
@@ -685,6 +693,34 @@ bool peakExistsNear(const std::vector<HistogramPeak> &peaks, const cv::Point2f &
         }
     }
     return false;
+}
+
+// How far a basis is from lining up with the image axes, in degrees: 0 for a grid running
+// exactly horizontally and vertically, 45 for one running exactly diagonally.
+//
+// The field protocol has the board rotated into approximate alignment with the cameras, so a
+// basis near 45 degrees is not describing the rows and columns of the board. It is describing
+// the diagonals, which happens when the detector finds only every other corner over part of a
+// window: those form a lattice of their own, rotated 45 degrees with a cell root two times
+// larger, and the displacement histogram peaks on it just as convincingly. Nothing downstream
+// recovers from that, because the diagonal lattice does not contain the true row and column
+// vectors at all -- the Lagrange reduction in selectBasis shortens a basis within the lattice
+// it is handed and cannot step outside it.
+//
+// Taken modulo 90 degrees because which vector is called u, and which way each points, are
+// both arbitrary; only the grid's orientation matters.
+double basisMisalignmentDegrees(const cv::Point2f &u, const cv::Point2f &v)
+{
+    double worst = 0.0;
+    for (int which = 0; which < 2; which++) {
+        const cv::Point2f &w = (which == 0) ? u : v;
+        if (vectorLength(w) < 1e-6) continue;
+        double angle = std::atan2((double)w.y, (double)w.x) * 180.0 / CV_PI;
+        angle = angle - 90.0 * std::floor(angle / 90.0);   // fold into [0, 90)
+        const double offAxis = std::min(angle, 90.0 - angle);
+        if (offAxis > worst) worst = offAxis;
+    }
+    return worst;
 }
 
 // Picks two short, non-collinear peaks as the lattice basis and sanity-checks them.
@@ -1000,6 +1036,8 @@ SeedLattice findSeedLattice(const std::vector<CornerCandidate> &corners,
     cv::Point2f bestU(0.0f, 0.0f), bestV(0.0f, 0.0f);
     double bestSide = 0.0, bestStep = 0.0, bestSharpness = 0.0;
     bool haveBasis = false;
+    bool bestAligned = false;
+    double bestMisalignment = 0.0;
     bool sawConflict = false;
     std::ostringstream attempts;
 
@@ -1099,22 +1137,36 @@ SeedLattice findSeedLattice(const std::vector<CornerCandidate> &corners,
         }
 
         const SeedPatch patch = labelSeedPatch(corners, subset, u, v);
-        attempts << " patch=" << patch.cornerIndex.size() << (patch.conflict ? " CONFLICT]" : "]");
+        const double misalignment = basisMisalignmentDegrees(u, v);
+        const bool aligned = (misalignment <= kMaxBasisMisalignmentDegrees);
+        attempts << " off-axis=" << misalignment << "deg patch=" << patch.cornerIndex.size()
+                 << (patch.conflict ? " CONFLICT]" : "]");
         if (patch.conflict) {
             sawConflict = true;
             continue;
         }
 
-        if (!haveBasis || patch.cornerIndex.size() > bestPatch.cornerIndex.size()) {
+        // Alignment outranks patch size. Comparing on patch size alone let a single window
+        // that had locked onto the grid diagonals beat two windows that agreed with each other
+        // on the true basis, purely by growing a larger patch from it -- 16 corners against 7.
+        // Every row and column downstream then ran diagonally across the board. A window whose
+        // basis is diagonal is not a better reading of the same grid; it is a reading of a
+        // different grid, so no patch grown from it should be allowed to win.
+        if (!haveBasis || (aligned && !bestAligned) ||
+            (aligned == bestAligned && patch.cornerIndex.size() > bestPatch.cornerIndex.size())) {
             bestPatch = patch;
             bestU = u;
             bestV = v;
             bestSide = side;
             bestStep = step;
             bestSharpness = sharpness;
+            bestAligned = aligned;
+            bestMisalignment = misalignment;
             haveBasis = true;
         }
-        if (bestPatch.cornerIndex.size() >= kGoodSeedPatchPoints) break;
+        // Only stop early on a patch that is both big enough and aligned; otherwise a large
+        // diagonal patch found first would end the search before an aligned window is tried.
+        if (bestAligned && bestPatch.cornerIndex.size() >= kGoodSeedPatchPoints) break;
     }
 
     if (!haveBasis) {
@@ -1162,6 +1214,13 @@ SeedLattice findSeedLattice(const std::vector<CornerCandidate> &corners,
     if (bestPatch.duplicatesDropped > 0) {
         message << " (" << bestPatch.duplicatesDropped << " near-duplicate corner"
                 << (bestPatch.duplicatesDropped == 1 ? "" : "s") << " dropped)";
+    }
+    message << ". Grid runs " << bestMisalignment << " deg off the image axes";
+    if (!bestAligned) {
+        message << ", which is further than the " << kMaxBasisMisalignmentDegrees
+                << " deg expected of a board aligned to the cameras -- no window found a better "
+                << "aligned basis, so check that the rows and columns drawn on screen follow the "
+                << "board rather than its diagonals";
     }
     message << ". Centered window "
             << (int)bestSide << " px = " << (bestStep > 1e-6 ? bestSide / bestStep : 0.0)
