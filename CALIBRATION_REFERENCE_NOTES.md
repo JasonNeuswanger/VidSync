@@ -1067,3 +1067,62 @@ There is also a second, independent candidate improvement: the shipped Nelder-Me
 of the achievable residual on the table even within the gate, because it stalls on a problem
 conditioned at 3e8. Reducing to ten parameters fixes the conditioning, so the two changes reinforce
 each other. Both still need the known-length test.
+
+## Known-length verdict: the ten-parameter model is measurement-neutral, not a win
+
+`tools/pooltest/modeltest.py` refits both cameras' distortion from their own plumblines under each
+candidate model, gate enforced, rebuilds the whole downstream calibration on top (both homographies
+from the frame node clicks, camera position from the back-node sightlines) and re-triangulates the 14
+`Length Tests`.
+
+| model | plumbline px, L / R | mean abs err | rms | bias | sd |
+|---|---|---|---|---|---|
+| document as-is | (stored) | **2.879** | 4.027 | +0.876 | 4.079 |
+| full 13 | 0.901 / 2.394 | 4.238 | 6.740 | +1.262 | 6.871 |
+| k1-k5 + p1-p4 | 0.912 / 2.588 | 4.147 | 6.633 | +1.466 | 6.713 |
+| k1-k4 + p1-p4 | 0.921 / 2.572 | 4.156 | 6.592 | +1.460 | 6.671 |
+| k1-k3 + p1-p4 | 1.039 / 2.595 | 4.090 | 6.375 | +1.365 | 6.463 |
+
+**Reducing the radial order is worth about 2% here, which n = 14 cannot resolve.** k1-k4 is closer to
+truth than the full model on 8 of 14 measurements. So the ten-parameter model does not earn a change
+on measurement evidence, and it does not hurt either; its case rests on the 940-fold conditioning
+improvement and the held-out plumbline result, both of which are real but neither of which is
+accuracy.
+
+### The apparent "worse than the document" result is a data confound, not an objective failure
+
+Every refit measures worse than the parameters already in the document, 4.1-4.2 mm against 2.879. It
+is tempting to read that as the plumbline objective punishing thorough optimization -- and a
+plausible mechanism was available, that VidSync's under-converged Nelder-Mead stops short of the
+degenerate boundary and so acts as accidental regularization. **That reading is wrong, and testing it
+was worth the effort.** `tools/pooltest/convtest.py` isolates convergence quality by fitting the
+*same* 47-line far set two ways and holding the right camera fixed:
+
+| left-camera distortion | plumbline | mean abs err | rms |
+|---|---|---|---|
+| VidSync's own solve | 0.9173 px | 4.768 mm | 7.627 |
+| thorough refit, gated | 0.8438 px | **4.303 mm** | 6.896 |
+
+On identical data the better-converged fit measures **10% better**. Optimizing the objective harder
+helps. So the document's advantage comes from its plumbline *data*, not from how it was fitted: those
+parameters were fitted to an older detection, whereas every refit here used the current two-set
+arrangement. That also fits the earlier finding that a combined near-plus-far fit degrades each set
+relative to fitting one alone -- mixing two board distances into one solve appears to cost more than
+it gains.
+
+### Where this leaves a possible change
+
+Two candidate improvements survive, and neither is ready:
+
+* **Reduce to ten parameters.** Measurement-neutral at n = 14, better on held-out lines, 940-fold
+  better conditioned. Needs the corpus and the pool test's 1010 measurements before shipping.
+* **Optimize the objective properly.** Worth 10% on the one clean A/B available, also n = 14. Cheap
+  to do -- a trust-region pass on the residual vector, which is the natural method for a sum of
+  squares -- but it moves the solution toward the degenerate boundary, so it must ship together with
+  the gate as a hard constraint rather than a post-hoc check. Every gated fit here landed exactly on
+  the scale-ratio limit of 3.80, meaning the constraint and not the data is setting the answer, which
+  is its own argument that the objective needs a better-specified scale rather than a better solver.
+
+The high-power test not yet run is the 2012 pool test: 1010 known lengths rather than 14. Its camera
+has mild distortion, so it is a weak test of radial order specifically, but it is by far the best
+test of whether either change does harm.
