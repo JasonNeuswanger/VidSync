@@ -92,7 +92,7 @@
                                         <textField focusRingType="none" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="104214">
                                             <rect key="frame" x="262" y="343" width="280" height="17"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
-                                            <textFieldCell key="cell" scrollable="YES" alignment="right" lineBreakMode="clipping" sendsActionOnEndEditing="YES" id="104215">
+                                            <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" id="104215">
                                                 <font key="font" metaFont="systemBold"/>
                                                 <color key="textColor" name="systemRedColor" catalog="System" colorSpace="catalog"/>
                                                 <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
@@ -100,10 +100,10 @@
                                             <connections>
                                                 <binding destination="100044" name="value" keyPath="selection.frameRateWarning" id="104216">
                                                     <dictionary key="options">
-                                                        <string key="NSNoSelectionPlaceholder"/>
-                                                        <string key="NSNotApplicablePlaceholder"/>
-                                                        <string key="NSNullPlaceholder"/>
-                                                        <string key="NSMultipleValuesPlaceholder"/>
+                                                        <string key="NSMultipleValuesPlaceholder"></string>
+                                                        <string key="NSNoSelectionPlaceholder"></string>
+                                                        <string key="NSNotApplicablePlaceholder"></string>
+                                                        <string key="NSNullPlaceholder"></string>
                                                     </dictionary>
                                                 </binding>
                                             </connections>
@@ -583,7 +583,7 @@
                                                                 </textFieldCell>
                                                             </textField>
                                                             <textField focusRingType="none" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="6KV-p1-tsz">
-                                                                <rect key="frame" x="176" y="95" width="91" height="19"/>
+                                                                <rect key="frame" x="179" y="114" width="91" height="19"/>
                                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                                 <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="HG0-st-uul">
                                                                     <numberFormatter key="formatter" formatterBehavior="custom10_4" positiveFormat="#,##0.000 %" numberStyle="percent" minimumIntegerDigits="1" maximumIntegerDigits="2000000000" minimumFractionDigits="4" maximumFractionDigits="4" id="NHN-7U-Wz9">
@@ -602,7 +602,7 @@
                                                                 </connections>
                                                             </textField>
                                                             <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="103675">
-                                                                <rect key="frame" x="200" y="265" width="80" height="32"/>
+                                                                <rect key="frame" x="200" y="265" width="74" height="32"/>
                                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                                 <buttonCell key="cell" type="push" title="Calculate" bezelStyle="rounded" alignment="center" controlSize="small" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="103676">
                                                                     <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
@@ -783,7 +783,7 @@
                                                                 </connections>
                                                             </button>
                                                             <textField focusRingType="none" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Y8b-uH-lko">
-                                                                <rect key="frame" x="7" y="97" width="173" height="14"/>
+                                                                <rect key="frame" x="7" y="116" width="173" height="14"/>
                                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                                 <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Distortion reduction achieved:" id="jQC-xa-qCd">
                                                                     <font key="font" metaFont="smallSystem"/>
@@ -792,7 +792,7 @@
                                                                 </textFieldCell>
                                                             </textField>
                                                             <textField focusRingType="none" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="lwp-eJ-cIK">
-                                                                <rect key="frame" x="7" y="75" width="166" height="14"/>
+                                                                <rect key="frame" x="7" y="94" width="166" height="14"/>
                                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                                 <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Remaining distortion per point:" id="Soq-V5-3N4">
                                                                     <font key="font" metaFont="smallSystem"/>
@@ -801,7 +801,7 @@
                                                                 </textFieldCell>
                                                             </textField>
                                                             <textField focusRingType="none" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="fe2-EK-x69">
-                                                                <rect key="frame" x="234" y="75" width="35" height="14"/>
+                                                                <rect key="frame" x="237" y="96" width="35" height="14"/>
                                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                                 <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="pixels" id="0t8-fC-fwl">
                                                                     <font key="font" metaFont="smallSystem"/>
@@ -810,7 +810,7 @@
                                                                 </textFieldCell>
                                                             </textField>
                                                             <textField focusRingType="none" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="bCI-eq-Skd">
-                                                                <rect key="frame" x="176" y="73" width="54" height="19"/>
+                                                                <rect key="frame" x="179" y="92" width="54" height="19"/>
                                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                                 <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="hcn-Sd-rgq">
                                                                     <numberFormatter key="formatter" formatterBehavior="custom10_4" numberStyle="decimal" minimumIntegerDigits="1" maximumIntegerDigits="2000000000" minimumFractionDigits="5" maximumFractionDigits="5" id="Y1E-2a-4TN"/>
@@ -827,16 +827,16 @@
                                                                 </connections>
                                                             </textField>
                                                             <textField focusRingType="none" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="hol-lb-001">
-                                                                <rect key="frame" x="7" y="119" width="190" height="14"/>
+                                                                <rect key="frame" x="7" y="72" width="173" height="14"/>
                                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                                                <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Held-out diagonal straightness:" id="hol-lc-001">
+                                                                <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Held-out diagonal distortion/pt:" id="hol-lc-001">
                                                                     <font key="font" metaFont="smallSystem"/>
                                                                     <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                                                     <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                                                 </textFieldCell>
                                                             </textField>
                                                             <textField focusRingType="none" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="hol-vl-001">
-                                                                <rect key="frame" x="197" y="117" width="54" height="19"/>
+                                                                <rect key="frame" x="179" y="70" width="54" height="19"/>
                                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                                 <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="hol-x39">
                                                                     <numberFormatter key="formatter" formatterBehavior="custom10_4" numberStyle="decimal" minimumIntegerDigits="1" maximumIntegerDigits="2000000000" minimumFractionDigits="5" maximumFractionDigits="5" id="hol-x62"/>
@@ -854,7 +854,7 @@
                                                                 </connections>
                                                             </textField>
                                                             <textField focusRingType="none" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="hol-un-001">
-                                                                <rect key="frame" x="255" y="119" width="35" height="14"/>
+                                                                <rect key="frame" x="237" y="74" width="35" height="14"/>
                                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                                 <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="pixels" id="hol-uc-001">
                                                                     <font key="font" metaFont="smallSystem"/>
@@ -1242,7 +1242,7 @@
                                                                     <rect key="frame" x="-100" y="-100" width="249" height="15"/>
                                                                     <autoresizingMask key="autoresizingMask"/>
                                                                 </scroller>
-                                                                <scroller key="verticalScroller" wantsLayer="YES" verticalHuggingPriority="750" doubleValue="0.73809523809523814" horizontal="NO" id="t1h-QB-3Qg">
+                                                                <scroller key="verticalScroller" wantsLayer="YES" verticalHuggingPriority="750" doubleValue="0.97619047619047616" horizontal="NO" id="t1h-QB-3Qg">
                                                                     <rect key="frame" x="248" y="1" width="17" height="123"/>
                                                                     <autoresizingMask key="autoresizingMask"/>
                                                                 </scroller>
@@ -2610,7 +2610,7 @@ IA
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                             <clipView key="contentView" id="qIV-QB-8ub">
                                                 <rect key="frame" x="1" y="1" width="555" height="152"/>
-                                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                                <autoresizingMask key="autoresizingMask"/>
                                                 <subviews>
                                                     <tableView identifier="MeasurementEventsTableView" verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnSelection="YES" multipleSelection="NO" autosaveColumns="NO" rowHeight="14" headerView="101109" id="101110" customClass="EventAwareTableView">
                                                         <rect key="frame" x="0.0" y="0.0" width="933" height="135"/>
@@ -2826,7 +2826,7 @@ IA
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
                                             <clipView key="contentView" id="HbR-iC-8zz">
                                                 <rect key="frame" x="1" y="1" width="555" height="80"/>
-                                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                                <autoresizingMask key="autoresizingMask"/>
                                                 <subviews>
                                                     <tableView identifier="MeasurementPointsTableView" verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnSelection="YES" multipleSelection="NO" autosaveColumns="NO" rowHeight="14" headerView="101123" id="101122" customClass="EventAwareTableView">
                                                         <rect key="frame" x="0.0" y="0.0" width="1151" height="63"/>
@@ -3035,7 +3035,7 @@ IA
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                             <clipView key="contentView" id="2MG-kq-sSG">
                                                 <rect key="frame" x="1" y="1" width="291" height="208"/>
-                                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                                <autoresizingMask key="autoresizingMask"/>
                                                 <subviews>
                                                     <tableView identifier="MeasurementObjectsTableView" verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnSelection="YES" multipleSelection="NO" autosaveColumns="NO" rowHeight="14" headerView="101138" id="101137" customClass="EventAwareTableView">
                                                         <rect key="frame" x="0.0" y="0.0" width="670" height="191"/>
@@ -7717,9 +7717,9 @@ There is nothing to configure. Every threshold is either an absolute one on a lo
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <textFieldCell key="cell" controlSize="small" sendsActionOnEndEditing="YES" id="104150">
                             <font key="font" metaFont="smallSystem"/>
-                            <mutableString key="title">Use this correction if your calibration frame is (like most) made of dots on a clear material such as plexiglass. With a clear pane, you view the back surface nodes through the front surface, which refracts light and slightly changes the apparent position of the dots.  With the information below, VidSync compensates for this effect when you compute the calibration.  See the help file for details.
+                            <string key="title">Use this correction if your calibration frame is (like most) made of dots on a clear material such as plexiglass. With a clear pane, you view the back surface nodes through the front surface, which refracts light and slightly changes the apparent position of the dots.  With the information below, VidSync compensates for this effect when you compute the calibration.  See the help file for details.
 
-Do NOT use this correction if you film through the side of an aquarium or use an "open air" design like a wireframe or spheres hanging from strings in space.</mutableString>
+Do NOT use this correction if you film through the side of an aquarium or use an "open air" design like a wireframe or spheres hanging from strings in space.</string>
                             <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
