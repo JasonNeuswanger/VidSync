@@ -752,3 +752,49 @@ clip. If those disagree by about 0.32 px as well, the whole effect is frame-to-f
 and range dependence is bounded below it. If they agree closely, the near/far disagreement is
 range. This costs one more detection in an already-open document and is the single measurement that
 would resolve the question.
+
+### The completed 2x2, and what it costs in millimetres
+
+A corrected near-set export completes the cross-fit. Each exported fit was identified by matching
+its app-reported residual against straightness computed on each candidate training set, so the
+labels are verified rather than trusted:
+
+| | near fit | far fit |
+|---|---|---|
+| **near lines** | **1.0303** | 1.1246 |
+| **far lines** | 1.0349 | **0.9173** |
+
+Transfer penalty **0.451 px** onto the near lines (corner noise 0.200) and **0.479 px** onto the
+far lines (corner noise 0.150). The symmetry matters: a one-sided penalty would point at coverage
+or extrapolation, and a symmetric one is what a genuine model-versus-data mismatch looks like.
+Coverage is independently excluded here, both sets reaching r98 near 990 px because field practice
+fills the frame at every distance.
+
+**In millimetres.** `tools/pooltest/distcal.py` rebuilds the entire downstream calibration under
+each distortion model -- undistorting the frame's 20 front and 27 back node clicks, refitting both
+homographies by normalized DLT, re-estimating the camera position from the back-node sightlines --
+and re-triangulates the 14 known lengths. Refraction correction of the back-plane nodes is not
+replicated, which is harmless because the quantity of interest is a difference between two models
+and a common approximation cancels; as a fidelity check, the document's own stored distortion run
+through this rebuild gives 2.879 mm mean absolute error against the exact harness's 2.971 mm.
+
+Paired per-measurement difference between the near-set and far-set calibrations: **mean -0.244 mm,
+sd 0.934 mm, largest 2.867 mm**, against a measurement error of about 4.77 mm. So the choice of
+calibration distance is worth roughly a fifth of this rig's error budget -- real, and not
+negligible, but not dominant either.
+
+**The attribution caveat is unchanged and is the whole ballgame.** These numbers establish that
+*which plumbline set you fit to* matters. They do not establish that *distance* is why. Two frames
+four seconds apart differ in board pose, in board flatness presentation, and in detection noise as
+well as in range. The same-distance control -- two sets at the same board distance, different poses
+-- remains the one measurement that separates them, and it has not been run.
+
+**A caution that emerged from this.** Both new single-timecode fits produce *worse* measurements
+than the document's older stored parameters, 4.26 and 4.77 mm against 2.88, despite far better
+plumbline residuals (1.03 and 0.92 against 1.55 to 1.81). The likely mechanism is that each new fit
+uses one timecode's lines only, 33 or 47 of them, so it is less constrained outside their image
+footprint, and the length targets sit at 209 to 609 mm while the frame planes are at 0 and 196 mm,
+so sightlines are extrapolated well beyond the calibrated volume. With n = 14 this could be noise,
+but it is the third time in this project that a better calibration residual has accompanied worse
+measurements. Fitting distortion to all available plumbline sets at once looks safer than fitting
+to any single one.
