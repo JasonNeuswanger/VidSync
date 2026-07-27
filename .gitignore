@@ -24,3 +24,4 @@ VidSync.xcodeproj/project.xcworkspace/xcuserdata/*
 # Built product of tools/chessboard-harness/build.sh
 tools/chessboard-harness/harness
 tools/chessboard-harness/harness.dSYM/
+__pycache__/

@@ -1,0 +1,68 @@
+﻿Study stream,Code,Time,Quality,Calibration,Borrow source,Focal length,Mode,Aperture,Shutter,ISO,Frame sep
+Chena,2015-06-10-1,11:28 PM,C,Separate,,unknown,unknown,unknown,unknown,unknown,570
+Chena,2015-06-11-1,04:26 PM,D,Separate,,unknown,unknown,unknown,unknown,unknown,570
+Chena,2015-06-11-2,09:12 PM,C,Separate,,10,A,f/8,Auto,Auto,570
+Chena,2015-06-12-1,01:35 PM,C,At end,,10,A,f/16,Auto,Auto,570
+Panguingue,2015-06-16-1,03:24 PM,B,Borrow,2015-06-16-2,10,A,f/11,Auto,Auto,570
+Panguingue,2015-06-16-2,10:01 PM,B,10:24 PM,,10,A,f/11,Auto,Auto,570
+Panguingue,2015-06-17-1,09:04 PM,A,9:31 PM,,10,A,f/11,Auto,Auto,570
+Panguingue,2015-06-18-1,02:42 PM,B,2:46 PM,,10,A,f/11,Auto,Auto,570
+Clearwater,2015-06-22-1,03:07 PM,F,4:02 PM,,13,A,f/11,Auto,Auto,200
+Clearwater,2015-06-22-2,09:15 PM,A,10:15 PM,,13,A,f/11,Auto,Auto,570
+Clearwater,2015-06-23-1,04:03 PM,D+,6:18 PM,,13,A,f/11,Auto,Auto,570
+Clearwater,2015-06-23-2,10:46 PM,A-,Borrow,2015-07-10-1,10,A,f/11,Auto,Auto,570
+Chena,2015-07-10-1,08:32 PM,B-,4:31 PM,,10,A,f/11,Auto,Auto,570
+Chena,2015-07-11-1,04:42 PM,C,4:31 PM,,17,A,f/11,Auto,Auto,570
+Chena,2015-07-11-2,10:29 PM,A,6:19 PM,,8,A,f/11,Auto,Auto,570
+Chena,2015-07-12-1,05:48 PM,F,12:30 PM,,17,A,f/11,Auto,Auto,570
+Chena,2015-07-12-2,,A,2:43 PM,,8,A,f/11,Auto,Auto,570
+Panguingue,2015-07-15-1,11:41 PM,C,11:31 PM,,10,A,f/11,Auto,Auto,570
+Panguingue,2015-07-16-1,06:12 PM,F,n/a,,10,M,f/11,1/100,640,570
+Panguingue,2015-07-16-2,,A,6:26 PM,,10,M,f/11,1/100,640,570
+Panguingue,2015-07-17-1,03:06 PM,B+,2:51 PM,,10,M,f/11,1/125,640,570
+Panguingue,2015-07-17-2,10:05 PM,A-,Borrow,2015-07-17-3,17,A,f/11,Auto,Auto,570
+Panguingue,2015-07-17-3,,A,9:55 PM,,17,A,f/11,Auto,Auto,570
+Clearwater,2015-07-28-1,11:29 PM,C+,10:53 PM,,17,A,f/8,Auto,Auto,200
+Clearwater,2015-07-29-1,05:40 PM,B,5:20 PM,,17,M,f/11,1/320,640,200
+Clearwater,2015-07-30-1,05:01 PM,A,4:49 PM,,17,A,f/11,Auto,Auto,200
+Clearwater,2015-07-31-1,04:01 PM,A-,3:47 PM,,8,A,f/11,Auto,Auto,200
+Chena,2015-08-04-1,09:50 PM,A,10:20 PM,,8,S,Auto,1/200,Auto,200
+Chena,2015-08-05-1,04:25 PM,A-,Borrow,2015-08-04-1,8,S,Auto,1/200,Auto,200
+Chena,2015-08-05-2,07:15 PM,B,Borrow,2015-08-04-1,8,S,Auto,1/200,Auto,200
+Chena,2015-08-06-1,04:28 PM,D,4:16 PM,,8,A,f/11,Auto,Auto,200
+Clearwater,2015-08-12-1,04:50 PM,A-,4:26 PM,,8,A,f/11,Auto,Auto,200
+Clearwater,2015-08-13-1,04:58 PM,A,4:46 PM,,17,A,f/11,Auto,Auto,200
+Clearwater,2015-09-04-1,07:41 PM,A,7:27 PM,,8,A,f/11,Auto,Auto,196
+Chena,2016-06-01-1,08:36 PM,C+,9:04 PM,,8,A,f/11,Auto,Auto,200
+Chena,2016-06-02-1,03:51 PM,B+,3:42 PM,,8,M,f/11,1/320,1600,200
+Chena,2016-06-02-2,07:50 PM,A-,7:43 PM,,8,M,f/11,1/320,3200,200
+Chena,2016-06-03-1,01:47 PM,B+,1:35 PM,,8,M,f/11,1/320,1600,200
+Clearwater,2016-06-09-1,07:17 PM,A-,7:53 PM,,17,M,f/11,1/250,2500,200
+Clearwater,2016-06-10-1,02:55 PM,A,2:09 PM,,17,M,f/11,1/500,1250,200
+Clearwater,2016-06-10-2,08:39 PM,B-,8:32 PM,,8,M,f/11,1/400,1600,200
+Clearwater,2016-06-11-1,05:15 PM,A,4:49 PM,,17,M,f/11,1/500,1250,200
+Panguingue,2016-06-16-1,09:35 PM,B-,9:30 PM,,8,A,f/11,Auto,Auto,200
+Panguingue,2016-06-17-1,03:18 PM,A,3:10 PM,,17,M,f/11,1/320,1600,200
+Panguingue,2016-06-17-2,09:39 PM,B,6:20 PM,,8,M,f/11,1/250,2000,200
+Panguingue,2016-06-17-3,,B+,9:34 PM,,8,M,f/11,1/160,3200,200
+Panguingue,2016-06-18-1,02:46 PM,B+,2:36 PM,,8,M,f/11,1/250,1600,200
+Panguingue,2016-06-19-1,02:56 PM,B,2:50 PM,,8,M,f/11,1/160,6400,200
+Clearwater,2016-07-07-1,10:11 PM,B+,9:59 PM,,17,M,f/11,1/320,1600,200
+Clearwater,2016-07-08-1,04:31 PM,A-,4:11 PM,,8,M,f/11,1/400,1600,200
+Clearwater,2016-07-08-2,09:29 PM,B-,9:52 PM,,8,M,f/11,1/400,1600,200
+Clearwater,2016-07-09-1,12:53 PM,C+,12:42 PM,,8,M,f/11,1/500,1600,200
+Clearwater,2016-07-09-2,05:12 PM,A,5:03 PM,,8,M,f/11,1/320,1600,200
+Clearwater,2016-08-01-1,06:22 PM,A,6:02 PM,,8,M,f/11,1/400,1600,200
+Clearwater,2016-08-02-1,03:57 PM,B+,3:39 PM,,17,M,f/11,1/500,1600,200
+Clearwater,2016-08-02-2,09:29 PM,B,9:08 PM,,17,M,f/11,1/250,1600,200
+Panguingue,2016-08-07-1,03:17 PM,B-,3:06 PM,,8,M,f/11,1/250,3200,200
+Panguingue,2016-08-07-2,06:33 PM,B+,6:25 PM,,8,M,f/11,1/200,6400,200
+Panguingue,2016-08-08-1,02:11 PM,B,2:08 PM,,8,M,f/11,1/200,3200,200
+Panguingue,2016-08-08-2,04:55 PM,A,4:50 PM,,8,M,f/11,1/200,3200,200
+Panguingue,2016-08-08-3,09:06 PM,C+,Borrow,2016-08-08-4,8,A,f/11,Auto,Auto,200
+Panguingue,2016-08-08-4,10:24 PM,C,10:19 PM,,8,A,f/11,Auto,Auto,200
+Chena,2016-08-12-1,09:41 PM,A-,Borrow,2014-08-13-2,8,A,f/11,Auto,Auto,200
+Chena,2016-08-13-1,02:07 PM,C-,Borrow,2014-08-13-2,8,A,f/11,Auto,Auto,200
+Chena,2016-08-13-2,04:37 PM,B-,4:28 PM,,8,A,f/11,Auto,Auto,200
+Chena,2016-08-14-1,12:19 PM,D,Borrow,2014-08-13-2,8,M,f/11,1/60,6400,200
+Chena,2016-08-14-2,03:50 PM,B,Borrow,2014-08-13-2,8,A,f/11,Auto,Auto,200

@@ -341,3 +341,132 @@ To compare two versions of the mathematics fairly, both must be applied to the s
 screen coordinates rather than to the stored 3D results, since the stored coordinates only
 change when points are recalculated. The clicks are preserved in `ZVSSCREENPOINT` (`Z_ENT` 12,
 `VSEventScreenPoint`), each tied to the video clip and calibration it belongs to.
+
+## Does distortion depend on subject distance? No, to within 0.05 px
+
+Asked because a range-dependent distortion would explain several things at once: the 1.35 px of
+systematic residual in the 8 mm fisheye fits, and the range-driven measurement bias in the pool
+test. It would also invalidate the premise of plumbline calibration, which assumes a straight
+line in the world images to a straight line whatever its distance.
+
+### From first principles
+
+For a **central** camera — one where all rays pass through a single point — distortion is a
+function of field angle alone, and range is irrelevant. The imaging map factors as
+`X -> direction(X - O) -> pixel`, so range is quotiented out before distortion is applied. Two
+points on the same ray, a centimetre and a kilometre away, land on the same pixel by
+construction. This is why a pinhole-plus-radial-distortion model works at all, and it is the
+right default assumption.
+
+There are exactly three ways out of it, and only the first produces range dependence *within* a
+single frame:
+
+1. **Non-central optics.** A flat port refracts by Snell's law at the interface, and the
+   backward extensions of the refracted rays do not meet in a point — they envelope a caustic on
+   the optical axis. A dome port is neutral only when the entrance pupil sits at the centre of
+   curvature; off-centre, it refracts. Either way the camera has no single viewpoint, so the
+   apparent bearing of a point acquires a term of order (viewpoint spread)/range. Effective
+   distortion becomes a surface `g(r, 1/Z)` rather than a curve `g(r)`.
+2. **Focus breathing.** Refocusing moves lens elements and changes the distortion coefficients.
+   This is real, but it is a property of the lens *configuration*: at a fixed focus setting, near
+   and far objects on one ray still share a pixel. It invalidates reusing a calibration across
+   focus settings, not within a frame.
+3. **Pupil aberration** — entrance pupil position drifting with field angle, the in-air version
+   of (1), usually sub-millimetre.
+
+For a dome of radius `Rd` with the pupil decentred by `e`, the refraction at incidence
+`sin a ~ (e/Rd) sin th` deviates the ray by `~0.248 a` for n = 1.33, putting the effective
+viewpoint about `0.248 e sin th` off axis. At focal length `f` and range `Z` that is an image
+error of `0.248 f e sin th / Z`. With f = 1300 px, e = 5 mm and th = 60 degrees, this is 1.4 px
+at Z = 1 m — the same size as the residual being chased, so the mechanism was worth taking
+seriously rather than dismissing. A flat port would give tens of pixels, which is one reason
+these rigs must have been domes.
+
+### The test
+
+The 67 documents in `Drift Model Project/VidSync Projects` all used the same chessboard, so
+**cell size in pixels is a proxy for 1/Z**: a bigger cell means the board was closer. Across the
+folder the cell size spans 71 to 184 px, a factor of 2.6 in range. `tools/pooltest/harvest.py`
+and `tools/pooltest/rangetest.py` do the work; the latter is self-contained.
+
+Three things have to be controlled, and each one changed the answer:
+
+**Focal length.** Two lenses were carried, an 8 mm fisheye and a 10-17 mm zoom, and they were
+swapped mid-day. `TrimmedVideoSiteDetails.csv` (from the field notes) carries the focal length
+per site code. Without it, 2015-07-11-1 and 2015-07-11-2 Chena look like the same camera on the
+same day fitting distortion 3.7x apart; they are 17 mm and 8 mm respectively.
+
+**Gauge.** Straightness is invariant under any homography applied after undistortion, so a
+plumbline fit determines the distortion only up to that gauge, and uniform scale about the
+distortion centre is the part the Brown-Conrady series absorbs most easily. The absolute radial
+displacement `r*R(r^2)` therefore estimates nothing: within one camera and one season it ranged
+9.9 to 35.6 px at r = 400, which is gauge wander, not distortion. Measuring instead the **rms
+departure of `r_u(r)` from proportionality** — the part that actually bends lines — gives a
+number that behaves:
+
+| focal length | n | median severity | spread within the lens |
+|---|---|---|---|
+| 8 mm | 35 | 82.8 px | 81.1 - 90.6 |
+| 10 mm | 13 | 67.1 px | 62.0 - 68.6 |
+| 13 mm | 6 | 33.1 px | 29.2 - 36.5 |
+| 17 mm | 20 | 18.3 px | 16.2 - 20.3 |
+
+Monotone in focal length, as it must be, and stable to about +/-6% within a lens. Any severity
+metric that does not do this is measuring gauge.
+
+**Radial coverage.** A closer board fills more of the frame, so its fit is constrained to a
+larger radius and extrapolates better. This confound points the same way as the hypothesis and
+is strong enough to fake it — see below.
+
+### Result: null
+
+*Severity against board distance*, within focal length and camera side, gave correlations of
+-0.129, -0.371, -0.269, +0.067, +0.170 and +0.779 across the six groups; pooled after demeaning,
+-0.138 (t = -1.13). The signs disagree, which a physical mechanism would not do. The one strong
+group (17 mm right, n = 11) drifts 17.4 to 19.4 px of severity across a 1.86x range change, but
+the 17 mm *left* camera scatters by the same +/-2 px with no trend at all.
+
+*Cross-prediction* is the better test, because straightness is exactly the gauge-invariant
+quantity and no severity metric is involved: apply one session's parameters to another session's
+plumblines and see how straight they come out. Both fits are evaluated on the same points, all
+inside `min(rmax_i, rmax_j)`, so neither is extrapolating.
+
+| \|cell difference\| | pairs | median degradation |
+|---|---|---|
+| 0-5 px | 120 | 0.260 px |
+| 5-15 px | 258 | 0.453 px |
+| 15-30 px | 272 | 0.453 px |
+| 30-50 px | 148 | 0.430 px |
+| 50+ px | 54 | 0.418 px |
+
+Flat from 5 px upward. Slope -0.0063 px per px of cell (t = -0.47); signed slope -0.0038
+(t = -0.45). **Doubling the board's distance changes how well a calibration transfers by less
+than 0.05 px.** The floor of 0.26 px at matched distance is what swapping calibrations costs
+anyway, from rig and detection differences.
+
+Without the coverage control the same table reads 0.50, 0.71, 0.75, 0.86, 0.84 with a signed
+slope of -0.036 (t = -2.87), which looks like a real and even directional effect. It is
+extrapolation. This is the third time in this project that a calibration-side metric has
+produced a confident wrong answer; see the frame-node result above for the second.
+
+### Consequence
+
+Range dependence is not the explanation for the 1.35 px fisheye residual, and it cannot be the
+explanation for the pool test's range bias either — on shape grounds, independently of the
+measurement above. A 1/Z term is *largest at short range* and saturates as Z grows, so it
+predicts error that flattens out with distance. The pool test's scale error does the opposite,
+growing from +0.006% under 500 mm to +1.586% beyond 1600 mm and accelerating. That is the
+signature of a fixed angular error in the sightlines, which is where the earlier homography work
+already pointed.
+
+Distortion is a function of angle, not of subject distance, and for these rigs it is so to
+within 0.05 px over a 2.6-fold change in range. The practical corollary is a reassuring one:
+**the board's distance during plumbline calibration does not matter**, so it can be placed
+wherever it is best detected — filling the frame, which improves radial coverage, is free.
+
+### Side finding: one mislabelled record
+
+`2016-06-16-1 Panguingue` is recorded as 8 mm in the field notes, but both its cameras fit a
+severity of 18.2 px, squarely inside the 17 mm population (16.2-20.3) and nowhere near the 8 mm
+one (81.1-90.6). Either the sheet's focal length is wrong for that site or the document is
+carrying a calibration from a 17 mm session. Worth checking before that file is used.
