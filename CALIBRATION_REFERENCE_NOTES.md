@@ -21,6 +21,41 @@ In `~/Library/CloudStorage/Dropbox/Drift Model Project/VidSync Projects/`:
   seed-basis and run-end detector fixes. Hardest case so far.
 - `2015-09-04-1 Clearwater.vsd`
 
+## The fisheye residual in the 2016 field videos
+
+Measured on `2016-08-13-2 Chena.vsd`, the 8 mm fisheye file, after the detector fixes.
+
+Corner localisation noise, estimated independently of any distortion model from the four-point
+centred stencil on uniformly spaced stretches of each plumbline, is **0.40 px** in both cameras.
+The fit residual is **1.41 px**. So roughly 1.35 px of the residual is systematic structure that
+the model is not capturing, and it is strongly radial:
+
+| radius from distortion centre | n | residual rms |
+|---|---|---|
+| 0–200 px | 30 | **0.374 px** |
+| 200–400 px | 104 | 0.645 |
+| 400–600 px | 222 | 0.881 |
+| 600–800 px | 312 | 1.500 |
+| 800–1000 px | 351 | **1.768 px** |
+
+Near the centre the residual is indistinguishable from corner noise: the model fits perfectly
+where the field angle is small, and fails progressively where it is not. That is what a radial
+model of the wrong shape looks like.
+
+**But a fisheye radial model does not fix it.** Replacing the even-power series in r with the
+form used for real fisheye lenses — `rho = rd/f`, `theta = rho(1 + a1 rho^2 + a2 rho^4 + a3
+rho^6)`, `ru = f tan(theta)`, whose tangent is what lets a very wide field angle map to a
+perspective image without diverging coefficients — gives 1.4194 px against Brown–Conrady's
+1.4093, using three fewer parameters. Equally good, not better. Fitted focal length 1314 px.
+
+So the leftover structure is radial but is not a deficiency of the radial function's algebraic
+family. The leading remaining hypothesis is physical: the distortion target is a printed sign
+held about 10 cm from a dome port, so a small bow in it puts real curvature into the "plumb"
+lines, and the apparent non-straightness would grow toward the frame edges where the board is
+most oblique and nearest. That is a hardware and protocol matter rather than a mathematical one,
+and it would be tested by checking whether the residual pattern follows position on the *board*
+across several frames rather than position in the *image*.
+
 ## Pool test reference set
 
 `~/Library/CloudStorage/Dropbox/Chena Project Synced/VidSync Projects/2012-01-31_PoolTest/2012-01-31_PoolTest_2026_Reanalysis.vsd`
@@ -282,6 +317,19 @@ Note also that the pinhole assumption is already measurably imperfect here, with
 wall involved: the back-node sightlines miss their own fitted centre by a median of 0.65 and
 0.83 mm for the two cameras, and up to 1.70 mm, against measurement errors of about 1 mm. Some
 of that is calibration noise rather than genuine non-central geometry.
+
+### Obliquity does not affect accuracy
+
+An earlier reading of the per-object table suggested that the oblique-angle object was three to
+five times worse than flat targets of the same length, contradicting Fig. 5b of the paper. That
+was wrong, and it was a range confound: `Angle Distance Sweep` was filmed at a median range of
+3799 mm against 556 and 656 mm for the two flat 4-square objects.
+
+Computing the obliquity of every measurement directly, as the angle of the target segment away
+from perpendicular to the line of sight, and correlating it against scale error over all 1010
+measurements gives **−0.041**, and −0.231 within the 500–900 mm band, where more oblique is very
+slightly *better*. At matched range the scale error across obliquity bins is 0.33%, 0.21% and
+0.23%. The paper's finding of no angle effect stands.
 
 ### How to use it
 
