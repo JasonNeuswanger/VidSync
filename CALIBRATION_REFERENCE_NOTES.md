@@ -696,3 +696,59 @@ On `2016-08-13-2 Chena`, the systematic residual field is radial-dominant but wi
 tangential component: at r = 700-1200 the radial rms is 3.78 px against 1.97 tangential. That is
 what a *nearly* centred dome would give — mostly radial, with a modest asymmetric part — rather
 than either a clean flat-port radial pattern or a badly decentred dome's strongly conic one.
+
+### Revisited with VidSync's own fits: a real but unattributed 0.32 px inconsistency
+
+Three exports were produced holding VidSync's own solver output for the near set, the far set and
+both combined (`tools/pooltest/twodistance2.py`). Two of the three are the same fit: the
+"NearDistortionSetOnly" and "FarDistortionSetOnly" files differ only in the eleventh significant
+figure and report a bit-identical `distortionRemainingPerPoint` of 0.917252988615399, which only
+happens with identical input. Evaluating each exported fit against each candidate training set
+identifies them unambiguously:
+
+| export | app-reported residual | near set | far set | both sets |
+|---|---|---|---|---|
+| "near-only" | 0.917253 | 1.124585 | **0.917253** | 0.995638 |
+| "far-only" | 0.917253 | 1.124585 | **0.917253** | 0.995638 |
+| "both" | 0.999429 | 1.077459 | 0.953927 | **0.999429** |
+
+So the near-only fit does not exist yet; the export labelled that way carries the far-set fit.
+
+**What can still be concluded.** The near-only optimum must be at or below the 1.077459 the
+combined fit already achieves on the near set, because the near-only fit minimizes exactly that
+quantity. The far-set fit gives 1.124585 there. So the penalty for transferring the far fit to the
+near lines is **at least sqrt(1.124585^2 - 1.077459^2) = 0.32 px**, against a corner-noise floor of
+0.200 px on that set. That is above noise, and coverage is not the explanation this time: both sets
+reach r98 = 994 and 989 px, because field practice is to fill the frame at any distance.
+
+The combined fit also shows the two sets pulling against each other — including the near set
+degrades the far set from 0.9173 to 0.9539 — which is what one map failing to serve both ranges
+looks like. But adding 351 points to 640 shifts a 13-parameter optimum anyway, so this is not by
+itself evidence of a systematic difference.
+
+**This reconciles with the curvature null rather than contradicting it.** A 0.32 px straightness
+excess over lines spanning about 1000 px implies a curvature difference of roughly
+8 x 0.32 / 1000^2 = 2.6 in the 1e-6/px units used above. The curvature test's 2-sigma sensitivity
+was 3 to 6 in those units. So both measurements agree: there is something at the 0.3 px level, and
+the curvature test was just short of resolving it.
+
+**What it is remains open.** The 0.32 px could be range dependence, or board pose, or board
+non-flatness presenting differently, or detection differences between two frames. Nothing here
+separates them.
+
+### The protocol correction that matters
+
+Testing at 0.3 m and 3 m is not possible: with these wide lenses a frame-filling board at 3 m
+would have to be enormous, and frame-filling coverage is more important than range spread. Field
+practice was always to fill the frame. **This has a consequence for the harmonic-mean
+recommendation: the calibration distance is not a free parameter.** It is fixed by the board size
+and the lens, given the coverage constraint. The actionable version is therefore about board
+sizing, not board placement — a board sized so that frame-filling occurs near the harmonic mean of
+the working range — and that only matters if the effect proves real.
+
+**The right control is free and was not run.** To separate range from frame-to-frame variability,
+take two plumbline sets at the *same* board distance but different times and poses, from the same
+clip. If those disagree by about 0.32 px as well, the whole effect is frame-to-frame variability
+and range dependence is bounded below it. If they agree closely, the near/far disagreement is
+range. This costs one more detection in an already-open document and is the single measurement that
+would resolve the question.
