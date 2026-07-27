@@ -113,6 +113,15 @@ SeedLattice findSeedLattice(const std::vector<CornerCandidate> &corners,
                             cv::Size imageSize,
                             const LatticeSeedHint &hint);
 
+// Same as above, but with an optional image-intensity pitch prior. The grayscale image lets
+// the seed finder estimate the central checker pitch from brightness scanlines, independent
+// of the contaminated corner cloud. If the estimate is weak it is ignored.
+SeedLattice findSeedLattice(const std::vector<CornerCandidate> &corners,
+                            float coarseCellSize,
+                            cv::Size imageSize,
+                            const LatticeSeedHint &hint,
+                            const cv::Mat &gray);
+
 // --- Stage D: grow the seed outward over the whole board ----------------------------
 
 // Every corner the grid could be extended to, each with its integer grid coordinate.

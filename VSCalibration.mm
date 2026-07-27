@@ -1878,7 +1878,7 @@ static const size_t kMinAutodetectedPlumblines = 8;
 	}
 
 	vidsync::SeedLattice seed = vidsync::findSeedLattice(detection.corners, detection.estimatedCellSize,
-														 cv::Size(gray.cols, gray.rows), hint);
+														 cv::Size(gray.cols, gray.rows), hint, gray);
 
 	vidsync::GrownLattice lattice;
 	vidsync::RefinementResult refinement;

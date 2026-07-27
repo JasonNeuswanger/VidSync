@@ -572,6 +572,176 @@ double vectorLength(const cv::Point2f &p)
     return std::sqrt((double)p.x * p.x + (double)p.y * p.y);
 }
 
+struct PitchPrior {
+    double pitch;
+    double confidence;
+    int scanlineCount;
+    double spread;
+
+    PitchPrior() : pitch(0.0), confidence(0.0), scanlineCount(0), spread(0.0) {}
+};
+
+bool byEstimatePitch(const std::pair<double, double> &a, const std::pair<double, double> &b)
+{
+    return a.first < b.first;
+}
+
+double medianOfSorted(std::vector<double> values)
+{
+    if (values.empty()) return 0.0;
+    std::sort(values.begin(), values.end());
+    const size_t mid = values.size() / 2;
+    if ((values.size() & 1) != 0) return values[mid];
+    return 0.5 * (values[mid - 1] + values[mid]);
+}
+
+bool scanlinePitchEstimate(const cv::Mat &gray,
+                           bool horizontal,
+                           int fixed,
+                           int from,
+                           int to,
+                           int minLag,
+                           int maxLag,
+                           double *pitch,
+                           double *score)
+{
+    const int n = to - from;
+    if (n < 4 * minLag || maxLag <= minLag) return false;
+
+    std::vector<double> values;
+    values.reserve((size_t)n);
+    for (int t = from; t < to; t++) {
+        double sum = 0.0;
+        int count = 0;
+        for (int o = -1; o <= 1; o++) {
+            const int x = horizontal ? t : fixed + o;
+            const int y = horizontal ? fixed + o : t;
+            if (x < 0 || y < 0 || x >= gray.cols || y >= gray.rows) continue;
+            sum += gray.at<uchar>(y, x) / 255.0;
+            count++;
+        }
+        if (count == 0) return false;
+        values.push_back(sum / (double)count);
+    }
+
+    double mean = 0.0;
+    for (size_t i = 0; i < values.size(); i++) mean += values[i];
+    mean /= (double)values.size();
+    double variance = 0.0;
+    for (size_t i = 0; i < values.size(); i++) {
+        values[i] -= mean;
+        variance += values[i] * values[i];
+    }
+    variance /= (double)values.size();
+    if (variance < 0.0025) return false;
+    const double invStd = 1.0 / std::sqrt(variance);
+    for (size_t i = 0; i < values.size(); i++) values[i] *= invStd;
+
+    std::vector<double> corr((size_t)(2 * maxLag + 1), 0.0);
+    for (int lag = 1; lag <= 2 * maxLag; lag++) {
+        if (lag >= n) break;
+        double c = 0.0;
+        for (int i = 0; i + lag < n; i++) c += values[(size_t)i] * values[(size_t)(i + lag)];
+        corr[(size_t)lag] = c / (double)(n - lag);
+    }
+
+    double bestScore = -1e30;
+    for (int lag = minLag; lag <= maxLag && 2 * lag < n; lag++) {
+        const double c1 = corr[(size_t)lag];
+        const double c2 = corr[(size_t)(2 * lag)];
+        const double s = std::max(0.0, -c1) + 0.55 * std::max(0.0, c2);
+        if (s > bestScore) bestScore = s;
+    }
+    if (bestScore < 0.25) return false;
+
+    int chosenLag = 0;
+    double chosenScore = 0.0;
+    for (int lag = minLag; lag <= maxLag && 2 * lag < n; lag++) {
+        const double c1 = corr[(size_t)lag];
+        const double c2 = corr[(size_t)(2 * lag)];
+        const double s = std::max(0.0, -c1) + 0.55 * std::max(0.0, c2);
+        if (s >= 0.78 * bestScore) {
+            chosenLag = lag;
+            chosenScore = s;
+            break;
+        }
+    }
+    if (chosenLag <= 0) return false;
+    *pitch = (double)chosenLag;
+    *score = chosenScore;
+    return true;
+}
+
+PitchPrior estimateCentralPitchPrior(const cv::Mat &gray)
+{
+    PitchPrior prior;
+    if (gray.empty() || gray.type() != CV_8UC1 || gray.cols < 80 || gray.rows < 80) return prior;
+
+    const int minDim = std::min(gray.cols, gray.rows);
+    const int minLag = std::max(14, minDim / 80);
+    const int maxLag = std::min(minDim / 4, 260);
+    if (maxLag <= minLag) return prior;
+
+    std::vector<std::pair<double, double> > estimates;
+    const double fractions[] = {0.34, 0.38, 0.42, 0.46, 0.50, 0.54, 0.58, 0.62, 0.66};
+    const int fractionCount = (int)(sizeof(fractions) / sizeof(fractions[0]));
+    const int xFrom = gray.cols / 5;
+    const int xTo = gray.cols - xFrom;
+    const int yFrom = gray.rows / 5;
+    const int yTo = gray.rows - yFrom;
+    for (int i = 0; i < fractionCount; i++) {
+        double pitch = 0.0, score = 0.0;
+        const int y = std::max(1, std::min(gray.rows - 2, (int)(gray.rows * fractions[i] + 0.5)));
+        if (scanlinePitchEstimate(gray, true, y, xFrom, xTo, minLag, maxLag, &pitch, &score)) {
+            estimates.push_back(std::make_pair(pitch, score));
+        }
+        const int x = std::max(1, std::min(gray.cols - 2, (int)(gray.cols * fractions[i] + 0.5)));
+        if (scanlinePitchEstimate(gray, false, x, yFrom, yTo, minLag, maxLag, &pitch, &score)) {
+            estimates.push_back(std::make_pair(pitch, score));
+        }
+    }
+
+    if (estimates.size() < 4) return prior;
+    std::sort(estimates.begin(), estimates.end(), byEstimatePitch);
+    std::vector<double> pitches;
+    std::vector<double> scores;
+    pitches.reserve(estimates.size());
+    scores.reserve(estimates.size());
+    for (size_t i = 0; i < estimates.size(); i++) {
+        pitches.push_back(estimates[i].first);
+        scores.push_back(estimates[i].second);
+    }
+
+    const double pitch = medianOfSorted(pitches);
+    if (pitch <= 1e-6) return prior;
+    std::vector<double> relativeDeviation;
+    relativeDeviation.reserve(pitches.size());
+    for (size_t i = 0; i < pitches.size(); i++) {
+        relativeDeviation.push_back(std::fabs(pitches[i] - pitch) / pitch);
+    }
+    const double spread = medianOfSorted(relativeDeviation);
+    const double medianScore = medianOfSorted(scores);
+    const double countConfidence = std::min(1.0, (double)estimates.size() / 8.0);
+    const double scoreConfidence = std::min(1.0, medianScore / 0.65);
+    const double spreadConfidence = std::max(0.0, 1.0 - spread / 0.35);
+
+    prior.pitch = pitch;
+    prior.confidence = countConfidence * scoreConfidence * spreadConfidence;
+    if (prior.confidence < 0.15) prior.confidence = 0.0;
+    prior.scanlineCount = (int)estimates.size();
+    prior.spread = spread;
+    return prior;
+}
+
+double pitchPriorScore(double candidatePitch, const PitchPrior &prior)
+{
+    if (candidatePitch <= 1e-6 || prior.pitch <= 1e-6 || prior.confidence <= 0.0) return 0.0;
+    const double sigma = std::log(1.6);
+    const double z = std::log(candidatePitch / prior.pitch) / sigma;
+    const double agreement = std::exp(-0.5 * z * z);
+    return 12.0 * prior.confidence * (2.0 * agreement - 1.0);
+}
+
 struct HistogramPeak {
     cv::Point2f displacement;
     float count;
@@ -1000,6 +1170,15 @@ SeedLattice findSeedLattice(const std::vector<CornerCandidate> &corners,
                             cv::Size imageSize,
                             const LatticeSeedHint &hint)
 {
+    return findSeedLattice(corners, coarseCellSize, imageSize, hint, cv::Mat());
+}
+
+SeedLattice findSeedLattice(const std::vector<CornerCandidate> &corners,
+                            float coarseCellSize,
+                            cv::Size imageSize,
+                            const LatticeSeedHint &hint,
+                            const cv::Mat &gray)
+{
     (void)coarseCellSize;   // Advisory only; the histogram measures the pitch itself.
 
     SeedLattice seed;
@@ -1048,6 +1227,7 @@ SeedLattice findSeedLattice(const std::vector<CornerCandidate> &corners,
     double bestMisalignment = 0.0;
     bool sawConflict = false;
     std::ostringstream attempts;
+    const PitchPrior pitchPrior = hint.provided ? PitchPrior() : estimateCentralPitchPrior(gray);
 
     std::vector<cv::Point2f> windowCenters;
     if (hint.provided) {
@@ -1215,7 +1395,9 @@ SeedLattice findSeedLattice(const std::vector<CornerCandidate> &corners,
                 const double spanI = patch.extentI > 1 ? (patch.extentI - 1) * vectorLength(u) : 0.0;
                 const double spanJ = patch.extentJ > 1 ? (patch.extentJ - 1) * vectorLength(v) : 0.0;
                 const double coverage = side > 1e-6 ? std::min(spanI, spanJ) / side : 0.0;
-                const double patchScore = patch.cornerIndex.size() + 10.0 * coverage;
+                const double candidatePitch = std::sqrt(vectorLength(u) * vectorLength(v));
+                const double patchScore = patch.cornerIndex.size() + 10.0 * coverage +
+                                          pitchPriorScore(candidatePitch, pitchPrior);
                 if (!haveBasis || (aligned && !bestAligned) ||
                     (aligned == bestAligned && patchScore > bestPatchScore)) {
                     bestPatch = patch;
@@ -1309,7 +1491,15 @@ SeedLattice findSeedLattice(const std::vector<CornerCandidate> &corners,
     }
     message << ". Seed window centered at (" << (int)bestWindowCenter.x << ", " << (int)bestWindowCenter.y << "), "
             << (int)bestSide << " px = " << (bestStep > 1e-6 ? bestSide / bestStep : 0.0)
-            << " cells; histogram peak sharpness " << bestSharpness << ". Tried:" << summarizedAttempts(attempts);
+            << " cells; histogram peak sharpness " << bestSharpness;
+    if (pitchPrior.confidence > 0.0) {
+        message << "; brightness pitch prior " << pitchPrior.pitch << " px from "
+                << pitchPrior.scanlineCount << " scanlines, confidence " << pitchPrior.confidence
+                << ", spread " << pitchPrior.spread;
+    } else if (!gray.empty()) {
+        message << "; no reliable brightness pitch prior";
+    }
+    message << ". Tried:" << summarizedAttempts(attempts);
     seed.status = message.str();
     seed.valid = true;
     return seed;
