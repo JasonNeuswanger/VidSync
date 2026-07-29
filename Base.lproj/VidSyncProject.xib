@@ -1265,7 +1265,7 @@
                                                                     </menu>
                                                                 </popUpButtonCell>
                                                                 <connections>
-                                                                    <binding destination="100045" name="selectedTag" keyPath="values.showDistortionLinesFromWhichTimecodes" id="vWO-9P-vyH"/>
+                                                                    <binding destination="-2" name="selectedTag" keyPath="viewState.showDistortionLinesFromWhichTimecodes" id="vWO-9P-vyH"/>
                                                                 </connections>
                                                             </popUpButton>
                                                             <textField focusRingType="none" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="104064">
@@ -3221,7 +3221,7 @@ IA
                                                         <string key="NSValueTransformerName">NSIsNotNil</string>
                                                     </dictionary>
                                                 </binding>
-                                                <binding destination="100045" name="selectedValue" keyPath="values.selectedEventsPointsTimeFilter" id="102191"/>
+                                                <binding destination="-2" name="selectedValue" keyPath="viewState.selectedEventsPointsTimeFilter" id="102191"/>
                                             </connections>
                                         </popUpButton>
                                         <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="101153">
@@ -4514,7 +4514,7 @@ An XML file stores information using custom markup tags. It more thoroughly refl
                             </tabViewItem>
                         </tabViewItems>
                         <connections>
-                            <binding destination="100045" name="selectedLabel" keyPath="values.latestMainTabViewSelectedLabel" id="102185"/>
+                            <binding destination="-2" name="selectedLabel" keyPath="viewState.mainTabViewSelectedLabel" id="102185"/>
                             <outlet property="delegate" destination="-2" id="AVa-h1-frX"/>
                         </connections>
                     </tabView>
@@ -6494,7 +6494,7 @@ To delete a portrait, select it and hit the delete key.</string>
                             </tabViewItem>
                         </tabViewItems>
                         <connections>
-                            <binding destination="100045" name="selectedIndex" keyPath="values.ObjectEditWindowSelectedTabIndex" id="9kg-7w-06I"/>
+                            <binding destination="-2" name="selectedIndex" keyPath="viewState.objectEditWindowSelectedTabIndex" id="9kg-7w-06I"/>
                         </connections>
                     </tabView>
                     <textField focusRingType="none" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="101960">
@@ -7935,7 +7935,6 @@ Some useful refractive index values are:  1.000 for air, 1.335 for fresh water, 
                 </binding>
             </connections>
         </arrayController>
-        <userDefaultsController id="K6s-xO-Bah"/>
         <window title="Event Tally by Type" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" releasedWhenClosed="NO" visibleAtLaunch="NO" frameAutosaveName="EventTallyByType" animationBehavior="default" id="wOb-e9-o8n">
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES" texturedBackground="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>

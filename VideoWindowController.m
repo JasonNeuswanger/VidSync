@@ -664,7 +664,7 @@ static const CGFloat VSVideoControlStripHeight = 26.0f;
 - (void) handleOverlayRightClickInDistortionMode:(NSPoint)coords
 {
 	VidSyncDocument *doc = self.document;
-	int showDistortionLinesFromWhichTimecodes = [[[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"showDistortionLinesFromWhichTimecodes"] intValue];
+	int showDistortionLinesFromWhichTimecodes = (int) doc.viewState.showDistortionLinesFromWhichTimecodes;
 	float shortestDistanceFromClick = 1000000.0;								// initialize with an absurdly high number, so the first real click will be "closer"
 	float distanceFromClick;
 	float clickToPointVector[2];

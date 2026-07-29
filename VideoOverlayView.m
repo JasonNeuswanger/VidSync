@@ -73,13 +73,15 @@
 		[[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKeyPath:@"values.distortionLineThickness" options:0 context:NULL];
 		[[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKeyPath:@"values.distortionPointSize" options:0 context:NULL];
 		[[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKeyPath:@"values.showDistortionConnectingLines" options:0 context:NULL];
-		[[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKeyPath:@"values.showDistortionLinesFromWhichTimecodes" options:0 context:NULL];
 		[[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKeyPath:@"values.showDistortionTipToTipLines" options:0 context:NULL];
 		[[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKeyPath:@"values.showDistortionCorrectedPoints" options:0 context:NULL];
 		[[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKeyPath:@"values.showScreenItemDropShadows" options:0 context:NULL];
 		[[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKeyPath:@"values.screenItemDropShadowBlurRadius" options:0 context:NULL];
 		VidSyncDocument *__weak doc = (VidSyncDocument *) vwc.document;
 		[doc.project addObserver:self forKeyPath:@"distortionDisplayMode" options:NSKeyValueObservingOptionNew context:NULL];
+		// Which timecodes' distortion lines to draw belongs to this document, not the application, so it
+		// comes from the document's view state rather than the shared user defaults controller.
+		[doc.viewState addObserver:self forKeyPath:@"showDistortionLinesFromWhichTimecodes" options:0 context:NULL];
 	}
 	return self;
 }
@@ -93,6 +95,7 @@
 	}
 	if ([object isEqualTo:[NSUserDefaultsController sharedUserDefaultsController]]) self.needsDisplay = YES;
 	if ([keyPath isEqualToString:@"distortionDisplayMode"]) self.needsDisplay = YES;
+	if ([keyPath isEqualToString:@"showDistortionLinesFromWhichTimecodes"]) self.needsDisplay = YES;
 	
 }
 
@@ -328,7 +331,7 @@
 	float lineWidth = [[[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"distortionLineThickness"] floatValue];
 	BOOL showConnectingLines = [[[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"showDistortionConnectingLines"] boolValue];
 	BOOL showTipToTipLines = [[[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"showDistortionTipToTipLines"] boolValue];
-	int showDistortionLinesFromWhichTimecodes = [[[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"showDistortionLinesFromWhichTimecodes"] intValue];
+	int showDistortionLinesFromWhichTimecodes = (int) ((VidSyncDocument *)vwc.document).viewState.showDistortionLinesFromWhichTimecodes;
 	
 	NSSet *distortionLines = vwc.videoClip.calibration.distortionLines;
 	
@@ -1409,7 +1412,6 @@
 	[[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKeyPath:@"values.distortionLineThickness"];
 	[[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKeyPath:@"values.distortionPointSize"];
 	[[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKeyPath:@"values.showDistortionConnectingLines"];
-	[[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKeyPath:@"values.showDistortionLinesFromWhichTimecodes"];
 	[[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKeyPath:@"values.showDistortionTipToTipLines"];
 	[[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKeyPath:@"values.showDistortionCorrectedPoints"];
 	[[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKeyPath:@"values.showScreenItemDropShadows"];
@@ -1419,6 +1421,11 @@
 		if (doc.project) [doc.project removeObserver:self forKeyPath:@"distortionDisplayMode"];
 	} @catch (id exception) {
 		// document-close may have already removed this observer via carefullyRemoveObserver; suppress the imbalance exception
+	}
+	@try {
+		if (doc.viewState) [doc.viewState removeObserver:self forKeyPath:@"showDistortionLinesFromWhichTimecodes"];
+	} @catch (id exception) {
+		// same story as above: tolerate the observer already being gone at document-close time
 	}
 }
 

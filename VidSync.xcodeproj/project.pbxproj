@@ -44,6 +44,7 @@
 		9658610511738CA700BC99D5 /* Example Quadrat.VidSyncQuadrat in Resources */ = {isa = PBXBuildFile; fileRef = 9658610311738CA700BC99D5 /* Example Quadrat.VidSyncQuadrat */; };
 		9658610611738CA700BC99D5 /* Example Types.VidSyncTypes in Resources */ = {isa = PBXBuildFile; fileRef = 9658610411738CA700BC99D5 /* Example Types.VidSyncTypes */; };
 		966839911BF46F28000F5AEB /* VSWebHelpButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 966839901BF46F28000F5AEB /* VSWebHelpButton.m */; };
+		967311743019D009001AE033 /* VSDocumentViewState.m in Sources */ = {isa = PBXBuildFile; fileRef = 967311733019D009001AE033 /* VSDocumentViewState.m */; };
 		968894E225C328BB00B356B7 /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 968894E125C328BB00B356B7 /* Accelerate.framework */; };
 		96897AE7115992EA00B3C3C3 /* UtilityFunctions.mm in Sources */ = {isa = PBXBuildFile; fileRef = 96897AE6115992EA00B3C3C3 /* UtilityFunctions.mm */; };
 		968A74B325C1CFC40054E701 /* opencv2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 968A74B225C1CFC30054E701 /* opencv2.framework */; };
@@ -208,6 +209,8 @@
 		966839901BF46F28000F5AEB /* VSWebHelpButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VSWebHelpButton.m; sourceTree = "<group>"; };
 		966E155018C512F900FAFAAB /* VidSyncIcon.psd */ = {isa = PBXFileReference; lastKnownFileType = file; path = VidSyncIcon.psd; sourceTree = "<group>"; };
 		966E155318C5731900FAFAAB /* Web */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Web; sourceTree = "<group>"; };
+		967311723019CFF1001AE033 /* VSDocumentViewState.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = VSDocumentViewState.h; sourceTree = "<group>"; };
+		967311733019D009001AE033 /* VSDocumentViewState.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = VSDocumentViewState.m; sourceTree = "<group>"; };
 		967D3B0D1C93AEAF00B9D835 /* VidSyncProject 1.22.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "VidSyncProject 1.22.xcdatamodel"; sourceTree = "<group>"; };
 		967D3B0E1C93B01700B9D835 /* VidSyncProject 1.23.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "VidSyncProject 1.23.xcdatamodel"; sourceTree = "<group>"; };
 		96868C03137B4D070036906A /* VidSyncProject 1.02.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "VidSyncProject 1.02.xcdatamodel"; sourceTree = "<group>"; };
@@ -1210,6 +1213,8 @@
 				96EF247E10966F60001DEF3A /* VideoClipArrayController.m */,
 				96A8734718BFD336000D1B75 /* Visible Item Array Controllers */,
 				96A8734818BFD3C9000D1B75 /* Portrait Array Controllers */,
+				967311723019CFF1001AE033 /* VSDocumentViewState.h */,
+				967311733019D009001AE033 /* VSDocumentViewState.m */,
 			);
 			name = "Controller Classes";
 			sourceTree = "<group>";
@@ -1368,6 +1373,7 @@
 				96E128E110FC474000DAF12C /* VSTrackedEvent.m in Sources */,
 				96010D4710FCF0A300944387 /* EventsOtherObjectsArrayController.m in Sources */,
 				9612EC0E18B597F700BBED62 /* PortraitsArrayController.m in Sources */,
+				967311743019D009001AE033 /* VSDocumentViewState.m in Sources */,
 				96010ED610FE410500944387 /* VSVisibleItemArrayController.m in Sources */,
 				96FA1CF11155ACCA0065DF96 /* EventsPointsController.m in Sources */,
 				96897AE7115992EA00B3C3C3 /* UtilityFunctions.mm in Sources */,

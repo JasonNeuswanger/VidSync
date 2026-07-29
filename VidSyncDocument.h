@@ -46,6 +46,7 @@
 @class ObjectsPortraitsArrayController;
 @class AllPortraitsArrayController;
 @class MainProjectWindow;
+@class VSDocumentViewState;
 
 @interface VidSyncDocument: NSPersistentDocument <NSCollectionViewDelegate, PortraitBrowserViewDelegate> {
 	
@@ -108,6 +109,8 @@
 	IBOutlet NSProgressIndicator *__weak pointRecalculateProgressIndicator;
 	IBOutlet NSPanel *__weak pointRecalculatePanel;
 	
+	VSDocumentViewState *__strong viewState;	// tab and filter choices that belong to this document rather than the app
+
 	VSVideoClip *__weak frontVideoClip;	// whichever clip is the key window or in front of the other at the moment
 	
 	CMTime stopTime;							// These two are temporarily non-nil when playing to or from a stoptime.
@@ -130,6 +133,7 @@
 }
 
 @property (weak, nonatomic) VSProject *project; // was (weak, nonatomic)
+@property (readonly, strong) VSDocumentViewState *viewState;	// the main window's nib binds tab and filter choices through this
 @property (readonly, weak) IBOutlet NSTabView *mainTabView;
 @property (readonly, weak) IBOutlet NSTabView *calibrationSurfaceTabView;
 @property (readonly, weak) IBOutlet NSTabView *calibrationInputTabView;

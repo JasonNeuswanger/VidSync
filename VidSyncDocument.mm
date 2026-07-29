@@ -29,6 +29,7 @@
 @implementation VidSyncDocument
 
 @synthesize project;
+@synthesize viewState;
 
 @synthesize mainTabView;
 @synthesize calibrationSurfaceTabView;
@@ -87,6 +88,10 @@ static void *AVSPPlayerCurrentTimeContext = &AVSPPlayerCurrentTimeContext;
 {
 	self = [super init];
 	if (self != nil) {
+		// Created here, in the initializer both initWithType: and initWithContentsOfURL: funnel through,
+		// because the main window's nib binds through it and is loaded later, in makeWindowControllers.
+		viewState = [VSDocumentViewState new];
+
 		shutterClick = [[NSSound alloc] initWithContentsOfFile:[[NSBundle mainBundle] pathForSoundResource:@"CameraClick"] byReference:YES];
 		
 		stopTime = kCMTimeIndefinite;
@@ -377,6 +382,9 @@ static void *AVSPPlayerCurrentTimeContext = &AVSPPlayerCurrentTimeContext;
 		[allPortraitBrowserOpenButton setAttributedTitle:portraitWindowOpenButtonTitle];
 		[textViewForQuadratNodesFront setUsesAdaptiveColorMappingForDarkAppearance:YES];
 		[textViewForQuadratNodesBack setUsesAdaptiveColorMappingForDarkAppearance:YES];
+		// Only now start writing tab and filter changes back as the remembered values, so that anything
+		// the bindings pushed while they were being established can't overwrite the user's last choice.
+		viewState.persistsChangesToUserDefaults = YES;
 	}
 }
 
