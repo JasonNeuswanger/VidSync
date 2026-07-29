@@ -36,6 +36,31 @@
 // VidSync requires an existing project file — never open an untitled document on launch.
 - (BOOL)applicationShouldOpenUntitledFile:(NSApplication *)sender { return NO; }
 
+- (void) applicationDidFinishLaunching:(NSNotification *)notification
+{
+	// The stock Window menu items get their glyphs from the system, so Tile Windows has to supply its
+	// own to match them. Set here rather than in the nib because Interface Builder's symbol-image
+	// markup is easy to lose, and because this can fall back if a symbol isn't available.
+	NSMenuItem *tileWindowsItem = [AppDelegate menuItemWithAction:@selector(tileWindows:) inMenu:[NSApp mainMenu]];
+	if (tileWindowsItem != nil && tileWindowsItem.image == nil) {
+		NSImage *glyph = [NSImage imageWithSystemSymbolName:@"macwindow.on.rectangle" accessibilityDescription:@"Tile Windows"];
+		if (glyph == nil) glyph = [NSImage imageWithSystemSymbolName:@"rectangle.3.group" accessibilityDescription:@"Tile Windows"];
+		tileWindowsItem.image = glyph;
+	}
+}
+
++ (NSMenuItem *) menuItemWithAction:(SEL)action inMenu:(NSMenu *)menu
+{
+	for (NSMenuItem *item in [menu itemArray]) {
+		if ([item action] == action) return item;
+		if ([item hasSubmenu]) {
+			NSMenuItem *itemInSubmenu = [AppDelegate menuItemWithAction:action inMenu:[item submenu]];
+			if (itemInSubmenu != nil) return itemInSubmenu;
+		}
+	}
+	return nil;
+}
+
 - (NSError*) application:(NSApplication*)application willPresentError:(NSError*)error
 {
 	if (error)

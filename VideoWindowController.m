@@ -177,6 +177,9 @@ static const CGFloat VSVideoControlStripHeight = 26.0f;
 	
 	[[self window] orderFrontRegardless];
 	[self makeOverlayKeyWindow];
+
+	// The document can't judge or rebuild the window layout until every clip's dimensions are known.
+	[self.videoClip.project.document videoWindowControllerDidLoadVideo:self];
 }
 
 - (void) windowDidLoad
@@ -848,6 +851,35 @@ static const CGFloat VSVideoControlStripHeight = 26.0f;
 									   MAX(videoSize.height + VSVideoControlStripHeight,minContentSize.height));
 	[window setContentSize:newContentSize];
 	[self fitVideoOverlay];		// setContentSize: doesn't notify the delegate when the size is unchanged, so don't rely on windowDidResize: for this
+}
+
+- (BOOL) hasLoadedVideo
+{
+	return (movieSize.width > 0.0f && movieSize.height > 0.0f);
+}
+
+- (NSSize) windowFrameSizeFittingWithinSize:(NSSize)maxFrameSize
+{
+	// The largest window frame no bigger than maxFrameSize that still shows the whole video, never
+	// magnifying it past 100%. The title bar, window borders, and the strip of controls above the video
+	// all come out of the budget before the video itself is scaled to what's left.
+	NSWindow *window = [self window];
+	if (![self hasLoadedVideo]) return [window frame].size;
+
+	const CGFloat referenceLength = 1000.0f;
+	NSSize referenceContentSize = [window contentRectForFrameRect:NSMakeRect(0.0f,0.0f,referenceLength,referenceLength)].size;
+	CGFloat widthOutsideVideo = referenceLength - referenceContentSize.width;
+	CGFloat heightOutsideVideo = referenceLength - referenceContentSize.height + VSVideoControlStripHeight;
+
+	CGFloat sizeFactor = MIN((maxFrameSize.width - widthOutsideVideo) / movieSize.width,
+							 (maxFrameSize.height - heightOutsideVideo) / movieSize.height);
+	sizeFactor = MIN(sizeFactor, 1.0f);
+	if (sizeFactor <= 0.0f) return [window minSize];	// nowhere near enough room; let the window be as small as it can
+
+	NSSize minContentSize = [window contentRectForFrameRect:NSMakeRect(0.0f,0.0f,window.minSize.width,window.minSize.height)].size;
+	NSSize contentSize = NSMakeSize(MAX(sizeFactor*movieSize.width,minContentSize.width),
+									MAX(sizeFactor*movieSize.height + VSVideoControlStripHeight,minContentSize.height));
+	return [window frameRectForContentRect:NSMakeRect(0.0f,0.0f,contentSize.width,contentSize.height)].size;
 }
 
 #pragma mark

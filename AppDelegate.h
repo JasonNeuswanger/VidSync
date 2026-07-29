@@ -34,6 +34,9 @@
 + (NSMutableDictionary *) userDefaultsInitialValues;
 + (void) setUserDefaultsInitialValues;
 
++ (NSMenuItem *) menuItemWithAction:(SEL)action inMenu:(NSMenu *)menu;
+
+- (void) applicationDidFinishLaunching:(NSNotification *)notification;
 - (NSError*) application:(NSApplication*)application willPresentError:(NSError*)error;
 
 @end

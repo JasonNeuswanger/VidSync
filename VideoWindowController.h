@@ -114,6 +114,8 @@
 - (IBAction) lockSyncOffset:(id)sender;
 - (IBAction) resizeToVideoPercent:(id)sender;
 - (void) resizeVideoToFactor:(float)sizeFactor;
+- (BOOL) hasLoadedVideo;
+- (NSSize) windowFrameSizeFittingWithinSize:(NSSize)maxFrameSize;	// largest frame within maxFrameSize that fits the whole video, up to 100% magnification
 - (void) setMovieViewControllerVisible:(BOOL)setting;
 - (void) processSynchronizationStatus;
 - (void) updateMasterTimeScrubberTicks;

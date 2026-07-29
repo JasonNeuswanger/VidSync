@@ -124,7 +124,9 @@
 	BOOL objectsTableSelectionChangeNotificationCascadeEnabled, eventsTableSelectionChangeNotificationCascadeEnabled;
 	
 	NSMutableSet *activeExportSessions;
-	
+
+	BOOL awaitingInitialWindowLayout;	// YES from the time the document's windows are created until the last video finishes loading
+
 }
 
 @property (weak, nonatomic) VSProject *project; // was (weak, nonatomic)
@@ -180,6 +182,11 @@
 - (void) syncedPlaybackPanelAwokeFromNib;
 - (void) observeWindowControllerVideoRate:(VideoWindowController *)vwc;
 - (VSProject *) project;
+
+- (void) videoWindowControllerDidLoadVideo:(VideoWindowController *)vwc;
+- (NSArray *) videoWindowControllers;
+- (void) applyTiledWindowLayoutIfSavedLayoutUnusable;
+- (IBAction) tileWindows:(id)sender;
 
 - (void) anyTableViewSelectionDidChange:(NSNotification *)notification;
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context;

@@ -183,6 +183,12 @@
                                     <action selector="performMiniaturize:" target="-1" id="246"/>
                                 </connections>
                             </menuItem>
+                            <menuItem title="Tile Windows" id="ego-Sd-Zzk">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                                <connections>
+                                    <action selector="tileWindows:" target="-1" id="Tw1-9j-vQk"/>
+                                </connections>
+                            </menuItem>
                             <menuItem title="Zoom" keyEquivalent="=" id="243">
                                 <modifierMask key="keyEquivalentModifierMask" control="YES" command="YES"/>
                                 <connections>
