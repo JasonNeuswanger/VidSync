@@ -34,8 +34,15 @@
 	NSColor *color;
 	NSData *colorData = [[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:key];
 	if (colorData != nil) {
-		NSError *err;
+		NSError *err = nil;
 		color = [NSKeyedUnarchiver unarchivedObjectOfClass:[NSColor class] fromData:colorData error:&err];
+		if (color == nil) {
+			// Stored data that won't decode, which the modern unarchiver reports by returning nil rather than
+			// throwing. Callers assume they got a color back; one of them writes it straight into a new
+			// annotation's Core Data attribute, so returning nil would persist the failure rather than show it.
+			NSLog(@"Color data for key %@ could not be decoded (%@), using red instead.",key,[err localizedDescription]);
+			color = [NSColor redColor];
+		}
 	} else {
 		NSLog(@"Color data was nil for key %@ (not found in user's defaults or in initial default values), using red instead.",key);
 		color = [NSColor redColor];
