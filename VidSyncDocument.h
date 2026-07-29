@@ -190,6 +190,7 @@
 - (void) videoWindowControllerDidLoadVideo:(VideoWindowController *)vwc;
 - (NSArray *) videoWindowControllers;
 - (void) applyTiledWindowLayoutIfSavedLayoutUnusable;
+- (void) showVideoClipListFromTheTop;
 - (IBAction) tileWindows:(id)sender;
 
 - (void) anyTableViewSelectionDidChange:(NSNotification *)notification;
@@ -210,6 +211,7 @@
 
 - (IBAction) refreshOverlaysOfAllClips:(id)sender;
 - (IBAction) recalculateAllPoints:(id)sender;
+- (void) handleUndoOrRedo:(NSNotification *)notification;
 
 - (void) setPortraitSubject:(VSTrackedObject *)subject; // Not synthesizing the getters and setters here because the synthesized ones don't seem to
 - (VSTrackedObject *) portraitSubject;                  // play nice with the Interface Builder bindings

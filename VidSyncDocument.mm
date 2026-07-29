@@ -159,7 +159,24 @@ static void *AVSPPlayerCurrentTimeContext = &AVSPPlayerCurrentTimeContext;
 	[[NSNotificationCenter defaultCenter] addObserver:self
 									 selector:@selector(anyTableViewSelectionIsChanging:)
 										name:NSTableViewSelectionIsChangingNotification object:nil];
-	
+
+	// Nothing else in the app watches the object graph. Overlays are redrawn only by the code paths that
+	// mutate them, and by the playback timer while a video is actually playing. An undo changes the model
+	// without going through either, so without these observers the screen would keep showing the pre-undo
+	// state until the user played the video or clicked something. Scoped to this document's own undo
+	// manager so that one open document's undo can't trigger a redraw in another, which is why this is
+	// skipped entirely if there's no undo manager: passing a nil object would subscribe to every one.
+	NSUndoManager *documentUndoManager = [self undoManager];
+	if (documentUndoManager != nil) {
+		[[NSNotificationCenter defaultCenter] addObserver:self
+										 selector:@selector(handleUndoOrRedo:)
+											name:NSUndoManagerDidUndoChangeNotification object:documentUndoManager];
+
+		[[NSNotificationCenter defaultCenter] addObserver:self
+										 selector:@selector(handleUndoOrRedo:)
+											name:NSUndoManagerDidRedoChangeNotification object:documentUndoManager];
+	}
+
 	// The lines below sets up the timer used for frame-by-frame updates of the overlay layer; it's the main playback loop for the calibration, measurement, and annotation points.
 	playbackTimer = [NSTimer timerWithTimeInterval:0.03 target:self selector:@selector(playbackLoopActions) userInfo:nil repeats:YES];
 	[[NSRunLoop currentRunLoop] addTimer:playbackTimer forMode:NSRunLoopCommonModes];
@@ -192,6 +209,18 @@ static void *AVSPPlayerCurrentTimeContext = &AVSPPlayerCurrentTimeContext;
 	}
 	awaitingInitialWindowLayout = NO;
 	[self applyTiledWindowLayoutIfSavedLayoutUnusable];
+	[self showVideoClipListFromTheTop];
+}
+
+- (void) showVideoClipListFromTheTop
+{
+	// Every video window makes itself key as it finishes loading, and VideoClipArrayController answers
+	// that by selecting the matching clip, which scrolls the short clip list down far enough to hide its
+	// first row. Which clip was left selected also depended on the order the videos happened to finish
+	// loading, so it varied between opens of the same project.
+	if ([[videoClipArrayController arrangedObjects] count] == 0) return;
+	[videoClipArrayController setSelectionIndex:0];
+	[videoClipArrayController.mainTableView scrollRowToVisible:0];
 }
 
 - (IBAction) tileWindows:(id)sender	// Window > Tile Windows
@@ -366,6 +395,9 @@ static void *AVSPPlayerCurrentTimeContext = &AVSPPlayerCurrentTimeContext;
 		NSSortDescriptor *indexDescriptor = [[NSSortDescriptor alloc] initWithKey:@"index" ascending:YES];
 		NSSortDescriptor *nameDescriptor = [[NSSortDescriptor alloc] initWithKey:@"name" ascending:YES];
 		NSSortDescriptor *timecodeDescriptor = [[NSSortDescriptor alloc] initWithKey:@"timecode" ascending:YES];
+		// Same ordering the tiled window layout uses, so the list and the video windows agree.
+		NSSortDescriptor *clipNameDescriptor = [[NSSortDescriptor alloc] initWithKey:@"clipName" ascending:YES selector:@selector(localizedCaseInsensitiveCompare:)];
+		[videoClipArrayController setSortDescriptors:[NSArray arrayWithObject:clipNameDescriptor]];
 		[calibScreenPtFrontArrayController setSortDescriptors:[NSArray arrayWithObjects: indexDescriptor, nil]];
 		[calibScreenPtBackArrayController setSortDescriptors:[NSArray arrayWithObjects: indexDescriptor, nil]];
 		[trackedEventTypesController setSortDescriptors:[NSArray arrayWithObject:nameDescriptor]];
@@ -778,7 +810,22 @@ static void *AVSPPlayerCurrentTimeContext = &AVSPPlayerCurrentTimeContext;
 	for (VSVideoClip *clip in [self.project.videoClips allObjects]) {
 		[clip.windowController refreshOverlay];
 	}
-	
+
+}
+
+- (void) handleUndoOrRedo:(NSNotification *)notification
+{
+	// Core Data reverses everything that lives in the object graph on its own, including the derived
+	// attributes (worldX/Y/Z, the calibration frame coords, the hint lines) because those are written in
+	// the same event as the edit that prompted them and therefore land in the same undo group. What it
+	// can't reverse is state cached outside the graph, so clear that here before redrawing. Only the
+	// registered objects need it; anything still faulted has no cache to begin with.
+	for (NSManagedObject *object in [[self managedObjectContext] registeredObjects]) {
+		if ([object isKindOfClass:[VSPoint class]]) [(VSPoint *)object clearPointToPointDistanceCache];
+	}
+	[self refreshOverlaysOfAllClips:self];
+	eventsPointsController.mainTableView.needsDisplay = YES;
+	trackedEventsController.mainTableView.needsDisplay = YES;
 }
 
 - (IBAction) recalculateAllPoints:(id)sender
