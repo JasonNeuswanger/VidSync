@@ -68,10 +68,25 @@ const int kScoreRadiusCount = 6;
 // Orientations per radius, spread over the 90 degree period of a quadrant pattern.
 const int kOrientationCount = 12;
 
-// A cheap single-radius pass discards most junk before the full sweep runs.
-const int kPrefilterRadius = 5;
+// A cheap pass discards most junk before the full sweep runs. Two radii rather than one: the
+// narrow one is what makes it cheap, but on its own it rejects corners whose quadrant structure
+// only exists further out. On the frame described at kSubPixelRadii, 26 of 28 known junctions in
+// the sunlit half were rejected here at radius 5 alone, every one of them scoring well enough at
+// radius 13 or beyond to have been accepted by the full sweep.
+const int kPrefilterRadius = 5;          // the narrow radius, and what sets the frame margin
+const int kPrefilterWideRadius = 13;
 const int kPrefilterOrientationCount = 6;
 const double kPrefilterMinScore = 0.05;
+
+// The wide pass runs on every candidate the narrow one rejects, which is most of them, and costs
+// roughly six times as much per candidate. Restricting it to neighbourhoods that are substantially
+// saturated was tried, on the reasoning that the bloom is what it exists to rescue, and rejected:
+// it does hold the cost down, but it also removes corners that have nothing to do with blooming.
+// Gated at a saturated fraction of 0.03 it lost 36 points on one frame and 19 on another, in
+// regions under 3% saturated -- corners whose structure simply exceeds 5 px, from defocus or a
+// coarse cell. The predicate that actually matters is the wide score itself, so there is no cheap
+// proxy for it, and detection is a one-shot operation where a few hundred milliseconds is cheaper
+// than the corners.
 
 // Minimum final appearance score. Conservative by design: later stages can reject a
 // spurious point that survives, but they can never recover a real corner dropped here.
@@ -81,10 +96,25 @@ const double kMinScore = 0.15;
 // Without this the contrast normalization turns noise in flat regions into high scores.
 const double kMinPatchContrast = 0.12;
 
-// Half-width of the sub-pixel fit window. The closed-form coefficients in
-// subPixelSaddle() are derived for this value and must be re-derived if it changes.
-const int kSubPixelRadius = 2;
-const double kMaxSubPixelShift = 1.5;
+// Half-widths of the sub-pixel fit window, tried in order until one yields a saddle. The
+// coefficients in subPixelSaddleAtRadius() are now derived for a general radius, so this is a
+// list rather than a single value; radius 2 is first so that every corner the detector already
+// localised is localised identically.
+//
+// The fallback exists because a corner can be erased locally while remaining perfectly clear a
+// little further out. Where the white squares are blown out, the highlight blooms into the black
+// far enough to wipe out the crossing itself: on one frame the junctions in the sunlit half scored
+// 0.000 at radii 4 and 6 and then 0.28, 0.47, 0.64 and 0.71 at radii 9, 13, 19 and 28. Within
+// +-2 px of those crossings the surface is a saturated plateau, so the Hessian determinant comes
+// out non-negative and the fit rejects the corner outright -- 24 of 28 known junctions there died
+// at this test, against 5 of 32 in a control region with the same lighting but narrower bloom.
+const int kSubPixelRadii[] = {2, 4, 6};
+const int kSubPixelRadiusCount = 3;
+const int kSubPixelRadius = 2;          // the first radius tried, and what sets the frame margin
+
+// Allowed shift, per unit of fit radius. At radius 2 this is the 1.5 px the fit has always used;
+// a wider window legitimately supports a proportionally larger correction.
+const double kMaxSubPixelShiftPerRadius = 0.75;
 
 // Two accepted corners closer than this are the same corner found twice.
 const double kDuplicateRadius = 2.0;
@@ -194,9 +224,21 @@ double bestScoreOverOrientations(const cv::Mat &gray32, int x, int y, const std:
 // needs no window scaled to the cell pitch and cannot be dragged toward a neighboring
 // corner by too large a window. Returning false when the surface has no saddle at all
 // doubles as a final rejection test.
-bool subPixelSaddle(const cv::Mat &gray32, int x, int y, cv::Point2f *out)
+// Least-squares fit of a + b*x + c*y + d*x^2 + e*x*y + f*y^2 over the (2r+1) square integer grid,
+// returning the saddle point of that quadratic.
+//
+// The grid is symmetric, so the odd moments drop out and the normal equations separate into three
+// independent pieces: b and c each divide by sum(x^2), e divides by sum(x^2*y^2), and the coupled
+// (a, d, f) block reduces to the two expressions below. Writing A for the pixel count, B for
+// sum(x^2), C for sum(x^4) and D for sum(x^2*y^2), the divisor C - D happens to equal
+// C + D - 2*B*B/A at every radius, so one constant serves for both d and f. At radius 2 these come
+// out to 50, 100 and 70 with a coefficient of 2 on sI, which is exactly the hand-derived form this
+// replaces -- radius 2 therefore produces bit-identical results.
+bool subPixelSaddleAtRadius(const cv::Mat &gray32, int x, int y, int r, cv::Point2f *out)
 {
-    const int r = kSubPixelRadius;
+    if (r < 1) return false;
+    if (x - r < 0 || y - r < 0 || x + r >= gray32.cols || y + r >= gray32.rows) return false;
+
     double sI = 0.0, sxI = 0.0, syI = 0.0, sxxI = 0.0, sxyI = 0.0, syyI = 0.0;
     for (int dy = -r; dy <= r; dy++) {
         for (int dx = -r; dx <= r; dx++) {
@@ -209,15 +251,22 @@ bool subPixelSaddle(const cv::Mat &gray32, int x, int y, cv::Point2f *out)
             syyI += dy * dy * v;
         }
     }
-    // Least-squares fit of a + b*x + c*y + d*x^2 + e*x*y + f*y^2 over the 5x5 integer
-    // grid. Because that grid is fixed and symmetric the normal equations collapse to
-    // these divisors: sum(x^2) = 50, sum(x^2*y^2) = 100, and the coupled (a, d, f) block
-    // inverts to the constant 1/70 form below.
-    const double b = sxI / 50.0;
-    const double c = syI / 50.0;
-    const double e = sxyI / 100.0;
-    const double d = (sxxI - 2.0 * sI) / 70.0;
-    const double f = (syyI - 2.0 * sI) / 70.0;
+
+    const double side = 2.0 * r + 1.0;
+    double q2 = 0.0, q4 = 0.0;
+    for (int k = -r; k <= r; k++) { q2 += (double)k * k; q4 += (double)k * k * k * k; }
+    const double A = side * side;
+    const double B = side * q2;
+    const double C = side * q4;
+    const double D = q2 * q2;
+    const double K = C - D;
+    if (K <= 0.0 || B <= 0.0 || D <= 0.0) return false;
+
+    const double b = sxI / B;
+    const double c = syI / B;
+    const double e = sxyI / D;
+    const double d = (sxxI - (B / A) * sI) / K;
+    const double f = (syyI - (B / A) * sI) / K;
 
     // A saddle needs curvatures of opposite sign, i.e. a negative Hessian determinant.
     const double det = 4.0 * d * f - e * e;
@@ -225,11 +274,23 @@ bool subPixelSaddle(const cv::Mat &gray32, int x, int y, cv::Point2f *out)
 
     const double ox = (e * c - 2.0 * f * b) / det;
     const double oy = (e * b - 2.0 * d * c) / det;
-    if (std::fabs(ox) > kMaxSubPixelShift || std::fabs(oy) > kMaxSubPixelShift) return false;
+    const double maxShift = kMaxSubPixelShiftPerRadius * (double)r;
+    if (std::fabs(ox) > maxShift || std::fabs(oy) > maxShift) return false;
 
     out->x = (float)((double)x + ox);
     out->y = (float)((double)y + oy);
     return true;
+}
+
+// Localises a corner to sub-pixel accuracy, widening the fit window only if the narrow one finds
+// no saddle at all. Widening is never preferred: the first radius that succeeds is used, so a
+// corner that the tightest window can resolve is resolved exactly as before.
+bool subPixelSaddle(const cv::Mat &gray32, int x, int y, cv::Point2f *out)
+{
+    for (int i = 0; i < kSubPixelRadiusCount; i++) {
+        if (subPixelSaddleAtRadius(gray32, x, y, kSubPixelRadii[i], out)) return true;
+    }
+    return false;
 }
 
 // --- Small helpers ---------------------------------------------------------------
@@ -390,6 +451,8 @@ CornerDetectionResult detectChessboardCorners(const cv::Mat &gray)
     }
 
     const std::vector<QuadrantMask> prefilterBank = buildMaskBank(kPrefilterRadius, kPrefilterOrientationCount);
+    const std::vector<QuadrantMask> prefilterWideBank = buildMaskBank(kPrefilterWideRadius, kPrefilterOrientationCount);
+
     std::vector<std::vector<QuadrantMask> > scoreBanks;
     scoreBanks.reserve(kScoreRadiusCount);
     for (int r = 0; r < kScoreRadiusCount; r++) {
@@ -401,10 +464,16 @@ CornerDetectionResult detectChessboardCorners(const cv::Mat &gray)
         const int x = candidates[i].x;
         const int y = candidates[i].y;
 
-        // Cheap single-radius pass first; most junk dies here.
+        // Cheap pass first; most junk dies here. A corner the bloom has erased shows nothing at
+        // radius 5 and plenty at 13, so before giving up, look again at the wider radius, where it
+        // fits inside the frame.
         if (bestScoreOverOrientations(gray32, x, y, prefilterBank) < kPrefilterMinScore) {
-            result.prefilterRejectedCount++;
-            continue;
+            const int rad = kPrefilterWideRadius;
+            const bool fits = (x - rad >= 0 && y - rad >= 0 && x + rad < gray.cols && y + rad < gray.rows);
+            if (!fits || bestScoreOverOrientations(gray32, x, y, prefilterWideBank) < kPrefilterMinScore) {
+                result.prefilterRejectedCount++;
+                continue;
+            }
         }
 
         double best = 0.0;
