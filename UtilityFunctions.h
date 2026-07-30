@@ -57,6 +57,10 @@ typedef struct {		// Creates a pair of 2D points, which can be used to represent
 + (void) delayCallback:(void(^)(void))callback forTotalSeconds:(double)delayInSeconds;
 + (NSString *) stringFromDateTime:(NSDate *)dateTime format:(NSString *)format;
 + (NSDate *) dateTimeFromString:(NSString *)dateTimeString format:(NSString *)format;
++ (NSString *) ISO8601StringFromDateTime:(NSDate *)dateTime;
++ (NSString *) appVersionString;
+
++ (NSString *) escapeSpreadsheetField:(NSString *)field forSeparator:(NSString *)separator;
 
 + (BOOL) timeString:(NSString *)timeString1 isEqualToTimeString:(NSString *)timeString2;
 + (BOOL) time:(CMTime)time1 isEqualToTime:(CMTime)time2;

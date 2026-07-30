@@ -105,6 +105,7 @@ static void *AVSPPlayerCurrentTimeContext = &AVSPPlayerCurrentTimeContext;
 		[decimalFormatter setNumberStyle:NSNumberFormatterDecimalStyle];				// Prevents occasional numbers from being spit out in scientific notation, which screws up importers (Mathematica and others)
 		[decimalFormatter setGroupingSeparator:@""];
 		[decimalFormatter setMinimumFractionDigits:15];
+		[decimalFormatter setLocale:[NSLocale localeWithLocaleIdentifier:@"en_US_POSIX"]];	// otherwise a comma-decimal locale writes exports no consumer can parse
 		activeExportSessions = [NSMutableSet new];
 	}
 	return self;
@@ -448,6 +449,7 @@ static void *AVSPPlayerCurrentTimeContext = &AVSPPlayerCurrentTimeContext;
 		self.project = [NSEntityDescription insertNewObjectForEntityForName:@"VSProject" inManagedObjectContext:managedObjectContext];
 		self.project.document = self;
 		self.project.dateCreated = [UtilityFunctions stringFromDateTime:[NSDate dateWithTimeIntervalSinceNow:0.0] format:@"yyy-MM-dd HH:mm:ss Z"];
+		self.project.appVersionCreated = [UtilityFunctions appVersionString];
 		self.project.capturePathForMovies = [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/VidSync Exports/Movies/"];
 		self.project.capturePathForStills = [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/VidSync Exports/Stills/"];
 		self.project.exportPathForData = [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/VidSync Exports/Data/"];
@@ -676,6 +678,7 @@ static void *AVSPPlayerCurrentTimeContext = &AVSPPlayerCurrentTimeContext;
 - (void) saveToURL:(NSURL *)url ofType:(NSString *)typeName forSaveOperation:(NSSaveOperationType)saveOperation completionHandler:(void (^)(NSError *))completionHandler
 {
 	self.project.dateLastSaved = [UtilityFunctions stringFromDateTime:[NSDate dateWithTimeIntervalSinceNow:0.0] format:@"yyy-MM-dd HH:mm:ss Z"];	// current date as a string
+	self.project.appVersionLastSaved = [UtilityFunctions appVersionString];
 	[[self managedObjectContext] processPendingChanges];
 	NSString *savedPath = [[url path] stringByDeletingLastPathComponent];
 	[[[NSUserDefaultsController sharedUserDefaultsController] values] setValue:savedPath forKey:@"mainFileSaveDirectory"];

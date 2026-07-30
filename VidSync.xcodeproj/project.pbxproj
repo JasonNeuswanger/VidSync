@@ -211,6 +211,7 @@
 		966E155318C5731900FAFAAB /* Web */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Web; sourceTree = "<group>"; };
 		967311723019CFF1001AE033 /* VSDocumentViewState.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = VSDocumentViewState.h; sourceTree = "<group>"; };
 		967311733019D009001AE033 /* VSDocumentViewState.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = VSDocumentViewState.m; sourceTree = "<group>"; };
+		96731175301B41A3001AE033 /* VidSyncProject 1.32.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "VidSyncProject 1.32.xcdatamodel"; sourceTree = "<group>"; };
 		967D3B0D1C93AEAF00B9D835 /* VidSyncProject 1.22.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "VidSyncProject 1.22.xcdatamodel"; sourceTree = "<group>"; };
 		967D3B0E1C93B01700B9D835 /* VidSyncProject 1.23.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "VidSyncProject 1.23.xcdatamodel"; sourceTree = "<group>"; };
 		96868C03137B4D070036906A /* VidSyncProject 1.02.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "VidSyncProject 1.02.xcdatamodel"; sourceTree = "<group>"; };
@@ -1679,6 +1680,7 @@
 		96AE98861165348400118398 /* VidSyncProject.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
+				96731175301B41A3001AE033 /* VidSyncProject 1.32.xcdatamodel */,
 				968DF6C13016C3AD004640DF /* VidSyncProject 1.31.xcdatamodel */,
 				968DF6C03016845E004640DF /* VidSyncProject 1.30.xcdatamodel */,
 				9643132E2630D01100837CE1 /* VidSyncProject 1.29.xcdatamodel */,

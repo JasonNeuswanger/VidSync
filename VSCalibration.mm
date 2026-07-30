@@ -2604,36 +2604,37 @@ static const double kMaxAcceptableScaleRatio = 4.0;    // generous enough for a 
 	[nf setNumberStyle:NSNumberFormatterDecimalStyle];
 	[nf setGroupingSeparator:@""];      // Custom number formatter here with a much higher precision for important parameters
 	[nf setMinimumFractionDigits:50];   // especially the higher-order distortionK3 that begins out beyond 15 decimal places
-	
+	[nf setLocale:[NSLocale localeWithLocaleIdentifier:@"en_US_POSIX"]];    // otherwise a comma-decimal locale writes numbers no XML consumer can parse
+
 	NSXMLElement *mainElement = [[NSXMLElement alloc] initWithName:@"calibration"];
-	[mainElement addAttribute:[NSXMLNode attributeWithName:@"cameraX" stringValue:[nf stringFromNumber:self.cameraX]]];
-	[mainElement addAttribute:[NSXMLNode attributeWithName:@"cameraY" stringValue:[nf stringFromNumber:self.cameraY]]];
-	[mainElement addAttribute:[NSXMLNode attributeWithName:@"cameraZ" stringValue:[nf stringFromNumber:self.cameraZ]]];
-	[mainElement addAttribute:[NSXMLNode attributeWithName:@"distortionCenterX" stringValue:[nf stringFromNumber:self.distortionCenterX]]];
-	[mainElement addAttribute:[NSXMLNode attributeWithName:@"distortionCenterY" stringValue:[nf stringFromNumber:self.distortionCenterY]]];
-	[mainElement addAttribute:[NSXMLNode attributeWithName:@"distortionK1" stringValue:[nf stringFromNumber:self.distortionK1]]];
-	[mainElement addAttribute:[NSXMLNode attributeWithName:@"distortionK2" stringValue:[nf stringFromNumber:self.distortionK2]]];
-	[mainElement addAttribute:[NSXMLNode attributeWithName:@"distortionK3" stringValue:[nf stringFromNumber:self.distortionK3]]];
-	[mainElement addAttribute:[NSXMLNode attributeWithName:@"distortionK4" stringValue:[nf stringFromNumber:self.distortionK4]]];
-	[mainElement addAttribute:[NSXMLNode attributeWithName:@"distortionK5" stringValue:[nf stringFromNumber:self.distortionK5]]];
-	[mainElement addAttribute:[NSXMLNode attributeWithName:@"distortionK6" stringValue:[nf stringFromNumber:self.distortionK6]]];
-	[mainElement addAttribute:[NSXMLNode attributeWithName:@"distortionK7" stringValue:[nf stringFromNumber:self.distortionK7]]];
-	[mainElement addAttribute:[NSXMLNode attributeWithName:@"distortionP1" stringValue:[nf stringFromNumber:self.distortionP1]]];
-	[mainElement addAttribute:[NSXMLNode attributeWithName:@"distortionP2" stringValue:[nf stringFromNumber:self.distortionP2]]];
-	[mainElement addAttribute:[NSXMLNode attributeWithName:@"distortionP3" stringValue:[nf stringFromNumber:self.distortionP3]]];
-	[mainElement addAttribute:[NSXMLNode attributeWithName:@"distortionP4" stringValue:[nf stringFromNumber:self.distortionP4]]];
+	[mainElement addAttribute:[NSXMLNode attributeWithName:@"cameraX" stringValue:[nf stringFromNumber:self.cameraX] ?: @""]];
+	[mainElement addAttribute:[NSXMLNode attributeWithName:@"cameraY" stringValue:[nf stringFromNumber:self.cameraY] ?: @""]];
+	[mainElement addAttribute:[NSXMLNode attributeWithName:@"cameraZ" stringValue:[nf stringFromNumber:self.cameraZ] ?: @""]];
+	[mainElement addAttribute:[NSXMLNode attributeWithName:@"distortionCenterX" stringValue:[nf stringFromNumber:self.distortionCenterX] ?: @""]];
+	[mainElement addAttribute:[NSXMLNode attributeWithName:@"distortionCenterY" stringValue:[nf stringFromNumber:self.distortionCenterY] ?: @""]];
+	[mainElement addAttribute:[NSXMLNode attributeWithName:@"distortionK1" stringValue:[nf stringFromNumber:self.distortionK1] ?: @""]];
+	[mainElement addAttribute:[NSXMLNode attributeWithName:@"distortionK2" stringValue:[nf stringFromNumber:self.distortionK2] ?: @""]];
+	[mainElement addAttribute:[NSXMLNode attributeWithName:@"distortionK3" stringValue:[nf stringFromNumber:self.distortionK3] ?: @""]];
+	[mainElement addAttribute:[NSXMLNode attributeWithName:@"distortionK4" stringValue:[nf stringFromNumber:self.distortionK4] ?: @""]];
+	[mainElement addAttribute:[NSXMLNode attributeWithName:@"distortionK5" stringValue:[nf stringFromNumber:self.distortionK5] ?: @""]];
+	[mainElement addAttribute:[NSXMLNode attributeWithName:@"distortionK6" stringValue:[nf stringFromNumber:self.distortionK6] ?: @""]];
+	[mainElement addAttribute:[NSXMLNode attributeWithName:@"distortionK7" stringValue:[nf stringFromNumber:self.distortionK7] ?: @""]];
+	[mainElement addAttribute:[NSXMLNode attributeWithName:@"distortionP1" stringValue:[nf stringFromNumber:self.distortionP1] ?: @""]];
+	[mainElement addAttribute:[NSXMLNode attributeWithName:@"distortionP2" stringValue:[nf stringFromNumber:self.distortionP2] ?: @""]];
+	[mainElement addAttribute:[NSXMLNode attributeWithName:@"distortionP3" stringValue:[nf stringFromNumber:self.distortionP3] ?: @""]];
+	[mainElement addAttribute:[NSXMLNode attributeWithName:@"distortionP4" stringValue:[nf stringFromNumber:self.distortionP4] ?: @""]];
 	[mainElement addAttribute:[NSXMLNode attributeWithName:@"matrixScreenToQuadratFront" stringValue:[self matrixAsOutputString:self.matrixScreenToQuadratFront]]];
 	[mainElement addAttribute:[NSXMLNode attributeWithName:@"matrixScreenToQuadratBack" stringValue:[self matrixAsOutputString:self.matrixScreenToQuadratBack]]];
 	[mainElement addAttribute:[NSXMLNode attributeWithName:@"matrixQuadratFrontToScreen" stringValue:[self matrixAsOutputString:self.matrixQuadratFrontToScreen]]];
 	[mainElement addAttribute:[NSXMLNode attributeWithName:@"matrixQuadratBackToScreen" stringValue:[self matrixAsOutputString:self.matrixQuadratBackToScreen]]];
-	[mainElement addAttribute:[NSXMLNode attributeWithName:@"residualFrontLeastSquares" stringValue:[nf stringFromNumber:self.residualFrontLeastSquares]]];
-	[mainElement addAttribute:[NSXMLNode attributeWithName:@"residualBackLeastSquares" stringValue:[nf stringFromNumber:self.residualBackLeastSquares]]];
-	[mainElement addAttribute:[NSXMLNode attributeWithName:@"residualFrontPixel" stringValue:[nf stringFromNumber:self.residualFrontPixel]]];
-	[mainElement addAttribute:[NSXMLNode attributeWithName:@"residualBackPixel" stringValue:[nf stringFromNumber:self.residualBackPixel]]];
-	[mainElement addAttribute:[NSXMLNode attributeWithName:@"residualFrontWorld" stringValue:[nf stringFromNumber:self.residualFrontWorld]]];
-	[mainElement addAttribute:[NSXMLNode attributeWithName:@"residualBackWorld" stringValue:[nf stringFromNumber:self.residualBackWorld]]];
-	[mainElement addAttribute:[NSXMLNode attributeWithName:@"distortionReductionAchieved" stringValue:[nf stringFromNumber:self.distortionReductionAchieved]]];
-	[mainElement addAttribute:[NSXMLNode attributeWithName:@"distortionRemainingPerPoint" stringValue:[nf stringFromNumber:self.distortionRemainingPerPoint]]];
+	[mainElement addAttribute:[NSXMLNode attributeWithName:@"residualFrontLeastSquares" stringValue:[nf stringFromNumber:self.residualFrontLeastSquares] ?: @""]];
+	[mainElement addAttribute:[NSXMLNode attributeWithName:@"residualBackLeastSquares" stringValue:[nf stringFromNumber:self.residualBackLeastSquares] ?: @""]];
+	[mainElement addAttribute:[NSXMLNode attributeWithName:@"residualFrontPixel" stringValue:[nf stringFromNumber:self.residualFrontPixel] ?: @""]];
+	[mainElement addAttribute:[NSXMLNode attributeWithName:@"residualBackPixel" stringValue:[nf stringFromNumber:self.residualBackPixel] ?: @""]];
+	[mainElement addAttribute:[NSXMLNode attributeWithName:@"residualFrontWorld" stringValue:[nf stringFromNumber:self.residualFrontWorld] ?: @""]];
+	[mainElement addAttribute:[NSXMLNode attributeWithName:@"residualBackWorld" stringValue:[nf stringFromNumber:self.residualBackWorld] ?: @""]];
+	[mainElement addAttribute:[NSXMLNode attributeWithName:@"distortionReductionAchieved" stringValue:[nf stringFromNumber:self.distortionReductionAchieved] ?: @""]];
+	[mainElement addAttribute:[NSXMLNode attributeWithName:@"distortionRemainingPerPoint" stringValue:[nf stringFromNumber:self.distortionRemainingPerPoint] ?: @""]];
 	if (includeScreenCoords) {
 		NSXMLElement *distortionLines = [[NSXMLElement alloc] initWithName:@"distortionLines"];
 		NSXMLElement *frontCalibrationPoints = [[NSXMLElement alloc] initWithName:@"frontCalibrationPoints"];
@@ -2650,6 +2651,10 @@ static const double kMaxAcceptableScaleRatio = 4.0;    // generous enough for a 
 
 - (NSString *) matrixAsOutputString:(NSArray *)matrix
 {
+	// An uncalibrated clip has no matrices, and formatting one anyway produced the literal
+	// {{(null),(null),(null)},{...}} in the exported XML. Empty is the sentinel the point element already uses.
+	if ([matrix count] != 3) return @"";
+	for (NSArray *row in matrix) if (![row isKindOfClass:[NSArray class]] || [row count] != 3) return @"";
 	NSNumberFormatter *nf = self.videoClip.project.document.decimalFormatter;
 	NSString *result = [NSString stringWithFormat:@"{{%@,%@,%@},{%@,%@,%@},{%@,%@,%@}}",
 					[nf stringFromNumber:[[matrix objectAtIndex:0] objectAtIndex:0]],

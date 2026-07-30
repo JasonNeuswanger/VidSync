@@ -101,6 +101,39 @@
 	return [df dateFromString:dateTimeString];
 }
 
++ (NSString *) ISO8601StringFromDateTime:(NSDate *)dateTime
+{
+	// Used for the two dates added for provenance (dateLastExported and the exported files' export date).
+	// The older dateCreated and dateLastSaved keep their hand-rolled format, because existing documents
+	// contain strings written in it and dateCreatedAsNSDate parses with that same literal pattern.
+	if (dateTime == nil) return @"";
+	NSDateFormatter *df = [[NSDateFormatter alloc] init];
+	[df setTimeZone:[NSTimeZone systemTimeZone]];
+	[df setLocale:[NSLocale localeWithLocaleIdentifier:@"en_US_POSIX"]];	// ISO 8601 needs the Gregorian calendar and ASCII digits regardless of the user's locale
+	[df setDateFormat:@"yyyy-MM-dd'T'HH:mm:ssZZZZZ"];
+	return [df stringFromDate:dateTime];
+}
+
++ (NSString *) appVersionString
+{
+	// CFBundleVersion has been hardcoded to 1 since the beginning, so the short version string (which resolves
+	// to MARKETING_VERSION) is the only meaningful version number to record.
+	return [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleShortVersionString"] ?: @"";
+}
+
++ (NSString *) escapeSpreadsheetField:(NSString *)field forSeparator:(NSString *)separator
+{
+	// Quotes a field only when it actually needs quoting, so clean fields (the vast majority, and all of the
+	// numeric columns) come out byte-identical to the unescaped output this replaced.
+	if (field == nil) return @"";
+	BOOL needsQuoting = ([field rangeOfString:@"\""].location != NSNotFound
+						 || [field rangeOfString:@"\n"].location != NSNotFound
+						 || [field rangeOfString:@"\r"].location != NSNotFound
+						 || ([separator length] > 0 && [field rangeOfString:separator].location != NSNotFound));
+	if (!needsQuoting) return field;
+	return [NSString stringWithFormat:@"\"%@\"",[field stringByReplacingOccurrencesOfString:@"\"" withString:@"\"\""]];
+}
+
 + (void) delayCallback:(void(^)(void))callback forTotalSeconds:(double)delayInSeconds
 {
 	// Takes a block of code as the parameter and runs it after a given delay in seconds

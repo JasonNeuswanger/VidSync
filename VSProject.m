@@ -34,6 +34,9 @@
 @dynamic calibrationTimecode;
 @dynamic dateCreated;
 @dynamic dateLastSaved;
+@dynamic appVersionCreated;
+@dynamic appVersionLastSaved;
+@dynamic dateLastExported;
 @dynamic masterClip;
 @dynamic videoClips;
 @dynamic useIterativeTriangulation;

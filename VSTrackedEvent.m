@@ -149,7 +149,10 @@
 			}
 			NSNumber *distance = [point distanceToVSPoint:previousPoint];
 			NSNumber *speed = [point speedToVSPoint:previousPoint];
-			[connectingLineStrings addObject:[NSString stringWithFormat:@"%@\t%@\t%@\t%@\n",objectString,eventString,distance,speed]];
+			[connectingLineStrings addObject:[NSString stringWithFormat:@"%@\t%@\t%@\t%@\n",
+											  [UtilityFunctions escapeSpreadsheetField:objectString forSeparator:@"\t"],
+											  [UtilityFunctions escapeSpreadsheetField:eventString forSeparator:@"\t"],
+											  distance,speed]];
 		}
 		previousPoint = point;
 	}

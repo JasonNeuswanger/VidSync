@@ -38,6 +38,12 @@
 @property (strong) NSString *calibrationTimecode;
 @property (strong) NSString *dateCreated;
 @property (strong) NSString *dateLastSaved;
+// Provenance, all optional and all nil in documents created before these existed. dateLastExported is ISO 8601,
+// unlike dateCreated and dateLastSaved above, whose hand-rolled format has to stay as it is because existing
+// documents contain strings written in it.
+@property (strong) NSString *appVersionCreated;
+@property (strong) NSString *appVersionLastSaved;
+@property (strong) NSString *dateLastExported;
 @property (strong) VSVideoClip *masterClip;
 @property (strong) NSMutableSet *videoClips;
 

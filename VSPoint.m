@@ -425,20 +425,32 @@ NSPoint project2DPoint(NSPoint pt, double projectionMatrix[9])
 	} else {
 		eventNotesString = self.trackedEvent.notes;
 	}
-	
-	return [NSString stringWithFormat:@"%@%@%@%@%@%@%f%@%f%@%f%@%f%@%f%@%f%@%f%@%@%@%@%@\n",
-		   objectsString,separator,
-		   eventString,separator,
+
+	// Emit an empty field, not 0.000000, for values that were never computed, so a point with too few views is
+	// distinguishable from one that really is at the origin. This matches what the XML export already does, and
+	// both read.csv and pandas turn an empty numeric field into NA/NaN.
+	NSString *worldXString = (self.worldX == nil) ? @"" : [NSString stringWithFormat:@"%f",[self.worldX floatValue]];
+	NSString *worldYString = (self.worldY == nil) ? @"" : [NSString stringWithFormat:@"%f",[self.worldY floatValue]];
+	NSString *worldZString = (self.worldZ == nil) ? @"" : [NSString stringWithFormat:@"%f",[self.worldZ floatValue]];
+	NSString *nearestCameraDistanceString = (self.nearestCameraDistance == nil) ? @"" : [NSString stringWithFormat:@"%f",[self.nearestCameraDistance floatValue]];
+	// The two error columns get extra digits because at %f everything below a millionth of a world unit prints
+	// as exactly zero, and a good measurement in a project whose world units are metres has a sub-micron PLD.
+	NSString *meanPLDString = (self.meanPLD == nil) ? @"" : [NSString stringWithFormat:@"%.10f",[self.meanPLD doubleValue]];
+	NSString *reprojectionErrorNormString = (self.reprojectionErrorNorm == nil) ? @"" : [NSString stringWithFormat:@"%.10f",[self.reprojectionErrorNorm doubleValue]];
+
+	return [NSString stringWithFormat:@"%@%@%@%@%@%@%f%@%@%@%@%@%@%@%@%@%@%@%@%@%@%@%@%@\n",
+		   [UtilityFunctions escapeSpreadsheetField:objectsString forSeparator:separator],separator,
+		   [UtilityFunctions escapeSpreadsheetField:eventString forSeparator:separator],separator,
 		   self.timecode,separator,
 		   [[NSNumber numberWithDouble:time] floatValue],separator,
-		   [[self worldX] floatValue],separator,
-		   [[self worldY] floatValue],separator,
-		   [[self worldZ] floatValue],separator,
-		   [[self meanPLD] floatValue],separator,
-		   [[self reprojectionErrorNorm] floatValue],separator,
-		   [[self nearestCameraDistance] floatValue],separator,
+		   worldXString,separator,
+		   worldYString,separator,
+		   worldZString,separator,
+		   meanPLDString,separator,
+		   reprojectionErrorNormString,separator,
+		   nearestCameraDistanceString,separator,
 		   self.index,separator,
-		   eventNotesString,
+		   [UtilityFunctions escapeSpreadsheetField:eventNotesString forSeparator:separator],
 		   screenCoordsString
 		   ];
 }
