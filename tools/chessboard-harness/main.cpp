@@ -10,7 +10,11 @@ int main(int argc, char** argv){
     printf("corners: %lu accepted (%d saddle candidates, %d prefilter-rejected), cell %.1f px\n",
            (unsigned long)det.corners.size(), det.saddleCandidateCount, det.prefilterRejectedCount, det.estimatedCellSize);
     vidsync::LatticeSeedHint hint;
-    vidsync::SeedLattice seed = vidsync::findSeedLattice(det.corners, det.estimatedCellSize, cv::Size(img.cols,img.rows), hint);
+    // The overload taking the image is the one -[VSCalibration autodetectChessboardPlumblinesLattice]
+    // calls: it lets the seed finder estimate the checker pitch from brightness scanlines instead of
+    // from a corner cloud the debris in this footage can dominate. The harness is only worth having
+    // if it runs what the app runs, and for a while it did not run this.
+    vidsync::SeedLattice seed = vidsync::findSeedLattice(det.corners, det.estimatedCellSize, cv::Size(img.cols,img.rows), hint, img);
     printf("seed: %s\n", seed.status.c_str());
     if(!seed.valid) return 0;
     printf("  basis u=(%.1f,%.1f) |u|=%.1f   v=(%.1f,%.1f) |v|=%.1f   angle between = %.1f deg\n",
@@ -39,7 +43,9 @@ int main(int argc, char** argv){
         FILE* f = fopen(argv[2], "w");
         for (size_t i = 0; i < pl.size(); i++)
             for (size_t k = 0; k < pl[i].points.size(); k++)
-                fprintf(f, "1,%d,%d,%.6f,%.6f\n", (int)i, (int)k, pl[i].points[k].x, 1080.0 - pl[i].points[k].y);
+                // Flipped to VidSync's bottom-left origin against this frame's own height, so
+                // the CSV still lines up with a document's points for a clip that is not 1080 tall.
+                fprintf(f, "1,%d,%d,%.6f,%.6f\n", (int)i, (int)k, pl[i].points[k].x, (double)img.rows - pl[i].points[k].y);
         fclose(f);
     }
     return 0;
