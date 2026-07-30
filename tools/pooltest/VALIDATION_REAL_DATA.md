@@ -1,19 +1,20 @@
 # Real-data validation of the lattice traversal-canonicalization fix
 
-> **THE PINNED REFERENCES BELOW ARE STALE AS OF 2026-07-30, FOR TWO INDEPENDENT REASONS. Do not
-> re-pin them without separating the two.**
+> **THE PINNED REFERENCES BELOW ARE OBSOLETE AS OF 2026-07-30, FOR TWO INDEPENDENT REASONS.**
 >
-> **Reason 1, document drift, which is NOT a code change.** Seven of the eight pinned observation
-> counts were already wrong before any 2026-07-30 code change was made, measured by loading the
-> documents through the then-current `lattice.py`: `mid`/Left reliable 341 against a pinned 340 and
-> `Dind.n` 325 against 309, `mid`/Right 369 against 365 and 353 against 318, `8mm`/Left `Dind.n` 401
-> against 398, `8mm`/Right 388 against 387. The stored plumbline geometry in
-> `2015-06-22-1 Clearwater.vsd` and `2015-09-04-1 Clearwater.vsd` has therefore changed since these
-> references were recorded. **The consequence is that the `PDD_REF` losses, and the `mid` PD-D numbers
-> quoted in `ADDENDUM_2026-07-29_REAL_DATA.md`, are no longer reproducible from the documents as they
-> now stand** — the observation set they were computed on no longer exists. That is not a solver
-> difference and not a model effect; `mid`/Right alone gained 35 doubly-constrained observations.
-> Establish what changed those documents before quoting or re-pinning any of it.
+> **Reason 1, the documents were deliberately re-detected, which is NOT a code change and NOT drift.**
+> The improved chessboard corner detector was re-run by the operator over most of the corpus and the
+> documents re-saved with a better suite of corners and plumblines. Seven of the eight pinned counts
+> were therefore already wrong before any 2026-07-30 `lattice.py` change, measured by loading the
+> documents through the then-current code: `mid`/Left reliable 341 against a pinned 340 and `Dind.n`
+> 325 against 309, `mid`/Right 369 against 365 and 353 against 318, `8mm`/Left `Dind.n` 401 against
+> 398, `8mm`/Right 388 against 387. `mid`/Right alone gained 35 doubly-constrained observations.
+>
+> **The consequence stands even though the cause is benign: the `PDD_REF` losses, and the `mid` PD-D
+> numbers quoted in `ADDENDUM_2026-07-29_REAL_DATA.md`, are not reproducible from the documents as
+> they now stand**, because the observation set they were computed on no longer exists. Those numbers
+> describe superseded input, not a superseded method. Do not compare new fits against them; the
+> 2026-07-30 forty-camera round re-establishes its own baseline on the current documents.
 >
 > **Reason 2, three intended `lattice.py` fixes on 2026-07-30**, each verified against the whole
 > 20-document corpus. Their only effect on the six established cameras is `8mm`/Right gaining one
