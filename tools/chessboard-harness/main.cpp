@@ -22,11 +22,12 @@ int main(int argc, char** argv){
            seed.basis.v.x,seed.basis.v.y,std::sqrt(seed.basis.v.x*seed.basis.v.x+seed.basis.v.y*seed.basis.v.y),
            std::abs(std::atan2(seed.basis.u.x*seed.basis.v.y-seed.basis.u.y*seed.basis.v.x,
                                seed.basis.u.x*seed.basis.v.x+seed.basis.u.y*seed.basis.v.y))*180.0/CV_PI);
-    vidsync::GrownLattice lat = vidsync::growLattice(det.corners, seed, cv::Size(img.cols,img.rows));
-    printf("grow: %s\n", lat.status.c_str());
+    // assembleLattice, not growLattice plus refineLattice, because that is what the app calls.
+    vidsync::GrownLattice lat;
+    vidsync::RefinementResult ref = vidsync::assembleLattice(det.corners, seed, img, cv::Size(img.cols,img.rows), &lat);
+    printf("grow: %s\n", lat.valid ? lat.status.c_str() : "did not run");
     if(!lat.valid) return 0;
-    vidsync::RefinementResult ref = vidsync::refineLattice(det.corners, lat, img);
-    printf("refine: %s\n", ref.status.c_str());
+    printf("assemble: %s\n", ref.status.c_str());
     std::vector<vidsync::Plumbline> pl = vidsync::extractPlumblines(det.corners, ref.lattice, 6);
     printf("plumblines: %lu\n", (unsigned long)pl.size());
     std::map<int,int> hist; size_t npts=0;

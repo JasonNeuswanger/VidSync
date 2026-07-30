@@ -1886,11 +1886,13 @@ static const size_t kMinAutodetectedPlumblines = 8;
 	size_t rawPlumblineCount = 0;
 	size_t rawPlumblinePointCount = 0;
 	if (seed.valid) {
-		lattice = vidsync::growLattice(detection.corners, seed, cv::Size(gray.cols, gray.rows));
+		// Growth and refinement are run alternately to convergence rather than once each, because
+		// each refinement pass manufactures corners that let the next growth pass cross a band of
+		// junctions the detector missed. Refinement appends the corners it finds in the image, so
+		// this works on the detection's own corner vector and the lattice it returns indexes into
+		// the enlarged one. `lattice` receives the first growth pass, for the log below.
+		refinement = vidsync::assembleLattice(detection.corners, seed, gray, cv::Size(gray.cols, gray.rows), &lattice);
 		if (lattice.valid) {
-			// Refinement can append corners it finds in the image, so it works on the detection's
-			// own corner vector and the lattice it returns indexes into the enlarged one.
-			refinement = vidsync::refineLattice(detection.corners, lattice, gray);
 			lattice = refinement.lattice;
 			plumblines = vidsync::extractPlumblines(detection.corners, lattice, kMinPlumblinePoints);
 			rawPlumblineCount = plumblines.size();
@@ -1912,7 +1914,7 @@ static const size_t kMinAutodetectedPlumblines = 8;
 		  (unsigned long)plumblines.size(),
 		  [NSString stringWithUTF8String:seed.status.c_str()],
 		  lattice.valid ? [NSString stringWithUTF8String:lattice.status.c_str()] : @"Grid growth did not run.",
-		  refinement.passes > 0 ? [NSString stringWithUTF8String:refinement.status.c_str()] : @"Refinement did not run.");
+		  refinement.passes > 0 ? [NSString stringWithUTF8String:refinement.status.c_str()] : @"Assembly did not run.");
 
 	// Show whatever we got furthest with, so a failure always leaves something to diagnose from.
 	// OpenCV puts the origin at the top left; VidSync puts it at the bottom left.

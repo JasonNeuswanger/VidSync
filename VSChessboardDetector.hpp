@@ -169,6 +169,29 @@ RefinementResult refineLattice(std::vector<CornerCandidate> &corners,
                                const GrownLattice &lattice,
                                const cv::Mat &gray);
 
+// --- Stages D and E together, run to convergence -------------------------------------
+
+// Grows and refines alternately until growth stops finding anything new, which is what callers
+// should use rather than calling growLattice and refineLattice once each.
+//
+// Growth can only place a corner the detector already found, so a contiguous band of undetected
+// junctions is a wall it cannot cross, and it stops there however much good board lies beyond.
+// Refinement can manufacture a corner by searching the image at a predicted site -- exactly what
+// is needed to cross such a wall -- but it runs after growth and reaches only one ring past the
+// grown extent, so the corners it finds never get to bridge anything. On a specular, badly
+// exposed frame where the detector found only a third of the junctions, growth stalled at 45 of
+// roughly 264 sites; alternating the two stages reached 212. The clinching case was a site
+// predicted at 488.4, 442.2 with no detected corner within 67.5 px during growth, for which
+// refinement then manufactured one 1.6 px away that scored 0.447 -- it was recoverable all along.
+//
+// Corners recovered along the way are appended to `corners`, as refineLattice already does.
+// initialGrowth, if not null, receives the first growth pass so callers can still report it.
+RefinementResult assembleLattice(std::vector<CornerCandidate> &corners,
+                                 const SeedLattice &seed,
+                                 const cv::Mat &gray,
+                                 cv::Size imageSize,
+                                 GrownLattice *initialGrowth);
+
 // --- Plumblines ---------------------------------------------------------------------
 
 // An ordered run of corners that lie on one straight line in the world, which is what the

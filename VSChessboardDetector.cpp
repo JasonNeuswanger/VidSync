@@ -541,13 +541,14 @@ public:
                 std::map<long long, std::vector<size_t> >::const_iterator it = buckets_.find(gx * 1000000LL + gy);
                 if (it == buckets_.end()) continue;
                 for (size_t k = 0; k < it->second.size(); k++) {
-                    const cv::Point2f &q = corners_[subset_[it->second[k]]].position;
+                    const size_t slot = it->second[k];
+                    const cv::Point2f &q = corners_[subset_[slot]].position;
                     const double dx = p.x - q.x;
                     const double dy = p.y - q.y;
                     const double dsq = dx * dx + dy * dy;
                     if (dsq < bestSq) {
                         bestSq = dsq;
-                        best = (int)it->second[k];
+                        best = (int)slot;
                     }
                 }
             }
@@ -777,6 +778,7 @@ double displacementPeaks(const std::vector<CornerCandidate> &corners,
     const double binSize = 2.0 * radius / nb;
     cv::Mat hist(nb, nb, CV_32F, cv::Scalar(0.0f));
     const double radiusSq = radius * radius;
+
     for (size_t i = 0; i < subset.size(); i++) {
         const cv::Point2f &a = corners[subset[i]].position;
         for (size_t j = i + 1; j < subset.size(); j++) {
@@ -2600,6 +2602,77 @@ RefinementResult refineLattice(std::vector<CornerCandidate> &corners,
             << holesFilled << " holes from corners already detected, and recovered "
             << result.cornersRecovered << " more by searching the image where the grid predicted "
             << "a corner. Lattice now " << out.cornerIndex.size() << " corners.";
+    result.status = message.str();
+    return result;
+}
+
+namespace {
+
+// A backstop, not the usual reason for stopping: the loop below normally ends when a growth pass
+// adds nothing, which happens after 2 to 6 cycles on every real frame measured. It is needed
+// because a frame whose lattice is junk can oscillate indefinitely, with refinement expelling a
+// handful of corners and growth putting them straight back.
+const int kMaxAssemblyCycles = 8;
+
+// Presents an already-assembled lattice as a seed, so growth can be run again from it.
+SeedLattice seedFromLattice(const GrownLattice &lattice)
+{
+    SeedLattice seed;
+    seed.basis = lattice.basis;
+    seed.cornerIndex = lattice.cornerIndex;
+    seed.ij = lattice.ij;
+    seed.status = "Re-seeded from the previous growth and refinement cycle.";
+    seed.valid = lattice.valid && !lattice.cornerIndex.empty();
+    return seed;
+}
+
+}   // anonymous namespace
+
+RefinementResult assembleLattice(std::vector<CornerCandidate> &corners,
+                                 const SeedLattice &seed,
+                                 const cv::Mat &gray,
+                                 cv::Size imageSize,
+                                 GrownLattice *initialGrowth)
+{
+    RefinementResult result;
+    GrownLattice lattice = growLattice(corners, seed, imageSize);
+    if (initialGrowth != 0) *initialGrowth = lattice;
+    if (!lattice.valid) {
+        result.status = "Grid growth did not run, so there was nothing to refine.";
+        return result;
+    }
+
+    int cycles = 0;
+    int totalRemoved = 0;
+    int totalRecovered = 0;
+    for (; cycles < kMaxAssemblyCycles; cycles++) {
+        const size_t sitesBefore = lattice.cornerIndex.size();
+        result = refineLattice(corners, lattice, gray);
+        totalRemoved += result.outliersRemoved;
+        totalRecovered += result.cornersRecovered;
+
+        const GrownLattice regrown = growLattice(corners, seedFromLattice(result.lattice), imageSize);
+        if (!regrown.valid) break;
+        // Compared against the count before this cycle's refinement, not after it, so the test is
+        // monotone in the grown count and cannot be satisfied merely by refinement having expelled
+        // something that growth then replaces.
+        if (regrown.cornerIndex.size() <= sitesBefore) break;
+        lattice = regrown;
+    }
+
+    // The lattice handed back has to be a refined one, so refine whatever the last growth produced.
+    result = refineLattice(corners, lattice, gray);
+    totalRemoved += result.outliersRemoved;
+    totalRecovered += result.cornersRecovered;
+    result.outliersRemoved = totalRemoved;
+    result.cornersRecovered = totalRecovered;
+
+    std::ostringstream message;
+    message << "Assembled over " << (cycles + 1) << " growth and refinement cycle"
+            << (cycles == 0 ? "" : "s") << ": removed " << totalRemoved
+            << " corners lying off their line and recovered " << totalRecovered
+            << " by searching the image where the grid predicted a corner. Lattice now "
+            << result.lattice.cornerIndex.size() << " corners.";
     result.status = message.str();
     return result;
 }
