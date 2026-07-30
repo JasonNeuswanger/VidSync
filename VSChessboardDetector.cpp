@@ -489,12 +489,55 @@ const size_t kMinFullyConsistentPoints = 6;
 // Looks up corners by position without an O(n^2) scan.
 class PointLookup {
 public:
+    // Buckets live in a flat array covering the subset's own bounding box, not in a std::map keyed
+    // by cell. Each query walks a fixed neighbourhood of cells, so with a map it paid a red-black
+    // tree descent per cell; profiling the seed search showed 1.4 to 15 million queries per frame
+    // and 89% of labelSeedPatch's time inside them, which made this the single hottest thing in the
+    // detector. The array is indexed directly instead. Cells are visited in the same order and each
+    // cell's contents remain in subset order, so every query makes exactly the same comparisons in
+    // exactly the same sequence and the results are unchanged down to the tie-breaking.
     PointLookup(const std::vector<CornerCandidate> &corners, const std::vector<int> &subset, double cell)
-        : corners_(corners), subset_(subset), cell_(cell > 1.0 ? cell : 1.0)
+        : corners_(corners), subset_(subset), cell_(cell > 1.0 ? cell : 1.0),
+          minCellX_(0), minCellY_(0), cellsX_(0), cellsY_(0)
     {
-        for (size_t k = 0; k < subset_.size(); k++) {
-            buckets_[key(corners_[subset_[k]].position)].push_back(k);
+        if (subset_.empty()) return;
+
+        // A degenerate basis can ask for cells barely a pixel across, which over a window-sized
+        // box would want millions of them. Coarsening keeps the array small; the span each query
+        // walks is derived from cell_, so it still covers the whole radius either way.
+        const size_t kMaxCells = 1u << 20;
+        for (;;) {
+            long long loX = 0, hiX = 0, loY = 0, hiY = 0;
+            for (size_t k = 0; k < subset_.size(); k++) {
+                const cv::Point2f &p = corners_[subset_[k]].position;
+                const long long gx = (long long)std::floor(p.x / cell_);
+                const long long gy = (long long)std::floor(p.y / cell_);
+                if (k == 0) { loX = hiX = gx; loY = hiY = gy; }
+                if (gx < loX) loX = gx;
+                if (gx > hiX) hiX = gx;
+                if (gy < loY) loY = gy;
+                if (gy > hiY) hiY = gy;
+            }
+            minCellX_ = loX;
+            minCellY_ = loY;
+            cellsX_ = (int)(hiX - loX + 1);
+            cellsY_ = (int)(hiY - loY + 1);
+            if ((size_t)cellsX_ * (size_t)cellsY_ <= kMaxCells) break;
+            cell_ *= 2.0;
         }
+
+        // Counting sort into the flat array, which keeps each cell's contents in subset order.
+        const size_t cellCount = (size_t)cellsX_ * (size_t)cellsY_;
+        cellStart_.assign(cellCount + 1, 0);
+        std::vector<int> cellOf(subset_.size());
+        for (size_t k = 0; k < subset_.size(); k++) {
+            cellOf[k] = flatCell(corners_[subset_[k]].position);
+            cellStart_[(size_t)cellOf[k] + 1]++;
+        }
+        for (size_t c = 1; c <= cellCount; c++) cellStart_[c] += cellStart_[c - 1];
+        items_.resize(subset_.size());
+        std::vector<int> cursor(cellStart_.begin(), cellStart_.end() - 1);
+        for (size_t k = 0; k < subset_.size(); k++) items_[(size_t)cursor[cellOf[k]]++] = (int)k;
     }
 
     // As nearestWithin, but ignoring corners already claimed by another lattice site.
@@ -507,11 +550,14 @@ public:
         double bestSq = radiusSq;
         const int span = (int)std::ceil(radius / cell_);
         for (long long gx = bx - span; gx <= bx + span; gx++) {
+            const long long ix = gx - minCellX_;
+            if (ix < 0 || ix >= (long long)cellsX_) continue;
             for (long long gy = by - span; gy <= by + span; gy++) {
-                std::map<long long, std::vector<size_t> >::const_iterator it = buckets_.find(gx * 1000000LL + gy);
-                if (it == buckets_.end()) continue;
-                for (size_t k = 0; k < it->second.size(); k++) {
-                    const size_t slot = it->second[k];
+                const long long iy = gy - minCellY_;
+                if (iy < 0 || iy >= (long long)cellsY_) continue;
+                const size_t cell = (size_t)iy * (size_t)cellsX_ + (size_t)ix;
+                for (int e = cellStart_[cell]; e < cellStart_[cell + 1]; e++) {
+                    const size_t slot = (size_t)items_[(size_t)e];
                     if (slot < excluded.size() && excluded[slot]) continue;
                     const cv::Point2f &q = corners_[subset_[slot]].position;
                     const double dx = p.x - q.x;
@@ -537,11 +583,14 @@ public:
         double bestSq = radiusSq;
         const int span = (int)std::ceil(radius / cell_);
         for (long long gx = bx - span; gx <= bx + span; gx++) {
+            const long long ix = gx - minCellX_;
+            if (ix < 0 || ix >= (long long)cellsX_) continue;
             for (long long gy = by - span; gy <= by + span; gy++) {
-                std::map<long long, std::vector<size_t> >::const_iterator it = buckets_.find(gx * 1000000LL + gy);
-                if (it == buckets_.end()) continue;
-                for (size_t k = 0; k < it->second.size(); k++) {
-                    const size_t slot = it->second[k];
+                const long long iy = gy - minCellY_;
+                if (iy < 0 || iy >= (long long)cellsY_) continue;
+                const size_t cell = (size_t)iy * (size_t)cellsX_ + (size_t)ix;
+                for (int e = cellStart_[cell]; e < cellStart_[cell + 1]; e++) {
+                    const size_t slot = (size_t)items_[(size_t)e];
                     const cv::Point2f &q = corners_[subset_[slot]].position;
                     const double dx = p.x - q.x;
                     const double dy = p.y - q.y;
@@ -557,15 +606,20 @@ public:
     }
 
 private:
-    long long key(const cv::Point2f &p) const
+    int flatCell(const cv::Point2f &p) const
     {
-        return (long long)std::floor(p.x / cell_) * 1000000LL + (long long)std::floor(p.y / cell_);
+        const long long gx = (long long)std::floor(p.x / cell_) - minCellX_;
+        const long long gy = (long long)std::floor(p.y / cell_) - minCellY_;
+        return (int)(gy * (long long)cellsX_ + gx);
     }
 
     const std::vector<CornerCandidate> &corners_;
     const std::vector<int> &subset_;
     double cell_;
-    std::map<long long, std::vector<size_t> > buckets_;
+    long long minCellX_, minCellY_;
+    int cellsX_, cellsY_;
+    std::vector<int> cellStart_;   // cellStart_[c] .. cellStart_[c+1] index into items_
+    std::vector<int> items_;       // positions within subset_, grouped by cell, in subset order
 };
 
 double vectorLength(const cv::Point2f &p)
@@ -779,21 +833,68 @@ double displacementPeaks(const std::vector<CornerCandidate> &corners,
     cv::Mat hist(nb, nb, CV_32F, cv::Scalar(0.0f));
     const double radiusSq = radius * radius;
 
+    // Only pairs closer together than `radius` contribute, so they are enumerated through a grid
+    // of cells one radius across rather than by considering all n(n-1)/2 of them. Any qualifying
+    // partner of a point must lie in that point's own cell or one of the eight around it. This
+    // examines exactly the pairs the radius test would have kept plus a fringe the same test still
+    // rejects, so the histogram it builds is identical -- the counts are integers accumulated in
+    // floats well below the exact range, so even the arithmetic is order-independent.
+    //
+    // Worth the machinery because the discarded fraction was large and the cost quadratic. Measured
+    // over sixteen frames, the seed search examined 3 to 94 million pairs per frame and kept only
+    // 20 to 27% of them, and it accounted for 56 to 75% of the whole detector's runtime.
+    std::vector<double> px(subset.size()), py(subset.size());
+    double minX = 0.0, minY = 0.0, maxX = 0.0, maxY = 0.0;
     for (size_t i = 0; i < subset.size(); i++) {
-        const cv::Point2f &a = corners[subset[i]].position;
-        for (size_t j = i + 1; j < subset.size(); j++) {
-            const cv::Point2f &b = corners[subset[j]].position;
-            const double dx = b.x - a.x;
-            const double dy = b.y - a.y;
-            if (dx * dx + dy * dy > radiusSq) continue;
-            // Accumulate both signs; the set of lattice displacements is symmetric.
-            for (int s = 0; s < 2; s++) {
-                const double sx = s ? -dx : dx;
-                const double sy = s ? -dy : dy;
-                int bx = (int)std::floor((sx + radius) / binSize);
-                int by = (int)std::floor((sy + radius) / binSize);
-                if (bx < 0 || by < 0 || bx >= nb || by >= nb) continue;
-                hist.at<float>(by, bx) += 1.0f;
+        const cv::Point2f &p = corners[subset[i]].position;
+        px[i] = p.x; py[i] = p.y;
+        if (i == 0) { minX = maxX = p.x; minY = maxY = p.y; }
+        if (p.x < minX) minX = p.x;
+        if (p.x > maxX) maxX = p.x;
+        if (p.y < minY) minY = p.y;
+        if (p.y > maxY) maxY = p.y;
+    }
+    const int cellsX = std::max(1, (int)((maxX - minX) / radius) + 1);
+    const int cellsY = std::max(1, (int)((maxY - minY) / radius) + 1);
+    std::vector<std::vector<int> > cellContents((size_t)cellsX * (size_t)cellsY);
+    std::vector<int> cellOf(subset.size());
+    for (size_t i = 0; i < subset.size(); i++) {
+        int cx = (int)((px[i] - minX) / radius);
+        int cy = (int)((py[i] - minY) / radius);
+        if (cx < 0) cx = 0; if (cx >= cellsX) cx = cellsX - 1;
+        if (cy < 0) cy = 0; if (cy >= cellsY) cy = cellsY - 1;
+        cellOf[i] = cy * cellsX + cx;
+        cellContents[(size_t)cellOf[i]].push_back((int)i);
+    }
+
+    float *const histData = hist.ptr<float>(0);
+    const size_t histStride = hist.step / sizeof(float);
+    for (size_t i = 0; i < subset.size(); i++) {
+        const int cx = cellOf[i] % cellsX;
+        const int cy = cellOf[i] / cellsX;
+        for (int oy = -1; oy <= 1; oy++) {
+            const int ny = cy + oy;
+            if (ny < 0 || ny >= cellsY) continue;
+            for (int ox = -1; ox <= 1; ox++) {
+                const int nx = cx + ox;
+                if (nx < 0 || nx >= cellsX) continue;
+                const std::vector<int> &bucket = cellContents[(size_t)ny * (size_t)cellsX + (size_t)nx];
+                for (size_t k = 0; k < bucket.size(); k++) {
+                    const size_t j = (size_t)bucket[k];
+                    if (j <= i) continue;   // each unordered pair once, as the old loop did
+                    const double dx = px[j] - px[i];
+                    const double dy = py[j] - py[i];
+                    if (dx * dx + dy * dy > radiusSq) continue;
+                    // Accumulate both signs; the set of lattice displacements is symmetric.
+                    for (int s = 0; s < 2; s++) {
+                        const double sx = s ? -dx : dx;
+                        const double sy = s ? -dy : dy;
+                        const int bx = (int)std::floor((sx + radius) / binSize);
+                        const int by = (int)std::floor((sy + radius) / binSize);
+                        if (bx < 0 || by < 0 || bx >= nb || by >= nb) continue;
+                        histData[(size_t)by * histStride + (size_t)bx] += 1.0f;
+                    }
+                }
             }
         }
     }
