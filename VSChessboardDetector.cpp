@@ -1568,7 +1568,11 @@ SitePrediction predictSite(const std::map<long long, int> &siteToCorner,
     const int dj[4] = {0, 0, 1, -1};
 
     std::vector<cv::Point2f> tier3, tier2, tier1;
-    std::vector<double> spacings;
+    // Kept per axis. The tolerance derived from these is the distance at which this site could be
+    // confused with an adjacent one, which is the pitch of the *tighter* axis; pooling both into
+    // one median overstates it wherever the board is viewed obliquely. Measured on one frame, 21%
+    // of grown sites had their tolerance inflated by more than 1.5x this way and some by 2.8x.
+    std::vector<double> spacingsI, spacingsJ;
 
     for (int d = 0; d < 4; d++) {
         // Corners lying back along this axis from the site, at one, two and three steps.
@@ -1583,7 +1587,10 @@ SitePrediction predictSite(const std::map<long long, int> &siteToCorner,
         it = siteToCorner.find(siteKey(i - 3 * di[d], j - 3 * dj[d]));
         if (it != siteToCorner.end()) p3 = &corners[it->second].position;
 
-        if (p1 && p2) spacings.push_back(vectorLength(cv::Point2f(p1->x - p2->x, p1->y - p2->y)));
+        if (p1 && p2) {
+            const double pitch = vectorLength(cv::Point2f(p1->x - p2->x, p1->y - p2->y));
+            (d < 2 ? spacingsI : spacingsJ).push_back(pitch);
+        }
 
         if (p1 && p2 && p3) {
             tier3.push_back(cv::Point2f(p3->x - 3.0f * p2->x + 3.0f * p1->x,
@@ -1610,7 +1617,8 @@ SitePrediction predictSite(const std::map<long long, int> &siteToCorner,
         const cv::Point2f &pb = corners[b->second].position;
         const cv::Point2f &pab = corners[ab->second].position;
         tier3.push_back(cv::Point2f(pa.x + pb.x - pab.x, pa.y + pb.y - pab.y));
-        spacings.push_back(vectorLength(cv::Point2f(pa.x - pab.x, pa.y - pab.y)));
+        // pa and pab differ only in j, so this is a j-axis pitch.
+        spacingsJ.push_back(vectorLength(cv::Point2f(pa.x - pab.x, pa.y - pab.y)));
     }
 
     std::vector<cv::Point2f> *chosen = 0;
@@ -1620,12 +1628,17 @@ SitePrediction predictSite(const std::map<long long, int> &siteToCorner,
     if (!chosen) return result;
 
     result.position = medianPoint(*chosen);
-    if (spacings.empty()) {
-        result.spacing = std::min(vectorLength(u), vectorLength(v));
-    } else {
-        std::sort(spacings.begin(), spacings.end());
-        result.spacing = spacings[spacings.size() / 2];
+    // Median within each axis, so one corrupted pair cannot set the scale, then the smaller of the
+    // two axes, because that is the shorter of the two distances to an adjacent site.
+    double best = 0.0;
+    for (int axis = 0; axis < 2; axis++) {
+        std::vector<double> &pitches = (axis == 0) ? spacingsI : spacingsJ;
+        if (pitches.empty()) continue;
+        std::sort(pitches.begin(), pitches.end());
+        const double median = pitches[pitches.size() / 2];
+        if (best <= 0.0 || median < best) best = median;
     }
+    result.spacing = (best > 0.0) ? best : std::min(vectorLength(u), vectorLength(v));
     return result;
 }
 
@@ -1704,7 +1717,18 @@ GrownLattice growLattice(const std::vector<CornerCandidate> &corners,
             const int i = frontier[f].x;
             const int j = frontier[f].y;
             const SitePrediction pred = predictSite(siteToCorner, corners, i, j, seed.basis.u, seed.basis.v);
-            if (pred.tier == 0 || pred.spacing <= 1e-6) continue;
+            // Tier 1 steps one seed basis vector from a single neighbour, so both the position it
+            // predicts and the spacing it reports are the basis measured near the middle of the
+            // frame. Where the board is compressed against a frame edge the real pitch can be half
+            // that, which makes the prediction wrong by most of a cell and simultaneously inflates
+            // the tolerance that is supposed to catch it. Measured on one frame, the 9 tier-1
+            // placements had a median residual of 16.2 px against 2.1 px for the 460 tier-3 ones,
+            // and each bad one corrupts a whole run: a tier-1 placement at site (14,5) took a
+            // corner 35 px from where that site belongs, after which the row read 17.6, 38.5 and
+            // 66.9 px between consecutive corners on a 35 px pitch and refinement expelled most of
+            // it. Leaving the site empty is harmless by comparison -- holes are bridged later, and
+            // refinement's own recovery pass already declines tier 1 for the same reason.
+            if (pred.tier < 2 || pred.spacing <= 1e-6) continue;
             if (pred.position.x < 0.0f || pred.position.y < 0.0f ||
                 pred.position.x >= imageSize.width || pred.position.y >= imageSize.height) continue;
 
@@ -1785,23 +1809,91 @@ const double kMaxReverseProgressFraction = 0.35;
 
 // A sparse line can still walk monotonically along the basis while hopping sideways onto
 // scratches or onto a neighbouring row/column. Consecutive accepted corners may bridge a
-// few missing lattice cells, but the per-cell screen displacement should remain comparable
-// to the seed basis and mostly aligned with it.
-const double kMinStepLengthFraction = 0.35;
-const double kMaxStepLengthFraction = 1.85;
+// few missing lattice cells, but the per-cell screen displacement should stay close to the
+// pitch of the rest of the line and mostly aligned with the basis.
+//
+// How far a step's length may stray from that pitch. The reference has to be measured
+// locally. Radial distortion compresses the on-screen pitch toward the edge of the frame,
+// and on the 8 mm fisheye footage in this project the pitch at the left and right edges of a
+// row runs a quarter of the pitch at its centre -- 25 px against 104 px on one measured
+// frame. Judged against the single basis taken from the seed window, which sits near the
+// centre, every step out there read as impossibly short: the outer three or four columns
+// were split off into fragments below minPoints and discarded, so the fit lost exactly the
+// corners where the distortion it is solving for is strongest, while the columns through the
+// same corners survived intact because the vertical direction is tangential there and barely
+// compressed at all. Judged against its own neighbours the same step is unremarkable. Over
+// fourteen real frames, on the eight where the board was actually found, 99% of steps fall
+// between 0.79 and 1.16 of the local pitch and only 0.15% fall outside these bounds; on the
+// six where the lattice came out junk the same bounds still split 27% of steps, so the guard
+// keeps its discriminating power.
+const double kMinLocalStepFraction = 0.50;
+const double kMaxLocalStepFraction = 2.00;
+
+// How many steps either side of a step are averaged to get the pitch it is judged against.
+// The pitch changes by only a few percent per cell, so a short window tracks it closely, and
+// taking the median of six neighbours means one or two bad steps cannot vouch for themselves.
+const int kLocalPitchWindow = 3;
+
+// The sideways component, by contrast, is deliberately still measured against the global
+// basis. Localizing it was tried and is worse: on the frames where the board was found it
+// rejects more good steps (0.09% against 0.06%), and on the frames where the lattice was junk
+// it catches fewer bad ones (29% against 36%), because a contaminated run drags its own local
+// reference along with it while the seed basis stays put.
 const double kMaxPerpendicularStepFraction = 0.70;
+
+// The per-cell screen length of every step in one run. Entry k is the step from along[k] to
+// along[k + 1], divided by the number of lattice cells it bridges, so holes do not make a
+// step look long.
+std::vector<double> perCellStepLengths(const std::vector<std::pair<int, int> > &along,
+                                       const std::vector<CornerCandidate> &corners)
+{
+    std::vector<double> lengths;
+    if (along.size() < 2) return lengths;
+    lengths.reserve(along.size() - 1);
+    for (size_t k = 1; k < along.size(); k++) {
+        const int gap = along[k].first - along[k - 1].first;
+        const cv::Point2f &a = corners[along[k - 1].second].position;
+        const cv::Point2f &b = corners[along[k].second].position;
+        lengths.push_back(gap > 0 ? vectorLength(cv::Point2f(b.x - a.x, b.y - a.y)) / (double)gap : 0.0);
+    }
+    return lengths;
+}
+
+// The pitch step k should be judged against: the median per-cell length of the steps within
+// kLocalPitchWindow either side of it, itself excluded so it cannot vouch for itself. Returns
+// 0 when there are no neighbours to measure, which leaves the caller to fall back.
+double localPitch(const std::vector<double> &stepLengths, size_t k)
+{
+    if (stepLengths.empty()) return 0.0;
+    const size_t from = k > (size_t)kLocalPitchWindow ? k - (size_t)kLocalPitchWindow : 0;
+    const size_t to = std::min(stepLengths.size(), k + (size_t)kLocalPitchWindow + 1);
+    std::vector<double> neighbours;
+    neighbours.reserve(to - from);
+    for (size_t m = from; m < to; m++) {
+        if (m != k && stepLengths[m] > 0.0) neighbours.push_back(stepLengths[m]);
+    }
+    if (neighbours.empty()) return 0.0;
+    std::sort(neighbours.begin(), neighbours.end());
+    const size_t mid = neighbours.size() / 2;
+    return neighbours.size() % 2 == 1 ? neighbours[mid]
+                                      : 0.5 * (neighbours[mid - 1] + neighbours[mid]);
+}
 
 bool plumblineStepBreaks(const cv::Point2f &previous,
                          const cv::Point2f &current,
                          int latticeGap,
                          const cv::Point2f &basis,
-                         double basisLength)
+                         double basisLength,
+                         double pitch)
 {
     if (latticeGap <= 0 || basisLength <= 1e-6) return true;
+    // A run too short to have neighbours has nothing local to measure against; the seed basis
+    // is a poor reference but it is the only one there is.
+    if (pitch <= 1e-6) pitch = basisLength;
     const cv::Point2f delta(current.x - previous.x, current.y - previous.y);
     const double stepLength = vectorLength(delta) / (double)latticeGap;
-    if (stepLength < kMinStepLengthFraction * basisLength ||
-        stepLength > kMaxStepLengthFraction * basisLength) {
+    if (stepLength < kMinLocalStepFraction * pitch ||
+        stepLength > kMaxLocalStepFraction * pitch) {
         return true;
     }
 
@@ -1851,6 +1943,10 @@ std::vector<Plumbline> extractPlumblines(const std::vector<CornerCandidate> &cor
             const cv::Point2f basis = isRow ? lattice.basis.u : lattice.basis.v;
             const double basisLength = vectorLength(basis);
             const double reverseTolerance = kMaxReverseProgressFraction * basisLength;
+            // Measured over the whole run up front, so that a step near the compressed end of
+            // a row is judged against the pitch there rather than against the pitch wherever
+            // the seed window happened to land.
+            const std::vector<double> stepLengths = perCellStepLengths(along, corners);
             size_t start = 0;
             double previousProgress = 0.0;
             bool havePreviousProgress = false;
@@ -1867,7 +1963,8 @@ std::vector<Plumbline> extractPlumblines(const std::vector<CornerCandidate> &cor
                                                    p,
                                                    along[k].first - along[k - 1].first,
                                                    basis,
-                                                   basisLength)) {
+                                                   basisLength,
+                                                   localPitch(stepLengths, k - 1))) {
                         breakHere = true;
                     } else {
                         previousProgress = progress;
@@ -1915,6 +2012,24 @@ const int kRefinementPasses = 2;
 const double kOutlierSigmas = 3.0;
 const double kMinOutlierDeviation = 0.05;
 
+// Both floors above and below are fractions of a cell, but the noise they are meant to sit
+// above is sub-pixel localisation error, which is a fixed number of pixels regardless of how
+// large the cell is. Where the board is compressed against the edge of a fisheye frame a cell
+// can be 15 to 25 px, and 0.05 of a cell is then 0.75 to 1.25 px -- inside the noise. Measured
+// over sixteen real frames, the median leave-one-out deviation of corners that survive
+// refinement is 0.32 px and barely moves with cell size (0.33 px where cells exceed 60 px,
+// 0.32 px where they are under 30 px), while expressed in cells the same figure rises from
+// 0.0042 to 0.0145. So the fractional floors quietly tighten to nothing exactly where the
+// corners are hardest to localise, and on one frame refinement expelled 104 of the 184 grown
+// corners in the right-hand sixth of the image while expelling 0 to 10 per sixth everywhere
+// else. A deviation must now clear both a fraction of a cell and an absolute number of pixels
+// to count as gross error. 2.5 px is about twice the 90th percentile of the honest deviations
+// and stays well below the misplacements worth catching: the two documented on real frames
+// were 0.07 and 0.106 of a cell, 6.7 and 10 px on a 95 px cell, and the one that prompted this
+// investigation was 8.9 px. In well-resolved regions the pixel floor never binds, since 2.5 px
+// is under 0.05 of a cell as soon as a cell exceeds 50 px.
+const double kMinOutlierPixels = 2.5;
+
 // The same idea applied to the whole-line fit, which is coarser and so needs looser bounds: it
 // carries the fisheye curvature the local stencil cancels exactly, and it is being asked to
 // judge corners at the ends of short, holey runs where there is least support. Measured on
@@ -1934,6 +2049,11 @@ const double kMinOutlierDeviation = 0.05;
 const double kWholeLineOutlierSigmas = 5.0;
 const double kMinWholeLineDeviation = 0.13;
 
+// The pixel companion to kMinWholeLineDeviation, in the same ratio to kMinOutlierPixels as the
+// two fractional floors are to each other, since this test is the blunter of the two and its
+// threshold is correspondingly looser.
+const double kMinWholeLinePixels = 6.5;
+
 // How far from a predicted site to accept an already-detected corner, and how far to let a
 // direct image search move, both as fractions of the cell spacing.
 // Both are tight because the prediction is good: leave-one-out estimates land within about
@@ -1942,6 +2062,33 @@ const double kMinWholeLineDeviation = 0.13;
 // away, quietly undoing the expulsion.
 const double kRecoveryMatchFraction = 0.10;
 const double kRecoverySearchFraction = 0.06;
+
+// A known weakness of this recovery path, left in place deliberately because both attempted
+// cures measured worse than the disease.
+//
+// A corner manufactured here can end up unfalsifiable. The prediction may come from a single
+// extrapolation off the end of a run, with nothing on the far side to contradict it; the
+// sub-pixel fit then only has to find some saddle within kRecoverySearchFraction of that
+// prediction and scrape kMinScore. Afterwards the only test that can reach such a corner is
+// often the same one-sided cubic that placed it, against which it necessarily reads clean. One
+// real frame produced a point at 1248.0, 962.8 where the actual junction was at 1239.5, 960.2:
+// its row, which had predicted it, measured its deviation at 0.0017 of a cell, while its column,
+// which put it 0.27 of a cell out, had a hole beside it and could not judge it at all. Measured
+// over sixteen frames, 51 of the 124 manufactured corners surviving refinement had no judge
+// other than the fit that placed them, or none at all.
+//
+// Requiring two independent predictors before manufacturing a corner was tried and rejected: a
+// site one ring beyond the board's current extent has support on one side by definition, and
+// reaching those edge corners is the whole point of recovery, so the rule cost 73 points on one
+// frame and 45 on another while gaining nothing. Requiring a higher appearance score of
+// single-predictor recoveries was also tried and rejected: the unfalsifiable group is only
+// modestly weaker than the rest (median score 0.393 against 0.506), so any bar high enough to
+// bite removed load-bearing hole-fillers and dropped whole lines below minPoints -- a bar of
+// 0.30 cost 41 points and four lines on a frame that was working -- and no bar could be shown to
+// remove a genuinely bad point, since the failure above could not be reproduced on any frame in
+// the corpus. Fixing this properly means making the corner falsifiable rather than guessing at a
+// threshold: confirming it against the perpendicular direction at the time it is created, which
+// needs the perpendicular neighbours the lattice does not yet have at that point in the pass.
 
 // Estimates where a corner should sit from its two neighbours either side along a line, and
 // returns how far it actually sits from that estimate, as a fraction of the local spacing.
@@ -1974,11 +2121,24 @@ bool cornerAlongLine(const std::map<int, int> &alongLine, const std::vector<Corn
 // only a corner that is genuinely displaced stands out.
 const double kOneSidedDeviationScale = 1.394 / 4.472;
 
+// pixelDeviations receives the same displacement in absolute pixels, so the caller can apply an
+// absolute noise floor alongside the fraction-of-a-cell one.
+//
+// Normalizing by the pitch along the line is not obviously the right choice, since the
+// displacement being looked for is mostly across it and on an obliquely viewed board the two
+// pitches differ by up to a factor of 2.2. Splitting the displacement and normalizing each part
+// by its own pitch was tried and measured worse overall: it loosens the row verdicts and tightens
+// the column verdicts by the same factor, and since kMinOutlierDeviation and
+// kMinWholeLineDeviation were both settled against this normalization, changing it moves the
+// operating point rather than improving it. Revisiting it means re-deriving both floors, which
+// needs a measure of whether a kept corner is actually right -- not just how many were kept.
 bool leaveOneOutDeviations(const std::map<int, int> &alongLine,
                            const std::vector<CornerCandidate> &corners,
-                           std::map<int, double> *deviations)
+                           std::map<int, double> *deviations,
+                           std::map<int, double> *pixelDeviations)
 {
     deviations->clear();
+    pixelDeviations->clear();
     for (std::map<int, int>::const_iterator it = alongLine.begin(); it != alongLine.end(); ++it) {
         const int k = it->first;
         cv::Point2f m3, m2, m1, p1, p2, p3;
@@ -2024,7 +2184,10 @@ bool leaveOneOutDeviations(const std::map<int, int> &alongLine,
         // the same size as the displacement being looked for.
         if (spacing < 1e-6) continue;
         const cv::Point2f &actual = corners[it->second].position;
-        (*deviations)[k] = scale * vectorLength(cv::Point2f(actual.x - estimate.x, actual.y - estimate.y)) / spacing;
+        const cv::Point2f delta(actual.x - estimate.x, actual.y - estimate.y);
+        const double displacement = scale * vectorLength(delta);
+        (*deviations)[k] = displacement / spacing;
+        (*pixelDeviations)[k] = displacement;
     }
     return !deviations->empty();
 }
@@ -2109,9 +2272,11 @@ const size_t kWholeLineMinPoints = 9;
 // costs nothing and absorbs more of the curvature.
 bool wholeLineDeviations(const std::map<int, int> &alongLine,
                          const std::vector<CornerCandidate> &corners,
-                         std::map<int, double> *deviations)
+                         std::map<int, double> *deviations,
+                         std::map<int, double> *pixelDeviations)
 {
     deviations->clear();
+    pixelDeviations->clear();
     if (alongLine.size() < kWholeLineMinPoints) return false;
 
     std::vector<int> keys;
@@ -2176,7 +2341,9 @@ bool wholeLineDeviations(const std::map<int, int> &alongLine,
             for (size_t i = 0; i < ft.size(); i++) fw[i] = (resid[i] < 3.0 * scale) ? 1.0 : 0.05;
         }
         if (c.empty() || spacing[held] < 1e-6) continue;
-        (*deviations)[keys[held]] = std::fabs(v[held] - evaluatePoly(c, t[held])) / spacing[held];
+        const double residual = std::fabs(v[held] - evaluatePoly(c, t[held]));
+        (*deviations)[keys[held]] = residual / spacing[held];
+        (*pixelDeviations)[keys[held]] = residual;
     }
     return !deviations->empty();
 }
@@ -2237,6 +2404,7 @@ RefinementResult refineLattice(std::vector<CornerCandidate> &corners,
         std::map<long long, bool> expel;
         std::vector<std::pair<long long, double> > wholeLineDeviation;
         std::vector<double> wholeLineValues;
+        std::vector<double> wholeLinePixelDeviation;
         for (int orientation = 0; orientation < 2; orientation++) {
             const bool isRow = (orientation == 0);
             const int from = isRow ? minJ : minI;
@@ -2254,8 +2422,8 @@ RefinementResult refineLattice(std::vector<CornerCandidate> &corners,
                 // stencil is the sharper test but can only judge corners with three or four
                 // neighbours at consecutive indices; the whole-line fit is blunter but reaches
                 // the ends of short, holey runs, which is where corners get misassigned.
-                std::map<int, double> deviations;
-                if (leaveOneOutDeviations(alongLine, corners, &deviations)) {
+                std::map<int, double> deviations, pixelDeviations;
+                if (leaveOneOutDeviations(alongLine, corners, &deviations, &pixelDeviations)) {
                     std::vector<double> values;
                     for (std::map<int, double>::const_iterator it = deviations.begin();
                          it != deviations.end(); ++it) values.push_back(it->second);
@@ -2263,18 +2431,23 @@ RefinementResult refineLattice(std::vector<CornerCandidate> &corners,
                     for (std::map<int, double>::const_iterator it = deviations.begin();
                          it != deviations.end(); ++it) {
                         if (it->second <= threshold) continue;
+                        // Also has to be a real displacement in pixels, not sub-pixel jitter
+                        // that a small cell has inflated into a large fraction of a cell.
+                        if (pixelDeviations[it->first] <= kMinOutlierPixels) continue;
                         expel[isRow ? siteKey(it->first, fixed) : siteKey(fixed, it->first)] = true;
                     }
                 }
 
                 // Collected now and judged once every line has been measured, so the scale can
-                // be pooled over the whole lattice.
-                std::map<int, double> wholeLine;
-                if (wholeLineDeviations(alongLine, corners, &wholeLine)) {
+                // be pooled over the whole lattice. The deviation in pixels travels with each one
+                // for the noise floor, the same as above.
+                std::map<int, double> wholeLine, wholeLinePixels;
+                if (wholeLineDeviations(alongLine, corners, &wholeLine, &wholeLinePixels)) {
                     for (std::map<int, double>::const_iterator it = wholeLine.begin();
                          it != wholeLine.end(); ++it) {
                         wholeLineDeviation.push_back(std::make_pair(
                             isRow ? siteKey(it->first, fixed) : siteKey(fixed, it->first), it->second));
+                        wholeLinePixelDeviation.push_back(wholeLinePixels[it->first]);
                         wholeLineValues.push_back(it->second);
                     }
                 }
@@ -2287,7 +2460,9 @@ RefinementResult refineLattice(std::vector<CornerCandidate> &corners,
             const double threshold = std::max(kWholeLineOutlierSigmas * robustScale(wholeLineValues),
                                               kMinWholeLineDeviation);
             for (size_t i = 0; i < wholeLineDeviation.size(); i++) {
-                if (wholeLineDeviation[i].second > threshold) expel[wholeLineDeviation[i].first] = true;
+                if (wholeLineDeviation[i].second <= threshold) continue;
+                if (wholeLinePixelDeviation[i] <= kMinWholeLinePixels) continue;
+                expel[wholeLineDeviation[i].first] = true;
             }
         }
 
@@ -2333,6 +2508,17 @@ RefinementResult refineLattice(std::vector<CornerCandidate> &corners,
                 // near the frame edges, which is exactly where they matter most for measuring
                 // distortion, so it is worth the second look now that the grid says where to
                 // aim. Anything found must still pass the same appearance test as the rest.
+                //
+                // But only where more than one predictor agreed on the aim. Manufacturing a
+                // corner from a single one-sided extrapolation is how a point comes to exist at
+                // a position no corner occupies: on a real frame the row's backward cubic
+                // predicted 1248.2, 962.8 where the actual junction was at 1239.5, 960.2, the
+                // sub-pixel fit found a saddle in the noise of a low-contrast square within the
+                // search radius of the prediction, and it scraped the score floor. Worse, the
+                // resulting point was then unfalsifiable: the only test that could reach it was
+                // the same one-sided cubic that had placed it, against which its deviation read
+                // 0.0017 of a cell, while its column, which put it 0.27 of a cell out, had a
+                // hole beside it and so could not judge it at all.
                 const int px = (int)(p.x + 0.5f);
                 const int py = (int)(p.y + 0.5f);
                 const int margin = kSubPixelRadius + 1;
@@ -2360,11 +2546,15 @@ RefinementResult refineLattice(std::vector<CornerCandidate> &corners,
                 const int ry = (int)(refined.y + 0.5f);
                 if (rx - radius < 0 || ry - radius < 0 || rx + radius >= gray.cols || ry + radius >= gray.rows) continue;
                 const std::vector<QuadrantMask> bank = buildMaskBank(radius, kOrientationCount);
-                if (bestScoreOverOrientations(gray32, rx, ry, bank) < kMinScore) continue;
+                const double recoveredScore = bestScoreOverOrientations(gray32, rx, ry, bank);
+                if (recoveredScore < kMinScore) continue;
 
                 CornerCandidate recovered;
                 recovered.position = refined;
-                recovered.score = (float)kMinScore;
+                // The measured score, not the floor it had to clear. Stamping every recovery
+                // with kMinScore threw away the one piece of independent evidence a manufactured
+                // corner has, and made a strong recovery indistinguishable from a marginal one.
+                recovered.score = (float)recoveredScore;
                 corners.push_back(recovered);
                 claimed.push_back(true);
                 site[key] = (int)corners.size() - 1;
