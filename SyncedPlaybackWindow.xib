@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="17701" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="25094" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="17701"/>
+        <deployment identifier="macosx"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="25094"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -33,7 +34,7 @@
             <windowStyleMask key="styleMask" resizable="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="0.0" y="1458" width="1230" height="120"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="1920" height="1175"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1728" height="1084"/>
             <value key="minSize" type="size" width="1229" height="120"/>
             <value key="maxSize" type="size" width="5000" height="120"/>
             <view key="contentView" id="LSu-Eg-rTG">
@@ -44,7 +45,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="1230" height="120"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <textField toolTip="Current time (measured relative to start of the master clip)" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="dNN-uS-Zfp">
+                            <textField toolTip="Current time (measured relative to start of the master clip)" focusRingType="none" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="dNN-uS-Zfp">
                                 <rect key="frame" x="1065" y="79" width="159" height="14"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
                                 <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" placeholderString="-0:00:00:00:1234/2997" id="9XH-7y-a1f">
@@ -53,8 +54,8 @@
                                     <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                 </textFieldCell>
                             </textField>
-                            <textField toolTip="Current project's title" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="hkI-el-fyZ">
-                                <rect key="frame" x="1065" y="98" width="159" height="14"/>
+                            <textField toolTip="Current project's title" focusRingType="none" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="hkI-el-fyZ">
+                                <rect key="frame" x="1065" y="98" width="147" height="14"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
                                 <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Project Name" placeholderString="Project Title" id="5DX-G8-Tlj">
                                     <font key="font" metaFont="smallSystem"/>
@@ -65,7 +66,7 @@
                                     <binding destination="-2" name="value" keyPath="project.name" id="dsx-Ek-Yji"/>
                                 </connections>
                             </textField>
-                            <button toolTip="Play forward at normal speed while pressed (Option+RightArrow)" verticalHuggingPriority="750" fixedFrame="YES" tag="1" translatesAutoresizingMaskIntoConstraints="NO" id="S3k-Pl-5Yk" customClass="PlayWhilePressedButton">
+                            <button toolTip="Play forward at normal speed while pressed (Option+RightArrow)" tag="1" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="S3k-Pl-5Yk" customClass="PlayWhilePressedButton">
                                 <rect key="frame" x="54" y="71" width="32" height="44"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                 <buttonCell key="cell" type="square" title="↣" bezelStyle="shadowlessSquare" alignment="center" continuous="YES" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="rC5-ar-Hiy">
@@ -91,7 +92,7 @@
                                     <outlet property="document" destination="-2" id="n2i-HE-gqc"/>
                                 </connections>
                             </button>
-                            <button toolTip="Step backward 1 frame (Command+LeftArrow, or scroll mouse wheel up)" verticalHuggingPriority="750" fixedFrame="YES" tag="1" translatesAutoresizingMaskIntoConstraints="NO" id="gU2-s7-anF" customClass="VideoControlButton">
+                            <button toolTip="Step backward 1 frame (Command+LeftArrow, or scroll mouse wheel up)" tag="1" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="gU2-s7-anF" customClass="VideoControlButton">
                                 <rect key="frame" x="99" y="71" width="26" height="44"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                 <buttonCell key="cell" type="square" title="⇤" bezelStyle="shadowlessSquare" alignment="center" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="VQj-qv-uVm">
@@ -105,7 +106,7 @@
                                     <outlet property="document" destination="-2" id="53G-gP-rsg"/>
                                 </connections>
                             </button>
-                            <button toolTip="Play backward (Command+DownArrow)" wantsLayer="YES" verticalHuggingPriority="750" fixedFrame="YES" tag="1" translatesAutoresizingMaskIntoConstraints="NO" id="jv4-KQ-qF2" customClass="VideoControlButton">
+                            <button toolTip="Play backward (Command+DownArrow)" wantsLayer="YES" tag="1" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="jv4-KQ-qF2" customClass="VideoControlButton">
                                 <rect key="frame" x="204" y="76" width="27" height="44"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                 <contentFilters>
@@ -127,7 +128,7 @@
                                     <outlet property="document" destination="-2" id="7aU-Je-ib7"/>
                                 </connections>
                             </button>
-                            <button toolTip="Step forward 1 frame (Command+RightArrow, or scroll mouse wheel down)" verticalHuggingPriority="750" fixedFrame="YES" tag="2" translatesAutoresizingMaskIntoConstraints="NO" id="AZF-Zk-pea" customClass="VideoControlButton">
+                            <button toolTip="Step forward 1 frame (Command+RightArrow, or scroll mouse wheel down)" tag="2" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="AZF-Zk-pea" customClass="VideoControlButton">
                                 <rect key="frame" x="127" y="71" width="27" height="44"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                 <buttonCell key="cell" type="square" title="⇥" bezelStyle="shadowlessSquare" alignment="center" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="sLP-AM-uax">
@@ -159,7 +160,7 @@
                                 <rect key="frame" x="7" y="8" width="407" height="60"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <subviews>
-                                    <button toolTip="Play backward at advanced playback rate 1 (Command+Ctrl+1)" wantsLayer="YES" verticalHuggingPriority="750" fixedFrame="YES" tag="2" translatesAutoresizingMaskIntoConstraints="NO" id="DvZ-df-tMF" customClass="VideoControlButton">
+                                    <button toolTip="Play backward at advanced playback rate 1 (Command+Ctrl+1)" wantsLayer="YES" tag="2" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="DvZ-df-tMF" customClass="VideoControlButton">
                                         <rect key="frame" x="113" y="10" width="25" height="40"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                         <contentFilters>
@@ -181,7 +182,7 @@
                                             <outlet property="document" destination="-2" id="nRX-YD-gAd"/>
                                         </connections>
                                     </button>
-                                    <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="iDi-a5-uVI">
+                                    <textField focusRingType="none" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="iDi-a5-uVI">
                                         <rect key="frame" x="179" y="36" width="63" height="14"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                         <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Play at rate" id="5zi-jN-2Ld">
@@ -218,7 +219,7 @@
                                                     <rect key="frame" x="0.0" y="0.0" width="223" height="20"/>
                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                     <subviews>
-                                                        <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="HaI-zs-3uh">
+                                                        <textField focusRingType="none" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="HaI-zs-3uh">
                                                             <rect key="frame" x="53" y="4" width="137" height="14"/>
                                                             <autoresizingMask key="autoresizingMask"/>
                                                             <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="center" title="(slow motion)" id="LR6-af-UqY">
@@ -242,7 +243,7 @@
                                                     <rect key="frame" x="0.0" y="0.0" width="223" height="20"/>
                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                     <subviews>
-                                                        <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="Ict-Rw-OsN">
+                                                        <textField focusRingType="none" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="Ict-Rw-OsN">
                                                             <rect key="frame" x="124" y="4" width="47" height="14"/>
                                                             <autoresizingMask key="autoresizingMask"/>
                                                             <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="seconds" id="rB0-Jt-cvi">
@@ -251,7 +252,7 @@
                                                                 <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                                             </textFieldCell>
                                                         </textField>
-                                                        <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="a9h-lr-XIb">
+                                                        <textField focusRingType="none" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="a9h-lr-XIb">
                                                             <rect key="frame" x="91" y="1" width="30" height="19"/>
                                                             <autoresizingMask key="autoresizingMask"/>
                                                             <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="lve-74-CoP">
@@ -264,7 +265,7 @@
                                                                 <binding destination="jgZ-eI-gMa" name="value" keyPath="values.advancedPlaybackExactDuration1" id="kht-pS-scj"/>
                                                             </connections>
                                                         </textField>
-                                                        <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="0NV-L0-LgR">
+                                                        <textField focusRingType="none" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="0NV-L0-LgR">
                                                             <rect key="frame" x="71" y="3" width="20" height="14"/>
                                                             <autoresizingMask key="autoresizingMask"/>
                                                             <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="for" id="Sbo-pe-Vfl">
@@ -281,7 +282,7 @@
                                                     <rect key="frame" x="0.0" y="0.0" width="223" height="20"/>
                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                     <subviews>
-                                                        <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="p5R-jo-673">
+                                                        <textField focusRingType="none" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="p5R-jo-673">
                                                             <rect key="frame" x="72" y="1" width="30" height="19"/>
                                                             <autoresizingMask key="autoresizingMask"/>
                                                             <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="WSg-B3-Get">
@@ -294,7 +295,7 @@
                                                                 <binding destination="jgZ-eI-gMa" name="value" keyPath="values.advancedPlaybackMinRandomDuration1" id="Tih-AO-Kfn"/>
                                                             </connections>
                                                         </textField>
-                                                        <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="yAG-ZU-diy">
+                                                        <textField focusRingType="none" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="yAG-ZU-diy">
                                                             <rect key="frame" x="130" y="1" width="30" height="19"/>
                                                             <autoresizingMask key="autoresizingMask"/>
                                                             <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="5MV-0V-Pv7">
@@ -307,7 +308,7 @@
                                                                 <binding destination="jgZ-eI-gMa" name="value" keyPath="values.advancedPlaybackMaxRandomDurationMax1" id="xvN-SG-BLs"/>
                                                             </connections>
                                                         </textField>
-                                                        <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="7OI-jD-Ip1">
+                                                        <textField focusRingType="none" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="7OI-jD-Ip1">
                                                             <rect key="frame" x="104" y="4" width="30" height="14"/>
                                                             <autoresizingMask key="autoresizingMask"/>
                                                             <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="and" id="7w5-Rj-s3A">
@@ -316,7 +317,7 @@
                                                                 <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                                             </textFieldCell>
                                                         </textField>
-                                                        <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="0eY-ln-kZq">
+                                                        <textField focusRingType="none" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="0eY-ln-kZq">
                                                             <rect key="frame" x="22" y="4" width="49" height="14"/>
                                                             <autoresizingMask key="autoresizingMask"/>
                                                             <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="between" id="kgT-fN-LhH">
@@ -325,7 +326,7 @@
                                                                 <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                                             </textFieldCell>
                                                         </textField>
-                                                        <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="761-kX-DTG">
+                                                        <textField focusRingType="none" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="761-kX-DTG">
                                                             <rect key="frame" x="162" y="4" width="49" height="14"/>
                                                             <autoresizingMask key="autoresizingMask"/>
                                                             <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="seconds" id="qUf-f6-fAG">
@@ -343,7 +344,7 @@
                                             <outlet property="syncedPlaybackPanel" destination="ID5-hV-LOZ" id="fAV-uS-ts4"/>
                                         </connections>
                                     </tabView>
-                                    <textField toolTip="Advanced playback rate 1" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="YjL-dc-yU8">
+                                    <textField toolTip="Advanced playback rate 1" focusRingType="none" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="YjL-dc-yU8">
                                         <rect key="frame" x="244" y="34" width="30" height="19"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                         <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" allowsUndo="NO" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="bEh-Up-22C">
@@ -356,7 +357,7 @@
                                             <binding destination="jgZ-eI-gMa" name="value" keyPath="values.advancedPlaybackRate1" id="mjZ-2G-Fj4"/>
                                         </connections>
                                     </textField>
-                                    <button toolTip="Play forward at advanced playback rate 1 while pressed (Option+Control+RightArrow)" verticalHuggingPriority="750" fixedFrame="YES" tag="1" translatesAutoresizingMaskIntoConstraints="NO" id="aP4-YR-y3p" customClass="PlayWhilePressedButton">
+                                    <button toolTip="Play forward at advanced playback rate 1 while pressed (Option+Control+RightArrow)" tag="1" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="aP4-YR-y3p" customClass="PlayWhilePressedButton">
                                         <rect key="frame" x="42" y="13" width="27" height="35"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                         <buttonCell key="cell" type="square" title="↣" bezelStyle="shadowlessSquare" alignment="center" continuous="YES" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="XPE-nD-KGU">
@@ -378,7 +379,7 @@
                                             <outlet property="document" destination="-2" id="nWA-cx-X5m"/>
                                         </connections>
                                     </button>
-                                    <button toolTip="Play forward at advanced playback rate 1 (Command+1)" verticalHuggingPriority="750" fixedFrame="YES" tag="1" translatesAutoresizingMaskIntoConstraints="NO" id="UOJ-hU-iuB" customClass="VideoControlButton">
+                                    <button toolTip="Play forward at advanced playback rate 1 (Command+1)" tag="1" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="UOJ-hU-iuB" customClass="VideoControlButton">
                                         <rect key="frame" x="147" y="10" width="25" height="40"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                         <buttonCell key="cell" type="square" title="→" bezelStyle="shadowlessSquare" alignment="center" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="u2x-h9-oq7">
@@ -392,7 +393,7 @@
                                             <outlet property="document" destination="-2" id="Bi8-Gl-Sxy"/>
                                         </connections>
                                     </button>
-                                    <button toolTip="Instant replay at rate 1" verticalHuggingPriority="750" fixedFrame="YES" tag="1" translatesAutoresizingMaskIntoConstraints="NO" id="Zil-Lc-HxN" customClass="VideoControlButton">
+                                    <button toolTip="Instant replay at rate 1" tag="1" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Zil-Lc-HxN" customClass="VideoControlButton">
                                         <rect key="frame" x="79" y="13" width="27" height="35"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                         <buttonCell key="cell" type="square" title="R" bezelStyle="shadowlessSquare" alignment="center" continuous="YES" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="6xI-rC-CJi">
@@ -417,7 +418,7 @@
                                 <rect key="frame" x="423" y="8" width="407" height="60"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <subviews>
-                                    <button toolTip="Play backward at advanced playback rate 2 (Command+Ctrl+2)" wantsLayer="YES" verticalHuggingPriority="750" fixedFrame="YES" tag="4" translatesAutoresizingMaskIntoConstraints="NO" id="WRX-A8-2yg" customClass="VideoControlButton">
+                                    <button toolTip="Play backward at advanced playback rate 2 (Command+Ctrl+2)" wantsLayer="YES" tag="4" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="WRX-A8-2yg" customClass="VideoControlButton">
                                         <rect key="frame" x="113" y="10" width="25" height="40"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                         <contentFilters>
@@ -439,7 +440,7 @@
                                             <outlet property="document" destination="-2" id="Efv-bm-6yx"/>
                                         </connections>
                                     </button>
-                                    <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Oca-ey-Rsk">
+                                    <textField focusRingType="none" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Oca-ey-Rsk">
                                         <rect key="frame" x="179" y="36" width="63" height="14"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                         <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Play at rate" id="BM9-My-Tn2">
@@ -476,7 +477,7 @@
                                                     <rect key="frame" x="0.0" y="0.0" width="223" height="20"/>
                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                     <subviews>
-                                                        <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Eoo-AX-1wj">
+                                                        <textField focusRingType="none" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Eoo-AX-1wj">
                                                             <rect key="frame" x="53" y="4" width="137" height="14"/>
                                                             <autoresizingMask key="autoresizingMask"/>
                                                             <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="center" title="(slow motion)" id="ebq-fO-N9d">
@@ -500,7 +501,7 @@
                                                     <rect key="frame" x="0.0" y="0.0" width="223" height="20"/>
                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                     <subviews>
-                                                        <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="bkq-Zi-R5J">
+                                                        <textField focusRingType="none" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="bkq-Zi-R5J">
                                                             <rect key="frame" x="124" y="4" width="47" height="14"/>
                                                             <autoresizingMask key="autoresizingMask"/>
                                                             <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="seconds" id="Dm5-YC-8l6">
@@ -509,7 +510,7 @@
                                                                 <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                                             </textFieldCell>
                                                         </textField>
-                                                        <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="QAb-Om-9HM">
+                                                        <textField focusRingType="none" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="QAb-Om-9HM">
                                                             <rect key="frame" x="91" y="1" width="30" height="19"/>
                                                             <autoresizingMask key="autoresizingMask"/>
                                                             <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="I02-DV-DqL">
@@ -522,7 +523,7 @@
                                                                 <binding destination="jgZ-eI-gMa" name="value" keyPath="values.advancedPlaybackExactDuration2" id="5md-Ph-Myn"/>
                                                             </connections>
                                                         </textField>
-                                                        <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="sj8-pZ-ACj">
+                                                        <textField focusRingType="none" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="sj8-pZ-ACj">
                                                             <rect key="frame" x="71" y="3" width="20" height="14"/>
                                                             <autoresizingMask key="autoresizingMask"/>
                                                             <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="for" id="4Ae-dq-dxD">
@@ -539,7 +540,7 @@
                                                     <rect key="frame" x="0.0" y="0.0" width="223" height="20"/>
                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                     <subviews>
-                                                        <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="YnA-DG-oLW">
+                                                        <textField focusRingType="none" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="YnA-DG-oLW">
                                                             <rect key="frame" x="72" y="1" width="30" height="19"/>
                                                             <autoresizingMask key="autoresizingMask"/>
                                                             <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="0RW-Zj-yWx">
@@ -552,7 +553,7 @@
                                                                 <binding destination="jgZ-eI-gMa" name="value" keyPath="values.advancedPlaybackMinRandomDuration2" id="1M7-Je-ppY"/>
                                                             </connections>
                                                         </textField>
-                                                        <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="dfP-WX-YRe">
+                                                        <textField focusRingType="none" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="dfP-WX-YRe">
                                                             <rect key="frame" x="130" y="1" width="30" height="19"/>
                                                             <autoresizingMask key="autoresizingMask"/>
                                                             <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="P37-ZU-181">
@@ -565,7 +566,7 @@
                                                                 <binding destination="jgZ-eI-gMa" name="value" keyPath="values.advancedPlaybackMaxRandomDuration2" id="gp8-W0-eD3"/>
                                                             </connections>
                                                         </textField>
-                                                        <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="5lv-VI-KEI">
+                                                        <textField focusRingType="none" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="5lv-VI-KEI">
                                                             <rect key="frame" x="104" y="4" width="30" height="14"/>
                                                             <autoresizingMask key="autoresizingMask"/>
                                                             <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="and" id="uwy-pi-i3s">
@@ -574,7 +575,7 @@
                                                                 <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                                             </textFieldCell>
                                                         </textField>
-                                                        <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="laX-wQ-gsc">
+                                                        <textField focusRingType="none" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="laX-wQ-gsc">
                                                             <rect key="frame" x="22" y="4" width="49" height="14"/>
                                                             <autoresizingMask key="autoresizingMask"/>
                                                             <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="between" id="5LF-Xf-3NM">
@@ -583,7 +584,7 @@
                                                                 <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                                             </textFieldCell>
                                                         </textField>
-                                                        <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="jzA-Pl-pcR">
+                                                        <textField focusRingType="none" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="jzA-Pl-pcR">
                                                             <rect key="frame" x="162" y="4" width="47" height="14"/>
                                                             <autoresizingMask key="autoresizingMask"/>
                                                             <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="seconds" id="JFW-5w-P2f">
@@ -601,7 +602,7 @@
                                             <outlet property="syncedPlaybackPanel" destination="ID5-hV-LOZ" id="iay-Sb-zeO"/>
                                         </connections>
                                     </tabView>
-                                    <textField toolTip="Advanced playback rate 2" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="GQq-fk-Y6d">
+                                    <textField toolTip="Advanced playback rate 2" focusRingType="none" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="GQq-fk-Y6d">
                                         <rect key="frame" x="244" y="34" width="30" height="19"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                         <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" allowsUndo="NO" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="r23-jo-tv6">
@@ -614,7 +615,7 @@
                                             <binding destination="jgZ-eI-gMa" name="value" keyPath="values.advancedPlaybackRate2" id="Llg-FP-4Ok"/>
                                         </connections>
                                     </textField>
-                                    <button toolTip="Play forward at advanced playback rate 2 while pressed (Option+Shift+RightArrow)" verticalHuggingPriority="750" fixedFrame="YES" tag="1" translatesAutoresizingMaskIntoConstraints="NO" id="4DB-v6-USk" customClass="PlayWhilePressedButton">
+                                    <button toolTip="Play forward at advanced playback rate 2 while pressed (Option+Shift+RightArrow)" tag="1" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="4DB-v6-USk" customClass="PlayWhilePressedButton">
                                         <rect key="frame" x="42" y="13" width="27" height="35"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                         <buttonCell key="cell" type="square" title="↣" bezelStyle="shadowlessSquare" alignment="center" continuous="YES" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="peH-aC-Y51">
@@ -640,7 +641,7 @@
                                             <outlet property="document" destination="-2" id="lKy-4B-KsU"/>
                                         </connections>
                                     </button>
-                                    <button toolTip="Play forward at advanced playback rate 2 (Command+2)" verticalHuggingPriority="750" fixedFrame="YES" tag="3" translatesAutoresizingMaskIntoConstraints="NO" id="rWK-xJ-flc" customClass="VideoControlButton">
+                                    <button toolTip="Play forward at advanced playback rate 2 (Command+2)" tag="3" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="rWK-xJ-flc" customClass="VideoControlButton">
                                         <rect key="frame" x="147" y="10" width="25" height="40"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                         <buttonCell key="cell" type="square" title="→" bezelStyle="shadowlessSquare" alignment="center" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="2oi-2k-Rva">
@@ -654,7 +655,7 @@
                                             <outlet property="document" destination="-2" id="gPj-T7-McP"/>
                                         </connections>
                                     </button>
-                                    <button toolTip="Instant replay at rate 2" verticalHuggingPriority="750" fixedFrame="YES" tag="2" translatesAutoresizingMaskIntoConstraints="NO" id="k5c-LK-c9R" customClass="VideoControlButton">
+                                    <button toolTip="Instant replay at rate 2" tag="2" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="k5c-LK-c9R" customClass="VideoControlButton">
                                         <rect key="frame" x="79" y="13" width="27" height="35"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                         <buttonCell key="cell" type="square" title="R" bezelStyle="shadowlessSquare" alignment="center" continuous="YES" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="lwZ-dU-EcU">
@@ -679,7 +680,7 @@
                                 <rect key="frame" x="838" y="8" width="223" height="60"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
                                 <subviews>
-                                    <textField verticalHuggingPriority="750" fixedFrame="YES" mirrorLayoutDirectionWhenInternationalizing="never" translatesAutoresizingMaskIntoConstraints="NO" id="zpI-Gl-Spl">
+                                    <textField focusRingType="none" verticalHuggingPriority="750" fixedFrame="YES" mirrorLayoutDirectionWhenInternationalizing="never" translatesAutoresizingMaskIntoConstraints="NO" id="zpI-Gl-Spl">
                                         <rect key="frame" x="12" y="22" width="27" height="14"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                         <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="step" id="Bgo-o4-hPJ">
@@ -688,7 +689,7 @@
                                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                         </textFieldCell>
                                     </textField>
-                                    <button toolTip="Step backward by the specified number of step frames" verticalHuggingPriority="750" fixedFrame="YES" tag="1" translatesAutoresizingMaskIntoConstraints="NO" id="OJY-7h-Ugc" customClass="VideoControlButton">
+                                    <button toolTip="Step backward by the specified number of step frames" tag="1" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="OJY-7h-Ugc" customClass="VideoControlButton">
                                         <rect key="frame" x="165" y="14" width="25" height="35"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                         <buttonCell key="cell" type="square" title="⇤" bezelStyle="shadowlessSquare" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="YEz-wT-dx8">
@@ -702,7 +703,7 @@
                                             <outlet property="document" destination="-2" id="fPx-sq-mCI"/>
                                         </connections>
                                     </button>
-                                    <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="AMS-Mc-rSa">
+                                    <textField focusRingType="none" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="AMS-Mc-rSa">
                                         <rect key="frame" x="43" y="19" width="30" height="19"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                         <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="ZKy-NQ-jyj">
@@ -715,7 +716,7 @@
                                             <binding destination="jgZ-eI-gMa" name="value" keyPath="values.advancedPlaybackStepAmount" id="Lb7-lR-dUb"/>
                                         </connections>
                                     </textField>
-                                    <button toolTip="Step forward by the specified number of step frames" verticalHuggingPriority="750" fixedFrame="YES" tag="2" translatesAutoresizingMaskIntoConstraints="NO" id="h1l-LD-6f9" customClass="VideoControlButton">
+                                    <button toolTip="Step forward by the specified number of step frames" tag="2" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="h1l-LD-6f9" customClass="VideoControlButton">
                                         <rect key="frame" x="192" y="14" width="25" height="35"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                         <buttonCell key="cell" type="square" title="⇥" bezelStyle="shadowlessSquare" alignment="center" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="kpP-iu-HkM">
@@ -759,7 +760,7 @@
                                 <rect key="frame" x="1069" y="8" width="153" height="60"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
                                 <subviews>
-                                    <textField verticalHuggingPriority="750" fixedFrame="YES" mirrorLayoutDirectionWhenInternationalizing="never" translatesAutoresizingMaskIntoConstraints="NO" id="mGy-Jy-hmd">
+                                    <textField focusRingType="none" verticalHuggingPriority="750" fixedFrame="YES" mirrorLayoutDirectionWhenInternationalizing="never" translatesAutoresizingMaskIntoConstraints="NO" id="mGy-Jy-hmd">
                                         <rect key="frame" x="16" y="40" width="124" height="14"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                         <string key="toolTip">These are useful for switching back and forth quickly to compare two time points in the video, for example when deciding which frame to use for calibration. They are reset when you close the file.</string>
@@ -769,7 +770,7 @@
                                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                         </textFieldCell>
                                     </textField>
-                                    <button toolTip="Set temporary bookmark 1 (It will reset when the document is closed)." fixedFrame="YES" tag="1" translatesAutoresizingMaskIntoConstraints="NO" id="Dhh-Yr-mHU" customClass="VideoControlButton">
+                                    <button toolTip="Set temporary bookmark 1 (It will reset when the document is closed)." tag="1" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Dhh-Yr-mHU" customClass="VideoControlButton">
                                         <rect key="frame" x="14" y="10" width="25" height="25"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                         <buttonCell key="cell" type="square" title="S1" bezelStyle="shadowlessSquare" imagePosition="overlaps" alignment="center" controlSize="small" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="WbD-da-w1N">
@@ -780,7 +781,7 @@
                                             <action selector="setBookmark:" target="-2" id="b9R-4e-3Qh"/>
                                         </connections>
                                     </button>
-                                    <button toolTip="Go to temporary bookmark 1" fixedFrame="YES" tag="1" translatesAutoresizingMaskIntoConstraints="NO" id="sXq-cY-I8w" customClass="VideoControlButton">
+                                    <button toolTip="Go to temporary bookmark 1" tag="1" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="sXq-cY-I8w" customClass="VideoControlButton">
                                         <rect key="frame" x="42" y="10" width="26" height="25"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                         <buttonCell key="cell" type="square" title="G1" bezelStyle="shadowlessSquare" imagePosition="overlaps" alignment="center" controlSize="small" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="x0Q-bS-u6O">
@@ -791,7 +792,7 @@
                                             <action selector="goToBookmark:" target="-2" id="QSv-Ag-VH5"/>
                                         </connections>
                                     </button>
-                                    <button toolTip="Set temporary bookmark 2 (It will reset when the document is closed)." fixedFrame="YES" tag="2" translatesAutoresizingMaskIntoConstraints="NO" id="U9D-qS-Naa" customClass="VideoControlButton">
+                                    <button toolTip="Set temporary bookmark 2 (It will reset when the document is closed)." tag="2" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="U9D-qS-Naa" customClass="VideoControlButton">
                                         <rect key="frame" x="87" y="10" width="25" height="25"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                         <buttonCell key="cell" type="square" title="S2" bezelStyle="shadowlessSquare" imagePosition="overlaps" alignment="center" controlSize="small" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="8vv-qn-nPS">
@@ -802,7 +803,7 @@
                                             <action selector="setBookmark:" target="-2" id="ea3-jg-8LO"/>
                                         </connections>
                                     </button>
-                                    <button toolTip="Go to temporary bookmark 2" fixedFrame="YES" tag="2" translatesAutoresizingMaskIntoConstraints="NO" id="fGb-as-LTH" customClass="VideoControlButton">
+                                    <button toolTip="Go to temporary bookmark 2" tag="2" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="fGb-as-LTH" customClass="VideoControlButton">
                                         <rect key="frame" x="114" y="10" width="26" height="25"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                         <buttonCell key="cell" type="square" title="G2" bezelStyle="shadowlessSquare" imagePosition="overlaps" alignment="center" controlSize="small" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="nET-fX-kf3">
@@ -840,7 +841,7 @@
                                     </slider>
                                 </subviews>
                             </customView>
-                            <button toolTip="Replay the last 2 seconds of video at a normal rate" verticalHuggingPriority="750" fixedFrame="YES" tag="3" translatesAutoresizingMaskIntoConstraints="NO" id="OSO-qC-q0h" customClass="VideoControlButton">
+                            <button toolTip="Replay the last 2 seconds of video at a normal rate" tag="3" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="OSO-qC-q0h" customClass="VideoControlButton">
                                 <rect key="frame" x="163" y="71" width="27" height="44"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                 <buttonCell key="cell" type="square" title="R" bezelStyle="shadowlessSquare" alignment="center" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="HRp-XQ-d8W">
