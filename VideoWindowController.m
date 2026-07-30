@@ -231,10 +231,19 @@ static const CGFloat VSVideoControlStripHeight = 26.0f;
 									   overlayWidth,
 									   overlayHeight);
 	if (overlayWindow == nil) {
-		overlayWindow = [[VideoOverlayWindow alloc] initWithContentRect:overlayWindowFrameRect
-												    styleMask:NSWindowStyleMaskBorderless
-													 backing:NSBackingStoreBuffered
-													   defer:YES];
+		VideoOverlayWindow *newOverlayWindow = [[VideoOverlayWindow alloc] initWithContentRect:overlayWindowFrameRect
+																			styleMask:NSWindowStyleMaskBorderless
+																			  backing:NSBackingStoreBuffered
+																				defer:YES];
+		// The overlay is the key window during nearly all editing, but as a bare child window it has
+		// no route back to the document, so Edit > Undo and File > Close both die there. It acts as its
+		// own delegate purely to answer windowWillReturnUndoManager:; making the VideoWindowController
+		// the delegate instead would misroute windowDidResize:/windowDidMove: and corrupt the saved
+		// window frames. This has to happen before the window is shown, because AppKit asks the
+		// delegate for an undo manager only once.
+		newOverlayWindow.videoWindowController = self;
+		newOverlayWindow.delegate = newOverlayWindow;
+		overlayWindow = newOverlayWindow;
 		[overlayWindow setOpaque:NO];
 		[overlayWindow setHasShadow:NO];
 		[overlayWindow setBackgroundColor:[NSColor clearColor]];	// Required as of OS X Big Sur to prevent overlay from being opaque gray

@@ -28,8 +28,15 @@
 // It's necessary to subclass NSWindow to override canBecomeKeyWindow to return YES so it receives keypress events.
 // The default value is NO for windows created with NSBorderlessWindowMask.
 
-@interface VideoOverlayWindow : NSWindow {
+@class VideoWindowController;
+
+@interface VideoOverlayWindow : NSWindow <NSWindowDelegate> {
 }
+
+// This window is created in code and added as a child window, so AppKit gives it neither a
+// windowController nor any other path back to the document. Anything that needs the document has to
+// go through this back-pointer, which VideoWindowController sets when it creates the window.
+@property (weak) VideoWindowController *videoWindowController;
 
 - (BOOL)canBecomeKeyWindow;
 

@@ -24,6 +24,7 @@
 
 
 #import "VideoOverlayWindow.h"
+#import "VideoWindowController.h"
 
 
 @implementation VideoOverlayWindow
@@ -31,6 +32,26 @@
 - (BOOL)canBecomeKeyWindow
 {
 	return YES;
+}
+
+- (NSUndoManager *)windowWillReturnUndoManager:(NSWindow *)window
+{
+    // This window is made key whenever the user clicks in the overlay, and it's where nearly all
+    // editing happens. Without this, AppKit hands it a private empty undo manager of its own and
+    // Edit > Undo is permanently greyed out for measurement, calibration and annotation work.
+    // Note that AppKit only asks once and never asks again after a window has made its own manager,
+    // so the delegate has to be in place before the window is first shown.
+    return [[self.videoWindowController document] undoManager];
+}
+
+- (NSUndoManager *)undoManager
+{
+    // Belt and braces alongside the delegate method above. AppKit asks the delegate only once and
+    // caches the answer forever, so if anything ever requested this window's undo manager before the
+    // window controller had been attached to its document, the delegate route would be dead for good.
+    // Answering here can't get stuck that way.
+    NSUndoManager *documentUndoManager = [[self.videoWindowController document] undoManager];
+    return (documentUndoManager != nil) ? documentUndoManager : [super undoManager];
 }
 
 - (BOOL)validateUserInterfaceItem:(id<NSValidatedUserInterfaceItem>)item
@@ -43,8 +64,10 @@
 
 - (IBAction)performClose:(id)sender
 {
-    // File > Close should close the document, not just this video window.
-    NSDocument *doc = (NSDocument *)self.windowController.document;
+    // File > Close should close the document, not just this video window. This has to go through
+    // videoWindowController rather than self.windowController, which is always nil here because
+    // nothing ever assigns a window controller to this programmatically created child window.
+    NSDocument *doc = (NSDocument *)[self.videoWindowController document];
     for (NSWindowController *wc in doc.windowControllers) {
         if (wc.shouldCloseDocument) {
             [wc.window performClose:sender];
