@@ -1,5 +1,25 @@
 # Real-data validation of the lattice traversal-canonicalization fix
 
+> **THE PINNED REFERENCES BELOW ARE STALE AS OF 2026-07-30, FOR TWO INDEPENDENT REASONS. Do not
+> re-pin them without separating the two.**
+>
+> **Reason 1, document drift, which is NOT a code change.** Seven of the eight pinned observation
+> counts were already wrong before any 2026-07-30 code change was made, measured by loading the
+> documents through the then-current `lattice.py`: `mid`/Left reliable 341 against a pinned 340 and
+> `Dind.n` 325 against 309, `mid`/Right 369 against 365 and 353 against 318, `8mm`/Left `Dind.n` 401
+> against 398, `8mm`/Right 388 against 387. The stored plumbline geometry in
+> `2015-06-22-1 Clearwater.vsd` and `2015-09-04-1 Clearwater.vsd` has therefore changed since these
+> references were recorded. **The consequence is that the `PDD_REF` losses, and the `mid` PD-D numbers
+> quoted in `ADDENDUM_2026-07-29_REAL_DATA.md`, are no longer reproducible from the documents as they
+> now stand** — the observation set they were computed on no longer exists. That is not a solver
+> difference and not a model effect; `mid`/Right alone gained 35 doubly-constrained observations.
+> Establish what changed those documents before quoting or re-pinning any of it.
+>
+> **Reason 2, three intended `lattice.py` fixes on 2026-07-30**, each verified against the whole
+> 20-document corpus. Their only effect on the six established cameras is `8mm`/Right gaining one
+> observation, 408 to 409. Everything else on pool, `8mm` and `mid` is bit-identical. See
+> `_split_axes`, `_expected_gap` and `_consensus_indices` for what each one does and why.
+
 The traversal-canonicalization fix in `lattice._recover_indices` is covered at two levels. Both are
 durable files in this directory; neither depends on a transcript or on a script under `/tmp`.
 

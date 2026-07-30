@@ -37,20 +37,40 @@ import sys
 from collections import Counter, defaultdict, deque
 
 import numpy as np
+from scipy import sparse
+from scipy.sparse import linalg as sparse_linalg
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 FRAME_W, FRAME_H = 1920.0, 1080.0
 FISHEYE = ("/Users/jason/Library/CloudStorage/Dropbox/Drift Model Project/VidSync Projects/"
            "2015-09-04-1 Clearwater.vsd")
 
-# A within-line gap counts as a unit lattice step when its ratio to the neighbouring gaps on the same
-# line is this close to 1. Chosen from the measured distribution, which is unimodal at 1.0 with 1st
+# A within-line gap counts as a unit lattice step when its ratio to the EXPECTED gap at that position
+# is this close to 1. Chosen from the measured distribution, which is unimodal at 1.0 with 1st
 # and 99th percentiles of 0.76 and 1.24 on the loosest capture, so 0.25 admits the whole mode and
 # still rejects a 2x skip. Gaps outside it are NOT guessed at: the edge is dropped and reported.
 UNIT_STEP_TOL = 0.25
+# Half-width of the neighbourhood `_expected_gap` fits its trend over. Four neighbours (the previous
+# flat-median window) is too few to survive an adjacent outlier; see that function. Measured
+# sensitivity between 5 and 6: 110 of 31201 individual gap verdicts move, but that changes an OUTCOME
+# on only 4 of 42 captures and never by more than one observation, so the choice is not on a knife
+# edge at the level anything downstream consumes. It is not claimed to be inert on raw verdicts.
+GAP_TREND_HALF = 5
+# Consensus indexing removes disagreeing edges to reach a consistent lattice, which is masking, so it
+# is bounded. Above this fraction of the edge set the capture is rejected outright rather than
+# repaired. The worst real camera in the corpus needs 3 edges of 941, so 5 percent is ~15x headroom.
+MAX_INCONSISTENT_EDGE_FRAC = 0.05
+# A line that loses at least this fraction of its OWN edges is treated as a bad line rather than as
+# scattered bad edges, and its component is marked unreliable. This is what stops a spurious line
+# drawn through real nodes from being absorbed one edge at a time.
+LINE_REJECTION_FRAC = 0.5
+MIN_EDGES_FOR_LINE_REJECTION = 4
 # Two observations closer than this are treated as the same physical location for QUADRATURE ONLY.
 # They remain separate data records; their shared area is divided between them.
 COINCIDENT_PX = 0.5
+# Diametrical 2-means on the doubled line angles converges in a handful of passes; the cap only
+# bounds a hypothetical two-cycle, which is reported as unconverged rather than silently accepted.
+_SPLIT_MAX_ITERS = 50
 
 
 def L(n):
@@ -208,12 +228,100 @@ class Capture:
         return self.n_constraints() >= 2
 
 
+def _mean_phasor(vals):
+    """Mean of unit phasors at the given angles (radians), summed in a permutation-independent order.
+
+    Plain `np.exp(1j * a).mean()` is order-dependent in floating point, and the record order here is
+    the operator's, so it must not be able to change an assignment. Summing sorted by angle makes the
+    result a function of the multiset alone.
+    """
+    if len(vals) == 0:
+        return 0j
+    z = [complex(math.cos(v), math.sin(v)) for v in sorted(float(v) for v in vals)]
+    return sum(z) / len(z)
+
+
+def _split_axes(angs):
+    """Two orientation families from axial line angles, by diametrical 2-means in doubled space.
+
+    WHY NOT THE OBVIOUS RULE. The previous construction took the circular mean of the DOUBLED angles
+    over all lines and cut at 45 degrees from it. Doubling is the right way to average axes, but two
+    families that are 90 degrees apart -- which is what a chessboard is -- map to exactly ANTIPODAL
+    directions once doubled, so they cancel and the mean is not a family reference at all: its
+    direction is decided by whichever family has more lines, and by noise. Measured on this corpus the
+    doubled resultant length is 0.30 to 0.36, i.e. essentially zero, while the quadrupled resultant is
+    0.65 to 0.98. The cut therefore landed in an arbitrary place, and on `2016-08-01-1 Clearwater` Left
+    (36 lines against 15, so a strongly pulled mean) it put five lines in the wrong family. Their edges
+    then carried the wrong index axis, producing all 35 contradictions on that camera and discarding
+    every one of its 397 observations.
+
+    THE CONSTRUCTION. Quadrupling maps the two families ON TOP of each other, so `mean(exp(4i*theta))`
+    is well defined exactly when doubling cancels. Its angle halved gives `psi`, the family axis in
+    doubled space; the two clusters sit at `psi` and `psi + 180` there. Assignment is then the sign of
+    `cos(2*theta - psi)`, which is precisely "nearer this family's axis than the other's", and the
+    45-degree membership guarantee the traversal code relies on holds BY CONSTRUCTION rather than by
+    an empirical claim about how far apart the families happen to be.
+
+    That initialization is then refined by diametrical 2-means -- re-estimate each cluster's mean and
+    take the axis through them -- so the split stays correct when the families are not exactly
+    orthogonal, which a strong fisheye makes common near the frame edge. Iteration stops on a stable
+    assignment, and both resultant lengths are returned so a caller can see when the data has no
+    two-family structure to find.
+
+    LABELS ARE GAUGE. Which cluster is family 0 only decides which index axis each family steps, and a
+    homography absorbs an axis swap. The convention -- the more numerous cluster, ties broken by the
+    smaller axis angle -- is chosen to reproduce the historical labelling on every camera where the old
+    rule was already right, so that pinned regression numbers stay comparable.
+    """
+    n = len(angs)
+    if n == 0:
+        return [], float("nan"), dict(r2=float("nan"), r4=float("nan"), iterations=0, converged=True)
+    phi = [2.0 * math.radians(float(a)) for a in angs]
+    r2 = abs(_mean_phasor(phi))
+    q = _mean_phasor([2.0 * p for p in phi])
+    r4 = abs(q)
+    psi = math.atan2(q.imag, q.real) / 2.0
+
+    side = None
+    iters, converged = 0, False
+    for iters in range(1, _SPLIT_MAX_ITERS + 1):
+        new = [math.cos(p - psi) >= 0.0 for p in phi]
+        if new == side:
+            converged = True
+            break
+        side = new
+        a = [p for p, s in zip(phi, side) if s]
+        b = [p for p, s in zip(phi, side) if not s]
+        if not a or not b:                      # only one orientation present; nothing to refine
+            converged = True
+            break
+        m = _mean_phasor(a) - _mean_phasor(b)   # the axis through two antipodal cluster means
+        if m == 0:
+            converged = True
+            break
+        psi = math.atan2(m.imag, m.real)
+
+    def axis_deg(members):
+        z = _mean_phasor([p for p, s in zip(phi, side) if s == members])
+        return math.degrees(math.atan2(z.imag, z.real)) / 2.0 % 180.0 if z != 0 else float("nan")
+
+    n0 = sum(1 for s in side if s)
+    a0, a1 = axis_deg(True), axis_deg(False)
+    swap = (n - n0) > n0 or ((n - n0) == n0 and not (a1 != a1) and a1 < a0)
+    fam = [(1 if s else 0) if swap else (0 if s else 1) for s in side]
+    ref = a1 if swap else a0
+    return fam, ref, dict(r2=float(r2), r4=float(r4), iterations=iters, converged=converged,
+                          axis_family0=float(ref),
+                          axis_family1=float(a0 if swap else a1))
+
+
 def _family_split(linepts):
-    """Assign each line to one of two families by its raw total-least-squares direction.
+    """Assign each line to one of two orientation families by its raw total-least-squares direction.
 
     Raw direction is adequate: distortion bends a line but does not rotate it by anything close to
-    the 45 degrees that would move it between families, and the measured family angles are 80 to 94
-    degrees apart on this data.
+    the 45 degrees that would move it between families. The split itself is `_split_axes`, which does
+    not assume the families are orthogonal; see its docstring for why the earlier single-mean rule
+    was wrong.
     """
     angs, dirs = [], []
     for P in linepts:
@@ -222,10 +330,8 @@ def _family_split(linepts):
                               float(q[:, 0] @ q[:, 0] - q[:, 1] @ q[:, 1]))
         angs.append(math.degrees(th) % 180.0)
         dirs.append(np.array([math.cos(th), math.sin(th)]))
-    z = np.exp(2j * np.radians(angs))
-    ref = math.degrees(np.angle(z.mean())) / 2.0 % 180.0
-    fam = [0 if min(abs(a - ref), 180.0 - abs(a - ref)) < 45.0 else 1 for a in angs]
-    return fam, np.array(angs), dirs, ref
+    fam, ref, info = _split_axes(angs)
+    return fam, np.array(angs), dirs, ref, info
 
 
 def load_captures(vsd, clip):
@@ -252,7 +358,7 @@ def load_captures(vsd, clip):
         lids = bycap[cap]
         C = Capture(clip, cap)
         linepts = [np.array(raw[ln], float) for ln in lids]
-        fam, angs, dirs, ref = _family_split(linepts)
+        fam, angs, dirs, ref, split_info = _family_split(linepts)
 
         # unique observations by EXACT coordinate; validated by the nearest-distinct-pair distance
         idx_of = {}
@@ -281,7 +387,7 @@ def load_captures(vsd, clip):
         # nearest distinct pair, the evidence that exact matching is safe
         from scipy.spatial import cKDTree
         d, _ = cKDTree(C.xy).query(C.xy, k=2)
-        C.notes.update(family_ref_angle=ref, n_lines=len(C.lines),
+        C.notes.update(family_ref_angle=ref, family_split=split_info, n_lines=len(C.lines),
                        n_famA=sum(1 for f in fam if f == 0),
                        n_famB=sum(1 for f in fam if f == 1),
                        stored_incidences=int(sum(len(l["members"]) for l in C.lines)),
@@ -364,14 +470,162 @@ def _orient_members(xy, mem, u):
     return (list(mem), False) if (p0[0], p0[1]) < (p1[0], p1[1]) else (list(mem)[::-1], False)
 
 
+def _expected_gap(g, i, half=None):
+    """The gap expected at position `i` of a line, from a robust trend through its neighbours.
+
+    WHY NOT THE MEDIAN OF THE FOUR NEAREST NEIGHBOURS, which is what this used to be. That estimator
+    is only as robust as its window is wide, and a four-point window does not survive one anomalous
+    neighbour. On `2016-06-17-1 Panguingue` Right a genuine 1.6x skip of 113.7 px sat immediately next
+    to a 198.4 px double step; the double step dragged the neighbour median up to 136 px, the ratio
+    read 0.84, and the skip was accepted as a unit step. That single wrong edge made every cycle
+    through it contradict and cost the camera all 247 of its observations.
+
+    THE TREND IS FITTED IN LOG SPACE because gap length along a line varies smoothly and roughly
+    geometrically: a receding line is foreshortened by perspective, and on a fisheye the same line can
+    run from 16 px to 80 px end to end. A flat median over any window wide enough to be robust would
+    be badly biased on such a line, whereas a log-linear trend fits it almost exactly. The slope and
+    intercept are taken by Theil-Sen (median of pairwise slopes, then median intercept), which
+    tolerates roughly half the window being anomalous -- enough for the adjacent-outlier case above.
+
+    Falls back to the neighbour median when the window is too small for a trend to mean anything.
+    """
+    half = GAP_TREND_HALF if half is None else half
+    idx = [j for j in range(max(0, i - half), min(len(g), i + half + 1)) if j != i]
+    if not idx:
+        return float(g[i])
+    if len(idx) < 3:
+        return float(np.median([g[j] for j in idx]))
+    x = np.array(idx, float)
+    y = np.log(np.maximum(np.array([g[j] for j in idx], float), 1e-9))
+    slopes = [(y[b] - y[a]) / (x[b] - x[a])
+              for a in range(len(x)) for b in range(a + 1, len(x))]
+    s = float(np.median(slopes))
+    return float(np.exp(float(np.median(y - s * x)) + s * i))
+
+
+def _components(edges, n):
+    """Connected components of the observation graph, and adjacency, from an edge list."""
+    nb = [[] for _ in range(n)]
+    for a, b, _, _, _ in edges:
+        nb[a].append(b)
+        nb[b].append(a)
+    comp = np.full(n, -1, int)
+    ncomp = 0
+    for s in range(n):
+        if comp[s] != -1:
+            continue
+        comp[s] = ncomp
+        dq = deque([s])
+        while dq:
+            u = dq.popleft()
+            for v in nb[u]:
+                if comp[v] == -1:
+                    comp[v] = ncomp
+                    dq.append(v)
+        ncomp += 1
+    return comp, ncomp
+
+
+def _solve_indices(C, edges, n, comp, ncomp):
+    """Least-squares lattice indices over ALL surviving edges, one gauge pin per component.
+
+    Each edge asserts `rc[b] - rc[a] == step`. Stacking every assertion and solving in least squares
+    spreads a disagreement over the cycle that carries it instead of dumping it on whatever edge a
+    spanning tree happened to close, which is what makes the residuals below usable as blame.
+    """
+    rows, cols, vals = [], [], []
+    for r, (a, b, _, _, _) in enumerate(edges):
+        rows += [r, r]
+        cols += [a, b]
+        vals += [-1.0, 1.0]
+    rhs = np.array([e[2] for e in edges], float) if edges else np.zeros((0, 2))
+    pin_of = {}
+    for v in range(n):                       # lowest observation index per component: a pure gauge choice
+        pin_of.setdefault(comp[v], v)
+    pins = [pin_of[k] for k in sorted(pin_of)]
+    rows += [len(edges) + i for i in range(len(pins))]
+    cols += pins
+    vals += [1.0] * len(pins)
+    M = sparse.csr_matrix((vals, (rows, cols)), shape=(len(edges) + len(pins), n))
+    R = np.vstack([rhs, np.zeros((len(pins), 2))])
+    X = np.column_stack([sparse_linalg.lsqr(M, R[:, d], atol=1e-13, btol=1e-13)[0] for d in (0, 1)])
+    return X
+
+
+def _consensus_indices(C, edges, n):
+    """Indices by consensus, removing the worst-disagreeing edge until every survivor is satisfied.
+
+    Returns (rc, comp, ncomp, contradictions, bad_comps, info). `rc` is NaN nowhere; the caller masks
+    unreliable components afterwards, exactly as before.
+
+    Ranking uses the UNROUNDED least-squares residual, which is continuous and measures how far an
+    edge sits from the consensus; the consistency test uses the ROUNDED assignment, which is what the
+    lattice actually means. Ties in the ranking are broken on the endpoint coordinates rather than on
+    edge order, because edge order follows the operator's record order and must not be able to change
+    which edge is removed.
+    """
+    comp, ncomp = _components(edges, n)
+    if not edges:
+        return np.zeros((n, 2)), comp, ncomp, 0, set(), dict(
+            dropped=[], converged=True, rejected_lines=[], iterations=0)
+
+    alive = [True] * len(edges)
+    dropped = []
+    limit = int(MAX_INCONSISTENT_EDGE_FRAC * len(edges))
+    X = None
+    for iteration in range(len(edges) + 1):
+        act = [k for k in range(len(edges)) if alive[k]]
+        comp, ncomp = _components([edges[k] for k in act], n)
+        X = _solve_indices(C, [edges[k] for k in act], n, comp, ncomp)
+        Xr = np.round(X)
+        bad = [k for k in act
+               if not np.allclose(Xr[edges[k][1]] - Xr[edges[k][0]], edges[k][2])]
+        if not bad:
+            break
+        if len(dropped) >= limit:
+            # Too much of the graph disagrees to call this a few bad edges. Fail closed: report the
+            # survivors' contradictions and mark every component that carries one unreliable.
+            return (Xr, comp, ncomp, len(bad), {comp[edges[k][0]] for k in bad},
+                    dict(dropped=dropped, converged=False, rejected_lines=[],
+                         iterations=iteration, limit=limit))
+        resid = {k: float(np.abs(X[edges[k][1]] - X[edges[k][0]] - edges[k][2]).max()) for k in act}
+        worst = max(resid.values())
+        tied = [k for k in act if resid[k] > worst - 1e-9]
+        # deterministic, record-order-independent tie-break on the endpoint coordinates
+        def key(k):
+            p, q = C.xy[edges[k][0]], C.xy[edges[k][1]]
+            return tuple(sorted([(float(p[0]), float(p[1])), (float(q[0]), float(q[1]))]))
+        pick = min(tied, key=key)
+        alive[pick] = False
+        dropped.append(pick)
+
+    Xr = np.round(X)
+    # A line that loses most of its own edges is a bad LINE, not scattered bad edges. Absorbing one
+    # would let a spurious line drawn through real nodes disappear quietly, so its component is
+    # rejected instead. Lines contributing only a couple of edges cannot trip this.
+    per_line = Counter(edges[k][3] for k in dropped)
+    total_line = Counter(e[3] for e in edges)
+    rejected = sorted(li for li, d in per_line.items()
+                      if total_line[li] >= MIN_EDGES_FOR_LINE_REJECTION
+                      and d >= LINE_REJECTION_FRAC * total_line[li])
+    bad_comps = set()
+    for li in rejected:
+        for a, b, _, l2, _ in edges:
+            if l2 == li:
+                bad_comps.add(comp[a])
+    return (Xr, comp, ncomp, 0, bad_comps,
+            dict(dropped=[dict(line=edges[k][3], segment=edges[k][4]) for k in dropped],
+                 converged=True, rejected_lines=rejected, iterations=len(dropped), limit=limit))
+
+
 def _recover_indices(C):
     """Integer lattice indices from the within-line adjacency graph.
 
     Each consecutive pair along a family-A line is an edge changing the column index by one and
-    leaving the row index alone; along a family-B line, the reverse. A gap whose ratio to its
-    neighbouring gaps on the same line is not within UNIT_STEP_TOL of 1 is NOT interpreted: the edge
-    is dropped and counted, because guessing a multi-step there is exactly the silent inference this
-    round forbids.
+    leaving the row index alone; along a family-B line, the reverse. A gap whose ratio to the gap
+    EXPECTED at its position (see `_expected_gap`) is not within UNIT_STEP_TOL of 1 is NOT
+    interpreted: the edge is dropped and counted, because guessing a multi-step there is exactly the
+    silent inference this round forbids.
 
     DIGITIZATION DIRECTION CARRIES NO LATTICE MEANING AND IS CANONICALIZED BEFORE PROPAGATION. The
     order in which an operator clicked along a line is an input artefact: the same physical line clicked
@@ -392,9 +646,26 @@ def _recover_indices(C):
     not monotone in the family projection is recorded rather than silently repaired, and a line with no
     recoverable direction at all is dropped and counted in `degenerate_direction_lines`.
 
-    Indices are then propagated by breadth-first search over each connected component, and EVERY
-    edge is re-checked against the assignment afterwards. Surviving contradictions mean the graph is
-    not a consistent lattice; they are counted and their component is marked unreliable.
+    INDICES COME FROM CONSENSUS OVER EVERY EDGE AT ONCE, NOT FROM ONE SPANNING TREE. Breadth-first
+    propagation commits to an arbitrary tree, so a single bad edge silently corrupts every index
+    downstream of it, and the component-granular fail-closed rule then discards the whole component.
+    That is far too coarse: on `2016-08-08-4 Panguingue` Left three bad edges out of 941 cost all 536
+    observations. It also makes blame meaningless, because WHICH edge gets reported as contradicting is
+    an artefact of the traversal order rather than evidence about which edge is defective.
+
+    `_consensus_indices` instead solves for all indices simultaneously in least squares over the whole
+    edge set, then removes the single worst-disagreeing edge and re-solves, until the rounded
+    assignment satisfies every surviving edge exactly. On that camera it drops 3 edges of 941, keeps
+    531 of 536 observations, and independently localizes the defect to the fragment-joined line the
+    holonomy analysis had already implicated. On the other 41 captures of the corpus it drops nothing
+    and reproduces the breadth-first result exactly.
+
+    THIS IS STILL FAIL-CLOSED, at edge granularity rather than component granularity. Removing edges to
+    reach consistency is a form of masking, so it is bounded two ways and always reported. Above
+    `MAX_INCONSISTENT_EDGE_FRAC` of the edge set the capture is rejected outright, and a line that
+    loses most of its own edges is treated as a bad LINE rather than as scattered bad edges: its
+    component is marked unreliable, so a spurious line drawn through real nodes cannot be quietly
+    absorbed one edge at a time. Everything removed is recorded in `dropped_inconsistent_edges`.
 
     Labels are only defined up to translation, axis swap and sign per component. A homography absorbs
     any affine relabelling of (c, r), so this gauge freedom is harmless to the projective objective;
@@ -402,6 +673,7 @@ def _recover_indices(C):
     """
     n = C.n
     adj = [[] for _ in range(n)]
+    edges = []
     dropped = 0
     kept = 0
     fam_dir = _family_reference_dirs(C)
@@ -428,8 +700,8 @@ def _recover_indices(C):
         P = C.xy[mem]
         g = np.hypot(*np.diff(P, axis=0).T)
         for i, gi in enumerate(g):
-            nb = [g[j] for j in (i - 2, i - 1, i + 1, i + 2) if 0 <= j < len(g)]
-            ratio = gi / np.median(nb) if nb else 1.0
+            exp_gap = _expected_gap(g, i)
+            ratio = gi / exp_gap if exp_gap > 0 else 1.0
             if abs(ratio - 1.0) > UNIT_STEP_TOL:
                 dropped += 1
                 continue
@@ -438,33 +710,9 @@ def _recover_indices(C):
             step = (0, 1) if ln["family"] == 0 else (1, 0)
             adj[mem[i]].append((mem[i + 1], step, li))
             adj[mem[i + 1]].append((mem[i], (-step[0], -step[1]), li))
+            edges.append((mem[i], mem[i + 1], step, li, i))
 
-    rc = np.full((n, 2), np.nan)
-    comp = np.full(n, -1, int)
-    ncomp = 0
-    for s in range(n):
-        if comp[s] != -1:
-            continue
-        comp[s] = ncomp
-        rc[s] = (0.0, 0.0)
-        dq = deque([s])
-        while dq:
-            u = dq.popleft()
-            for v, st, _ in adj[u]:
-                if comp[v] == -1:
-                    comp[v] = ncomp
-                    rc[v] = rc[u] + np.array(st, float)
-                    dq.append(v)
-        ncomp += 1
-
-    contradictions = 0
-    bad_comps = set()
-    for u in range(n):
-        for v, st, _ in adj[u]:
-            if not np.allclose(rc[v] - rc[u], st):
-                contradictions += 1
-                bad_comps.add(comp[u])
-    contradictions //= 2
+    rc, comp, ncomp, contradictions, bad_comps, cons = _consensus_indices(C, edges, n)
 
     sizes = Counter(comp.tolist())
     C.rc = rc
@@ -481,6 +729,10 @@ def _recover_indices(C):
         component_sizes=dict(sorted(sizes.items(), key=lambda z: -z[1])),
         largest_component=max(sizes.values()) if sizes else 0,
         index_contradictions=contradictions,
+        dropped_inconsistent_edges=cons["dropped"],
+        n_dropped_inconsistent=len(cons["dropped"]),
+        consensus_converged=cons["converged"],
+        consensus_rejected_lines=cons["rejected_lines"],
         inconsistent_components=sorted(bad_comps),
         isolated_observations=int(sum(1 for k, v in sizes.items() if v == 1)))
     # reliable = in the largest consistent component, which is what the projective lattice needs

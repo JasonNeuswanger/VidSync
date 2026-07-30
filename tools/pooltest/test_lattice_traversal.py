@@ -59,7 +59,7 @@ def make_capture(lines_xy, timecode="t"):
     """
     C = LT.Capture("test camera", timecode)
     linepts = [np.asarray(P, float) for P in lines_xy]
-    fam, angs, dirs, ref = LT._family_split(linepts)
+    fam, angs, dirs, ref, split_info = LT._family_split(linepts)
     idx_of, pts = {}, []
     for P in linepts:
         for p in P:
@@ -75,7 +75,7 @@ def make_capture(lines_xy, timecode="t"):
                         "members": mem, "stored": len(mem)})
         for m in mem:
             C.inc[m].append(li)
-    C.notes.update(n_lines=len(C.lines), family_ref_angle=ref,
+    C.notes.update(n_lines=len(C.lines), family_ref_angle=ref, family_split=split_info,
                    unique_observations=len(pts),
                    stored_incidences=sum(len(l["members"]) for l in C.lines))
     LT._recover_indices(C)
@@ -308,9 +308,26 @@ def main():
     print("\n[9] Gap filtering and coincident-point behaviour unchanged")
     check("UNIT_STEP_TOL unchanged", LT.UNIT_STEP_TOL == 0.25, f"{LT.UNIT_STEP_TOL}")
     check("COINCIDENT_PX unchanged", LT.COINCIDENT_PX == 0.5, f"{LT.COINCIDENT_PX}")
-    check("family classification threshold unchanged (45 deg half-window)",
-          "< 45.0" in open(os.path.join(os.path.dirname(os.path.abspath(__file__)),
-                                        "lattice.py")).read())
+    # The 45-degree half-window used to be asserted by grepping lattice.py for the literal "< 45.0".
+    # That pinned the old single-global-mean split's TEXT rather than its BEHAVIOUR, and it would have
+    # passed for any rule that happened to contain the string. `_split_axes` now assigns by the sign of
+    # cos(2*theta - psi), which IS "nearer this family's axis than the other's", so the half-window
+    # holds by construction -- and the property is worth testing directly, since the traversal code in
+    # section [10] relies on it to rule out the zero-projection branch.
+    def max_family_deviation(C):
+        info = C.notes["family_split"]
+        ax = {0: info["axis_family0"], 1: info["axis_family1"]}
+        worst = 0.0
+        for ln in C.lines:
+            a = ax.get(ln["family"])
+            if a is None or a != a:
+                continue
+            d = abs(float(ln["angle"]) - a) % 180.0
+            worst = max(worst, min(d, 180.0 - d))
+        return worst
+    check("every line lies within 45 deg of its OWN family axis (the half-window, tested by behaviour)",
+          all(max_family_deviation(c) <= 45.0 + 1e-9 for c in (C0, Cg, Cp)),
+          "worst deviation " + ", ".join(f"{max_family_deviation(c):.1f} deg" for c in (C0, Cg, Cp)))
     gap = [list(P) for P in grid(nx=6, ny=5)]
     gap[0] = [gap[0][0], gap[0][2], gap[0][3], gap[0][4]]      # a real double step
     Cd = make_capture(gap)
