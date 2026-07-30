@@ -259,11 +259,11 @@ def main():
     for pk, x, y, h, v in db.execute(
             "SELECT ZCALIBRATION, ZSCREENX, ZSCREENY, ZWORLDHCOORD, ZWORLDVCOORD "
             "FROM ZVSSCREENPOINT WHERE ZCALIBRATION IS NOT NULL ORDER BY ZINDEX"):
-        bypk[pk]["front"].append((x, y, h, v))
+        bypk[pk]["back"].append((x, y, h, v))
     for pk, x, y, h, v in db.execute(
             "SELECT ZCALIBRATION1, ZSCREENX, ZSCREENY, ZWORLDHCOORD, ZWORLDVCOORD "
             "FROM ZVSSCREENPOINT WHERE ZCALIBRATION1 IS NOT NULL ORDER BY ZINDEX"):
-        bypk[pk]["back"].append((x, y, h, v))
+        bypk[pk]["front"].append((x, y, h, v))
 
     clicks = defaultdict(dict)
     for pt, clip, x, y in db.execute(

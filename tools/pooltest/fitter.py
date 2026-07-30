@@ -254,19 +254,153 @@ def fit(pl, mask, centre, restarts=6, verbose=False, gated=True, scale_invariant
     return expand(best, mask, centre), best_rms
 
 
-def gate(theta, pl, sref=None):
-    """VidSync's acceptance gate: the map must stay a bijection over the plumbline box, and the
-    local scale must not run away."""
+def box_grid(pl, steps=24):
+    """The production sampling grid: steps+1 per side over the plumbline bounding box.
+    VSCalibration.mm:2255 uses gridSteps = 24, so 25 by 25."""
     lo = pl.xy.min(axis=0)
     hi = pl.xy.max(axis=0)
-    gx, gy = np.meshgrid(np.linspace(lo[0], hi[0], 45), np.linspace(lo[1], hi[1], 45))
-    grid = np.stack([gx.ravel(), gy.ravel()], axis=1)
+    gx, gy = np.meshgrid(np.linspace(lo[0], hi[0], steps + 1),
+                         np.linspace(lo[1], hi[1], steps + 1))
+    return np.stack([gx.ravel(), gy.ravel()], axis=1)
+
+
+def radial_scale_ratio(theta, grid, sref=0.0):
+    """THE PRODUCTION SCALE RATIO, VSCalibration.mm:2270-2279:
+
+        R_scale = sum_g ||U(g) - c|| / sum_g ||g - c||
+
+    the MEAN radial magnification of the correction about the distortion centre over the sampled
+    box. This is the quantity `reasonToRejectSolvedDistortion:` brackets to (0.25, 4.0).
+
+    It is NOT the spread of local area scale -- see `area_scale_spread`. Conflating the two was a
+    real bug in this harness. It reported the 8 mm fisheye refits and the free-axis Tokina fit as
+    gate failures at ratios of 4.4 to 6.1, when their true production ratios are 1.33 to 1.44,
+    comfortably inside the bracket. Every "fails the production gate" conclusion recorded before
+    2026-07-28 came from that mistake and has to be re-derived.
+    """
+    c = np.array([theta[0], theta[1]], float)
+    U = undistort(grid, theta, sref)
+    den = float(np.hypot(*(grid - c).T).sum())
+    if den <= 0.0:
+        return float("nan")
+    return float(np.hypot(*(U - c).T).sum() / den)
+
+
+def area_scale_spread(theta, grid, sref=0.0):
+    """Diagnostic only: max over min of sqrt|det J| across the grid, i.e. how NON-UNIFORM the local
+    area scaling is. This is what this harness used to mislabel as the production scale ratio. It is
+    not a production criterion and has no calibrated threshold -- do not reject on it."""
+    mg = np.sqrt(np.abs(jac_det(grid, theta, sref)))
+    lo = float(mg.min())
+    return float(mg.max() / lo) if lo > 0 else float("inf")
+
+
+def gate_report(theta, pl, sref=None, frame=None):
+    """Production-equivalent gate reproducing all four checks of
+    `reasonToRejectSolvedDistortion:overPlumblineBox:warning:` (VSCalibration.mm:2243), plus
+    unthresholded diagnostics.
+
+    Rejection happens on exactly the three conditions production rejects on: non-finite parameters
+    or determinant, non-positive determinant inside the plumbline box, and a radial scale ratio
+    outside (0.25, 4.0). The whole-frame determinant produces a warning only, never a rejection,
+    matching production. `frame` is an optional (width, height); without it that check reports as
+    unavailable rather than being silently skipped.
+    """
     sr = pl.sref if sref is None else sref
+    grid = box_grid(pl)
+    d = {"finite": bool(np.all(np.isfinite(theta)))}
     det = jac_det(grid, theta, sr)
-    mags = np.sqrt(np.abs(jac_det(pl.xy, theta, sr)))
-    ratio = float(mags.max() / mags.min()) if mags.min() > 0 else np.inf
-    ok = bool(np.all(np.isfinite(theta)) and det.min() > 0 and 0.25 < ratio < 4.0)
-    return ok, float(det.min()), ratio
+    if not d["finite"] or not np.all(np.isfinite(det)):
+        d.update(ok=False, reason="non-finite parameters or Jacobian determinant",
+                 min_det_box=float("nan"), radial_scale_ratio=float("nan"))
+        return d
+    d["min_det_box"] = float(det.min())
+    d["max_det_box"] = float(det.max())
+    d["radial_scale_ratio"] = radial_scale_ratio(theta, grid, sr)
+    d["area_scale_spread"] = area_scale_spread(theta, grid, sr)
+    d["jac_condition"] = _jac_condition(theta, grid, sr)
+    d["roundtrip_px"] = _roundtrip(theta, pl.xy, sr)
+    if frame is not None:
+        fg = box_grid_xy(frame[0], frame[1])
+        fdet = jac_det(fg, theta, sr)
+        fin = fdet[np.isfinite(fdet)]
+        d["min_det_frame"] = float(fin.min()) if fin.size else float("nan")
+        d["frame_warning"] = bool(d["min_det_frame"] <= 0.0)
+        d["radial_scale_ratio_frame"] = radial_scale_ratio(theta, fg, sr)
+    else:
+        d["min_det_frame"] = None
+        d["frame_warning"] = None
+    if d["min_det_box"] <= 0.0:
+        d.update(ok=False,
+                 reason=f"folds over inside the plumbline box, min det {d['min_det_box']:.3g}")
+    elif not (0.25 < d["radial_scale_ratio"] < 4.0):
+        d.update(ok=False,
+                 reason=f"radial scale ratio {d['radial_scale_ratio']:.3g} outside (0.25, 4.0)")
+    else:
+        d.update(ok=True, reason=None)
+    return d
+
+
+def box_grid_xy(w, h, steps=24):
+    gx, gy = np.meshgrid(np.linspace(0.0, w, steps + 1), np.linspace(0.0, h, steps + 1))
+    return np.stack([gx.ravel(), gy.ravel()], axis=1)
+
+
+def gate(theta, pl, sref=None, frame=None):
+    """Backward-compatible three-tuple form. NOTE: the third element is now the PRODUCTION radial
+    scale ratio, not the old area-scale spread. Callers comparing it against 4.0 are now testing
+    what the software actually tests."""
+    d = gate_report(theta, pl, sref, frame)
+    return bool(d["ok"]), d["min_det_box"], d["radial_scale_ratio"]
+
+
+def _jac_condition(theta, grid, sref):
+    """Worst local 2x2 Jacobian singular-value condition number over the grid. Diagnostic only."""
+    x0, y0 = theta[0], theta[1]
+    k = theta[2:9]
+    p1, p2, p3, p4 = theta[9], theta[10], theta[11], theta[12]
+    xd = grid[:, 0] - x0
+    yd = grid[:, 1] - y0
+    s = xd * xd + yd * yd
+    R = np.ones_like(s); Rp = np.zeros_like(s)
+    for i, ki in enumerate(k, start=1):
+        R = R + ki * (s ** i - sref ** i)
+        Rp = Rp + i * ki * s ** (i - 1)
+    T = 1.0 + p3 * s + p4 * s * s
+    Tp = p3 + 2 * p4 * s
+    Gx = p1 * (3 * xd * xd + yd * yd) + 2 * p2 * xd * yd
+    Gy = 2 * p1 * xd * yd + p2 * (xd * xd + 3 * yd * yd)
+    a = R + 2 * xd * xd * Rp + (6 * p1 * xd + 2 * p2 * yd) * T + 2 * xd * Gx * Tp
+    b = 2 * xd * yd * Rp + (2 * p1 * yd + 2 * p2 * xd) * T + 2 * yd * Gx * Tp
+    c = 2 * xd * yd * Rp + (2 * p1 * yd + 2 * p2 * xd) * T + 2 * xd * Gy * Tp
+    d = R + 2 * yd * yd * Rp + (2 * p1 * xd + 6 * p2 * yd) * T + 2 * yd * Gy * Tp
+    J = np.stack([np.stack([a, b], -1), np.stack([c, d], -1)], -2)
+    sv = np.linalg.svd(J, compute_uv=False)
+    lo = sv[:, 1]
+    with np.errstate(divide="ignore", invalid="ignore"):
+        cond = np.where(lo > 0, sv[:, 0] / lo, np.inf)
+    return float(np.nanmax(cond))
+
+
+def _roundtrip(theta, xy, sref, iters=60):
+    """Max forward/inverse round-trip error in px, Newton on a finite-difference Jacobian.
+    Diagnostic only; no threshold asserted."""
+    target = undistort(xy, theta, sref)
+    u = xy.copy()
+    h = 1e-4
+    ex = np.array([h, 0.0]); ey = np.array([0.0, h])
+    for _ in range(iters):
+        F = undistort(u, theta, sref) - target
+        if np.abs(F).max() < 1e-12:
+            break
+        Ja = (undistort(u + ex, theta, sref) - undistort(u - ex, theta, sref)) / (2 * h)
+        Jb = (undistort(u + ey, theta, sref) - undistort(u - ey, theta, sref)) / (2 * h)
+        det = Ja[:, 0] * Jb[:, 1] - Jb[:, 0] * Ja[:, 1]
+        det = np.where(np.abs(det) < 1e-14, 1e-14, det)
+        du = np.stack([(Jb[:, 1] * F[:, 0] - Jb[:, 0] * F[:, 1]) / det,
+                       (-Ja[:, 1] * F[:, 0] + Ja[:, 0] * F[:, 1]) / det], axis=1)
+        u = u - du
+    return float(np.abs(undistort(u, theta, sref) - target).max())
 
 
 def condition(pl, theta, mask):
