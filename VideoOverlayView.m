@@ -1003,12 +1003,20 @@
 		}];
 		if ([hintLinesSetting isEqualToString:@"All"]) {
 			visibleHintLines = currentHintLines;
-		} else {	// setting is "Unpaired"; show only unpaired hintLines
+		} else {	// setting is "Unpaired"; show hint lines only for points that still need one
 			if ([currentHintLines count] > 0) {
 				for (VSHintLine *hintLine in currentHintLines) {
-					// if another VSEventScreenPoint for this VSHintLine's VSPoint has the same VSVideoClip as the VSHintLine does, it's paired.
+					VSPoint *sourcePoint = hintLine.fromScreenPoint.point;
+					// A point with two or more calibrated screen points already has 3-D coordinates, so no hint
+					// line anywhere can tell the user anything they still need. Hiding those is the difference
+					// between "unpaired" meaning per-clip and meaning per-point: with two cameras the two are the
+					// same, but with six, a point clicked in two of them used to keep drawing hint lines into the
+					// other four. That is four lines per point of pure clutter, and this test is the same one
+					// calculate3DCoords uses to decide whether the point resolves at all.
+					if ([[sourcePoint calibratedScreenPoints] count] > 1) continue;
+					// Otherwise, the line is worth drawing unless this clip is where the point was already clicked.
 					bool isPaired = false;
-					for (VSEventScreenPoint *screenPoint in hintLine.fromScreenPoint.point.screenPoints) {
+					for (VSEventScreenPoint *screenPoint in sourcePoint.screenPoints) {
 						if ([screenPoint.videoClip isEqualTo:hintLine.toVideoClip]) isPaired = true;
 					}
 					if (!isPaired) visibleHintLines = [visibleHintLines setByAddingObject:hintLine];	// only add unpaired ones to the visibleHintLines
