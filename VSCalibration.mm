@@ -125,10 +125,67 @@ double orthogonalRegressionTotalCostFunction(const gsl_vector *v, void *params){
 	return totalSSQRCost;// / totalLinePixelLength;
 }
 
-NSPoint redistortPoint(const NSPoint* pt, const double x0, const double y0, const double k1, const double k2, const double k3, const double k4, const double k5, const double k6, const double k7, const double p1, const double p2, const double p3, const double p4){
+void undistortionJacobian(const double xd, const double yd, const double k1, const double k2, const double k3, const double k4, const double k5, const double k6, const double k7, const double p1, const double p2, const double p3, const double p4, double J[4]);   // defined below; used by the sheet test that follows
+
+static double distortionJacobianDeterminant(const double xd, const double yd, const double k1, const double k2, const double k3, const double k4, const double k5, const double k6, const double k7, const double p1, const double p2, const double p3, const double p4)
+{
+	double J[4];
+	undistortionJacobian(xd, yd, k1, k2, k3, k4, k5, k6, k7, p1, p2, p3, p4, J);
+	return J[0]*J[3] - J[1]*J[2];
+}
+
+static bool isOnPrincipalSheet(const double xd, const double yd, const double k1, const double k2, const double k3, const double k4, const double k5, const double k6, const double k7, const double p1, const double p2, const double p3, const double p4)
+{
+	// The distortion model describes a lens only where it is locally invertible, which is where the determinant of
+	// the forward map's Jacobian stays positive. Beyond that boundary the polynomial folds back on itself and every
+	// undistorted radius acquires a second preimage that satisfies the root equation exactly as well as the real
+	// one. redistortPoint used to accept whichever it found first, and its first starting guess sits at the
+	// undistorted point, which is on the wrong side of the fold precisely in the region where the fold exists. So
+	// it converged to the spurious root, reported success, and never tried the good guesses further down its list.
+	// Symptoms of that ranged from cosmetic to misleading: hint lines that snapped out to a fixed arc past the
+	// frame edge, and a reported calibration pixel residual of 26.8 where the true value was 4.7.
+	//
+	// A point is on the principal sheet if it can be reached from the distortion centre without the determinant
+	// changing sign. Sampling the straight segment to it is a conservative test -- a candidate rejected here could
+	// in principle be connected by some curved path -- but for models of this family the valid region is star-
+	// shaped about the centre, so the segment is the natural probe.
+	//
+	// Stating the guard in terms of the Jacobian rather than a turnover radius is deliberate. For a purely radial
+	// model the two are identical: the determinant factors as R * d(rR)/dr, so it changes sign exactly where the
+	// radial map stops increasing. But the decentering terms already make this map non-radial, and any future model
+	// that scales differently along different axes -- an elliptical one, say -- can be valid along one axis and
+	// folded along another at the same radius, where a scalar radius would be simply wrong. This form needs no
+	// changes when the model changes, only a Jacobian that matches whatever undistortPoint does.
+	static const int kSheetSamples = 24;
+	for (int i = 1; i <= kSheetSamples; i++) {
+		const double f = (double) i / (double) kSheetSamples;
+		if (distortionJacobianDeterminant(f*xd, f*yd, k1, k2, k3, k4, k5, k6, k7, p1, p2, p3, p4) <= 0.0) return false;
+	}
+	return true;
+}
+
+static void pullGuessOntoPrincipalSheet(double* gx, double* gy, const double k1, const double k2, const double k3, const double k4, const double k5, const double k6, const double k7, const double p1, const double p2, const double p3, const double p4)
+{
+	// Several of redistortPoint's starting guesses are at or beyond the undistorted point, which is the far side of
+	// the fold in exactly the cases that need help. Halving toward the centre until the guess is on the principal
+	// sheet costs a few Jacobian evaluations and makes those guesses useful instead of actively harmful. Doing it
+	// by bisection rather than by a radius formula keeps it model-agnostic.
+	for (int i = 0; i < 40; i++) {
+		if (isOnPrincipalSheet(*gx, *gy, k1, k2, k3, k4, k5, k6, k7, p1, p2, p3, p4)) return;
+		*gx *= 0.5;
+		*gy *= 0.5;
+	}
+}
+
+bool redistortPointChecked(const NSPoint* pt, const double x0, const double y0, const double k1, const double k2, const double k3, const double k4, const double k5, const double k6, const double k7, const double p1, const double p2, const double p3, const double p4, NSPoint* outResult){
 	// The new undistortion function doesn't have a closed-form inverse, so we instead use Newton's Method to solve numerically for the point
 	// (x,y) that, when the undistortion function is applied to it, would give the input point.  That is, we're solving for the {x,y} roots of the
 	// equation undistortPoint({x,y}, x0, y0, ...) == pt, or in other words undistortPoint({x,y}, x0, y0, ...) - pt == 0.
+	//
+	// Returns whether a solution on the principal sheet was found. When it returns false there is no physically
+	// meaningful redistorted position for this point -- either it lies outside anything the lens could have imaged,
+	// or the solver could not reach the real root -- and *outResult is left holding the best available
+	// approximation for callers that would rather have something than nothing.
 	const double xuc = pt->x - x0;
 	const double yuc = pt->y - y0;
 	const gsl_multiroot_fdfsolver_type *T;
@@ -171,11 +228,15 @@ NSPoint redistortPoint(const NSPoint* pt, const double x0, const double y0, cons
 	T = gsl_multiroot_fdfsolver_hybridsj;
 	s = gsl_multiroot_fdfsolver_alloc(T, n);
 	bool failed;
+	bool solved = false;
 	for (int i=0; i < 15; i++) {
 		failed = false;
 		iter = 0;
-		gsl_vector_set(x, 0, x_guesses[i]);
-		gsl_vector_set(x, 1, y_guesses[i]);
+		double gx = x_guesses[i];
+		double gy = y_guesses[i];
+		pullGuessOntoPrincipalSheet(&gx, &gy, k1, k2, k3, k4, k5, k6, k7, p1, p2, p3, p4);
+		gsl_vector_set(x, 0, gx);
+		gsl_vector_set(x, 1, gy);
 		gsl_multiroot_fdfsolver_set(s, &f, x);
 		do {
 			iter++;
@@ -191,17 +252,23 @@ NSPoint redistortPoint(const NSPoint* pt, const double x0, const double y0, cons
 		// that stalled at the iteration cap was accepted as if it had converged, and the remaining guesses were
 		// never tried.
 		if (status != GSL_SUCCESS) failed = true;
+		// Converging is not enough. The spurious root past the fold satisfies the residual test perfectly, so
+		// without this check the very first guess accepts it and the loop stops. A root off the principal sheet is
+		// a failure of this starting guess like any other, and the remaining guesses are worth trying.
+		if (!failed && !isOnPrincipalSheet(gsl_vector_get(s->x, 0), gsl_vector_get(s->x, 1), k1, k2, k3, k4, k5, k6, k7, p1, p2, p3, p4)) failed = true;
 		if (!failed) {
+			solved = true;
 			break;
 		}
 	}
-	// If every guess failed we fall through with whatever the last one reached, which is the best available
-	// answer; the caller is drawing an overlay, not measuring, so an imprecise point beats no point at all.
-	
+	// If every guess failed we fall through with whatever the last one reached. That is the best available
+	// approximation, but it is not a solution, and the return value says so: callers that draw geometry should skip
+	// the point rather than plot a number the model cannot actually produce.
+
 //	double resid = sqrt(pow(gsl_vector_get(s->f, 0),2) + pow(gsl_vector_get(s->f, 1),2));
-	
+
 	NSPoint result = NSMakePoint(x0 + gsl_vector_get(s->x, 0), y0 + gsl_vector_get(s->x, 1));
- 
+
 	/*
 	 // Other diagnostics
 	 double r = sqrt(xuc*xuc+yuc*yuc);
@@ -211,10 +278,18 @@ NSPoint redistortPoint(const NSPoint* pt, const double x0, const double y0, cons
 	 */
 	gsl_multiroot_fdfsolver_free(s);
 	gsl_vector_free(x);
-	return result;
+	if (outResult != NULL) *outResult = result;
+	return solved;
 }
 
-
+NSPoint redistortPoint(const NSPoint* pt, const double x0, const double y0, const double k1, const double k2, const double k3, const double k4, const double k5, const double k6, const double k7, const double p1, const double p2, const double p3, const double p4){
+	// Convenience wrapper for callers that have no way to represent "no answer". It returns the solver's best
+	// approximation whether or not it is valid, which is the behaviour every caller had before the sheet test
+	// existed. Prefer redistortPointChecked wherever the failure can actually be acted on.
+	NSPoint result = *pt;
+	redistortPointChecked(pt, x0, y0, k1, k2, k3, k4, k5, k6, k7, p1, p2, p3, p4, &result);
+	return result;
+}
 
 NSPoint undistortPoint(const NSPoint* pt, const double x0, const double y0, const double k1, const double k2, const double k3, const double k4, const double k5, const double k6, const double k7, const double p1, const double p2, const double p3, const double p4){
 	const double xd = pt->x - x0;
@@ -1601,10 +1676,16 @@ int refractionRootFunc_f(const gsl_vector* x, void* params, gsl_vector* f)
  - [VSHintLine bezierPathForLineWithInterval:]					used to translate undistorted, straight hintlines into real distorted ones
  */
 
-- (NSPoint) distortPoint:(NSPoint)undistortedPoint
+- (BOOL) distortPoint:(NSPoint)undistortedPoint toPoint:(NSPoint *)result
 {
-	if (![self hasDistortionCorrection]) return undistortedPoint;		// just return the original point if there's no distortion correction yet
-	return redistortPoint(
+	// Returns NO when the point has no valid redistorted position, either because it lies outside anything this
+	// lens could have imaged or because the solver could not reach the principal root. *result still receives the
+	// best available approximation, but callers drawing geometry should break their path rather than plot it.
+	if (![self hasDistortionCorrection]) {			// no distortion correction yet, so the identity is exactly right
+		if (result != NULL) *result = undistortedPoint;
+		return YES;
+	}
+	return redistortPointChecked(
 					  &undistortedPoint,
 					  [self.distortionCenterX doubleValue],
 					  [self.distortionCenterY doubleValue],
@@ -1618,8 +1699,16 @@ int refractionRootFunc_f(const gsl_vector* x, void* params, gsl_vector* f)
 					  [self.distortionP1 doubleValue],
 					  [self.distortionP2 doubleValue],
 					  [self.distortionP3 doubleValue],
-					  [self.distortionP4 doubleValue]
-					  );
+					  [self.distortionP4 doubleValue],
+					  result
+					  ) ? YES : NO;
+}
+
+- (NSPoint) distortPoint:(NSPoint)undistortedPoint
+{
+	NSPoint result = undistortedPoint;
+	[self distortPoint:undistortedPoint toPoint:&result];		// best approximation whether or not it is valid
+	return result;
 }
 
 - (NSPoint) undistortPoint:(NSPoint)distortedPoint  // Undistorts a point with this calibration's saved lambda value.

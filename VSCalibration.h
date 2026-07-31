@@ -57,6 +57,7 @@ double orthogonalRegressionLineCostFunction(NSPoint line[], const size_t numLine
 double orthogonalRegressionTotalCostFunction(const gsl_vector *v, void *params);
 NSPoint undistortPoint(const NSPoint* pt, const double x0, const double y0, const double k1, const double k2, const double k3, const double k4, const double k5, const double k6, const double k7, const double p1, const double p2, const double p3, const double p4);
 NSPoint redistortPoint(const NSPoint* pt, const double x0, const double y0, const double k1, const double k2, const double k3, const double k4, const double k5, const double k6, const double k7, const double p1, const double p2, const double p3, const double p4);
+bool redistortPointChecked(const NSPoint* pt, const double x0, const double y0, const double k1, const double k2, const double k3, const double k4, const double k5, const double k6, const double k7, const double p1, const double p2, const double p3, const double p4, NSPoint* outResult);   // returns whether the result is a valid inverse rather than the solver's best approximation
 int redistortionRootFunc_f(const gsl_vector* x, void* params, gsl_vector* f);
 int redistortionRootFunc_df(const gsl_vector* x, void* params, gsl_matrix* J);
 int redistortionRootFunc_fdf(const gsl_vector* x, void* params, gsl_vector* f, gsl_matrix* J);
@@ -185,6 +186,7 @@ int redistortionRootFunc_fdf(const gsl_vector* x, void* params, gsl_vector* f, g
 - (void) autodetectChessboardPlumblinesLegacy;
 - (void) autodetectChessboardPlumblinesLattice;
 - (BOOL) hasDistortionCorrection;
+- (BOOL) distortPoint:(NSPoint)undistortedPoint toPoint:(NSPoint *)result;   // NO when no valid inverse exists; *result still gets the best approximation
 - (NSPoint) distortPoint:(NSPoint)undistortedPoint;
 - (NSPoint) undistortPoint:(NSPoint)distortedPoint;
 - (void) calculateDistortionCorrection;
