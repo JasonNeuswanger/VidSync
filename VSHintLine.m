@@ -69,10 +69,24 @@
 	NSPoint frontScreenCoordsUndistorted = [self.toVideoClip.calibration projectToScreenFromPoint:frontQuadratCoords onQuadratSurface:@"Front" redistort:NO];
 	NSPoint backScreenCoordsUndistorted = [self.toVideoClip.calibration projectToScreenFromPoint:backQuadratCoords onQuadratSurface:@"Back" redistort:NO];
 	
-	// generate points on that line at regular intervals in both the x and y directions
+	// Walk the undistorted line at regular intervals, redistorting each sample as we go.
+	//
+	// This used to be done with two loops, one stepping in x and one stepping in y, whose outputs were merged by
+	// sorting the redistorted points by their x coordinate. That sort is only correct for lines that are more
+	// horizontal than vertical. Redistortion moves x non-monotonically along a steep line: the radial correction
+	// is weakest far from the distortion centre, so a near-vertical line's redistorted x swings out and back,
+	// peaking where the line passes closest to the centre. Sorting by x then interleaves points from opposite
+	// ends of the line and the path zigzags across the frame. On the 1080p wide-angle footage that turned this
+	// up, the path stayed clean out to a slope of about 3 and then came apart: 33 direction reversals at slope
+	// 5, and 99 reversals with 1600-pixel jumps at slope 30, with 40% of that project's hint lines steeper than
+	// 3. That is the "janky"/doubled hint line this method carried a note about, and it explains why shrinking
+	// the interval appeared to help: it made each fold shorter without removing any.
+	//
+	// Stepping along the line's own parameter keeps the samples in path order by construction. It also removes
+	// the need for a separate vertical-line case, and the duplicate coverage the two loops produced on diagonals.
+
 	float xLimit = self.toVideoClip.windowController.movieSize.width;
 	float yLimit = self.toVideoClip.windowController.movieSize.height;
-	float tempx, tempy;
 	NSMutableArray *distortedPoints = [NSMutableArray new];
 	float padding = 50.0*interval;	// pixel padding to extend the drawn line a bit beyond the bounds of the frame
 	// a padding value of '4' worked fine for normal lenses but a much higher value is required to accomodate fisheyes
@@ -80,80 +94,82 @@
 	// 100 worked fine for most videos but had problems in some places on an 8 mm fisheye video
 	// 50 isn't without issues but it's a good compromise between not extending lines far enough and making them buggy/jagged
 
-	float dx = frontScreenCoordsUndistorted.x - backScreenCoordsUndistorted.x;
-	if (fabsf(dx) < 0.5f) {
-		// Vertical line: x is constant; sample along y at that fixed x value
-		float fixedX = frontScreenCoordsUndistorted.x;
-		if (fixedX >= -padding && fixedX <= xLimit + padding) {
-			for (float y = -padding; y <= yLimit+padding; y += interval) {
-				[distortedPoints addObject:[NSValue valueWithPoint:[self.toVideoClip.calibration distortPoint:NSMakePoint(fixedX,y)]]];
-			}
-		}
+	double dirX = frontScreenCoordsUndistorted.x - backScreenCoordsUndistorted.x;
+	double dirY = frontScreenCoordsUndistorted.y - backScreenCoordsUndistorted.y;
+	double dirNorm = sqrt(dirX*dirX + dirY*dirY);
+	if (dirNorm < 1e-9) return nil;		// both quadrat intercepts project to the same place, so there is no line of sight to draw
+	dirX /= dirNorm;
+	dirY /= dirNorm;
+
+	// Clip the infinite line to the padded drawing box to get the range of t worth sampling, where the point at
+	// parameter t is backScreenCoordsUndistorted + t*(dirX,dirY). t is in undistorted pixels along the line.
+	const double boxMinX = -padding, boxMaxX = xLimit + padding;
+	const double boxMinY = -padding, boxMaxY = yLimit + padding;
+	double tMin = -INFINITY, tMax = INFINITY;
+	if (fabs(dirX) < 1e-12) {			// exactly vertical: the x slab bounds no t, but the line still has to lie inside it
+		if (backScreenCoordsUndistorted.x < boxMinX || backScreenCoordsUndistorted.x > boxMaxX) return nil;
 	} else {
-		// get m and b for the line y = mx + b describing the undistorted hintline
-		float m = (frontScreenCoordsUndistorted.y - backScreenCoordsUndistorted.y) / dx;
-		float b = frontScreenCoordsUndistorted.y - m*frontScreenCoordsUndistorted.x;
-		for (float x = -padding; x <= xLimit+padding; x += interval) {
-			tempy = m*x+b;
-			if (tempy >= -padding && tempy <= yLimit + padding) {
-				[distortedPoints addObject:[NSValue valueWithPoint:[self.toVideoClip.calibration distortPoint:NSMakePoint(x,tempy)]]];  // regular intervals in the x direction
-				//[distortedPointsTEMP addObject:[NSValue valueWithPoint:NSMakePoint(x,tempy)]];  // regular intervals in the x direction
-			}
-		}
-		for (float y = -padding; y <= yLimit+padding; y += interval) {
-			tempx = (y-b)/m;
-			if (tempx >= -padding && tempx <= xLimit + padding) {
-				[distortedPoints addObject:[NSValue valueWithPoint:[self.toVideoClip.calibration distortPoint:NSMakePoint(tempx,y)]]];	// regular intervals in the y direction
-				//[distortedPointsTEMP addObject:[NSValue valueWithPoint:NSMakePoint(tempx,y)]];	// regular intervals in the y direction
-			}
+		double tA = (boxMinX - backScreenCoordsUndistorted.x) / dirX;
+		double tB = (boxMaxX - backScreenCoordsUndistorted.x) / dirX;
+		tMin = MAX(tMin, MIN(tA,tB));
+		tMax = MIN(tMax, MAX(tA,tB));
+	}
+	if (fabs(dirY) < 1e-12) {			// exactly horizontal, likewise
+		if (backScreenCoordsUndistorted.y < boxMinY || backScreenCoordsUndistorted.y > boxMaxY) return nil;
+	} else {
+		double tA = (boxMinY - backScreenCoordsUndistorted.y) / dirY;
+		double tB = (boxMaxY - backScreenCoordsUndistorted.y) / dirY;
+		tMin = MAX(tMin, MIN(tA,tB));
+		tMax = MIN(tMax, MAX(tA,tB));
+	}
+	if (tMin > tMax) return nil;		// the line never enters the drawing box
+
+	// A sample the redistortion cannot represent is recorded as NSNull so the drawn path breaks there instead of
+	// connecting across the gap. The padded sampling box reaches well past the region a strongly curved lens can
+	// actually image, and the alternative to a break is a straight chord to the far side of the gap, which looks
+	// exactly like a real hint line and is not one.
+	for (double t = tMin; t <= tMax; t += interval) {
+		NSPoint undistorted = NSMakePoint(backScreenCoordsUndistorted.x + t*dirX, backScreenCoordsUndistorted.y + t*dirY);
+		NSPoint redistorted;
+		if ([self.toVideoClip.calibration distortPoint:undistorted toPoint:&redistorted]) {
+			[distortedPoints addObject:[NSValue valueWithPoint:redistorted]];
+		} else {
+			[distortedPoints addObject:[NSNull null]];
 		}
 	}
+	if (fmod(tMax - tMin, interval) > 0.0) {	// the loop stops short of tMax unless the range is an exact multiple of the interval
+		NSPoint lastUndistorted = NSMakePoint(backScreenCoordsUndistorted.x + tMax*dirX, backScreenCoordsUndistorted.y + tMax*dirY);
+		NSPoint lastRedistorted;
+		if ([self.toVideoClip.calibration distortPoint:lastUndistorted toPoint:&lastRedistorted]) [distortedPoints addObject:[NSValue valueWithPoint:lastRedistorted]];
+	}
 
-	// All the janky stuff disappears if I just return the straight lines and don't do undistortion, so it's coming from there somehow...
-	// and it seems like the problem is some points don't get undistorted?
-	// The seemingly straight liens the oddballs get mapped to aren't the same ones they'd be at if they weren't distorted. Something else is happening.
-
-	// The janky bits are comign from both the x and y-sourced grids
-	
-
-	// Changing the interval to a low value (from 1 to 3) makes the janky stuff go away, and it gradually comes back as the interval grows... why?
-	
-	
-	// sort them by x coordinate
-	[distortedPoints sortUsingComparator:(NSComparator)^(id obj1, id obj2){
-		NSComparisonResult result;
-		if ([obj1 pointValue].x < [obj2 pointValue].x) {
-			result = NSOrderedAscending;
-		} else if ([obj1 pointValue].x == [obj2 pointValue].x) {
-			result = NSOrderedSame;
-		} else {
-			result = NSOrderedDescending;
-		}
-		return result;
-	}];
-
-
-	
-	
 	// create and return the bezierpath
 	NSPoint distortedPoint,overlayPoint;
 	NSBezierPath *hintLinePath = [NSBezierPath bezierPath];
 	[hintLinePath setLineJoinStyle:NSLineJoinStyleRound];
 	int numSegments = 0;
+	BOOL penIsDown = NO;		// whether the previous sample was drawable, and so whether to line to this one or move to it
 	NSRect drawRegionRect = NSInsetRect([self.toVideoClip.windowController.overlayView frame],-padding,-padding);	// "insets" the visible rect by a negative number to draw slightly past screen edges
-	for (NSValue *distortedPointValue in distortedPoints) {
-		distortedPoint = [distortedPointValue pointValue];
+	for (id entry in distortedPoints) {
+		if (entry == [NSNull null]) {			// no valid redistorted position here, so end the current run
+			penIsDown = NO;
+			continue;
+		}
+		distortedPoint = [(NSValue *)entry pointValue];
 		overlayPoint = [self.toVideoClip.windowController convertVideoToOverlayCoords:distortedPoint];
 		if (NSPointInRect(overlayPoint,drawRegionRect)) {
-			if (numSegments == 0) {
-				[hintLinePath moveToPoint:overlayPoint];			// if it's the first point in the line, just move to it
+			if (!penIsDown) {
+				[hintLinePath moveToPoint:overlayPoint];			// start of a run, so just move to it
+				penIsDown = YES;
 			} else {
 				[hintLinePath lineToPoint:overlayPoint];			// otherwise, draw from the previous point to this one
+				numSegments += 1;
 			}
-			numSegments += 1;
+		} else {
+			penIsDown = NO;						// leaving the draw region ends the run too, rather than drawing a chord across it
 		}
 	}
-	
+
 	
 	
 	
