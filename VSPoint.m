@@ -234,8 +234,6 @@ NSPoint project2DPoint(NSPoint pt, double projectionMatrix[9])
 			}
 			free(params.quadratFrontToScreenFCMMatrices);
 			free(params.frontFacePlanes);
-			// Calculate the hint lines
-			for (VSEventScreenPoint *screenPoint in calibratedScreenPoints) [screenPoint calculateHintLines];
 			// meanPLD is left as calculate3DCoordsLinear set it, which is the quantity equation 4 of
 			// Neuswanger et al. (2016) defines: the mean distance from the CPA to the lines it was calculated
 			// from. This used to be overwritten here by rebuilding the lines from each camera's *reprojected*
@@ -251,7 +249,15 @@ NSPoint project2DPoint(NSPoint pt, double projectionMatrix[9])
 			self.worldZ = [NSNumber numberWithDouble:linearIntersectionPoint.z];
 			self.reprojectionErrorNorm = nil;   // never computed on this path; leaving it would report a stale value from a previous solve
 		}
-		
+
+		// Recalculate the hint lines. A hint line stores the quadrat coordinates where this point's line of sight
+		// pierces the two calibration planes, so it is only valid for the calibration it was built from. This used
+		// to sit inside the iterative branch above, which meant that with iterative triangulation off -- the
+		// default -- recalibrating a project re-solved every 3-D point but left every hint line encoding the old
+		// calibration. Newly clicked points looked right because VideoWindowController calls this directly, so the
+		// symptom was that existing hint lines were quietly wrong while new ones were fine.
+		for (VSEventScreenPoint *screenPoint in calibratedScreenPoints) [screenPoint calculateHintLines];
+
 		// Now calculate the distance from the point to the nearest camera
 		
 		bool isFirstCameraDistance = YES;
