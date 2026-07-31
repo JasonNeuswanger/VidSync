@@ -133,29 +133,51 @@
 	
 }
 
+- (NSString *)fileSafeProjectName
+{
+	// Returns an empty string, not "(null)", for a project that has never been named: name is never initialized,
+	// and the old inline version of this substitution formatted that nil straight into a path.
+	return [[(self.project.name ?: @"") stringByReplacingOccurrencesOfString:@":" withString:@"-"] stringByReplacingOccurrencesOfString:@"/" withString:@"+"];
+}
+
+- (NSString *)folderForCapturedFilesInPath:(NSString *)basePath
+{
+	// Shared with the capture file naming, so the "Open in Finder" buttons can't reveal a folder the captures
+	// don't go into. Only the folder is decided here; the captured file names do their own naming.
+	BOOL createFolderForProject = [[[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"createFolderForProjectCaptures"] boolValue];
+	NSString *folder = basePath ?: @"";
+	NSString *projectFolderName = [self fileSafeProjectName];
+	if (createFolderForProject && [projectFolderName length] > 0) folder = [folder stringByAppendingPathComponent:projectFolderName];
+	return [folder stringByStandardizingPath];
+}
+
 - (IBAction)openCapturePathInFinder:(id)sender
 {
-	BOOL appendsProjectName = YES;
-	NSString *capturePath = nil;
+	NSString *folderToShow = nil;
 	if ([sender tag] == 1) {
-		capturePath = self.project.capturePathForStills;
-		appendsProjectName = [[[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"createFolderForProjectCaptures"] boolValue];
+		folderToShow = [self folderForCapturedFilesInPath:self.project.capturePathForStills];
 	} else if ([sender tag] == 2) {
-		capturePath = self.project.capturePathForMovies;
-		appendsProjectName = [[[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"createFolderForProjectCaptures"] boolValue];
+		folderToShow = [self folderForCapturedFilesInPath:self.project.capturePathForMovies];
 	} else if ([sender tag] == 3) {
-		capturePath = self.project.exportPathForData;
-		appendsProjectName = [[[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"createFolderForProjectExports"] boolValue];
+		folderToShow = [self folderForExportedFiles];	// asked of the exporter itself, so the button always shows the folder the exports actually land in
 	}
-	if (appendsProjectName) {
-		NSString *fileSafeProjectName = [[self.project.name stringByReplacingOccurrencesOfString:@":" withString:@"-"] stringByReplacingOccurrencesOfString:@"/" withString:@"+"];
-		capturePath = [capturePath stringByAppendingFormat:@"/%@", fileSafeProjectName];
+	if ([folderToShow length] == 0) {
+		[UtilityFunctions InformUser:@"No folder has been chosen for these files yet, so there's nothing to show in the Finder." withTitle:@"No folder chosen"];
+		return;
 	}
-	
-	NSFileManager *fm = [NSFileManager defaultManager];	// file manager to create video capture directory if it doesn't exist yet
-	if (![fm fileExistsAtPath:capturePath]) [fm createDirectoryAtPath:capturePath withIntermediateDirectories:YES attributes:nil error:NULL];
-	
-	[[NSWorkspace sharedWorkspace] selectFile:capturePath inFileViewerRootedAtPath:@""];
+
+	NSFileManager *fm = [NSFileManager defaultManager];	// the folder won't exist yet if nothing has been written into it
+	NSError *error = nil;
+	if (![fm fileExistsAtPath:folderToShow] && ![fm createDirectoryAtPath:folderToShow withIntermediateDirectories:YES attributes:nil error:&error]) {
+		// Previously this failure, and the failed reveal that followed it, were both silent, so an unavailable
+		// folder (one on a disconnected drive, most often) made the button look broken.
+		[UtilityFunctions InformUser:[NSString stringWithFormat:@"The folder %@ doesn't exist and couldn't be created, so it can't be shown in the Finder. %@",folderToShow,[error localizedDescription] ?: @""] withTitle:@"Folder unavailable"];
+		return;
+	}
+
+	if (![[NSWorkspace sharedWorkspace] selectFile:folderToShow inFileViewerRootedAtPath:@""]) {
+		[UtilityFunctions InformUser:[NSString stringWithFormat:@"The Finder couldn't show the folder %@.",folderToShow] withTitle:@"Couldn't open folder"];
+	}
 }
 
 - (IBAction)captureVideoClips:(id)sender
@@ -715,19 +737,17 @@
 	BOOL includeMasterTimecode = [[[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"includeMasterTimecodeInCapturedFileName"] boolValue];
 	BOOL includeClipName = [[[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"includeClipNameInCapturedFileName"] boolValue];
 	BOOL separateClipsByFolder = [[[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"separateClipsByFolder"] boolValue];
-	BOOL createFolderForProject = [[[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"createFolderForProjectCaptures"] boolValue];
 	NSString *customText = [[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"capturedFileNameCustomText"];
-	NSString *fileSafeProjectName = [[self.project.name stringByReplacingOccurrencesOfString:@":" withString:@"-"] stringByReplacingOccurrencesOfString:@"/" withString:@"+"];
+	NSString *fileSafeProjectName = [self fileSafeProjectName];
 	NSMutableString *filePath = [NSMutableString new];
 	NSString *timeString1 = nil;
 	if ([extension isEqualToString:@"jpg"]) {
-		[filePath appendString:self.project.capturePathForStills];
+		[filePath appendString:[self folderForCapturedFilesInPath:self.project.capturePathForStills]];
 		timeString1 = [self currentMasterTimeString];
 	} else if ([extension isEqualToString:@"mov"] || [extension isEqualToString:@"mp4"] || [extension isEqualToString:@"m4v"]) {
-		[filePath appendString:self.project.capturePathForMovies];
+		[filePath appendString:[self folderForCapturedFilesInPath:self.project.capturePathForMovies]];
 		timeString1 = [NSString stringWithFormat:@"%@ to %@", self.project.movieCaptureStartTime, self.project.movieCaptureEndTime];
 	}
-	if (createFolderForProject) [filePath appendString:[NSString stringWithFormat:@"/%@", fileSafeProjectName]];
 	if (separateClipsByFolder) [filePath appendString:[NSString stringWithFormat:@"/%@",videoClip.clipName]];
 	if (![fm fileExistsAtPath:filePath]) [fm createDirectoryAtPath:filePath withIntermediateDirectories:YES attributes:nil error:NULL];
 	[filePath appendString:@"/"];

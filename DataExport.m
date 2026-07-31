@@ -232,16 +232,30 @@ static const NSInteger VSExportFormatVersion = 1;
 	}
 }
 
+- (NSString *)folderForExportedFiles
+{
+	// The one place that decides which folder exported files land in, so the "Open in Finder" button on the Export
+	// Data tab can ask the exporter instead of rebuilding the path with its own idea of how a project name becomes
+	// a folder name. The two had drifted apart: this one strips the characters a file name can't contain, while the
+	// button replaced colons and slashes with other characters, so for some project names the button created and
+	// revealed a folder that no export was ever written into.
+	BOOL createFolderForProject = [[[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"createFolderForProjectExports"] boolValue];
+	NSString *folder = self.project.exportPathForData ?: @"";
+	NSString *projectFolderName = [UtilityFunctions sanitizeFileNameString:self.project.name ?: @""];
+	// An unnamed project (name is never initialized, so this is the state of a project that has never been named)
+	// gets no subfolder at all, rather than one named after nothing, matching what the file naming below does.
+	if (createFolderForProject && [projectFolderName length] > 0) folder = [folder stringByAppendingPathComponent:projectFolderName];
+	return [folder stringByStandardizingPath];	// collapses the double slash that an export path stored with a trailing slash used to produce
+}
+
 - (NSString *)fileNameForExportedFile:(NSString *)extension
 {
 	NSFileManager *fm = [NSFileManager defaultManager];	// file manager to create capture directory if it doesn't exist yet
 	BOOL includeProjectName = [[[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"includeProjectNameInExportedFileName"] boolValue];
 	BOOL includeCurrentDate = [[[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"includeCurrentDateInExportedFileName"] boolValue];
 	BOOL includeCurrentTime = [[[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"includeCurrentTimeInExportedFileName"] boolValue];
-	BOOL createFolderForProject = [[[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"createFolderForProjectExports"] boolValue];
 	NSString *customText = [[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"exportedFileNameCustomText"];
-	NSMutableString *filePath = [NSMutableString stringWithString:self.project.exportPathForData];
-	if (createFolderForProject) [filePath appendString:[NSString stringWithFormat:@"/%@",[UtilityFunctions sanitizeFileNameString:self.project.name ?: @""]]];
+	NSMutableString *filePath = [NSMutableString stringWithString:[self folderForExportedFiles]];
 	if (![fm fileExistsAtPath:filePath]) [fm createDirectoryAtPath:filePath withIntermediateDirectories:YES attributes:nil error:NULL];
 	[filePath appendString:@"/"];
 	NSDate *now = [NSDate dateWithTimeIntervalSinceNow:0.0];
