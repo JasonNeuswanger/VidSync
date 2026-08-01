@@ -432,6 +432,17 @@ NSPoint project2DPoint(NSPoint pt, double projectionMatrix[9])
 		eventNotesString = self.trackedEvent.notes;
 	}
 
+	// The columns appended at the end, after the conditional screen coordinates, so nothing above them moves. These
+	// are the parts of the composite Object(s) and Event columns that a program rather than a person wants: the
+	// project-unique event index to deduplicate on, the event's type and name separately, and the owning objects'
+	// indices as a list. Sorted numerically because trackedObjects is a set, which promises no order at all.
+	NSArray *sortedObjectIndices = [[self.trackedEvent.trackedObjects valueForKey:@"index"] sortedArrayUsingSelector:@selector(compare:)];
+	NSMutableArray *objectIndexStrings = [NSMutableArray new];
+	for (NSNumber *objectIndex in sortedObjectIndices) [objectIndexStrings addObject:[objectIndex stringValue]];
+	NSString *objectIndicesString = [objectIndexStrings componentsJoinedByString:@";"];
+	NSString *eventTypeString = self.trackedEvent.type.name ?: @"";
+	NSString *eventNameString = self.trackedEvent.name ?: @"";
+
 	// Emit an empty field, not 0.000000, for values that were never computed, so a point with too few views is
 	// distinguishable from one that really is at the origin. This matches what the XML export already does, and
 	// both read.csv and pandas turn an empty numeric field into NA/NaN.
@@ -444,7 +455,7 @@ NSPoint project2DPoint(NSPoint pt, double projectionMatrix[9])
 	NSString *meanPLDString = (self.meanPLD == nil) ? @"" : [NSString stringWithFormat:@"%.10f",[self.meanPLD doubleValue]];
 	NSString *reprojectionErrorNormString = (self.reprojectionErrorNorm == nil) ? @"" : [NSString stringWithFormat:@"%.10f",[self.reprojectionErrorNorm doubleValue]];
 
-	return [NSString stringWithFormat:@"%@%@%@%@%@%@%f%@%@%@%@%@%@%@%@%@%@%@%@%@%@%@%@%@\n",
+	return [NSString stringWithFormat:@"%@%@%@%@%@%@%f%@%@%@%@%@%@%@%@%@%@%@%@%@%@%@%@%@%@%@%@%@%@%@%@%@\n",
 		   [UtilityFunctions escapeSpreadsheetField:objectsString forSeparator:separator],separator,
 		   [UtilityFunctions escapeSpreadsheetField:eventString forSeparator:separator],separator,
 		   self.timecode,separator,
@@ -457,7 +468,11 @@ NSPoint project2DPoint(NSPoint pt, double projectionMatrix[9])
 		   nearestCameraDistanceString,separator,
 		   self.index,separator,
 		   [UtilityFunctions escapeSpreadsheetField:eventNotesString forSeparator:separator],
-		   screenCoordsString
+		   screenCoordsString,separator,
+		   self.trackedEvent.index,separator,
+		   [UtilityFunctions escapeSpreadsheetField:eventTypeString forSeparator:separator],separator,
+		   [UtilityFunctions escapeSpreadsheetField:eventNameString forSeparator:separator],separator,
+		   objectIndicesString
 		   ];
 }
 

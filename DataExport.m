@@ -66,6 +66,15 @@ static const NSInteger VSExportFormatVersion = 2;
 							   @"Event Notes",
 							   nil];
 	if (includeScreenCoords) [columns addObject:@"Screen Coordinates"];
+	// Appended after the conditional Screen Coordinates column rather than before it, so that no pre-existing column
+	// ever changes position regardless of how that preference is set. Event Index is project-unique and is the key to
+	// deduplicate on when an event shared by several objects appears once per object; Event Type and Event Name are
+	// the other two components of the composite Event column, which previously had to be parsed back apart; Object
+	// Indices is the machine-readable form of the Object(s) column, which joins human-readable descriptions.
+	[columns addObject:@"Event Index"];
+	[columns addObject:@"Event Type"];
+	[columns addObject:@"Event Name"];
+	[columns addObject:@"Object Indices"];
 	return [[columns componentsJoinedByString:separator] stringByAppendingString:@"\n"];
 }
 
@@ -73,10 +82,16 @@ static const NSInteger VSExportFormatVersion = 2;
 {
 	// Appended to the title line of the spreadsheet exports, which is already not a data record, so anyone
 	// parsing these files is already skipping it and the "skip one line" contract is unchanged.
-	NSMutableString *provenance = [NSMutableString stringWithFormat:@"exportFormatVersion=%ld; exportDate=%@; appVersion=%@",
+	// The two settings ride here rather than in columns of their own, because they are identical in every row of the
+	// file. Between them they say what the coordinates mean: which triangulation method produced them, and whether
+	// the screen coordinates column is present at all.
+	BOOL includeScreenCoords = [[[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"includeScreenCoordsInExports"] boolValue];
+	NSMutableString *provenance = [NSMutableString stringWithFormat:@"exportFormatVersion=%ld; exportDate=%@; appVersion=%@; useIterativeTriangulation=%@; includeScreenCoordsInExports=%@",
 								   (long) VSExportFormatVersion,
 								   [UtilityFunctions ISO8601StringFromDateTime:exportDate],
-								   [UtilityFunctions appVersionString]];
+								   [UtilityFunctions appVersionString],
+								   [self.project.useIterativeTriangulation boolValue] ? @"YES" : @"NO",
+								   includeScreenCoords ? @"YES" : @"NO"];
 	if ([self.project.dateCreated length] > 0) [provenance appendFormat:@"; projectCreated=%@",self.project.dateCreated];
 	if ([self.project.appVersionCreated length] > 0) [provenance appendFormat:@"; projectCreatedWithAppVersion=%@",self.project.appVersionCreated];
 	if ([self.project.dateLastSaved length] > 0) [provenance appendFormat:@"; projectLastSaved=%@",self.project.dateLastSaved];
