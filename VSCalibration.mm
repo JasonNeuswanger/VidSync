@@ -2765,10 +2765,10 @@ static const double kMaxAcceptableScaleRatio = 4.0;    // generous enough for a 
 	[mainElement addAttribute:[NSXMLNode attributeWithName:@"distortionP2" stringValue:[nf stringFromNumber:self.distortionP2] ?: @""]];
 	[mainElement addAttribute:[NSXMLNode attributeWithName:@"distortionP3" stringValue:[nf stringFromNumber:self.distortionP3] ?: @""]];
 	[mainElement addAttribute:[NSXMLNode attributeWithName:@"distortionP4" stringValue:[nf stringFromNumber:self.distortionP4] ?: @""]];
-	[mainElement addAttribute:[NSXMLNode attributeWithName:@"matrixScreenToQuadratFront" stringValue:[self matrixAsOutputString:self.matrixScreenToQuadratFront]]];
-	[mainElement addAttribute:[NSXMLNode attributeWithName:@"matrixScreenToQuadratBack" stringValue:[self matrixAsOutputString:self.matrixScreenToQuadratBack]]];
-	[mainElement addAttribute:[NSXMLNode attributeWithName:@"matrixQuadratFrontToScreen" stringValue:[self matrixAsOutputString:self.matrixQuadratFrontToScreen]]];
-	[mainElement addAttribute:[NSXMLNode attributeWithName:@"matrixQuadratBackToScreen" stringValue:[self matrixAsOutputString:self.matrixQuadratBackToScreen]]];
+	[mainElement addAttribute:[NSXMLNode attributeWithName:@"matrixScreenToCalibrationFrameFront" stringValue:[self matrixAsOutputString:self.matrixScreenToQuadratFront]]];
+	[mainElement addAttribute:[NSXMLNode attributeWithName:@"matrixScreenToCalibrationFrameBack" stringValue:[self matrixAsOutputString:self.matrixScreenToQuadratBack]]];
+	[mainElement addAttribute:[NSXMLNode attributeWithName:@"matrixCalibrationFrameFrontToScreen" stringValue:[self matrixAsOutputString:self.matrixQuadratFrontToScreen]]];
+	[mainElement addAttribute:[NSXMLNode attributeWithName:@"matrixCalibrationFrameBackToScreen" stringValue:[self matrixAsOutputString:self.matrixQuadratBackToScreen]]];
 	[mainElement addAttribute:[NSXMLNode attributeWithName:@"residualFrontLeastSquares" stringValue:[nf stringFromNumber:self.residualFrontLeastSquares] ?: @""]];
 	[mainElement addAttribute:[NSXMLNode attributeWithName:@"residualBackLeastSquares" stringValue:[nf stringFromNumber:self.residualBackLeastSquares] ?: @""]];
 	[mainElement addAttribute:[NSXMLNode attributeWithName:@"residualFrontPixel" stringValue:[nf stringFromNumber:self.residualFrontPixel] ?: @""]];
@@ -2791,8 +2791,8 @@ static const double kMaxAcceptableScaleRatio = 4.0;    // generous enough for a 
 	// shouldCorrectRefraction is nil on a frame where the user has not answered the refraction question yet, which is a
 	// different state from "no", so it exports empty rather than NO.
 	[mainElement addAttribute:[NSXMLNode attributeWithName:@"shouldCorrectRefraction" stringValue:(self.shouldCorrectRefraction == nil) ? @"" : ([self.shouldCorrectRefraction boolValue] ? @"YES" : @"NO")]];
-	[mainElement addAttribute:[NSXMLNode attributeWithName:@"frontQuadratSurfaceThickness" stringValue:[nf stringFromNumber:self.frontQuadratSurfaceThickness] ?: @""]];
-	[mainElement addAttribute:[NSXMLNode attributeWithName:@"frontQuadratSurfaceRefractiveIndex" stringValue:[nf stringFromNumber:self.frontQuadratSurfaceRefractiveIndex] ?: @""]];
+	[mainElement addAttribute:[NSXMLNode attributeWithName:@"frontCalibrationFrameSurfaceThickness" stringValue:[nf stringFromNumber:self.frontQuadratSurfaceThickness] ?: @""]];
+	[mainElement addAttribute:[NSXMLNode attributeWithName:@"frontCalibrationFrameSurfaceRefractiveIndex" stringValue:[nf stringFromNumber:self.frontQuadratSurfaceRefractiveIndex] ?: @""]];
 	[mainElement addAttribute:[NSXMLNode attributeWithName:@"mediumRefractiveIndex" stringValue:[nf stringFromNumber:self.mediumRefractiveIndex] ?: @""]];
 	if (includeScreenCoords) {
 		NSXMLElement *distortionLines = [[NSXMLElement alloc] initWithName:@"distortionLines"];
@@ -2809,8 +2809,8 @@ static const double kMaxAcceptableScaleRatio = 4.0;    // generous enough for a 
 	// They have to be elements with text rather than attributes: the lists are newline-delimited "h, v" pairs, and XML
 	// attribute-value normalization turns a newline inside an attribute into a space, so as attributes every parser
 	// would silently flatten the line structure that gives the pairs their meaning.
-	NSXMLElement *quadratNodesFront = [[NSXMLElement alloc] initWithName:@"quadratNodesFront" stringValue:[self.quadratNodesFront string] ?: @""];
-	NSXMLElement *quadratNodesBack = [[NSXMLElement alloc] initWithName:@"quadratNodesBack" stringValue:[self.quadratNodesBack string] ?: @""];
+	NSXMLElement *quadratNodesFront = [[NSXMLElement alloc] initWithName:@"calibrationFrameNodesFront" stringValue:[self.quadratNodesFront string] ?: @""];
+	NSXMLElement *quadratNodesBack = [[NSXMLElement alloc] initWithName:@"calibrationFrameNodesBack" stringValue:[self.quadratNodesBack string] ?: @""];
 	[mainElement addChild:quadratNodesFront];
 	[mainElement addChild:quadratNodesBack];
 	return mainElement;

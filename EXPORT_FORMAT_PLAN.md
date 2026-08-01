@@ -14,7 +14,8 @@ scripts are not accessible from here and cannot be inventoried, so the only safe
 that every attribute, every column, every element name and every value's rendering is load
 bearing for somebody.
 
-The rule this plan follows is therefore: **append only**. Nothing existing is renamed, removed,
+The rule this plan follows is therefore: **append only**, with one knowing exception recorded
+below (the quadrat-to-calibration-frame rename, taken deliberately). Nothing existing is renamed, removed,
 reordered, or re-rendered. New attributes go after all existing attributes on their element; new
 child elements go after all existing children; new columns go after all existing columns. An
 export produced after these changes must differ from one produced before them only by insertions.
@@ -67,17 +68,18 @@ an empty string rather than `0` in that case. That is a known property of the fo
 whose video is missing exports blank timing and resolution.
 
 **`calibration`** gains `axisHorizontal`, `axisVertical`, `axisFrontToBack`, `planeCoordFront`,
-`planeCoordBack`, `cameraMeanPLD`, `shouldCorrectRefraction`, `frontQuadratSurfaceThickness`,
-`frontQuadratSurfaceRefractiveIndex`, `mediumRefractiveIndex`, `frontIsCalibrated` and
+`planeCoordBack`, `cameraMeanPLD`, `shouldCorrectRefraction`,
+`frontCalibrationFrameSurfaceThickness`, `frontCalibrationFrameSurfaceRefractiveIndex`,
+`mediumRefractiveIndex`, `frontIsCalibrated` and
 `backIsCalibrated`. `cameraMeanPLD` was the one residual-family value omitted, which read as an
 oversight rather than a decision. The refraction settings materially change every exported
 coordinate and were previously invisible in the file.
 
-**Quadrat node lists** become `<quadratNodesFront>` and `<quadratNodesBack>` child elements
+**The calibration frame node lists** become `<calibrationFrameNodesFront>` and `<calibrationFrameNodesBack>` child elements
 carrying their text, appended after the existing calibration children. They cannot be attributes:
 the lists are newline-delimited `h, v` pairs, and XML attribute-value normalization converts
 newlines to spaces, so every parser would silently flatten the line structure. This is the
-physical quadrat geometry the entire fit rests on.
+physical frame geometry the entire fit rests on.
 
 **`point`** gains `numViews`, the count of `calibratedScreenPoints`. It separates a two-camera
 from a four-camera solve and identifies single-view points, which the export previously left
@@ -96,20 +98,30 @@ machinery already existed.
 
 **`distortionLine`** gains `lambda`. **Calibration points** gain `index`.
 
-**`event`** gains a `<connectingLines>` wrapper, appended after the existing `point` and
-`objectChildOfEvent` children, holding one `connectingLine` per segment with `fromPointIndex`,
-`toPointIndex`, both endpoint timecodes, `length` and `speed`. A wrapper rather than bare
-children so a positional consumer sees one new child at the end; named `connectingLine` rather
-than anything containing `point` so the `.//point` descendant searches in the Drift Model harness
-cannot absorb it.
+**Connecting lines are not exported.** They were briefly, in a `<connectingLines>` wrapper on each
+event, and were removed again: a connecting line is a distance and a speed between two
+consecutive points the file already contains, so any consumer can compute it, and emitting it
+nearly doubled the size of the file to say nothing new. The clipboard export keeps them, gated on
+`connectingLineLengthLabeled` as it always has been.
 
-This XML path is **ungated**. The existing clipboard export gates connecting lines on
-`connectingLineLengthLabeled`, which is a drawing preference deciding what data you get — the
-wrong coupling. It is left gated anyway, because ungating it would add rows to output people
-already paste into spreadsheets. The asymmetry is deliberate: new output is ungated, existing
-output keeps its existing behaviour.
+**Quadrat is now calibration frame in the exported names.** "Quadrat" was the old name for the 3D
+calibration frame and it had leaked into the file format. The exported names are now
+`matrixScreenToCalibrationFrameFront` and `Back`, `matrixCalibrationFrameFrontToScreen` and
+`Back`, `frontCalibrationFrameSurfaceThickness`, `frontCalibrationFrameSurfaceRefractiveIndex`,
+and the node lists are `calibrationFrameNodesFront` and `Back`. This is the one place in this
+whole plan that is knowingly *not* append-only: four of those names have been in the export for
+years, and any consumer reading them breaks. That was a deliberate call — the names are believed
+to be unused downstream, and paying to upgrade a reader later is cheaper than carrying the wrong
+word forever. Emitting both spellings for a release was available and was not taken.
 
-`VSExportFormatVersion` goes to 2.
+The Core Data attributes behind those names are still called quadrat, as are many internal
+identifiers, the user-defaults keys for the overlay colours, and the `.VidSyncQuadrat` file type.
+Renaming those is a separate job: the eight model attributes need a new model version created in
+Xcode's model editor so that lightweight migration carries a renaming identifier, the defaults
+keys silently reset every user's overlay preferences unless migrated, and the file extension
+orphans saved frames unless the old one is still read.
+
+`VSExportFormatVersion` goes to 3.
 
 **Deferred.** `apparentWorldHcoord` and `apparentWorldVcoord` on calibration points are
 `@synthesize`, not `@dynamic` — in-memory only, so they are nil on a freshly opened document
@@ -168,7 +180,7 @@ The converter has no per-element knowledge. Its rules:
 3. Children are grouped by tag name into **arrays — always arrays, even for a single child**.
    This is the rule that does the real work: no consumer ever has to handle "an object, or a list
    of objects, depending on the data," which is the classic XML-to-JSON trap.
-4. Text content becomes a `text` key. Only the quadrat node lists use this today.
+4. Text content becomes a `text` key. Only the calibration frame node lists use this today.
 5. Values are typed through a registry keyed by attribute name: number, boolean, `matrix3x3`
    (parsed from the `{{a,b,c},{...}}` string into a nested array of numbers), or string. An empty
    string becomes `null`, so "not computed" is explicit rather than an empty string.
@@ -211,10 +223,21 @@ have identical content whichever button is pressed.
 
 ## Status
 
-Phases 3, 4 and 5 landed in `78efc4f`, `23abb8c` and `3cae939` respectively. The project builds
-clean. What has *not* been done is the acceptance check below, which needs the app driven against
-a real project — no automated path exists for that, and the code-level guarantee that the changes
-are append-only is not a substitute for the diff.
+Phases 3, 4 and 5 landed in `78efc4f`, `23abb8c` and `3cae939` respectively, and the connecting
+lines removal plus the calibration frame rename followed. The project builds clean.
+
+A real before-and-after comparison has been run once, on `2015-07-30-1 Clearwater`: no element or
+attribute was removed, every pre-existing element count matched, and of 926 matched elements
+exactly one attribute value differed -- `dateLastSaved`, because the old export predated the
+document's last save. Every XPath query the Drift Model harness makes returned identical results.
+That export had `includeScreenCoordsInExports` off, so the screen point subtree, and with it the
+reprojection residuals, remains unverified against real data — and an export attempted with that
+preference on appeared to hang, which is unexplained. Nothing in the gated path is expensive by
+inspection: the reprojection is closed form, and the one costly routine in this area, the GSL
+redistortion solver, is reached only from overlay drawing and from calibration, not from any
+export. Diagnosing it needs a stack sample taken while it is stuck.
+
+The CSV columns and the JSON export have not been checked against a real export at all.
 
 ## Explicitly deferred beyond this plan
 

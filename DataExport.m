@@ -28,7 +28,7 @@
 // Version of the structure of the exported files, recorded in every export so a consumer can tell which
 // generation of the format it is reading. Bump this on any structural change: a new or removed column,
 // a renamed or removed XML attribute or element, or a change in what an existing field means.
-static const NSInteger VSExportFormatVersion = 2;
+static const NSInteger VSExportFormatVersion = 3;
 
 #pragma mark - JSON, derived from the XML
 
@@ -42,7 +42,7 @@ static const NSInteger VSExportFormatVersion = 2;
 //      that does the real work. A consumer never has to handle "an object, or a list of objects, depending on the
 //      data", which is the classic trap in XML-derived JSON, and it means an element that happens to occur once in
 //      one project and twice in another does not change the shape of the document.
-//   4. An element with text and no child elements puts its text under "text". Only the quadrat node lists use this.
+//   4. An element with text and no child elements puts its text under "text". Only the calibration frame node lists use this.
 //
 // Values are typed by the table below, keyed on attribute name. An empty string becomes null, so "not computed" is
 // explicit rather than an empty string that a consumer has to recognize. An attribute missing from the table is
@@ -83,7 +83,6 @@ typedef NS_ENUM(NSInteger, VSExportValueType) {
 							 @"frameFrontH", @"frameFrontV", @"frameBackH", @"frameBackV",
 							 @"reprojectedX", @"reprojectedY", @"residualPixels",
 							 @"worldHcoord", @"worldVcoord",
-							 @"fromPointIndex", @"toPointIndex", @"length", @"speed",
 							 @"timeScale", @"frameRate", @"clipWidth", @"clipHeight",
 							 @"cameraX", @"cameraY", @"cameraZ", @"cameraMeanPLD",
 							 @"distortionCenterX", @"distortionCenterY",
@@ -95,16 +94,15 @@ typedef NS_ENUM(NSInteger, VSExportValueType) {
 							 @"residualFrontPixel", @"residualBackPixel",
 							 @"residualFrontWorld", @"residualBackWorld",
 							 @"planeCoordFront", @"planeCoordBack",
-							 @"frontQuadratSurfaceThickness", @"frontQuadratSurfaceRefractiveIndex",
+							 @"frontCalibrationFrameSurfaceThickness", @"frontCalibrationFrameSurfaceRefractiveIndex",
 							 @"mediumRefractiveIndex", @"lambda", @"exportFormatVersion"];
 		NSArray *booleans = @[@"useIterativeTriangulation", @"syncIsLocked", @"isMasterClip", @"muted",
 							  @"frontIsCalibrated", @"backIsCalibrated", @"shouldCorrectRefraction"];
-		NSArray *matrices = @[@"matrixScreenToQuadratFront", @"matrixScreenToQuadratBack",
-							  @"matrixQuadratFrontToScreen", @"matrixQuadratBackToScreen"];
+		NSArray *matrices = @[@"matrixScreenToCalibrationFrameFront", @"matrixScreenToCalibrationFrameBack",
+							  @"matrixCalibrationFrameFrontToScreen", @"matrixCalibrationFrameBackToScreen"];
 		// The strings are listed rather than left to the default so that the warning below means what it says: an
 		// attribute reaching it is one nobody has classified, not merely one that happens to be text.
 		NSArray *strings = @[@"name", @"type", @"notes", @"observer", @"timecode",
-							 @"fromTimecode", @"toTimecode",
 							 @"calibrationTimecode", @"dateCreated", @"dateLastSaved",
 							 @"dateCreatedISO", @"dateLastSavedISO", @"dateLastExported", @"exportDate",
 							 @"appVersion", @"appVersionCreated", @"appVersionLastSaved",
