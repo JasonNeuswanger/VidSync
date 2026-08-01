@@ -272,9 +272,9 @@ typedef NS_ENUM(NSInteger, VSExportValueType) {
 			return;
 		}
 		NSMutableString *totalString = [NSMutableString new];
-		for (VSPoint *point in fetchResults) {
-			[totalString appendString:[point spreadsheetFormatted3DPoint:@"\t"]];
-		}
+		if (![self runExport:@"clipboard" usingBlock:^{
+			for (VSPoint *point in fetchResults) [totalString appendString:[point spreadsheetFormatted3DPoint:@"\t"]];
+		}]) return;
 		if (![totalString isEqualToString:@""]) {	// if there are some connecting lines to paste
 			NSString *titleString = [NSString stringWithFormat:@"%@ 3D Points\t%@\n%@",
 								self.project.name ?: @"",
@@ -298,9 +298,9 @@ typedef NS_ENUM(NSInteger, VSExportValueType) {
 	if ((fetchResults != nil) && (fetchError == nil) && ([fetchResults count] > 0)) {
 		NSDate *exportDate = [NSDate dateWithTimeIntervalSinceNow:0.0];
 		NSMutableString *totalString = [NSMutableString new];
-		for (VSPoint *point in fetchResults) {
-			[totalString appendString:[point spreadsheetFormatted3DPoint:@","]];
-		}
+		if (![self runExport:@"CSV" usingBlock:^{
+			for (VSPoint *point in fetchResults) [totalString appendString:[point spreadsheetFormatted3DPoint:@","]];
+		}]) return;
 		if (![totalString isEqualToString:@""]) {	// if there are some connecting lines to paste
 			NSString *titleString = [NSString stringWithFormat:@"All measured points in VidSync project %@,%@\n%@",
 								self.project.name ?: @"",
@@ -413,10 +413,32 @@ typedef NS_ENUM(NSInteger, VSExportValueType) {
 	return xmlDoc;
 }
 
+- (BOOL) runExport:(NSString *)what usingBlock:(void (^)(void))exportBlock
+{
+	// An export that raises leaves the user with nothing to go on. The exception unwinds out of the action, and with
+	// it out of the button's mouse-tracking loop, so the button stays stuck in its pressed colour while the
+	// application carries on running: no file, no sound, no message, and nothing in the interface that says why.
+	// Catching it here turns that into something a person can read and report. It deliberately does not pretend the
+	// export succeeded -- it returns NO, and the caller skips the shutter sound and the export bookkeeping.
+	@try {
+		exportBlock();
+		return YES;
+	} @catch (NSException *exception) {
+		NSArray *stack = [exception callStackSymbols];
+		NSString *topOfStack = [[stack subarrayWithRange:NSMakeRange(0,MIN((NSUInteger)14,[stack count]))] componentsJoinedByString:@"\n"];
+		NSLog(@"Export failed while writing %@: %@: %@\n%@",what,[exception name],[exception reason],[stack componentsJoinedByString:@"\n"]);
+		[UtilityFunctions InformUser:[NSString stringWithFormat:@"Something went wrong partway through building the %@ file, so it was not written.\n\n%@: %@\n\n%@",
+									  what,[exception name],[exception reason] ?: @"(no reason given)",topOfStack]
+						   withTitle:@"Export failed"];
+		return NO;
+	}
+}
+
 - (IBAction) exportXMLFile:(id)sender
 {
 	NSDate *exportDate = [NSDate dateWithTimeIntervalSinceNow:0.0];
-	NSXMLDocument *xmlDoc = [self projectAsXMLDocumentForExportDate:exportDate];
+	__block NSXMLDocument *xmlDoc = nil;
+	if (![self runExport:@"XML" usingBlock:^{ xmlDoc = [self projectAsXMLDocumentForExportDate:exportDate]; }]) return;
 	NSData *xmlData = [xmlDoc XMLDataWithOptions:NSXMLNodePrettyPrint];
 	if ([xmlData writeToFile:[self fileNameForExportedFile:@".xml"] atomically:YES]) {
 		self.project.updatedSinceLastExport = [NSNumber numberWithBool:NO];
@@ -430,8 +452,10 @@ typedef NS_ENUM(NSInteger, VSExportValueType) {
 - (IBAction) exportJSONFile:(id)sender
 {
 	NSDate *exportDate = [NSDate dateWithTimeIntervalSinceNow:0.0];
-	NSXMLDocument *xmlDoc = [self projectAsXMLDocumentForExportDate:exportDate];
-	NSDictionary *JSONObject = [VSExportJSON JSONObjectFromXMLDocument:xmlDoc];
+	__block NSDictionary *JSONObject = nil;
+	if (![self runExport:@"JSON" usingBlock:^{
+		JSONObject = [VSExportJSON JSONObjectFromXMLDocument:[self projectAsXMLDocumentForExportDate:exportDate]];
+	}]) return;
 	NSError *error = nil;
 	// Sorted keys because an unordered dictionary would otherwise shuffle the file's key order from one export to the
 	// next, which makes two exports of the same project impossible to diff.
