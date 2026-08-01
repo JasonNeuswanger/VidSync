@@ -286,6 +286,7 @@
 - (IBAction) copyAll3DPointsToClipboard:(id)sender;
 - (IBAction) exportCSVFile:(id)sender;
 - (IBAction) exportXMLFile:(id)sender;
+- (IBAction) exportJSONFile:(id)sender;
 - (NSString *)folderForExportedFiles;
 - (NSString *)fileNameForExportedFile:(NSString *)extension;
 

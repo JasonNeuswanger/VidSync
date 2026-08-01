@@ -30,6 +30,171 @@
 // a renamed or removed XML attribute or element, or a change in what an existing field means.
 static const NSInteger VSExportFormatVersion = 2;
 
+#pragma mark - JSON, derived from the XML
+
+// The JSON export is not a second serializer. It is a mechanical transform of the very same NSXMLDocument the XML
+// export writes, so the two cannot describe different things and adding an attribute to the XML adds it to the JSON
+// with no second edit. Nothing here knows the name of any element: the whole converter is the four rules below.
+//
+//   1. An element becomes an object. The document becomes {"project": {...}}, so the root tag is not lost.
+//   2. Attributes become keys of that object.
+//   3. Child elements are grouped by tag name into arrays -- always arrays, even for a single child. This is the rule
+//      that does the real work. A consumer never has to handle "an object, or a list of objects, depending on the
+//      data", which is the classic trap in XML-derived JSON, and it means an element that happens to occur once in
+//      one project and twice in another does not change the shape of the document.
+//   4. An element with text and no child elements puts its text under "text". Only the quadrat node lists use this.
+//
+// Values are typed by the table below, keyed on attribute name. An empty string becomes null, so "not computed" is
+// explicit rather than an empty string that a consumer has to recognize. An attribute missing from the table is
+// carried through as a string and logged: a new attribute can therefore be untyped in the JSON, but it can never be
+// silently absent from it.
+//
+// One deliberate limitation: numbers become JSON numbers, which every JSON stack in practice reads as doubles, while
+// the XML strings keep every digit VidSync wrote -- and the calibration formatter writes fifty fraction digits so
+// that the higher-order distortion terms survive. Beyond about seventeen significant digits the JSON is therefore the
+// lossier of the two files. Anyone who needs those digits exactly wants the XML.
+
+typedef NS_ENUM(NSInteger, VSExportValueType) {
+	VSExportValueTypeString,
+	VSExportValueTypeNumber,
+	VSExportValueTypeBool,
+	VSExportValueTypeMatrix
+};
+
+@interface VSExportJSON : NSObject
++ (NSDictionary *) JSONObjectFromXMLDocument:(NSXMLDocument *)xmlDoc;
+@end
+
+@implementation VSExportJSON
+
++ (NSDictionary *) attributeTypes
+{
+	// Keyed on attribute name alone rather than element-and-attribute, because no name in this format means two
+	// different things in two elements: index is a number everywhere, name and type are strings everywhere, and the
+	// videoClip attribute of a screen point is a clip name. If that ever stops being true, this table has to grow a
+	// level. Anything not listed is a string.
+	static NSDictionary *types = nil;
+	static dispatch_once_t onceToken;
+	dispatch_once(&onceToken, ^{
+		NSArray *numbers = @[@"index", @"colorR", @"colorG", @"colorB",
+							 @"x", @"y", @"z", @"xu", @"yu", @"time",
+							 @"screenX", @"screenY",
+							 @"meanPLD", @"reprojectionErrorNorm", @"nearestCameraDistance", @"numViews",
+							 @"frameFrontH", @"frameFrontV", @"frameBackH", @"frameBackV",
+							 @"reprojectedX", @"reprojectedY", @"residualPixels",
+							 @"worldHcoord", @"worldVcoord",
+							 @"fromPointIndex", @"toPointIndex", @"length", @"speed",
+							 @"timeScale", @"frameRate", @"clipWidth", @"clipHeight",
+							 @"cameraX", @"cameraY", @"cameraZ", @"cameraMeanPLD",
+							 @"distortionCenterX", @"distortionCenterY",
+							 @"distortionK1", @"distortionK2", @"distortionK3", @"distortionK4",
+							 @"distortionK5", @"distortionK6", @"distortionK7",
+							 @"distortionP1", @"distortionP2", @"distortionP3", @"distortionP4",
+							 @"distortionReductionAchieved", @"distortionRemainingPerPoint",
+							 @"residualFrontLeastSquares", @"residualBackLeastSquares",
+							 @"residualFrontPixel", @"residualBackPixel",
+							 @"residualFrontWorld", @"residualBackWorld",
+							 @"planeCoordFront", @"planeCoordBack",
+							 @"frontQuadratSurfaceThickness", @"frontQuadratSurfaceRefractiveIndex",
+							 @"mediumRefractiveIndex", @"lambda", @"exportFormatVersion"];
+		NSArray *booleans = @[@"useIterativeTriangulation", @"syncIsLocked", @"isMasterClip", @"muted",
+							  @"frontIsCalibrated", @"backIsCalibrated", @"shouldCorrectRefraction"];
+		NSArray *matrices = @[@"matrixScreenToQuadratFront", @"matrixScreenToQuadratBack",
+							  @"matrixQuadratFrontToScreen", @"matrixQuadratBackToScreen"];
+		// The strings are listed rather than left to the default so that the warning below means what it says: an
+		// attribute reaching it is one nobody has classified, not merely one that happens to be text.
+		NSArray *strings = @[@"name", @"type", @"notes", @"observer", @"timecode",
+							 @"fromTimecode", @"toTimecode",
+							 @"calibrationTimecode", @"dateCreated", @"dateLastSaved",
+							 @"dateCreatedISO", @"dateLastSavedISO", @"dateLastExported", @"exportDate",
+							 @"appVersion", @"appVersionCreated", @"appVersionLastSaved",
+							 @"videoClip", @"videoClipName", @"fileName", @"syncOffset", @"clipLength",
+							 @"axisHorizontal", @"axisVertical", @"axisFrontToBack"];
+		NSMutableDictionary *table = [NSMutableDictionary new];
+		for (NSString *name in strings) table[name] = [NSNumber numberWithInteger:VSExportValueTypeString];
+		for (NSString *name in numbers) table[name] = [NSNumber numberWithInteger:VSExportValueTypeNumber];
+		for (NSString *name in booleans) table[name] = [NSNumber numberWithInteger:VSExportValueTypeBool];
+		for (NSString *name in matrices) table[name] = [NSNumber numberWithInteger:VSExportValueTypeMatrix];
+		types = [table copy];
+	});
+	return types;
+}
+
++ (id) valueForAttributeNamed:(NSString *)name stringValue:(NSString *)stringValue
+{
+	if ([stringValue length] == 0) return [NSNull null];	// the export's sentinel for "no value", made explicit
+	NSNumber *typeNumber = [[self attributeTypes] objectForKey:name];
+	if (typeNumber == nil) {
+		NSLog(@"JSON export: attribute \"%@\" is not in the type table, so it is being exported as a string. Add it to +attributeTypes in DataExport.m.",name);
+		return stringValue;
+	}
+	switch ((VSExportValueType) [typeNumber integerValue]) {
+		case VSExportValueTypeNumber:
+			return [NSNumber numberWithDouble:[stringValue doubleValue]];
+		case VSExportValueTypeBool:
+			return [NSNumber numberWithBool:[stringValue isEqualToString:@"YES"]];
+		case VSExportValueTypeMatrix: {
+			// {{a,b,c},{d,e,f},{g,h,i}} into nested arrays. Anything that doesn't yield exactly nine numbers -- an
+			// uncalibrated clip writes an empty string, which is caught above -- becomes null rather than a guess.
+			NSMutableArray *values = [NSMutableArray new];
+			NSScanner *scanner = [NSScanner scannerWithString:stringValue];
+			[scanner setCharactersToBeSkipped:[NSCharacterSet characterSetWithCharactersInString:@"{}, \t\n"]];
+			double value;
+			while ([scanner scanDouble:&value]) [values addObject:[NSNumber numberWithDouble:value]];
+			if ([values count] != 9) return [NSNull null];
+			NSMutableArray *rows = [NSMutableArray new];
+			for (NSUInteger row = 0; row < 3; row++) [rows addObject:[values subarrayWithRange:NSMakeRange(3*row,3)]];
+			return rows;
+		}
+		case VSExportValueTypeString:
+			break;
+	}
+	return stringValue;
+}
+
++ (NSDictionary *) JSONObjectFromXMLElement:(NSXMLElement *)element
+{
+	NSMutableDictionary *result = [NSMutableDictionary new];
+	for (NSXMLNode *attribute in [element attributes]) {
+		result[[attribute name]] = [self valueForAttributeNamed:[attribute name] stringValue:[attribute stringValue]];
+	}
+	NSMutableDictionary *childrenByName = [NSMutableDictionary new];
+	for (NSXMLNode *child in [element children]) {
+		if ([child kind] != NSXMLElementKind) continue;
+		NSMutableArray *group = childrenByName[[child name]];
+		if (group == nil) {
+			group = [NSMutableArray new];
+			childrenByName[[child name]] = group;
+		}
+		[group addObject:[self JSONObjectFromXMLElement:(NSXMLElement *)child]];
+	}
+	if ([childrenByName count] == 0 && [[element stringValue] length] > 0) {
+		result[@"text"] = [element stringValue];
+	}
+	for (NSString *childName in childrenByName) {
+		// An element carrying both an attribute and a child element of the same name would be ambiguous. Nothing in
+		// this format does, but rather than let a future one overwrite the attribute silently, the children go to a
+		// suffixed key and say so, which loses nothing and is visible in the file.
+		NSString *key = childName;
+		if (result[key] != nil) {
+			key = [childName stringByAppendingString:@"Elements"];
+			NSLog(@"JSON export: element <%@> has both an attribute and child elements named \"%@\"; the children are under \"%@\".",[element name],childName,key);
+		}
+		result[key] = childrenByName[childName];
+	}
+	return result;
+}
+
++ (NSDictionary *) JSONObjectFromXMLDocument:(NSXMLDocument *)xmlDoc
+{
+	NSXMLElement *root = [xmlDoc rootElement];
+	return [NSDictionary dictionaryWithObject:[self JSONObjectFromXMLElement:root] forKey:[root name]];
+}
+
+@end
+
+#pragma mark - Exports
+
 @implementation VidSyncDocument (DataExport)
 
 - (NSArray *) sortedAll3DPoints:(NSError **)fetchError
@@ -194,14 +359,14 @@ static const NSInteger VSExportFormatVersion = 2;
 	if (fetchError != nil) [self presentError:fetchError];
 }
 
-- (IBAction) exportXMLFile:(id)sender
+- (NSXMLDocument *) projectAsXMLDocumentForExportDate:(NSDate *)exportDate
 {
+	// The one description of a project, built once and rendered two ways. The XML export writes this document; the
+	// JSON export converts this same document. Neither format can therefore say something the other doesn't.
 	NSXMLElement *root = (NSXMLElement *) [NSXMLNode elementWithName:@"project"];
 	NSXMLDocument *xmlDoc = [[NSXMLDocument alloc] initWithRootElement:root];
 	[xmlDoc setVersion:@"1.0"];
 	[xmlDoc setCharacterEncoding:@"UTF-8"];
-	
-	NSDate *exportDate = [NSDate dateWithTimeIntervalSinceNow:0.0];
 
 	// The ?: @"" fallbacks match the idiom every child element already uses, and are reachable: name and notes
 	// are never initialized, and dateLastSaved is nil until the document is first saved.
@@ -246,7 +411,14 @@ static const NSInteger VSExportFormatVersion = 2;
 		[videoClips addChild:[videoClip representationAsXMLNode]];
 	}
 	[root addChild:videoClips];
-	
+
+	return xmlDoc;
+}
+
+- (IBAction) exportXMLFile:(id)sender
+{
+	NSDate *exportDate = [NSDate dateWithTimeIntervalSinceNow:0.0];
+	NSXMLDocument *xmlDoc = [self projectAsXMLDocumentForExportDate:exportDate];
 	NSData *xmlData = [xmlDoc XMLDataWithOptions:NSXMLNodePrettyPrint];
 	if ([xmlData writeToFile:[self fileNameForExportedFile:@".xml"] atomically:YES]) {
 		self.project.updatedSinceLastExport = [NSNumber numberWithBool:NO];
@@ -254,6 +426,27 @@ static const NSInteger VSExportFormatVersion = 2;
 		[shutterClick play];
 	} else {
 		[UtilityFunctions InformUser:@"This project's data could not be exported to an XML file for some reason." withTitle:@"Error writing file"];
+	}
+}
+
+- (IBAction) exportJSONFile:(id)sender
+{
+	NSDate *exportDate = [NSDate dateWithTimeIntervalSinceNow:0.0];
+	NSXMLDocument *xmlDoc = [self projectAsXMLDocumentForExportDate:exportDate];
+	NSDictionary *JSONObject = [VSExportJSON JSONObjectFromXMLDocument:xmlDoc];
+	NSError *error = nil;
+	// Sorted keys because an unordered dictionary would otherwise shuffle the file's key order from one export to the
+	// next, which makes two exports of the same project impossible to diff.
+	NSData *JSONData = [NSJSONSerialization dataWithJSONObject:JSONObject
+													  options:NSJSONWritingPrettyPrinted | NSJSONWritingSortedKeys
+														error:&error];
+	if (JSONData != nil && [JSONData writeToFile:[self fileNameForExportedFile:@".json"] atomically:YES]) {
+		self.project.updatedSinceLastExport = [NSNumber numberWithBool:NO];
+		self.project.dateLastExported = [UtilityFunctions ISO8601StringFromDateTime:exportDate];
+		[shutterClick play];
+	} else {
+		[UtilityFunctions InformUser:@"This project's data could not be exported to a JSON file for some reason." withTitle:@"Error writing file"];
+		if (error != nil) [self presentError:error];
 	}
 }
 

@@ -4445,7 +4445,7 @@ IA
                                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                         <subviews>
                                                             <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="103361">
-                                                                <rect key="frame" x="116" y="309" width="136" height="32"/>
+                                                                <rect key="frame" x="30" y="309" width="136" height="32"/>
                                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                                 <buttonCell key="cell" type="push" title="Export XML File" bezelStyle="rounded" alignment="center" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="103362">
                                                                     <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
@@ -4455,8 +4455,19 @@ IA
                                                                     <action selector="exportXMLFile:" target="-2" id="103363"/>
                                                                 </connections>
                                                             </button>
+                                                            <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="jsn-Bt-exp">
+                                                                <rect key="frame" x="199" y="309" width="136" height="32"/>
+                                                                <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                                <buttonCell key="cell" type="push" title="Export JSON File" bezelStyle="rounded" alignment="center" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="jsn-Cl-exp">
+                                                                    <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                                                    <font key="font" metaFont="system"/>
+                                                                </buttonCell>
+                                                                <connections>
+                                                                    <action selector="exportJSONFile:" target="-2" id="jsn-Ac-exp"/>
+                                                                </connections>
+                                                            </button>
                                                             <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="104209">
-                                                                <rect key="frame" x="293" y="309" width="128" height="32"/>
+                                                                <rect key="frame" x="368" y="309" width="128" height="32"/>
                                                                 <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
                                                                 <buttonCell key="cell" type="push" title="Export CSV File" bezelStyle="rounded" alignment="center" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="104210">
                                                                     <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
@@ -4476,7 +4487,9 @@ IA
 
 An exported CSV is a spreadsheet with one row for each measured point, including its 3-D coordinates (if applicable) and information about the event and object it belongs to. If you are making simple position or distance measurements, you should probably export in CSV.
 
-An XML file stores information using custom markup tags. It more thoroughly reflects the information in VidSync, especially the Object → Event → Point hierarchy. It also includes information about the project and calibration. Unlike CSV output, the XML file can represent many-to-many relationships (such as a "conflict" event between multiple "fish" objects, each of which may be involved in multiple conflicts). To analyze a VidSync XML file, you need to import it using a program with XML import capabilities (such as Mathematica, Matlab, R, or Python) and write your own code to extract and organize the exact information you want. This is recommended for very complex analyses.</string>
+An XML file stores information using custom markup tags. It more thoroughly reflects the information in VidSync, especially the Object → Event → Point hierarchy. It also includes information about the project and calibration. Unlike CSV output, the XML file can represent many-to-many relationships (such as a "conflict" event between multiple "fish" objects, each of which may be involved in multiple conflicts). To analyze a VidSync XML file, you need to import it using a program with XML import capabilities (such as Mathematica, Matlab, R, or Python) and write your own code to extract and organize the exact information you want. This is recommended for very complex analyses.
+
+A JSON file contains exactly the same information as the XML file, in the format most convenient for modern scripting languages. Numbers are numbers rather than text, missing values are null, and a group of child items is always a list even when there is only one of them, so your code does not need a special case for that. Choose it over XML if your analysis tools read JSON more comfortably; choose XML if you need every digit of the calibration coefficients, which JSON stores at ordinary double precision.</string>
                                                                     <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                                                     <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                                                 </textFieldCell>
