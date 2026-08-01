@@ -163,7 +163,7 @@
 {
 	NSXMLElement *mainElement = [[NSXMLElement alloc] initWithName:@"event"];
 	[mainElement addAttribute:[NSXMLNode attributeWithName:@"type" stringValue:self.type.name ?: @""]];
-	[mainElement addAttribute:[NSXMLNode attributeWithName:@"index" stringValue:[self.index stringValue]]];
+	[mainElement addAttribute:[NSXMLNode attributeWithName:@"index" stringValue:[self.index stringValue] ?: @""]];
 	[mainElement addAttribute:[NSXMLNode attributeWithName:@"name" stringValue:self.name ?: @""]];
 	[mainElement addAttribute:[NSXMLNode attributeWithName:@"notes" stringValue:self.notes ?: @""]];
 	[mainElement addAttribute:[NSXMLNode attributeWithName:@"observer" stringValue:self.observer ?: @""]];

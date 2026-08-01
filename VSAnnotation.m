@@ -85,10 +85,10 @@
 	[mainElement addAttribute:[NSXMLNode attributeWithName:@"colorR" stringValue:[NSString stringWithFormat:@"%1.4f",[self.color redComponent]]]];
 	[mainElement addAttribute:[NSXMLNode attributeWithName:@"colorG" stringValue:[NSString stringWithFormat:@"%1.4f",[self.color greenComponent]]]];
 	[mainElement addAttribute:[NSXMLNode attributeWithName:@"colorB" stringValue:[NSString stringWithFormat:@"%1.4f",[self.color blueComponent]]]];
-	[mainElement addAttribute:[NSXMLNode attributeWithName:@"timecode" stringValue:self.startTimecode]];
-	[mainElement addAttribute:[NSXMLNode attributeWithName:@"time" stringValue:[nf stringFromNumber:[NSNumber numberWithDouble:time]]]];
-	[mainElement addAttribute:[NSXMLNode attributeWithName:@"screenX" stringValue:[nf stringFromNumber:self.screenX]]];
-	[mainElement addAttribute:[NSXMLNode attributeWithName:@"screenY" stringValue:[nf stringFromNumber:self.screenY]]];
+	[mainElement addAttribute:[NSXMLNode attributeWithName:@"timecode" stringValue:self.startTimecode ?: @""]];
+	[mainElement addAttribute:[NSXMLNode attributeWithName:@"time" stringValue:[nf stringFromNumber:[NSNumber numberWithDouble:time]] ?: @""]];
+	[mainElement addAttribute:[NSXMLNode attributeWithName:@"screenX" stringValue:[nf stringFromNumber:self.screenX] ?: @""]];
+	[mainElement addAttribute:[NSXMLNode attributeWithName:@"screenY" stringValue:[nf stringFromNumber:self.screenY] ?: @""]];
 	return mainElement;
 }
 

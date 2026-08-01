@@ -274,16 +274,19 @@ NSPoint quadratCoords2Dfrom3D(const VSPoint3D *quadratCoords3D, const char axisH
 {
 	NSNumberFormatter *nf = self.point.trackedEvent.type.project.document.decimalFormatter;
 	NSPoint undistortedScreenPoint = [self undistortedCoords];
+	// The frame coordinates are nil on a surface that has not been calibrated, and interpolating a nil with %@ wrote
+	// the literal "(null)" into the cell. Empty is the sentinel the rest of the exports use for a value that was
+	// never computed. Only fields that used to say "(null)" change.
 	return [NSString stringWithFormat:@"\"%@: screen={%@,%@} undistorted={%@,%@} calibrationFrameFront={%@,%@} calibrationFrameBack={%@,%@}\"",
-		   self.videoClip.clipName,
-		   [nf stringFromNumber:self.screenX],
-		   [nf stringFromNumber:self.screenY],
-		   [nf stringFromNumber:[NSNumber numberWithFloat:undistortedScreenPoint.x]],
-		   [nf stringFromNumber:[NSNumber numberWithFloat:undistortedScreenPoint.y]],
-		   [nf stringFromNumber:self.frontFrameWorldH],
-		   [nf stringFromNumber:self.frontFrameWorldV],
-		   [nf stringFromNumber:self.backFrameWorldH],
-		   [nf stringFromNumber:self.backFrameWorldV]
+		   self.videoClip.clipName ?: @"",
+		   [nf stringFromNumber:self.screenX] ?: @"",
+		   [nf stringFromNumber:self.screenY] ?: @"",
+		   [nf stringFromNumber:[NSNumber numberWithFloat:undistortedScreenPoint.x]] ?: @"",
+		   [nf stringFromNumber:[NSNumber numberWithFloat:undistortedScreenPoint.y]] ?: @"",
+		   [nf stringFromNumber:self.frontFrameWorldH] ?: @"",
+		   [nf stringFromNumber:self.frontFrameWorldV] ?: @"",
+		   [nf stringFromNumber:self.backFrameWorldH] ?: @"",
+		   [nf stringFromNumber:self.backFrameWorldV] ?: @""
 		   ];
 }
 
@@ -292,15 +295,15 @@ NSPoint quadratCoords2Dfrom3D(const VSPoint3D *quadratCoords3D, const char axisH
 	NSNumberFormatter *nf = self.point.trackedEvent.type.project.document.decimalFormatter;
 	NSPoint undistortedScreenPoint = [self undistortedCoords];
 	NSXMLElement *mainElement = [[NSXMLElement alloc] initWithName:@"screenpoint"];
-	[mainElement addAttribute:[NSXMLNode attributeWithName:@"videoClip" stringValue:self.videoClip.clipName]];
-	[mainElement addAttribute:[NSXMLNode attributeWithName:@"x" stringValue:[nf stringFromNumber:self.screenX]]];
-	[mainElement addAttribute:[NSXMLNode attributeWithName:@"y" stringValue:[nf stringFromNumber:self.screenY]]];
-	[mainElement addAttribute:[NSXMLNode attributeWithName:@"xu" stringValue:[nf stringFromNumber:[NSNumber numberWithFloat:undistortedScreenPoint.x]]]];
-	[mainElement addAttribute:[NSXMLNode attributeWithName:@"yu" stringValue:[nf stringFromNumber:[NSNumber numberWithFloat:undistortedScreenPoint.y]]]];
-	[mainElement addAttribute:[NSXMLNode attributeWithName:@"frameFrontH" stringValue:[nf stringFromNumber:self.frontFrameWorldH]]];
-	[mainElement addAttribute:[NSXMLNode attributeWithName:@"frameFrontV" stringValue:[nf stringFromNumber:self.frontFrameWorldV]]];
-	[mainElement addAttribute:[NSXMLNode attributeWithName:@"frameBackH" stringValue:[nf stringFromNumber:self.backFrameWorldH]]];
-	[mainElement addAttribute:[NSXMLNode attributeWithName:@"frameBackV" stringValue:[nf stringFromNumber:self.backFrameWorldV]]];
+	[mainElement addAttribute:[NSXMLNode attributeWithName:@"videoClip" stringValue:self.videoClip.clipName ?: @""]];
+	[mainElement addAttribute:[NSXMLNode attributeWithName:@"x" stringValue:[nf stringFromNumber:self.screenX] ?: @""]];
+	[mainElement addAttribute:[NSXMLNode attributeWithName:@"y" stringValue:[nf stringFromNumber:self.screenY] ?: @""]];
+	[mainElement addAttribute:[NSXMLNode attributeWithName:@"xu" stringValue:[nf stringFromNumber:[NSNumber numberWithFloat:undistortedScreenPoint.x]] ?: @""]];
+	[mainElement addAttribute:[NSXMLNode attributeWithName:@"yu" stringValue:[nf stringFromNumber:[NSNumber numberWithFloat:undistortedScreenPoint.y]] ?: @""]];
+	[mainElement addAttribute:[NSXMLNode attributeWithName:@"frameFrontH" stringValue:[nf stringFromNumber:self.frontFrameWorldH] ?: @""]];
+	[mainElement addAttribute:[NSXMLNode attributeWithName:@"frameFrontV" stringValue:[nf stringFromNumber:self.frontFrameWorldV] ?: @""]];
+	[mainElement addAttribute:[NSXMLNode attributeWithName:@"frameBackH" stringValue:[nf stringFromNumber:self.backFrameWorldH] ?: @""]];
+	[mainElement addAttribute:[NSXMLNode attributeWithName:@"frameBackV" stringValue:[nf stringFromNumber:self.backFrameWorldV] ?: @""]];
 	// Where this camera says the point's 3-D position should have appeared on screen, and how far that is from where it
 	// was actually clicked. This is the per-camera diagnostic for auditing a suspect measurement, and until now the file
 	// carried only the whole-point reprojectionErrorNorm, which says nothing about which view disagrees.
