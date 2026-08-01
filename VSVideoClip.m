@@ -158,7 +158,9 @@
 	[mainElement addAttribute:[NSXMLNode attributeWithName:@"clipWidth" stringValue:videoIsLoaded ? [NSString stringWithFormat:@"%d",(int) [self clipWidth]] : @""]];
 	[mainElement addAttribute:[NSXMLNode attributeWithName:@"clipHeight" stringValue:videoIsLoaded ? [NSString stringWithFormat:@"%d",(int) [self clipHeight]] : @""]];
 	[mainElement addChild:[self.calibration representationAsXMLNode]];
-	for (VSAnnotation *annotation in self.annotations) [mainElement addChild:[annotation representationAsXMLNode]];
+	NSMutableArray *annotationElements = [NSMutableArray new];
+	for (VSAnnotation *annotation in self.annotations) [annotationElements addObject:[annotation representationAsXMLNode]];
+	for (NSXMLNode *annotationElement in [UtilityFunctions XMLElementsSortedByContent:annotationElements]) [mainElement addChild:annotationElement];
 	return mainElement;
 }
 

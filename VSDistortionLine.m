@@ -41,7 +41,7 @@
 {
 	NSXMLElement *mainElement = [[NSXMLElement alloc] initWithName:@"distortionLine"];
 	[mainElement addAttribute:[NSXMLNode attributeWithName:@"timecode" stringValue:self.timecode ?: @""]];
-	for (VSDistortionPoint *distortionPoint in self.distortionPoints) [mainElement addChild:[distortionPoint representationAsXMLNode]];
+	for (VSDistortionPoint *distortionPoint in [UtilityFunctions objectsFromSet:self.distortionPoints sortedByKey:@"index"]) [mainElement addChild:[distortionPoint representationAsXMLNode]];
 	return mainElement;
 }
 

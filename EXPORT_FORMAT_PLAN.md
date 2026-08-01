@@ -172,6 +172,27 @@ structurally while telling a reader what the coordinates in the file actually me
 
 The connecting-lines clipboard export is untouched.
 
+## Element order
+
+Every to-many relationship in this model is an unordered `NSSet`, and the XML tree was built by
+enumerating them directly. Core Data promises no order for a set and does not repeat one, so two
+exports of an unchanged project could list objects, events, screen points, annotations,
+calibration points and distortion lines in different orders. That defeats the acceptance criterion
+this whole plan rests on -- an export that reorders itself cannot be diffed against its
+predecessor -- and it meant the XML and the JSON, produced by two separate button presses, need
+not describe things in the same sequence even though both were correct.
+
+This was caught by running the XML-versus-JSON checker on a real pair: 2055 differences, every one
+of them a position mismatch, with the content otherwise identical element for element.
+
+Everything is now sorted on the way out. Objects, events, event-owned objects, calibration points
+and distortion points sort by index; video clips by name; a point's screen points by clip name.
+Distortion lines and annotations carry no index or name to sort on -- distortion lines are all
+clicked at the same calibration timecode -- so their generated XML is sorted instead, which
+requires no knowledge of their contents and is a total order unless two are identical, in which
+case their order cannot matter. Points within an event were already sorted, and the CSV row order
+was fixed in phase 1.
+
 ## Phase 5 — JSON mirror
 
 The requirement is that the JSON and the XML cannot drift. That is a structural property, not a

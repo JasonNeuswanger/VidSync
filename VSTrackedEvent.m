@@ -170,7 +170,7 @@
 	NSSortDescriptor *indexDescriptor = [[NSSortDescriptor alloc] initWithKey:@"index" ascending:YES];
 	NSArray *sortedPoints = [[self.points allObjects] sortedArrayUsingDescriptors:[NSArray arrayWithObjects:indexDescriptor,nil]];
 	for (VSPoint *point in sortedPoints) [mainElement addChild:[point representationAsXMLNode]];
-	for (VSTrackedObject *object in self.trackedObjects) [mainElement addChild:[object representationAsXMLChildOfEvent]];
+	for (VSTrackedObject *object in [UtilityFunctions objectsFromSet:self.trackedObjects sortedByKey:@"index"]) [mainElement addChild:[object representationAsXMLChildOfEvent]];
 	// Connecting line lengths and speeds are deliberately not exported here. They are a distance and a speed between
 	// two consecutive points that the file already contains, so downstream code can compute them trivially, and
 	// emitting them would nearly double the size of the file to say nothing new.

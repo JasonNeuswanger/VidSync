@@ -496,7 +496,7 @@ NSPoint project2DPoint(NSPoint pt, double projectionMatrix[9])
 	// How many calibrated views went into this measurement, which separates a two-camera from a four-camera solve and
 	// identifies the single-view points that have no 3-D solution at all. Nothing in the export said this before.
 	[mainElement addAttribute:[NSXMLNode attributeWithName:@"numViews" stringValue:[NSString stringWithFormat:@"%lu",(unsigned long) [[self calibratedScreenPoints] count]]]];
-	if (includeScreenCoords) for (VSEventScreenPoint *point in self.screenPoints) [mainElement addChild:[point representationAsXMLNode]];
+	if (includeScreenCoords) for (VSEventScreenPoint *point in [UtilityFunctions objectsFromSet:self.screenPoints sortedByKey:@"videoClip.clipName"]) [mainElement addChild:[point representationAsXMLNode]];
 	return mainElement;
 }
 

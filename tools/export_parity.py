@@ -25,7 +25,12 @@ import re
 import sys
 import xml.etree.ElementTree as etree
 
+# These necessarily differ: the XML and the JSON come from two separate button presses, so each stamps its
+# own export time, and the second one sees the first one's dateLastExported. Everything else must match.
+RUN_SPECIFIC = {"exportDate", "dateLastExported"}
+
 problems = []
+informational = []
 
 
 def note(path, message):
@@ -77,6 +82,9 @@ def check_element(element, obj, path):
     for key, xml_value in element.attrib.items():
         if key not in obj:
             note(path, f"attribute {key!r} is missing from the JSON")
+        elif key in RUN_SPECIFIC:
+            if obj[key] != xml_value:
+                informational.append(f"{path}: {key}: XML {xml_value!r}, JSON {obj[key]!r} (separate export runs)")
         else:
             check_value(path, key, xml_value, obj[key])
 
@@ -118,6 +126,8 @@ def main():
         return 1
     check_element(root, document[root.tag], root.tag)
 
+    for line in informational:
+        print("note: " + line)
     if problems:
         print(f"{len(problems)} difference(s) between the two exports:")
         for problem in problems:

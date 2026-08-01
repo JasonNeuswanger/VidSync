@@ -121,6 +121,25 @@
 	return [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleShortVersionString"] ?: @"";
 }
 
++ (NSArray *) objectsFromSet:(id)set sortedByKey:(NSString *)key
+{
+	// Every to-many relationship in this model is an unordered set, so anything that walks one and writes the result
+	// to a file produces an order Core Data never promised and does not repeat. Two exports of an unchanged project
+	// could therefore differ in element order, which makes them impossible to diff and means the XML and JSON
+	// exports, built by separate button presses, need not list the same things in the same order.
+	return [[set allObjects] sortedArrayUsingDescriptors:[NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:key ascending:YES]]];
+}
+
++ (NSArray *) XMLElementsSortedByContent:(NSArray *)elements
+{
+	// For the collections whose members carry no index or name to sort on -- distortion lines and annotations. Their
+	// generated XML is sorted instead, which needs no knowledge of what they contain and is a total order as long as
+	// no two members are identical, in which case the order between them cannot matter.
+	return [elements sortedArrayUsingComparator:^NSComparisonResult(NSXMLNode *a, NSXMLNode *b) {
+		return [[a XMLString] compare:[b XMLString]];
+	}];
+}
+
 + (NSString *) escapeSpreadsheetField:(NSString *)field forSeparator:(NSString *)separator
 {
 	// Quotes a field only when it actually needs quoting, so clean fields (the vast majority, and all of the

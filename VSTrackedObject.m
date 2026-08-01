@@ -115,7 +115,7 @@
 	[mainElement addAttribute:[NSXMLNode attributeWithName:@"colorB" stringValue:[NSString stringWithFormat:@"%1.4f",[self.color blueComponent]]]];
 	[mainElement addAttribute:[NSXMLNode attributeWithName:@"notes" stringValue:self.notes ?: @""]];
 	[mainElement addAttribute:[NSXMLNode attributeWithName:@"observer" stringValue:self.observer ?: @""]];
-	for (VSTrackedEvent *trackedEvent in self.trackedEvents) [mainElement addChild:[trackedEvent representationAsXMLNode]];
+	for (VSTrackedEvent *trackedEvent in [UtilityFunctions objectsFromSet:self.trackedEvents sortedByKey:@"index"]) [mainElement addChild:[trackedEvent representationAsXMLNode]];
 	return mainElement;
 }
 

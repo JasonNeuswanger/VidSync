@@ -2798,9 +2798,13 @@ static const double kMaxAcceptableScaleRatio = 4.0;    // generous enough for a 
 		NSXMLElement *distortionLines = [[NSXMLElement alloc] initWithName:@"distortionLines"];
 		NSXMLElement *frontCalibrationPoints = [[NSXMLElement alloc] initWithName:@"frontCalibrationPoints"];
 		NSXMLElement *backCalibrationPoints = [[NSXMLElement alloc] initWithName:@"backCalibrationPoints"];
-		for (VSDistortionLine *distortionLine in self.distortionLines) [distortionLines addChild:[distortionLine representationAsXMLNode]];
-		for (VSCalibrationPoint *calibrationPoint in self.pointsFront) [frontCalibrationPoints addChild:[calibrationPoint representationAsXMLNode]];
-		for (VSCalibrationPoint *calibrationPoint in self.pointsBack) [backCalibrationPoints addChild:[calibrationPoint representationAsXMLNode]];
+		// Distortion lines carry no index and are all clicked at the same calibration timecode, so there is no field to
+		// sort them by; their generated XML is sorted instead.
+		NSMutableArray *distortionLineElements = [NSMutableArray new];
+		for (VSDistortionLine *distortionLine in self.distortionLines) [distortionLineElements addObject:[distortionLine representationAsXMLNode]];
+		for (NSXMLNode *distortionLineElement in [UtilityFunctions XMLElementsSortedByContent:distortionLineElements]) [distortionLines addChild:distortionLineElement];
+		for (VSCalibrationPoint *calibrationPoint in [UtilityFunctions objectsFromSet:self.pointsFront sortedByKey:@"index"]) [frontCalibrationPoints addChild:[calibrationPoint representationAsXMLNode]];
+		for (VSCalibrationPoint *calibrationPoint in [UtilityFunctions objectsFromSet:self.pointsBack sortedByKey:@"index"]) [backCalibrationPoints addChild:[calibrationPoint representationAsXMLNode]];
 		[mainElement addChild:distortionLines];
 		[mainElement addChild:frontCalibrationPoints];
 		[mainElement addChild:backCalibrationPoints];

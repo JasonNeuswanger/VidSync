@@ -399,13 +399,13 @@ typedef NS_ENUM(NSInteger, VSExportValueType) {
 	// across the project (see +highestEventIndexInProject:), so it is the key to deduplicate on. This is documented
 	// rather than restructured because restructuring would move elements that consumers already read.
 	NSXMLElement *trackedObjects = (NSXMLElement *) [NSXMLNode elementWithName:@"objects"];
-	for (VSTrackedObject *trackedObject in self.project.trackedObjects) {
+	for (VSTrackedObject *trackedObject in [UtilityFunctions objectsFromSet:self.project.trackedObjects sortedByKey:@"index"]) {
 		[trackedObjects addChild:[trackedObject representationAsXMLNode]];
 	}
 	[root addChild:trackedObjects];
 	
 	NSXMLElement *videoClips = (NSXMLElement *) [NSXMLNode elementWithName:@"videoClips"];
-	for (VSVideoClip *videoClip in self.project.videoClips) {
+	for (VSVideoClip *videoClip in [UtilityFunctions objectsFromSet:self.project.videoClips sortedByKey:@"clipName"]) {
 		[videoClips addChild:[videoClip representationAsXMLNode]];
 	}
 	[root addChild:videoClips];
