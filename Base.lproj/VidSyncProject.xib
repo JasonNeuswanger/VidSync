@@ -523,6 +523,7 @@
                                                                 </buttonCell>
                                                                 <connections>
                                                                     <action selector="add:" target="103703" id="103756"/>
+                                                                    <binding destination="103703" name="enabled" keyPath="canAdd" id="cAd-a8-dsl"/>
                                                                 </connections>
                                                             </button>
                                                             <button toolTip="Go to the selected plumbline and select its first point." verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="103717">
@@ -614,6 +615,7 @@
                                                                             <string key="NSSelectorName">calculateDistortionCorrection</string>
                                                                         </dictionary>
                                                                     </binding>
+                                                                    <binding destination="103703" name="enabled" keyPath="arrangedObjects.@count" id="cnt-b9-dst"/>
                                                                 </connections>
                                                             </button>
                                                             <scrollView fixedFrame="YES" autohidesScrollers="YES" horizontalLineScroll="16" horizontalPageScroll="10" verticalLineScroll="16" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="103686">
@@ -731,6 +733,7 @@
                                                                             <string key="NSSelectorName">exportDistortionToFile:</string>
                                                                         </dictionary>
                                                                     </binding>
+                                                                    <binding destination="100325" name="enabled" keyPath="selection.calibration.hasDistortionCorrection" id="hdc-c0-exp"/>
                                                                 </connections>
                                                             </button>
                                                             <textField focusRingType="none" verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" setsMaxLayoutWidthAtFirstLayout="YES" translatesAutoresizingMaskIntoConstraints="NO" id="3dd-nw-ld5">
@@ -1450,6 +1453,7 @@
                                                                                     </buttonCell>
                                                                                     <connections>
                                                                                         <action selector="remove:" target="100779" id="102579"/>
+                                                                                        <binding destination="100779" name="enabled" keyPath="canRemove" id="cRm-a1-cal"/>
                                                                                     </connections>
                                                                                 </button>
                                                                                 <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="2zI-Sb-9No">
@@ -1584,6 +1588,7 @@
                                                                                     </buttonCell>
                                                                                     <connections>
                                                                                         <action selector="remove:" target="100898" id="102580"/>
+                                                                                        <binding destination="100898" name="enabled" keyPath="canRemove" id="cRm-a2-cal"/>
                                                                                     </connections>
                                                                                 </button>
                                                                                 <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="104140">
@@ -1684,6 +1689,7 @@
                                                                             <string key="NSSelectorName">calculateCalibration</string>
                                                                         </dictionary>
                                                                     </binding>
+                                                                    <binding destination="100325" name="enabled" keyPath="selection.calibration.canCalculateCalibration" id="ccc-c1-cal"/>
                                                                 </connections>
                                                             </button>
                                                             <box autoresizesSubviews="NO" fixedFrame="YES" borderType="line" title="Frame node real-world coordinates" translatesAutoresizingMaskIntoConstraints="NO" id="102407">
@@ -1922,6 +1928,7 @@
                                                                                         <string key="NSSelectorName">resetFrameAndBeginCalibration</string>
                                                                                     </dictionary>
                                                                                 </binding>
+                                                                                <binding destination="100325" name="enabled" keyPath="selection.calibration.canCreatePointsFromQuadratDescription" id="ccp-c2-cal"/>
                                                                             </connections>
                                                                         </button>
                                                                         <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="100854">
@@ -1992,6 +1999,11 @@
                                                                 </buttonCell>
                                                                 <connections>
                                                                     <action selector="goToCalibrationTime:" target="-2" id="100655"/>
+                                                                    <binding destination="100044" name="enabled" keyPath="selection.calibrationTimecode" id="nsn-b2-cal">
+                                                                        <dictionary key="options">
+                                                                            <string key="NSValueTransformerName">NSIsNotNil</string>
+                                                                        </dictionary>
+                                                                    </binding>
                                                                 </connections>
                                                             </button>
                                                             <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="102410">
@@ -2563,6 +2575,7 @@ IA
                                             </buttonCell>
                                             <connections>
                                                 <action selector="makeKeyAndOrderFront:" target="101522" id="101579"/>
+                                                <binding destination="101330" name="enabled" keyPath="arrangedObjects.@count" id="cnt-b0-obj"/>
                                             </connections>
                                         </button>
                                         <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="101499">
@@ -2778,6 +2791,7 @@ IA
                                                         <string key="NSValueTransformerName">NSIsNotNil</string>
                                                     </dictionary>
                                                 </binding>
+                                                <binding destination="101331" name="enabled2" keyPath="arrangedObjects.@count" id="cnt-b1-evt"/>
                                             </connections>
                                         </button>
                                         <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="101501">
@@ -3400,6 +3414,7 @@ IA
                                             </buttonCell>
                                             <connections>
                                                 <action selector="remove:" target="102264" id="102307"/>
+                                                <binding destination="102264" name="enabled" keyPath="canRemove" id="cRm-a5-ann"/>
                                             </connections>
                                         </button>
                                         <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="102212">
@@ -3411,6 +3426,7 @@ IA
                                             </buttonCell>
                                             <connections>
                                                 <action selector="goToAnnotation:" target="102264" id="102795"/>
+                                                <binding destination="102264" name="enabled" keyPath="canRemove" id="cRm-a6-ann"/>
                                             </connections>
                                         </button>
                                         <button toolTip="Mirroring an annotation creates an identical annotation on all the other video clips." verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="9Ch-Zo-TLm">
@@ -3422,6 +3438,7 @@ IA
                                             </buttonCell>
                                             <connections>
                                                 <action selector="mirrorSelectedAnnotation:" target="102264" id="2xG-Wa-une"/>
+                                                <binding destination="102264" name="enabled" keyPath="canRemove" id="cRm-a7-ann"/>
                                             </connections>
                                         </button>
                                         <textField focusRingType="none" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="102217">
@@ -3912,6 +3929,11 @@ IA
                                                                 </buttonCell>
                                                                 <connections>
                                                                     <action selector="goToVideoCaptureTime:" target="-2" id="102946"/>
+                                                                    <binding destination="100044" name="enabled" keyPath="selection.movieCaptureEndTime" id="nsn-b4-cap">
+                                                                        <dictionary key="options">
+                                                                            <string key="NSValueTransformerName">NSIsNotNil</string>
+                                                                        </dictionary>
+                                                                    </binding>
                                                                 </connections>
                                                             </button>
                                                             <textField focusRingType="none" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="102503">
@@ -3962,6 +3984,11 @@ IA
                                                                 </buttonCell>
                                                                 <connections>
                                                                     <action selector="goToVideoCaptureTime:" target="-2" id="102945"/>
+                                                                    <binding destination="100044" name="enabled" keyPath="selection.movieCaptureStartTime" id="nsn-b3-cap">
+                                                                        <dictionary key="options">
+                                                                            <string key="NSValueTransformerName">NSIsNotNil</string>
+                                                                        </dictionary>
+                                                                    </binding>
                                                                 </connections>
                                                             </button>
                                                             <button toolTip="Sets the end time of the exported movie to the current timecode" tag="2" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="102505">
@@ -4121,6 +4148,7 @@ IA
                                                                 </buttonCell>
                                                                 <connections>
                                                                     <action selector="capturePortraits:" target="-2" id="6e4-bX-cCa"/>
+                                                                    <binding destination="aiC-hm-v6h" name="enabled" keyPath="arrangedObjects.@count" id="cnt-a9-prt"/>
                                                                 </connections>
                                                             </button>
                                                         </subviews>
@@ -4437,6 +4465,7 @@ IA
                                                                 </buttonCell>
                                                                 <connections>
                                                                     <action selector="exportCSVFile:" target="-2" id="104213"/>
+                                                                    <binding destination="101506" name="enabled" keyPath="arrangedObjects.@count" id="cnt-b5-csv"/>
                                                                 </connections>
                                                             </button>
                                                             <textField focusRingType="none" verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" setsMaxLayoutWidthAtFirstLayout="YES" translatesAutoresizingMaskIntoConstraints="NO" id="FOs-xo-LBW">
@@ -4470,6 +4499,7 @@ An XML file stores information using custom markup tags. It more thoroughly refl
                                                                 </buttonCell>
                                                                 <connections>
                                                                     <action selector="copyAllConnectingLinesToClipboard:" target="-2" id="ZTV-0u-USS"/>
+                                                                    <binding destination="101506" name="enabled" keyPath="arrangedObjects.@count" id="cnt-b7-lin"/>
                                                                 </connections>
                                                             </button>
                                                             <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Vp9-tN-h4V">
@@ -4481,6 +4511,7 @@ An XML file stores information using custom markup tags. It more thoroughly refl
                                                                 </buttonCell>
                                                                 <connections>
                                                                     <action selector="copyAll3DPointsToClipboard:" target="-2" id="mPH-gw-GDe"/>
+                                                                    <binding destination="101506" name="enabled" keyPath="arrangedObjects.@count" id="cnt-b6-pts"/>
                                                                 </connections>
                                                             </button>
                                                             <textField focusRingType="none" verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" setsMaxLayoutWidthAtFirstLayout="YES" translatesAutoresizingMaskIntoConstraints="NO" id="IqI-Tv-Dhv">
@@ -5079,6 +5110,7 @@ IA
                                             </buttonCell>
                                             <connections>
                                                 <action selector="remove:" target="101330" id="101839"/>
+                                                <binding destination="101330" name="enabled" keyPath="canRemove" id="cRm-a3-otp"/>
                                             </connections>
                                         </button>
                                     </subviews>
@@ -5619,6 +5651,7 @@ IA
                                             </buttonCell>
                                             <connections>
                                                 <action selector="remove:" target="101331" id="101843"/>
+                                                <binding destination="101331" name="enabled" keyPath="canRemove" id="cRm-a4-etp"/>
                                             </connections>
                                         </button>
                                         <slider verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="102640">
@@ -6372,6 +6405,11 @@ An example usage would be when realizing that two fish objects, tracked near the
                                             <connections>
                                                 <action selector="synonymize:" target="103147" id="103167"/>
                                                 <binding destination="103147" name="enabled" keyPath="selection.type" id="103166">
+                                                    <dictionary key="options">
+                                                        <string key="NSValueTransformerName">NSIsNotNil</string>
+                                                    </dictionary>
+                                                </binding>
+                                                <binding destination="101506" name="enabled2" keyPath="selection.index" id="nsn-b8-syn">
                                                     <dictionary key="options">
                                                         <string key="NSValueTransformerName">NSIsNotNil</string>
                                                     </dictionary>

@@ -611,6 +611,52 @@ int refractionRootFunc_f(const gsl_vector* x, void* params, gsl_vector* f)
 	}
 }
 
++ (NSSet *) keyPathsForValuesAffectingCanCalculateCalibration
+{
+	return [NSSet setWithObjects:@"pointsFront", @"pointsBack", nil];
+}
+
+- (BOOL) canCalculateCalibration
+{
+	// The threshold calculateCalibration itself applies before it will do anything at all: four points on either
+	// surface is enough for the 2-D fallback it offers, and fewer than that on both is the case where all it can
+	// do is put up the "Too few points for calibration" alert.
+	return ([self.pointsFront count] >= 4 || [self.pointsBack count] >= 4);
+}
+
+// Counts the coordinate pairs a quadrat node list would produce, using the same scanning rules as
+// createPointsFromQuadratDescription: below, so the two cannot disagree about whether a description is usable.
+static NSUInteger VSCoordinatePairsInQuadratDescription(NSAttributedString *description)
+{
+	NSString *text = [description string];
+	if (text == nil) return 0;
+	NSCharacterSet *lineBreak = [NSCharacterSet newlineCharacterSet];
+	NSScanner *scanner = [NSScanner scannerWithString:text];
+	NSString *currentLine;
+	NSUInteger pairs = 0;
+	while ([scanner scanUpToCharactersFromSet:lineBreak intoString:&currentLine]) {
+		NSScanner *lineScanner = [NSScanner scannerWithString:currentLine];
+		[lineScanner setCharactersToBeSkipped:[NSCharacterSet characterSetWithCharactersInString:@", "]];
+		float hCoord, vCoord;
+		if ([lineScanner scanFloat:&hCoord] && [lineScanner scanFloat:&vCoord]) pairs += 1;
+	}
+	return pairs;
+}
+
++ (NSSet *) keyPathsForValuesAffectingCanCreatePointsFromQuadratDescription
+{
+	return [NSSet setWithObjects:@"quadratNodesFront", @"quadratNodesBack", nil];
+}
+
+- (BOOL) canCreatePointsFromQuadratDescription
+{
+	// Worth disabling the button rather than alerting afterward, because the failure is silent and destructive:
+	// createPointsFromQuadratDescription: clears pointsFront and pointsBack before scanning, so pressing it with
+	// empty node lists deletes the existing calibration points and creates nothing in their place.
+	return (VSCoordinatePairsInQuadratDescription(self.quadratNodesFront) > 0 ||
+			VSCoordinatePairsInQuadratDescription(self.quadratNodesBack) > 0);
+}
+
 - (void) resetFrameAndBeginCalibration
 {
 	[self createPointsFromQuadratDescription:@"Both"];
@@ -1657,6 +1703,11 @@ int refractionRootFunc_f(const gsl_vector* x, void* params, gsl_vector* f)
 
 #pragma mark
 #pragma mark Distortion Correction
+
++ (NSSet *) keyPathsForValuesAffectingHasDistortionCorrection
+{
+	return [NSSet setWithObjects:@"distortionCenterX", @"distortionCenterY", @"distortionK1", nil];
+}
 
 - (BOOL) hasDistortionCorrection
 {

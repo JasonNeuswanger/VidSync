@@ -140,6 +140,13 @@ int redistortionRootFunc_fdf(const gsl_vector* x, void* params, gsl_vector* f, g
 - (BOOL) frontIsCalibrated;
 - (BOOL) backIsCalibrated;
 
+// Preconditions for the two buttons on the Calibration tab, exposed as observable properties so the buttons can
+// bind their enabled state to them instead of letting the user press a button that only produces an alert.
++ (NSSet *) keyPathsForValuesAffectingCanCalculateCalibration;
+- (BOOL) canCalculateCalibration;
++ (NSSet *) keyPathsForValuesAffectingCanCreatePointsFromQuadratDescription;
+- (BOOL) canCreatePointsFromQuadratDescription;
+
 - (void) resetFrameAndBeginCalibration;
 - (void) resetFrontFrameOnly;
 - (void) resetBackFrameOnly;
@@ -185,6 +192,7 @@ int redistortionRootFunc_fdf(const gsl_vector* x, void* params, gsl_vector* f, g
 - (void) autodetectChessboardPlumblines;
 - (void) autodetectChessboardPlumblinesLegacy;
 - (void) autodetectChessboardPlumblinesLattice;
++ (NSSet *) keyPathsForValuesAffectingHasDistortionCorrection;
 - (BOOL) hasDistortionCorrection;
 - (BOOL) distortPoint:(NSPoint)undistortedPoint toPoint:(NSPoint *)result;   // NO when no valid inverse exists; *result still gets the best approximation
 - (NSPoint) distortPoint:(NSPoint)undistortedPoint;
