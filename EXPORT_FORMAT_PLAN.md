@@ -174,7 +174,9 @@ The converter has no per-element knowledge. Its rules:
    string becomes `null`, so "not computed" is explicit rather than an empty string.
 6. An attribute not in the registry falls back to string and logs. New XML attributes therefore
    appear in the JSON automatically — typed if registered, string if not — and can never be
-   silently missing.
+   silently missing. The attributes that really are strings are listed in the registry rather
+   than left to the default, so that an attribute reaching the warning is genuinely one nobody
+   has classified.
 7. An attribute whose name collides with a child tag name on the same element would be ambiguous.
    None do today; the converter logs rather than silently overwriting if one ever does.
 
@@ -198,9 +200,21 @@ parses both files and asserts that every element and attribute in one is present
 with an equal value after string coercion. That is the mechanical guarantee that the mirror is a
 mirror, and it is also where an unregistered attribute shows up.
 
+One deliberate limitation: numbers become JSON numbers, which every JSON stack in practice reads
+as doubles, while the XML strings keep every digit VidSync wrote — and the calibration formatter
+writes fifty fraction digits so the higher-order distortion terms survive. Past about seventeen
+significant digits the JSON is the lossier of the two files. The Export Data tab says so.
+
 **Delivery**: a separate "Export JSON file" button on the Export Data tab, beside the XML one,
 wired to `exportJSONFile:`. Both actions build the tree through the same method, so the two files
 have identical content whichever button is pressed.
+
+## Status
+
+Phases 3, 4 and 5 landed in `78efc4f`, `23abb8c` and `3cae939` respectively. The project builds
+clean. What has *not* been done is the acceptance check below, which needs the app driven against
+a real project — no automated path exists for that, and the code-level guarantee that the changes
+are append-only is not a substitute for the diff.
 
 ## Explicitly deferred beyond this plan
 
