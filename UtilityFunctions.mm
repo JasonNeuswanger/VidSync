@@ -140,6 +140,51 @@
 	}];
 }
 
++ (NSData *) XMLDataFromDocument:(NSXMLDocument *)xmlDoc
+{
+	// NSXMLDocument writes a newline, carriage return or tab inside an attribute value as itself, and the XML
+	// specification then requires every conforming parser to turn it into a space on the way back in. A note typed on
+	// several lines therefore leaves VidSync as one run-on line, silently, in every reader. The framework will not
+	// emit the character references that would survive: handing it "&#10;" produces "&amp;#10;", and
+	// NSXMLNodePreserveCharacterReferences does not change that. So they are put in here, after serializing.
+	//
+	// This is a two-state scan rather than a search and replace, because a double quote means different things in
+	// different places: inside a tag it delimits an attribute value, but in text content it is an ordinary character
+	// that NSXMLDocument leaves unescaped, so splitting the document on quotes would lose track of where it was.
+	// Everything else that could confuse the scan is already escaped by the serializer -- <, & , > and " within
+	// attribute values, and < and & within text -- so the only raw < opens a tag and the only raw > inside a tag
+	// closes it. Text content, including the calibration frame node lists, is left exactly as it was: newlines are
+	// preserved there by the specification and need no help.
+	//
+	// It runs over bytes rather than characters because no byte of a multi-byte UTF-8 sequence is ever an ASCII
+	// byte, so the three characters being looked for cannot appear inside one.
+	NSData *xmlData = [xmlDoc XMLDataWithOptions:NSXMLNodePrettyPrint];
+	const uint8_t *bytes = (const uint8_t *)[xmlData bytes];
+	NSUInteger length = [xmlData length];
+	NSMutableData *result = [NSMutableData dataWithCapacity:length];
+	BOOL insideTag = NO, insideAttributeValue = NO;
+	NSUInteger runStart = 0;
+	for (NSUInteger i = 0; i < length; i++) {
+		uint8_t b = bytes[i];
+		if (insideTag && insideAttributeValue && (b == '\n' || b == '\r' || b == '\t')) {
+			const char *reference = (b == '\n') ? "&#10;" : ((b == '\r') ? "&#13;" : "&#9;");
+			[result appendBytes:(bytes + runStart) length:(i - runStart)];
+			[result appendBytes:reference length:strlen(reference)];
+			runStart = i + 1;
+			continue;
+		}
+		if (!insideTag) {
+			if (b == '<') insideTag = YES;
+		} else if (b == '"') {
+			insideAttributeValue = !insideAttributeValue;
+		} else if (!insideAttributeValue && b == '>') {
+			insideTag = NO;
+		}
+	}
+	[result appendBytes:(bytes + runStart) length:(length - runStart)];
+	return result;
+}
+
 + (NSString *) escapeSpreadsheetField:(NSString *)field forSeparator:(NSString *)separator
 {
 	// Quotes a field only when it actually needs quoting, so clean fields (the vast majority, and all of the

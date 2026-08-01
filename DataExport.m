@@ -439,7 +439,7 @@ typedef NS_ENUM(NSInteger, VSExportValueType) {
 	NSDate *exportDate = [NSDate dateWithTimeIntervalSinceNow:0.0];
 	__block NSXMLDocument *xmlDoc = nil;
 	if (![self runExport:@"XML" usingBlock:^{ xmlDoc = [self projectAsXMLDocumentForExportDate:exportDate]; }]) return;
-	NSData *xmlData = [xmlDoc XMLDataWithOptions:NSXMLNodePrettyPrint];
+	NSData *xmlData = [UtilityFunctions XMLDataFromDocument:xmlDoc];
 	if ([xmlData writeToFile:[self fileNameForExportedFile:@".xml"] atomically:YES]) {
 		self.project.updatedSinceLastExport = [NSNumber numberWithBool:NO];
 		self.project.dateLastExported = [UtilityFunctions ISO8601StringFromDateTime:exportDate];

@@ -172,6 +172,28 @@ structurally while telling a reader what the coordinates in the file actually me
 
 The connecting-lines clipboard export is untouched.
 
+## Newlines in attribute values
+
+`NSXMLDocument` writes a newline, carriage return or tab inside an attribute value as itself, and
+the XML specification then requires every conforming parser to normalize it to a space on the way
+back in. A note typed on several lines therefore left VidSync as one run-on line, in every reader,
+silently. This is the same hazard that made the calibration frame node lists text elements rather
+than attributes; it applies equally to every free-text attribute -- notes on the project, objects,
+events and annotations, and names and observer fields.
+
+The framework will not emit the character references that would survive: handing it `&#10;`
+produces `&amp;#10;`, and `NSXMLNodePreserveCharacterReferences` does not change that. So they are
+inserted after serializing, by a two-state scan over the bytes. It has to be a scan rather than a
+search and replace, because a double quote delimits an attribute value inside a tag but is an
+ordinary unescaped character in text content, so splitting the document on quotes would lose track
+of where it was. Everything else is already escaped by the serializer, so the only raw `<` opens a
+tag and the only raw `>` inside a tag closes it.
+
+Only values that contain one of those three characters change, which is to say only the values the
+file was previously getting wrong. Found by the XML-versus-JSON checker on a real project, where
+one annotation note disagreed between the two files -- the JSON, built from the tree in memory
+rather than from the serialized text, had the newline the XML had lost.
+
 ## Element order
 
 Every to-many relationship in this model is an unordered `NSSet`, and the XML tree was built by

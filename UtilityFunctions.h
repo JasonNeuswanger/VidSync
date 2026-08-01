@@ -64,6 +64,7 @@ typedef struct {		// Creates a pair of 2D points, which can be used to represent
 
 + (NSArray *) objectsFromSet:(id)set sortedByKey:(NSString *)key;
 + (NSArray *) XMLElementsSortedByContent:(NSArray *)elements;
++ (NSData *) XMLDataFromDocument:(NSXMLDocument *)xmlDoc;
 
 + (BOOL) timeString:(NSString *)timeString1 isEqualToTimeString:(NSString *)timeString2;
 + (BOOL) time:(CMTime)time1 isEqualToTime:(CMTime)time2;
