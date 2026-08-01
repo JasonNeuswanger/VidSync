@@ -7473,7 +7473,6 @@ There is nothing to configure. Every threshold is either an absolute one on a lo
             <declaredKeys>
                 <string>index</string>
                 <string>timecode</string>
-                <string>lambda</string>
                 <string>numPoints</string>
                 <string>distortionPoints</string>
             </declaredKeys>

@@ -95,7 +95,7 @@ typedef NS_ENUM(NSInteger, VSExportValueType) {
 							 @"residualFrontWorld", @"residualBackWorld",
 							 @"planeCoordFront", @"planeCoordBack",
 							 @"frontCalibrationFrameSurfaceThickness", @"frontCalibrationFrameSurfaceRefractiveIndex",
-							 @"mediumRefractiveIndex", @"lambda", @"exportFormatVersion"];
+							 @"mediumRefractiveIndex", @"exportFormatVersion"];
 		NSArray *booleans = @[@"useIterativeTriangulation", @"syncIsLocked", @"isMasterClip", @"muted",
 							  @"frontIsCalibrated", @"backIsCalibrated", @"shouldCorrectRefraction"];
 		NSArray *matrices = @[@"matrixScreenToCalibrationFrameFront", @"matrixScreenToCalibrationFrameBack",

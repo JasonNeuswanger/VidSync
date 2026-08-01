@@ -30,7 +30,6 @@
 	
 }
 
-@property (strong) NSNumber *lambda;
 @property (strong) NSString *timecode;
 @property (strong) VSCalibration *calibration;
 @property (strong) NSSet *distortionPoints;

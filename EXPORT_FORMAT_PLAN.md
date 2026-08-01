@@ -96,7 +96,15 @@ parent point having 3D coordinates and the clip being calibrated, empty otherwis
 pixel residual is exactly the diagnostic wanted when auditing a suspect measurement, and the
 machinery already existed.
 
-**`distortionLine`** gains `lambda`. **Calibration points** gain `index`.
+**Calibration points** gain `index`.
+
+The audit that produced this plan also proposed exporting a distortion line's `lambda`, and that
+was implemented and then removed. `VSDistortionLine` declares `lambda` as an `@property` backed by
+`@dynamic`, but no such attribute exists in the Core Data model -- it is a vestige of the old
+single-parameter distortion model, and *any* access to it raises `unrecognized selector`. It had
+been unreachable for years because nothing read it. The declaration is now gone too, along with
+the stale `declaredKeys` entry naming it in the xib. A sweep of every `@dynamic` property in the
+codebase against the model found this was the only one without a backing attribute.
 
 **Connecting lines are not exported.** They were briefly, in a `<connectingLines>` wrapper on each
 event, and were removed again: a connecting line is a distance and a speed between two

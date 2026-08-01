@@ -28,7 +28,6 @@
 
 @implementation VSDistortionLine
 
-@dynamic lambda;
 @dynamic timecode;
 @dynamic calibration;
 @dynamic distortionPoints;
@@ -42,7 +41,6 @@
 {
 	NSXMLElement *mainElement = [[NSXMLElement alloc] initWithName:@"distortionLine"];
 	[mainElement addAttribute:[NSXMLNode attributeWithName:@"timecode" stringValue:self.timecode ?: @""]];
-	[mainElement addAttribute:[NSXMLNode attributeWithName:@"lambda" stringValue:[self.lambda stringValue] ?: @""]];
 	for (VSDistortionPoint *distortionPoint in self.distortionPoints) [mainElement addChild:[distortionPoint representationAsXMLNode]];
 	return mainElement;
 }
