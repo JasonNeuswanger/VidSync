@@ -2791,7 +2791,6 @@ IA
                                                         <string key="NSValueTransformerName">NSIsNotNil</string>
                                                     </dictionary>
                                                 </binding>
-                                                <binding destination="101331" name="enabled2" keyPath="arrangedObjects.@count" id="cnt-b1-evt"/>
                                             </connections>
                                         </button>
                                         <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="101501">
@@ -6405,11 +6404,6 @@ An example usage would be when realizing that two fish objects, tracked near the
                                             <connections>
                                                 <action selector="synonymize:" target="103147" id="103167"/>
                                                 <binding destination="103147" name="enabled" keyPath="selection.type" id="103166">
-                                                    <dictionary key="options">
-                                                        <string key="NSValueTransformerName">NSIsNotNil</string>
-                                                    </dictionary>
-                                                </binding>
-                                                <binding destination="101506" name="enabled2" keyPath="selection.index" id="nsn-b8-syn">
                                                     <dictionary key="options">
                                                         <string key="NSValueTransformerName">NSIsNotNil</string>
                                                     </dictionary>
