@@ -171,7 +171,37 @@
 	NSArray *sortedPoints = [[self.points allObjects] sortedArrayUsingDescriptors:[NSArray arrayWithObjects:indexDescriptor,nil]];
 	for (VSPoint *point in sortedPoints) [mainElement addChild:[point representationAsXMLNode]];
 	for (VSTrackedObject *object in self.trackedObjects) [mainElement addChild:[object representationAsXMLChildOfEvent]];
+	[mainElement addChild:[self connectingLinesAsXMLNode:sortedPoints]];
 	return mainElement;
+}
+
+- (NSXMLNode *) connectingLinesAsXMLNode:(NSArray *)sortedPoints
+{
+	// Lengths and speeds between consecutive points, which until now existed only in the clipboard export. Two
+	// deliberate differences from that export. It is not gated on the type's connectingLineLengthLabeled, because that
+	// is a drawing preference and data leaving the program should not depend on whether a label is switched on in the
+	// video window; the clipboard export stays gated, because ungating it would add rows to output people already paste
+	// into spreadsheets. And each line carries the indices and timecodes of both endpoints, so a row can be tied back
+	// to the pair of points it came from, which the clipboard columns cannot express.
+	// This is a wrapper element appended after the points and objects rather than bare children among them, so a
+	// consumer walking an event's children in order meets one new thing at the end instead of a surprise in the middle.
+	NSNumberFormatter *nf = self.type.project.document.decimalFormatter;
+	NSXMLElement *connectingLines = [[NSXMLElement alloc] initWithName:@"connectingLines"];
+	VSPoint *previousPoint = nil;
+	for (VSPoint *point in sortedPoints) {
+		if (previousPoint != nil && [point has3Dcoords] && [previousPoint has3Dcoords]) {
+			NSXMLElement *lineElement = [[NSXMLElement alloc] initWithName:@"connectingLine"];
+			[lineElement addAttribute:[NSXMLNode attributeWithName:@"fromPointIndex" stringValue:[previousPoint.index stringValue] ?: @""]];
+			[lineElement addAttribute:[NSXMLNode attributeWithName:@"toPointIndex" stringValue:[point.index stringValue] ?: @""]];
+			[lineElement addAttribute:[NSXMLNode attributeWithName:@"fromTimecode" stringValue:previousPoint.timecode ?: @""]];
+			[lineElement addAttribute:[NSXMLNode attributeWithName:@"toTimecode" stringValue:point.timecode ?: @""]];
+			[lineElement addAttribute:[NSXMLNode attributeWithName:@"length" stringValue:[nf stringFromNumber:[point distanceToVSPoint:previousPoint]] ?: @""]];
+			[lineElement addAttribute:[NSXMLNode attributeWithName:@"speed" stringValue:[nf stringFromNumber:[point speedToVSPoint:previousPoint]] ?: @""]];
+			[connectingLines addChild:lineElement];
+		}
+		previousPoint = point;
+	}
+	return connectingLines;
 }
 
 - (NSString *) earliestPointTimecode

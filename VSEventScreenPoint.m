@@ -301,6 +301,27 @@ NSPoint quadratCoords2Dfrom3D(const VSPoint3D *quadratCoords3D, const char axisH
 	[mainElement addAttribute:[NSXMLNode attributeWithName:@"frameFrontV" stringValue:[nf stringFromNumber:self.frontFrameWorldV]]];
 	[mainElement addAttribute:[NSXMLNode attributeWithName:@"frameBackH" stringValue:[nf stringFromNumber:self.backFrameWorldH]]];
 	[mainElement addAttribute:[NSXMLNode attributeWithName:@"frameBackV" stringValue:[nf stringFromNumber:self.backFrameWorldV]]];
+	// Where this camera says the point's 3-D position should have appeared on screen, and how far that is from where it
+	// was actually clicked. This is the per-camera diagnostic for auditing a suspect measurement, and until now the file
+	// carried only the whole-point reprojectionErrorNorm, which says nothing about which view disagrees.
+	// Both the reprojected point and undistortedCoords are in undistorted screen space, so the difference is meaningful.
+	VSCalibration *calibration = self.videoClip.calibration;
+	BOOL canReproject = ([self.point has3Dcoords]
+						 && [calibration.matrixQuadratFrontToScreen count] > 0
+						 && [calibration.matrixQuadratBackToScreen count] > 0
+						 && [calibration.axisHorizontal length] > 0
+						 && [calibration.axisVertical length] > 0);
+	NSString *reprojectedXString = @"", *reprojectedYString = @"", *residualPixelsString = @"";
+	if (canReproject) {
+		NSPoint reprojected = [self reprojectedScreenPoint:NO];
+		double residual = hypot(reprojected.x - undistortedScreenPoint.x, reprojected.y - undistortedScreenPoint.y);
+		reprojectedXString = [nf stringFromNumber:[NSNumber numberWithDouble:reprojected.x]] ?: @"";
+		reprojectedYString = [nf stringFromNumber:[NSNumber numberWithDouble:reprojected.y]] ?: @"";
+		residualPixelsString = [nf stringFromNumber:[NSNumber numberWithDouble:residual]] ?: @"";
+	}
+	[mainElement addAttribute:[NSXMLNode attributeWithName:@"reprojectedX" stringValue:reprojectedXString]];
+	[mainElement addAttribute:[NSXMLNode attributeWithName:@"reprojectedY" stringValue:reprojectedYString]];
+	[mainElement addAttribute:[NSXMLNode attributeWithName:@"residualPixels" stringValue:residualPixelsString]];
 	return mainElement;
 }
 

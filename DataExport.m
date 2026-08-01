@@ -28,7 +28,7 @@
 // Version of the structure of the exported files, recorded in every export so a consumer can tell which
 // generation of the format it is reading. Bump this on any structural change: a new or removed column,
 // a renamed or removed XML attribute or element, or a change in what an existing field means.
-static const NSInteger VSExportFormatVersion = 1;
+static const NSInteger VSExportFormatVersion = 2;
 
 @implementation VidSyncDocument (DataExport)
 
@@ -210,6 +210,16 @@ static const NSInteger VSExportFormatVersion = 1;
 	[root addAttribute:[NSXMLNode attributeWithName:@"dateCreatedISO" stringValue:dateCreatedISO]];
 	[root addAttribute:[NSXMLNode attributeWithName:@"dateLastSavedISO" stringValue:dateLastSavedISO]];
 
+	// Which triangulation method produced every coordinate in this file. On the linear path the coordinates are the
+	// closest-point-of-approach solution and reprojectionErrorNorm is deliberately left empty; on the iterative path
+	// they minimize pixel error. Without this, an empty reprojectionErrorNorm was ambiguous between "linear method"
+	// and "too few views to solve at all".
+	[root addAttribute:[NSXMLNode attributeWithName:@"useIterativeTriangulation" stringValue:[self.project.useIterativeTriangulation boolValue] ? @"YES" : @"NO"]];
+
+	// An event belonging to several objects is emitted in full under each of them, so a consumer that flattens the
+	// objects tree into a list of measurements will count those points once per owning object. Event index is unique
+	// across the project (see +highestEventIndexInProject:), so it is the key to deduplicate on. This is documented
+	// rather than restructured because restructuring would move elements that consumers already read.
 	NSXMLElement *trackedObjects = (NSXMLElement *) [NSXMLNode elementWithName:@"objects"];
 	for (VSTrackedObject *trackedObject in self.project.trackedObjects) {
 		[trackedObjects addChild:[trackedObject representationAsXMLNode]];

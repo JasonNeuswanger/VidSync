@@ -2777,6 +2777,23 @@ static const double kMaxAcceptableScaleRatio = 4.0;    // generous enough for a 
 	[mainElement addAttribute:[NSXMLNode attributeWithName:@"residualBackWorld" stringValue:[nf stringFromNumber:self.residualBackWorld] ?: @""]];
 	[mainElement addAttribute:[NSXMLNode attributeWithName:@"distortionReductionAchieved" stringValue:[nf stringFromNumber:self.distortionReductionAchieved] ?: @""]];
 	[mainElement addAttribute:[NSXMLNode attributeWithName:@"distortionRemainingPerPoint" stringValue:[nf stringFromNumber:self.distortionRemainingPerPoint] ?: @""]];
+	// Appended after everything above, which stays exactly where it was. These describe the coordinate system the
+	// numbers above are expressed in, and the refraction model that shaped them, neither of which the file used to
+	// state at all. cameraMeanPLD is here because it was the one residual-family value left out of the list above.
+	[mainElement addAttribute:[NSXMLNode attributeWithName:@"cameraMeanPLD" stringValue:[nf stringFromNumber:self.cameraMeanPLD] ?: @""]];
+	[mainElement addAttribute:[NSXMLNode attributeWithName:@"axisHorizontal" stringValue:self.axisHorizontal ?: @""]];
+	[mainElement addAttribute:[NSXMLNode attributeWithName:@"axisVertical" stringValue:self.axisVertical ?: @""]];
+	[mainElement addAttribute:[NSXMLNode attributeWithName:@"axisFrontToBack" stringValue:[self axisFrontToBack] ?: @""]];
+	[mainElement addAttribute:[NSXMLNode attributeWithName:@"planeCoordFront" stringValue:[nf stringFromNumber:self.planeCoordFront] ?: @""]];
+	[mainElement addAttribute:[NSXMLNode attributeWithName:@"planeCoordBack" stringValue:[nf stringFromNumber:self.planeCoordBack] ?: @""]];
+	[mainElement addAttribute:[NSXMLNode attributeWithName:@"frontIsCalibrated" stringValue:[self frontIsCalibrated] ? @"YES" : @"NO"]];
+	[mainElement addAttribute:[NSXMLNode attributeWithName:@"backIsCalibrated" stringValue:[self backIsCalibrated] ? @"YES" : @"NO"]];
+	// shouldCorrectRefraction is nil on a frame where the user has not answered the refraction question yet, which is a
+	// different state from "no", so it exports empty rather than NO.
+	[mainElement addAttribute:[NSXMLNode attributeWithName:@"shouldCorrectRefraction" stringValue:(self.shouldCorrectRefraction == nil) ? @"" : ([self.shouldCorrectRefraction boolValue] ? @"YES" : @"NO")]];
+	[mainElement addAttribute:[NSXMLNode attributeWithName:@"frontQuadratSurfaceThickness" stringValue:[nf stringFromNumber:self.frontQuadratSurfaceThickness] ?: @""]];
+	[mainElement addAttribute:[NSXMLNode attributeWithName:@"frontQuadratSurfaceRefractiveIndex" stringValue:[nf stringFromNumber:self.frontQuadratSurfaceRefractiveIndex] ?: @""]];
+	[mainElement addAttribute:[NSXMLNode attributeWithName:@"mediumRefractiveIndex" stringValue:[nf stringFromNumber:self.mediumRefractiveIndex] ?: @""]];
 	if (includeScreenCoords) {
 		NSXMLElement *distortionLines = [[NSXMLElement alloc] initWithName:@"distortionLines"];
 		NSXMLElement *frontCalibrationPoints = [[NSXMLElement alloc] initWithName:@"frontCalibrationPoints"];
@@ -2788,6 +2805,14 @@ static const double kMaxAcceptableScaleRatio = 4.0;    // generous enough for a 
 		[mainElement addChild:frontCalibrationPoints];
 		[mainElement addChild:backCalibrationPoints];
 	}
+	// The quadrat node lists are the physical geometry the whole fit rests on, and the export never carried them.
+	// They have to be elements with text rather than attributes: the lists are newline-delimited "h, v" pairs, and XML
+	// attribute-value normalization turns a newline inside an attribute into a space, so as attributes every parser
+	// would silently flatten the line structure that gives the pairs their meaning.
+	NSXMLElement *quadratNodesFront = [[NSXMLElement alloc] initWithName:@"quadratNodesFront" stringValue:[self.quadratNodesFront string] ?: @""];
+	NSXMLElement *quadratNodesBack = [[NSXMLElement alloc] initWithName:@"quadratNodesBack" stringValue:[self.quadratNodesBack string] ?: @""];
+	[mainElement addChild:quadratNodesFront];
+	[mainElement addChild:quadratNodesBack];
 	return mainElement;
 }
 

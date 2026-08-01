@@ -49,6 +49,7 @@
 	[mainElement addAttribute:[NSXMLNode attributeWithName:@"yu" stringValue:[nf stringFromNumber:[NSNumber numberWithFloat:undistortedScreenPoint.y]] ?: @""]];
 	[mainElement addAttribute:[NSXMLNode attributeWithName:@"worldHcoord" stringValue:[nf stringFromNumber:self.worldHcoord] ?: @""]];
 	[mainElement addAttribute:[NSXMLNode attributeWithName:@"worldVcoord" stringValue:[nf stringFromNumber:self.worldVcoord] ?: @""]];
+	[mainElement addAttribute:[NSXMLNode attributeWithName:@"index" stringValue:[self.index stringValue] ?: @""]];
 	return mainElement;
 }
 

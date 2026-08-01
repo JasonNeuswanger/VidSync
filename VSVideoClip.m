@@ -139,7 +139,24 @@
 - (NSXMLNode *) representationAsXMLNode	// partial implementation just to get distortion lines ASAP, although the idea of flattening the calibration with the clip in the XML may remain
 {
 	NSXMLElement *mainElement = [[NSXMLElement alloc] initWithName:@"videoClip"];
+	// The name stays the first attribute. Everything below is appended after it, which keeps the file readable by
+	// anything matching the prefix <videoClip name="..." even though it does break a match requiring the closing
+	// bracket right after the name.
 	[mainElement addAttribute:[NSXMLNode attributeWithName:@"name" stringValue:self.clipName ?: @""]];
+	[mainElement addAttribute:[NSXMLNode attributeWithName:@"fileName" stringValue:self.fileName ?: @""]];
+	[mainElement addAttribute:[NSXMLNode attributeWithName:@"syncOffset" stringValue:self.syncOffset ?: @""]];
+	[mainElement addAttribute:[NSXMLNode attributeWithName:@"syncIsLocked" stringValue:[self.syncIsLocked boolValue] ? @"YES" : @"NO"]];
+	[mainElement addAttribute:[NSXMLNode attributeWithName:@"isMasterClip" stringValue:(self.isMasterClipOf != nil) ? @"YES" : @"NO"]];
+	[mainElement addAttribute:[NSXMLNode attributeWithName:@"muted" stringValue:[self.muted boolValue] ? @"YES" : @"NO"]];
+	// Everything below this line is read out of the clip's video track, which only exists once the clip's window has
+	// loaded its file. A clip whose video file is missing or whose window has never opened exports these blank rather
+	// than as a zero that would read like a real measurement of a zero-sized, zero-length clip.
+	BOOL videoIsLoaded = (self.windowController != nil && self.windowController.videoTrack != nil);
+	[mainElement addAttribute:[NSXMLNode attributeWithName:@"timeScale" stringValue:videoIsLoaded ? [[self timeScale] stringValue] : @""]];
+	[mainElement addAttribute:[NSXMLNode attributeWithName:@"frameRate" stringValue:videoIsLoaded ? [NSString stringWithFormat:@"%f",[self frameRate]] : @""]];
+	[mainElement addAttribute:[NSXMLNode attributeWithName:@"clipLength" stringValue:videoIsLoaded ? ([self clipLength] ?: @"") : @""]];
+	[mainElement addAttribute:[NSXMLNode attributeWithName:@"clipWidth" stringValue:videoIsLoaded ? [NSString stringWithFormat:@"%d",(int) [self clipWidth]] : @""]];
+	[mainElement addAttribute:[NSXMLNode attributeWithName:@"clipHeight" stringValue:videoIsLoaded ? [NSString stringWithFormat:@"%d",(int) [self clipHeight]] : @""]];
 	[mainElement addChild:[self.calibration representationAsXMLNode]];
 	for (VSAnnotation *annotation in self.annotations) [mainElement addChild:[annotation representationAsXMLNode]];
 	return mainElement;

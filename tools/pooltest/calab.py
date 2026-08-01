@@ -37,7 +37,8 @@ def parse_xml(tag):
     s = open(XD % tag, encoding="utf-8").read()
     tc = re.search(r'calibrationTimecode="([^"]+)"', s).group(1)
     out = {}
-    for m in re.finditer(r'<videoClip name="([^"]+)">(.*?)</videoClip>', s, re.S):
+    # The [^>]* tolerates the clip metadata attributes that follow the name as of export format version 2.
+    for m in re.finditer(r'<videoClip name="([^"]+)"[^>]*>(.*?)</videoClip>', s, re.S):
         clip, blk = m.group(1), m.group(2)
         d = {}
         for nm, t in (("front", "frontCalibrationPoints"), ("back", "backCalibrationPoints")):

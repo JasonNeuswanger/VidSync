@@ -582,7 +582,8 @@ def line_audit(say, caps, D):
 def parse_calxml(tag):
     s = open(CALXML % tag, encoding="utf-8").read()
     out = {}
-    for m in re.finditer(r'<videoClip name="([^"]+)">(.*?)</videoClip>', s, re.S):
+    # The [^>]* tolerates the clip metadata attributes that follow the name as of export format version 2.
+    for m in re.finditer(r'<videoClip name="([^"]+)"[^>]*>(.*?)</videoClip>', s, re.S):
         clip, blk = m.group(1), m.group(2)
         d = {}
         for nm, t in (("front", "frontCalibrationPoints"), ("back", "backCalibrationPoints")):
