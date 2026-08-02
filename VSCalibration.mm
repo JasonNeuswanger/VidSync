@@ -1277,6 +1277,36 @@ static NSUInteger VSCoordinatePairsInQuadratDescription(NSAttributedString *desc
 	self.cameraMeanPLD = [NSNumber numberWithDouble:pld];
 }
 
+- (VSLine3D) sightLineThroughScreenPoint:(NSPoint)screenPoint
+{
+	// Same simulated-click pattern as calculateCameraPosition: a transient screen point projected onto both
+	// calibration frame surfaces gives the 3D line of sight through that pixel.
+	VSEventScreenPoint *tempScreenPoint = [NSEntityDescription insertNewObjectForEntityForName:@"VSEventScreenPoint" inManagedObjectContext:[self managedObjectContext]];
+	tempScreenPoint.videoClip = self.videoClip;
+	tempScreenPoint.screenX = [NSNumber numberWithDouble:screenPoint.x];
+	tempScreenPoint.screenY = [NSNumber numberWithDouble:screenPoint.y];
+	VSLine3D line = [tempScreenPoint computeLine3D:NO];
+	[[self managedObjectContext] deleteObject:tempScreenPoint];
+	return line;
+}
+
+- (double) angleAtCameraPosition:(VSPoint3D)cameraPosition betweenScreenPoint:(NSPoint)screenPoint1 andScreenPoint:(NSPoint)screenPoint2
+{
+	// The angle (radians) between the rays extending from the camera position through two simulated screen clicks,
+	// each ray anchored where its line of sight crosses the front calibration frame plane.
+	VSPoint3D p1 = [self sightLineThroughScreenPoint:screenPoint1].front;
+	VSPoint3D p2 = [self sightLineThroughScreenPoint:screenPoint2].front;
+	double v1[3] = {p1.x - cameraPosition.x, p1.y - cameraPosition.y, p1.z - cameraPosition.z};
+	double v2[3] = {p2.x - cameraPosition.x, p2.y - cameraPosition.y, p2.z - cameraPosition.z};
+	double norm1 = sqrt(v1[0]*v1[0] + v1[1]*v1[1] + v1[2]*v1[2]);
+	double norm2 = sqrt(v2[0]*v2[0] + v2[1]*v2[1] + v2[2]*v2[2]);
+	if (norm1 == 0.0 || norm2 == 0.0) return 0.0;
+	double cosAngle = (v1[0]*v2[0] + v1[1]*v2[1] + v1[2]*v2[2]) / (norm1 * norm2);
+	if (cosAngle > 1.0) cosAngle = 1.0;
+	if (cosAngle < -1.0) cosAngle = -1.0;
+	return acos(cosAngle);
+}
+
 - (NSArray *) candidateCameraPositionsForRefinement
 {
 	NSArray *allPositions = [NSArray array];
@@ -2794,6 +2824,43 @@ static const double kMaxAcceptableScaleRatio = 4.0;    // generous enough for a 
 	[mainElement addAttribute:[NSXMLNode attributeWithName:@"frontCalibrationFrameSurfaceThickness" stringValue:[nf stringFromNumber:self.frontQuadratSurfaceThickness] ?: @""]];
 	[mainElement addAttribute:[NSXMLNode attributeWithName:@"frontCalibrationFrameSurfaceRefractiveIndex" stringValue:[nf stringFromNumber:self.frontQuadratSurfaceRefractiveIndex] ?: @""]];
 	[mainElement addAttribute:[NSXMLNode attributeWithName:@"mediumRefractiveIndex" stringValue:[nf stringFromNumber:self.mediumRefractiveIndex] ?: @""]];
+	// The camera's central sight line and angular field of view. The sight line point is where the line of sight
+	// through the exact center of the video crosses the front calibration frame plane; together with
+	// (cameraX,cameraY,cameraZ) it defines the central sight line in world coordinates. Each field of view is the
+	// angle at the camera position between the rays through simulated clicks at opposite edge centers (horizontal,
+	// vertical) or opposite corners (diagonal, averaged over both diagonals). These need a complete calibration and
+	// a loaded video to compute, so like the other derived values they export empty when either is missing.
+	NSString *sightLineX = @"", *sightLineY = @"", *sightLineZ = @"";
+	NSString *fovHorizontalRadians = @"", *fovVerticalRadians = @"", *fovDiagonalRadians = @"";
+	NSString *fovHorizontalDegrees = @"", *fovVerticalDegrees = @"", *fovDiagonalDegrees = @"";
+	double clipWidth = [self.videoClip clipWidth];
+	double clipHeight = [self.videoClip clipHeight];
+	if (self.cameraX != nil && self.cameraY != nil && self.cameraZ != nil && [self frontIsCalibrated] && [self backIsCalibrated] && clipWidth > 0.0 && clipHeight > 0.0) {
+		VSPoint3D cameraPosition = VSMakePoint3D([self.cameraX doubleValue],[self.cameraY doubleValue],[self.cameraZ doubleValue]);
+		VSPoint3D sightLinePoint = [self sightLineThroughScreenPoint:NSMakePoint(clipWidth/2.0,clipHeight/2.0)].front;
+		sightLineX = [nf stringFromNumber:[NSNumber numberWithDouble:sightLinePoint.x]];
+		sightLineY = [nf stringFromNumber:[NSNumber numberWithDouble:sightLinePoint.y]];
+		sightLineZ = [nf stringFromNumber:[NSNumber numberWithDouble:sightLinePoint.z]];
+		double fovHorizontal = [self angleAtCameraPosition:cameraPosition betweenScreenPoint:NSMakePoint(0.0,clipHeight/2.0) andScreenPoint:NSMakePoint(clipWidth,clipHeight/2.0)];
+		double fovVertical = [self angleAtCameraPosition:cameraPosition betweenScreenPoint:NSMakePoint(clipWidth/2.0,0.0) andScreenPoint:NSMakePoint(clipWidth/2.0,clipHeight)];
+		double fovDiagonal = 0.5 * ([self angleAtCameraPosition:cameraPosition betweenScreenPoint:NSMakePoint(0.0,0.0) andScreenPoint:NSMakePoint(clipWidth,clipHeight)]
+									+ [self angleAtCameraPosition:cameraPosition betweenScreenPoint:NSMakePoint(clipWidth,0.0) andScreenPoint:NSMakePoint(0.0,clipHeight)]);
+		fovHorizontalRadians = [nf stringFromNumber:[NSNumber numberWithDouble:fovHorizontal]];
+		fovVerticalRadians = [nf stringFromNumber:[NSNumber numberWithDouble:fovVertical]];
+		fovDiagonalRadians = [nf stringFromNumber:[NSNumber numberWithDouble:fovDiagonal]];
+		fovHorizontalDegrees = [nf stringFromNumber:[NSNumber numberWithDouble:fovHorizontal * 180.0 / M_PI]];
+		fovVerticalDegrees = [nf stringFromNumber:[NSNumber numberWithDouble:fovVertical * 180.0 / M_PI]];
+		fovDiagonalDegrees = [nf stringFromNumber:[NSNumber numberWithDouble:fovDiagonal * 180.0 / M_PI]];
+	}
+	[mainElement addAttribute:[NSXMLNode attributeWithName:@"cameraSightLineX" stringValue:sightLineX]];
+	[mainElement addAttribute:[NSXMLNode attributeWithName:@"cameraSightLineY" stringValue:sightLineY]];
+	[mainElement addAttribute:[NSXMLNode attributeWithName:@"cameraSightLineZ" stringValue:sightLineZ]];
+	[mainElement addAttribute:[NSXMLNode attributeWithName:@"fovHorizontalDegrees" stringValue:fovHorizontalDegrees]];
+	[mainElement addAttribute:[NSXMLNode attributeWithName:@"fovHorizontalRadians" stringValue:fovHorizontalRadians]];
+	[mainElement addAttribute:[NSXMLNode attributeWithName:@"fovVerticalDegrees" stringValue:fovVerticalDegrees]];
+	[mainElement addAttribute:[NSXMLNode attributeWithName:@"fovVerticalRadians" stringValue:fovVerticalRadians]];
+	[mainElement addAttribute:[NSXMLNode attributeWithName:@"fovDiagonalDegrees" stringValue:fovDiagonalDegrees]];
+	[mainElement addAttribute:[NSXMLNode attributeWithName:@"fovDiagonalRadians" stringValue:fovDiagonalRadians]];
 	if (includeScreenCoords) {
 		NSXMLElement *distortionLines = [[NSXMLElement alloc] initWithName:@"distortionLines"];
 		NSXMLElement *frontCalibrationPoints = [[NSXMLElement alloc] initWithName:@"frontCalibrationPoints"];
