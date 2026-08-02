@@ -729,7 +729,7 @@ static void *AVSPPlayerCurrentTimeContext = &AVSPPlayerCurrentTimeContext;
 	[openPanel setAllowedFileTypes:[NSArray arrayWithObjects:@"VidSyncTypes",nil]];
 	[openPanel setCanChooseDirectories:NO];
 	[openPanel setAllowsMultipleSelection:NO];
-	[openPanel setMessage:@"Loading types from a file will add them to the existing types list, not replace it. If loaded types have the same name as existing types, their attributes (color, etc.) will be updated from the new file."];
+	[openPanel setMessage:@"Loading types from a file will add them to the existing types list, not replace it. If any loaded types have the same names as existing types but different properties, you will be asked how to resolve the conflicts."];
 	if ([openPanel runModal]) {
 		filePath = [[[openPanel URLs] objectAtIndex:0] path];
 		[self loadObjectAndEventTypesFromFileAtPath:filePath];
@@ -742,6 +742,79 @@ static void *AVSPPlayerCurrentTimeContext = &AVSPPlayerCurrentTimeContext;
 	[self loadObjectAndEventTypesFromFileAtPath:filePath];
 }
 
+typedef NS_ENUM(NSInteger, VSTypeImportConflictChoice) {
+	VSTypeImportOnlyAddNew,
+	VSTypeImportOverwrite,
+	VSTypeImportRename,
+	VSTypeImportCancel
+};
+
+static NSString *VSCanonicalTypeName(NSString *name)
+{
+	// Type names are matched for import conflicts after trimming whitespace and ignoring case.
+	if (![name isKindOfClass:[NSString class]]) return nil;
+	return [[name stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]] lowercaseString];
+}
+
+static NSArray *VSDeduplicatedTypeDictionaries(NSArray *typeDictionaries)
+{
+	// If the file contains multiple entries with the same canonical name, the last one wins, matching the old sequential-overwrite behavior.
+	NSMutableArray *orderedCanonicalNames = [NSMutableArray array];
+	NSMutableDictionary *dictionariesByCanonicalName = [NSMutableDictionary dictionary];
+	for (NSDictionary *typeDictionary in typeDictionaries) {
+		if (![typeDictionary isKindOfClass:[NSDictionary class]]) continue;
+		NSString *canonicalName = VSCanonicalTypeName([typeDictionary objectForKey:@"name"]);
+		if (canonicalName == nil || [canonicalName length] == 0) continue;
+		if ([dictionariesByCanonicalName objectForKey:canonicalName] == nil) [orderedCanonicalNames addObject:canonicalName];
+		[dictionariesByCanonicalName setObject:typeDictionary forKey:canonicalName];
+	}
+	NSMutableArray *deduplicated = [NSMutableArray array];
+	for (NSString *canonicalName in orderedCanonicalNames) [deduplicated addObject:[dictionariesByCanonicalName objectForKey:canonicalName]];
+	return deduplicated;
+}
+
+static id VSExistingTypeMatchingName(NSString *name, NSSet *existingTypes)
+{
+	NSString *canonicalName = VSCanonicalTypeName(name);
+	if (canonicalName == nil) return nil;
+	for (id existingType in existingTypes) {
+		if ([VSCanonicalTypeName([existingType valueForKey:@"name"]) isEqualToString:canonicalName]) return existingType;
+	}
+	return nil;
+}
+
+static NSString *VSUniqueImportedTypeName(NSString *name, NSMutableSet *takenCanonicalNames)
+{
+	NSString *trimmedName = [name stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+	NSString *candidate = [trimmedName stringByAppendingString:@" (imported)"];
+	int suffixNumber = 2;
+	while ([takenCanonicalNames containsObject:VSCanonicalTypeName(candidate)]) {
+		candidate = [NSString stringWithFormat:@"%@ (imported %d)",trimmedName,suffixNumber];
+		suffixNumber += 1;
+	}
+	[takenCanonicalNames addObject:VSCanonicalTypeName(candidate)];
+	return candidate;
+}
+
+static VSTypeImportConflictChoice VSRunTypeImportConflictAlert(NSArray *conflictingObjectTypeNames, NSArray *conflictingEventTypeNames)
+{
+	NSMutableString *conflictList = [NSMutableString string];
+	if ([conflictingObjectTypeNames count] > 0) [conflictList appendFormat:@"\n\nObject types: %@",[conflictingObjectTypeNames componentsJoinedByString:@", "]];
+	if ([conflictingEventTypeNames count] > 0) [conflictList appendFormat:@"\n\nEvent types: %@",[conflictingEventTypeNames componentsJoinedByString:@", "]];
+	NSAlert *alert = [[NSAlert alloc] init];
+	[alert setMessageText:@"Some imported types have the same names as existing types"];
+	[alert setInformativeText:[NSString stringWithFormat:@"The following types exist in both this project and the imported file, with different properties:%@\n\n“Only Add New Types” ignores the conflicting imported types. “Overwrite Existing Types” replaces the properties of the existing types with the imported values. “Rename Imported Types” adds the conflicting imported types under new names and leaves the existing types unchanged.",conflictList]];
+	[alert addButtonWithTitle:@"Only Add New Types"];
+	[alert addButtonWithTitle:@"Overwrite Existing Types"];
+	[alert addButtonWithTitle:@"Rename Imported Types"];
+	[alert addButtonWithTitle:@"Cancel"];
+	NSModalResponse response = [alert runModal];
+	if (response == NSAlertFirstButtonReturn) return VSTypeImportOnlyAddNew;
+	if (response == NSAlertSecondButtonReturn) return VSTypeImportOverwrite;
+	if (response == NSAlertThirdButtonReturn) return VSTypeImportRename;
+	return VSTypeImportCancel;
+}
+
 - (void) loadObjectAndEventTypesFromFileAtPath:(NSString *)filePath
 {
 	NSArray *allTypes = [[NSArray alloc] initWithContentsOfFile:filePath];
@@ -749,13 +822,75 @@ static void *AVSPPlayerCurrentTimeContext = &AVSPPlayerCurrentTimeContext;
 		[UtilityFunctions InformUser:@"The types file could not be read or is from an unsupported version." withTitle:@"Invalid File"];
 		return;
 	}
-	NSArray *objectTypesArray = [allTypes objectAtIndex:0];
-	NSArray *eventTypesArray = [allTypes objectAtIndex:1];
-	for (NSDictionary *objectTypeDictionary in objectTypesArray) {
-		[VSTrackedObjectType insertNewTypeFromLoadedDictionary:objectTypeDictionary inProject:self.project inManagedObjectContext:[self managedObjectContext]];
+	NSArray *objectTypeDictionaries = VSDeduplicatedTypeDictionaries([allTypes objectAtIndex:0]);
+	NSArray *eventTypeDictionaries = VSDeduplicatedTypeDictionaries([allTypes objectAtIndex:1]);
+
+	// Find the imported types that conflict with existing types: same canonical name but different properties.
+	// Imported types identical to an existing type are skipped silently, so they never trigger the conflict dialog.
+	NSMutableArray *conflictingObjectTypeNames = [NSMutableArray array];
+	for (NSDictionary *typeDictionary in objectTypeDictionaries) {
+		VSTrackedObjectType *existingType = VSExistingTypeMatchingName([typeDictionary objectForKey:@"name"], self.project.trackedObjectTypes);
+		if (existingType != nil && ![existingType propertiesMatchLoadedDictionary:typeDictionary]) [conflictingObjectTypeNames addObject:existingType.name];
 	}
-	for (NSDictionary *eventTypeDictionary in eventTypesArray) {
-		[VSTrackedEventType insertNewTypeFromLoadedDictionary:eventTypeDictionary inProject:self.project inManagedObjectContext:[self managedObjectContext]];
+	NSMutableArray *conflictingEventTypeNames = [NSMutableArray array];
+	for (NSDictionary *typeDictionary in eventTypeDictionaries) {
+		VSTrackedEventType *existingType = VSExistingTypeMatchingName([typeDictionary objectForKey:@"name"], self.project.trackedEventTypes);
+		if (existingType != nil && ![existingType propertiesMatchLoadedDictionary:typeDictionary]) [conflictingEventTypeNames addObject:existingType.name];
+	}
+
+	VSTypeImportConflictChoice conflictChoice = VSTypeImportOnlyAddNew;	// irrelevant when there are no conflicts
+	if ([conflictingObjectTypeNames count] > 0 || [conflictingEventTypeNames count] > 0) {
+		conflictChoice = VSRunTypeImportConflictAlert(conflictingObjectTypeNames, conflictingEventTypeNames);
+		if (conflictChoice == VSTypeImportCancel) return;
+	}
+
+	NSUndoManager *undoManager = [[self managedObjectContext] undoManager];
+	[undoManager beginUndoGrouping];
+
+	NSMutableSet *takenObjectTypeNames = [NSMutableSet set];
+	for (VSTrackedObjectType *existingType in self.project.trackedObjectTypes) [takenObjectTypeNames addObject:VSCanonicalTypeName(existingType.name)];
+	for (NSDictionary *typeDictionary in objectTypeDictionaries) {
+		NSString *name = [typeDictionary objectForKey:@"name"];
+		VSTrackedObjectType *existingType = VSExistingTypeMatchingName(name, self.project.trackedObjectTypes);
+		if (existingType == nil) {
+			[VSTrackedObjectType insertNewTypeFromLoadedDictionary:typeDictionary withName:name inProject:self.project inManagedObjectContext:[self managedObjectContext]];
+			[takenObjectTypeNames addObject:VSCanonicalTypeName(name)];
+		} else if (![existingType propertiesMatchLoadedDictionary:typeDictionary]) {
+			if (conflictChoice == VSTypeImportOverwrite) {
+				[existingType updatePropertiesFromLoadedDictionary:typeDictionary];
+			} else if (conflictChoice == VSTypeImportRename) {
+				[VSTrackedObjectType insertNewTypeFromLoadedDictionary:typeDictionary withName:VSUniqueImportedTypeName(name, takenObjectTypeNames) inProject:self.project inManagedObjectContext:[self managedObjectContext]];
+			}
+		}
+	}
+
+	NSMutableArray *skippedEventTypeNames = [NSMutableArray array];
+	NSMutableSet *takenEventTypeNames = [NSMutableSet set];
+	for (VSTrackedEventType *existingType in self.project.trackedEventTypes) [takenEventTypeNames addObject:VSCanonicalTypeName(existingType.name)];
+	for (NSDictionary *typeDictionary in eventTypeDictionaries) {
+		NSString *name = [typeDictionary objectForKey:@"name"];
+		VSTrackedEventType *existingType = VSExistingTypeMatchingName(name, self.project.trackedEventTypes);
+		if (existingType == nil) {
+			[VSTrackedEventType insertNewTypeFromLoadedDictionary:typeDictionary withName:name inProject:self.project inManagedObjectContext:[self managedObjectContext]];
+			[takenEventTypeNames addObject:VSCanonicalTypeName(name)];
+		} else if (![existingType propertiesMatchLoadedDictionary:typeDictionary]) {
+			if (conflictChoice == VSTypeImportOverwrite) {
+				if ([existingType canSafelyUpdateFromLoadedDictionary:typeDictionary]) {
+					[existingType updatePropertiesFromLoadedDictionary:typeDictionary];
+				} else {
+					[skippedEventTypeNames addObject:existingType.name];
+				}
+			} else if (conflictChoice == VSTypeImportRename) {
+				[VSTrackedEventType insertNewTypeFromLoadedDictionary:typeDictionary withName:VSUniqueImportedTypeName(name, takenEventTypeNames) inProject:self.project inManagedObjectContext:[self managedObjectContext]];
+			}
+		}
+	}
+
+	[undoManager setActionName:@"Import Types"];
+	[undoManager endUndoGrouping];
+
+	if ([skippedEventTypeNames count] > 0) {
+		[UtilityFunctions InformUser:[NSString stringWithFormat:@"The following event types were not overwritten, because this project contains events that would be incompatible with the imported settings for the maximum number of points or the requirement that all points share the same timecode: %@.",[skippedEventTypeNames componentsJoinedByString:@", "]] withTitle:@"Some Types Not Overwritten"];
 	}
 }
 

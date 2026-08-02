@@ -83,61 +83,66 @@
 	}
 }
 
-+ (void) insertNewTypeFromLoadedDictionary:(NSDictionary *)eventTypeDictionary inProject:(VSProject *)project inManagedObjectContext:(NSManagedObjectContext *)moc
++ (NSDictionary *) loadedDictionaryWithCompatibilityDefaults:(NSDictionary *)eventTypeDictionary
 {
-	// This function loads a type's information from a saved dictionary. If its name matches an old type, it updates the old type's visual properties to match those in the loaded file. Otherwise, it creates a new type.
-	VSTrackedEventType *newType = nil;
-	BOOL overwritingOldType = NO;
-	for (VSTrackedEventType *oldType in project.trackedEventTypes) {
-		if ([oldType.name isEqualToString:[eventTypeDictionary objectForKey:@"name"]]) {
-			overwritingOldType = YES;
-			oldType.maxNumPoints = [eventTypeDictionary objectForKey:@"maxNumPoints"];
-			oldType.connectingLineType = [eventTypeDictionary objectForKey:@"connectingLineType"];
-			oldType.requiresSameTimecode = [eventTypeDictionary objectForKey:@"requiresSameTimecode"];
-			oldType.connectingLineLengthLabeled = [eventTypeDictionary objectForKey:@"connectingLineLengthLabeled"];
-			oldType.connectingLineThickness = [eventTypeDictionary objectForKey:@"connectingLineThickness"];
-			if ([eventTypeDictionary objectForKey:@"connectingLineLabelShowLength"] != nil) { // preserve compatibility with older files
-				oldType.connectingLineLabelShowLength = [eventTypeDictionary objectForKey:@"connectingLineLabelShowLength"];
-			} else {
-				oldType.connectingLineLabelShowLength = [NSNumber numberWithBool:NO];
+	// Fills in defaults for keys that may be missing from files saved by older versions of VidSync.
+	NSMutableDictionary *dict = [eventTypeDictionary mutableCopy];
+	if ([dict objectForKey:@"connectingLineLabelShowLength"] == nil) [dict setObject:[NSNumber numberWithBool:NO] forKey:@"connectingLineLabelShowLength"];
+	if ([dict objectForKey:@"connectingLineLabelShowSpeed"] == nil) [dict setObject:[NSNumber numberWithBool:NO] forKey:@"connectingLineLabelShowSpeed"];
+	return dict;
+}
+
++ (VSTrackedEventType *) insertNewTypeFromLoadedDictionary:(NSDictionary *)eventTypeDictionary withName:(NSString *)name inProject:(VSProject *)project inManagedObjectContext:(NSManagedObjectContext *)moc
+{
+	VSTrackedEventType *newType = [NSEntityDescription insertNewObjectForEntityForName:@"VSTrackedEventType" inManagedObjectContext:moc];
+	newType.project = project;
+	newType.name = name;
+	[newType updatePropertiesFromLoadedDictionary:eventTypeDictionary];
+	return newType;
+}
+
+- (void) updatePropertiesFromLoadedDictionary:(NSDictionary *)eventTypeDictionary
+{
+	NSDictionary *dict = [VSTrackedEventType loadedDictionaryWithCompatibilityDefaults:eventTypeDictionary];
+	self.maxNumPoints = [dict objectForKey:@"maxNumPoints"];
+	self.connectingLineType = [dict objectForKey:@"connectingLineType"];
+	self.requiresSameTimecode = [dict objectForKey:@"requiresSameTimecode"];
+	self.connectingLineLengthLabeled = [dict objectForKey:@"connectingLineLengthLabeled"];
+	self.connectingLineThickness = [dict objectForKey:@"connectingLineThickness"];
+	self.connectingLineLabelShowLength = [dict objectForKey:@"connectingLineLabelShowLength"];
+	self.connectingLineLabelShowSpeed = [dict objectForKey:@"connectingLineLabelShowSpeed"];
+	self.connectingLineLengthLabelFontSize = [dict objectForKey:@"connectingLineLengthLabelFontSize"];
+	self.connectingLineLengthLabelFractionDigits = [dict objectForKey:@"connectingLineLengthLabelFractionDigits"];
+	self.connectingLineLengthLabelUnitMultiplier = [dict objectForKey:@"connectingLineLengthLabelUnitMultiplier"];
+	self.connectingLineLengthLabelUnits = [dict objectForKey:@"connectingLineLengthLabelUnits"];
+	[super updatePropertiesFromLoadedDictionary:dict];
+}
+
+- (BOOL) propertiesMatchLoadedDictionary:(NSDictionary *)eventTypeDictionary
+{
+	return [super propertiesMatchLoadedDictionary:[VSTrackedEventType loadedDictionaryWithCompatibilityDefaults:eventTypeDictionary]];
+}
+
+- (BOOL) canSafelyUpdateFromLoadedDictionary:(NSDictionary *)eventTypeDictionary
+{
+	// Overwriting this type with the loaded settings would leave existing events incompatible with their own type if an event already has
+	// more points than the loaded maxNumPoints, or has points at multiple timecodes when the loaded settings require a shared timecode.
+	int newMaxNumPoints = [[eventTypeDictionary objectForKey:@"maxNumPoints"] intValue];
+	BOOL newRequiresSameTimecode = [[eventTypeDictionary objectForKey:@"requiresSameTimecode"] boolValue];
+	for (VSTrackedEvent *event in self.trackedEvents) {
+		if (newMaxNumPoints > 0 && (int) [event.points count] > newMaxNumPoints) return NO;
+		if (newRequiresSameTimecode) {
+			NSString *firstTimecode = nil;
+			for (VSPoint *point in event.points) {
+				if (firstTimecode == nil) {
+					firstTimecode = point.timecode;
+				} else if (![UtilityFunctions timeString:point.timecode isEqualToTimeString:firstTimecode]) {
+					return NO;
+				}
 			}
-			if ([eventTypeDictionary objectForKey:@"connectingLineLabelShowSpeed"] != nil) { // preserve compatibility with older files
-				oldType.connectingLineLabelShowSpeed = [eventTypeDictionary objectForKey:@"connectingLineLabelShowSpeed"];
-			} else {
-				oldType.connectingLineLabelShowSpeed = [NSNumber numberWithBool:NO];
-			}
-			oldType.connectingLineLengthLabelFontSize = [eventTypeDictionary objectForKey:@"connectingLineLengthLabelFontSize"];
-			oldType.connectingLineLengthLabelFractionDigits = [eventTypeDictionary objectForKey:@"connectingLineLengthLabelFractionDigits"];
-			oldType.connectingLineLengthLabelUnitMultiplier = [eventTypeDictionary objectForKey:@"connectingLineLengthLabelUnitMultiplier"];
-			oldType.connectingLineLengthLabelUnits = [eventTypeDictionary objectForKey:@"connectingLineLengthLabelUnits"];
-			[oldType setVisibleItemPropertiesFromDictionary:eventTypeDictionary];
 		}
 	}
-	if (!overwritingOldType) {
-		newType = [NSEntityDescription insertNewObjectForEntityForName:@"VSTrackedEventType" inManagedObjectContext:moc];
-		newType.project = project;
-		newType.name = [eventTypeDictionary objectForKey:@"name"];
-		newType.maxNumPoints = [eventTypeDictionary objectForKey:@"maxNumPoints"];
-		newType.connectingLineType = [eventTypeDictionary objectForKey:@"connectingLineType"];
-		newType.requiresSameTimecode = [eventTypeDictionary objectForKey:@"requiresSameTimecode"];
-		newType.connectingLineLengthLabeled = [eventTypeDictionary objectForKey:@"connectingLineLengthLabeled"];
-		newType.connectingLineThickness = [eventTypeDictionary objectForKey:@"connectingLineThickness"];
-		if ([eventTypeDictionary objectForKey:@"connectingLineLabelShowLength"] != nil) { // preserve compatibility with older files
-			newType.connectingLineLabelShowLength = [eventTypeDictionary objectForKey:@"connectingLineLabelShowLength"];
-		} else {
-			newType.connectingLineLabelShowLength = [NSNumber numberWithBool:NO];
-		}
-		if ([eventTypeDictionary objectForKey:@"connectingLineLabelShowSpeed"] != nil) { // preserve compatibility with older files
-			newType.connectingLineLabelShowSpeed = [eventTypeDictionary objectForKey:@"connectingLineLabelShowSpeed"];
-		} else {
-			newType.connectingLineLabelShowSpeed = [NSNumber numberWithBool:NO];
-		}
-		newType.connectingLineLengthLabelFontSize = [eventTypeDictionary objectForKey:@"connectingLineLengthLabelFontSize"];
-		newType.connectingLineLengthLabelFractionDigits = [eventTypeDictionary objectForKey:@"connectingLineLengthLabelFractionDigits"];
-		newType.connectingLineLengthLabelUnitMultiplier = [eventTypeDictionary objectForKey:@"connectingLineLengthLabelUnitMultiplier"];
-		newType.connectingLineLengthLabelUnits = [eventTypeDictionary objectForKey:@"connectingLineLengthLabelUnits"];
-		[newType setVisibleItemPropertiesFromDictionary:eventTypeDictionary];
-	}
+	return YES;
 }
 
 - (NSMutableDictionary *) contentsAsWriteableDictionary

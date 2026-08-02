@@ -53,7 +53,9 @@
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context;
 
-+ (void) insertNewTypeFromLoadedDictionary:(NSDictionary *)objectTypeDictionary inProject:(VSProject *)project inManagedObjectContext:(NSManagedObjectContext *)moc;
++ (VSTrackedEventType *) insertNewTypeFromLoadedDictionary:(NSDictionary *)eventTypeDictionary withName:(NSString *)name inProject:(VSProject *)project inManagedObjectContext:(NSManagedObjectContext *)moc;
+
+- (BOOL) canSafelyUpdateFromLoadedDictionary:(NSDictionary *)eventTypeDictionary;
 
 - (void) carefullyRemoveObserver:(NSObject *)observer forKeyPath:(NSString *)keyPath;
 

@@ -39,5 +39,7 @@
 
 - (NSMutableDictionary *) contentsAsWriteableDictionary;
 - (void) setVisibleItemPropertiesFromDictionary:(NSDictionary *)typeDictionary;
+- (void) updatePropertiesFromLoadedDictionary:(NSDictionary *)typeDictionary;
+- (BOOL) propertiesMatchLoadedDictionary:(NSDictionary *)typeDictionary;
 
 @end

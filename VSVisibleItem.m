@@ -71,7 +71,23 @@
 	self.fadeTime = [typeDictionary objectForKey:@"fadeTime"];
 	self.shape = [typeDictionary objectForKey:@"shape"];
 	self.size = [typeDictionary objectForKey:@"size"];
-	
+
+}
+
+- (void) updatePropertiesFromLoadedDictionary:(NSDictionary *)typeDictionary
+{
+	[self setVisibleItemPropertiesFromDictionary:typeDictionary];
+}
+
+- (BOOL) propertiesMatchLoadedDictionary:(NSDictionary *)typeDictionary
+{
+	// Returns YES if this item's saveable properties (everything but the name) are identical to those in the loaded dictionary,
+	// in which case loading the dictionary over this item would change nothing.
+	NSMutableDictionary *myProperties = [self contentsAsWriteableDictionary];
+	NSMutableDictionary *loadedProperties = [typeDictionary mutableCopy];
+	[myProperties removeObjectForKey:@"name"];
+	[loadedProperties removeObjectForKey:@"name"];
+	return [myProperties isEqualToDictionary:loadedProperties];
 }
 
 
