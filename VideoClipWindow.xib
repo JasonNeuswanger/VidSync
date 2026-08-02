@@ -131,6 +131,7 @@
                                     </menuItem>
                                     <menuItem title="50%" id="80"/>
                                     <menuItem title="33%" id="81"/>
+                                    <menuItem title="15%" id="179"/>
                                 </items>
                             </menu>
                         </popUpButtonCell>

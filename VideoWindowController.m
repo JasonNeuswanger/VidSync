@@ -838,6 +838,8 @@ static const CGFloat VSVideoControlStripHeight = 26.0f;
 		sizeFactor = 0.5;
 	} else if ([percentageStr isEqualToString:@"33%"]) {
 		sizeFactor = 0.33;
+	} else if ([percentageStr isEqualToString:@"15%"]) {
+		sizeFactor = 0.15;
 	}
 	[self resizeVideoToFactor:sizeFactor];
 }
