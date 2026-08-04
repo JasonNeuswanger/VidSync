@@ -125,7 +125,38 @@ static void *AVSPPlayerCurrentTimeContext = &AVSPPlayerCurrentTimeContext;
 	for (id obj in playbackWindowTopLevelObjects) if ([obj isKindOfClass:[SyncedPlaybackPanel class]]) loadingSyncedPlaybackPanel = (SyncedPlaybackPanel *) obj;
 	syncedPlaybackWindowController = [[NSWindowController alloc] initWithWindow:loadingSyncedPlaybackPanel];
 	[self addWindowController:syncedPlaybackWindowController];
-	
+
+	// Videos that moved along with the project file: a clip whose stored absolute path no longer
+	// resolves, but whose exact filename exists in the folder holding this .vsd file, is re-attached
+	// to that copy and its saved path updated -- the common case of a project folder moved, copied,
+	// or restored wholesale. Runs before the window controllers below so they open the repaired
+	// paths. Undo registration is off for the repair so Cmd-Z can't quietly restore a dead path;
+	// the document becoming edited is intended, since saving persists the new paths.
+	NSString *documentFolder = [[[self fileURL] URLByDeletingLastPathComponent] path];
+	NSMutableArray *autoRelocatedClipNames = [NSMutableArray array];
+	if (documentFolder != nil) {
+		for (VSVideoClip *clip in self.project.videoClips) {
+			if (clip.fileName == nil) continue;
+			if ([[NSURL fileURLWithPath:clip.fileName isDirectory:NO] checkResourceIsReachableAndReturnError:NULL]) continue;
+			NSString *candidatePath = [documentFolder stringByAppendingPathComponent:[clip.fileName lastPathComponent]];
+			BOOL candidateIsDirectory = NO;
+			if ([[NSFileManager defaultManager] fileExistsAtPath:candidatePath isDirectory:&candidateIsDirectory] && !candidateIsDirectory) {
+				[[[self managedObjectContext] undoManager] disableUndoRegistration];
+				clip.fileName = candidatePath;
+				[[self managedObjectContext] processPendingChanges];
+				[[[self managedObjectContext] undoManager] enableUndoRegistration];
+				[autoRelocatedClipNames addObject:[NSString stringWithFormat:@"'%@'",clip.clipName]];
+			}
+		}
+	}
+	if ([autoRelocatedClipNames count] > 0) {
+		NSAlert *relocationAlert = [NSAlert new];
+		[relocationAlert setMessageText:@"Video files re-attached from the project's folder"];
+		[relocationAlert setInformativeText:[NSString stringWithFormat:@"The saved video file location for %@ no longer existed, but a file with the same name was found in the same folder as this project file, so that file was attached and the saved location was updated.\n\nIf this attached the wrong file, select the clip on the Project tab and use 'Relocate Selected Clip' to point it to the right one.",[autoRelocatedClipNames componentsJoinedByString:@", "]]];
+		[relocationAlert addButtonWithTitle:@"OK"];
+		[relocationAlert runModal];
+	}
+
 	for (VSVideoClip *clip in [self.project.videoClips allObjects]) {
 		if (clip.isMasterClipOf != nil) {
 			// Fixes a weird glitch that appeared in the 2021 updates in which master clips were coming back with nil rather than zero syncOffsets,
