@@ -74,8 +74,8 @@ static NSString * const VSVideoResizeControlIdentifier = @"resizeControl";
 		self = [super initWithWindowNibName:@"VideoClipWindow"];
 		[self window];  // This forces a call to loadWindow, which invokes windowDidLoad and windowWillLoad, and allows video to load properly
 		[self setShouldCascadeWindows:NO];
+		inVideoClip.windowController = self;	// before self.videoClip, so bindings that read through windowController see it on their first evaluation
 		self.videoClip = inVideoClip;
-		self.videoClip.windowController = self;
 		managedObjectContext = moc;
 		if (self.videoClip.windowFrame != nil) [[self window] setFrameFromString:self.videoClip.windowFrame];
 		[self.videoClip addObserver:self forKeyPath:@"muted" options:NSKeyValueObservingOptionNew context:NULL];
@@ -887,8 +887,22 @@ static NSString * const VSVideoResizeControlIdentifier = @"resizeControl";
 	for (NSView *subview in [contentView subviews]) {
 		if ([subview isKindOfClass:[AVPlayerView class]]) continue;
 		if ([[subview identifier] isEqualToString:VSVideoResizeControlIdentifier]) continue;
-		[subview setHidden:crowded];
+		[subview setHidden:(crowded ? YES : [self boundHiddenStateOfView:subview])];
 	}
+}
+
+- (BOOL) boundHiddenStateOfView:(NSView *)view
+{
+	// Widening the window can't just unhide everything: the sync offset label and field bind their
+	// hidden state to the clip, and forcing them visible would show a master clip a sync offset it
+	// doesn't have. Where a hidden binding exists, the model decides; where it doesn't, visible is
+	// the only sensible answer.
+	NSDictionary *bindingInfo = [view infoForBinding:NSHiddenBinding];
+	if (bindingInfo == nil) return NO;
+	id observedObject = [bindingInfo objectForKey:NSObservedObjectKey];
+	NSString *observedKeyPath = [bindingInfo objectForKey:NSObservedKeyPathKey];
+	if (observedObject == nil || observedKeyPath == nil) return NO;
+	return [[observedObject valueForKeyPath:observedKeyPath] boolValue];
 }
 
 - (BOOL) hasLoadedVideo

@@ -48,6 +48,48 @@
 			<key>uniqueIdentifier</key>
 			<string>1F528E5F-3B2C-4F87-A287-3D7DE399C0B3</string>
 		</dict>
+		<key>374D664F-3FB9-4FB8-84D0-3993B23B8A7A</key>
+		<dict>
+			<key>className</key>
+			<string>IDECommandLineBuildLog</string>
+			<key>documentTypeString</key>
+			<string>&lt;nil&gt;</string>
+			<key>domainType</key>
+			<string>Xcode.IDEActivityLogDomainType.BuildLog</string>
+			<key>fileName</key>
+			<string>374D664F-3FB9-4FB8-84D0-3993B23B8A7A.xcactivitylog</string>
+			<key>hasPrimaryLog</key>
+			<true/>
+			<key>primaryObservable</key>
+			<dict>
+				<key>highLevelStatus</key>
+				<string>W</string>
+				<key>totalNumberOfAnalyzerIssues</key>
+				<integer>0</integer>
+				<key>totalNumberOfErrors</key>
+				<integer>0</integer>
+				<key>totalNumberOfTestFailures</key>
+				<integer>0</integer>
+				<key>totalNumberOfWarnings</key>
+				<integer>9665</integer>
+			</dict>
+			<key>schemeIdentifier-containerName</key>
+			<string>VidSync project</string>
+			<key>schemeIdentifier-schemeName</key>
+			<string>VidSync</string>
+			<key>schemeIdentifier-sharedScheme</key>
+			<integer>0</integer>
+			<key>signature</key>
+			<string>Building project VidSync with scheme VidSync and configuration Debug</string>
+			<key>timeStartedRecording</key>
+			<real>807525047.55350399</real>
+			<key>timeStoppedRecording</key>
+			<real>807525050.53832996</real>
+			<key>title</key>
+			<string>Building project VidSync with scheme VidSync and configuration Debug</string>
+			<key>uniqueIdentifier</key>
+			<string>374D664F-3FB9-4FB8-84D0-3993B23B8A7A</string>
+		</dict>
 		<key>8E0D95CA-0046-4DF5-8A9F-E25CF1C95DBD</key>
 		<dict>
 			<key>className</key>
