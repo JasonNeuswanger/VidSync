@@ -1,0 +1,63 @@
+THIRD-PARTY COMPONENTS DISTRIBUTED WITH VIDSYNC
+===============================================
+
+VidSync links or bundles the components below. Each is listed with its license
+and where its full text can be found. VidSync's own license is in LICENSE.
+
+
+GNU Scientific Library (GSL) 2.6
+--------------------------------
+License:  GNU General Public License, version 3 or later
+Text:     LICENSE-GPL-3.0.txt
+Used for: nonlinear least squares, multidimensional root finding, and function
+          minimisation in the calibration and refraction pipelines
+Note:     GSL is statically linked. Because the GPL requires that a combined
+          work be conveyed as a whole under the GPL, the compiled VidSync
+          application is governed by the GPL v3. See LICENSE.
+Source:   https://www.gnu.org/software/gsl/
+
+
+OpenCV 4.x
+----------
+License:  Apache License, Version 2.0
+Text:     licenses/Apache-2.0.txt
+Used for: chessboard corner detection and image processing in the calibration
+          pipeline
+Note:     OpenCV changed from the 3-clause BSD license to Apache 2.0 in version
+          4.5.0 (October 2020). Apache 2.0 permits commercial and proprietary
+          distribution; it requires that the license text be reproduced, that
+          modified files be marked, and that existing notices be retained.
+          OpenCV ships no NOTICE file, so Apache 2.0 section 4(d) does not
+          apply.
+Source:   https://opencv.org/license/
+
+  OpenCV bundles third-party components of its own, which are redistributed
+  inside opencv2.framework. All are permissive; none is copyleft. They include
+  libjpeg-turbo, libpng, libtiff, libopenjp2, libwebp, zlib, protobuf, ade,
+  flatbuffers, dlpack, KleidiCV, Berkeley SoftFloat, and the KAZE/AKAZE
+  implementations. Their notices are carried in the OpenCV distribution.
+
+  This build reports FFMPEG: NO and GStreamer: NO, so no LGPL or GPL media
+  component is present. Rebuilding OpenCV on a machine with FFmpeg installed
+  can silently re-enable it via pkg-config; use -DWITH_FFMPEG=OFF to prevent
+  that.
+
+
+Apple system frameworks
+-----------------------
+License:  Apple SDK terms; see https://developer.apple.com/support/terms/
+Used for: AVFoundation, AVKit, Accelerate, AppKit, Cocoa, CoreData, CoreMedia,
+          Foundation, Quartz, QuartzCore, SceneKit, UniformTypeIdentifiers
+Note:     These are part of macOS and are dynamically linked, not redistributed
+          with VidSync. No attribution is required.
+
+
+Video codecs
+------------
+VidSync decodes and encodes video through AVFoundation and VideoToolbox, using
+the codec implementations provided by macOS. VidSync bundles no codec of its
+own.
+
+
+-------------------------------------------------------------------------------
+If you believe a component is missing from this list, please open an issue.
