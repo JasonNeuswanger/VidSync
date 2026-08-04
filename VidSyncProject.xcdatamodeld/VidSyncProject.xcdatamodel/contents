@@ -1,0 +1,228 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="1" systemVersion="11A491" minimumToolsVersion="Automatic" sourceLanguage="Objective-C" userDefinedModelVersionIdentifier="">
+    <entity name="VSAnnotation" representedClassName="VSAnnotation" parentEntity="VSVisibleItem" syncable="YES">
+        <attribute name="appendsTimer" attributeType="Boolean" defaultValueString="NO"/>
+        <attribute name="observer" attributeType="String" defaultValueString="None"/>
+        <attribute name="screenX" optional="YES" attributeType="Float" defaultValueString="0"/>
+        <attribute name="screenY" optional="YES" attributeType="Float" defaultValueString="0"/>
+        <attribute name="startTimecode" optional="YES" attributeType="String" indexed="YES"/>
+        <attribute name="width" attributeType="Float" defaultValueString="300" minValueString="1"/>
+        <relationship name="videoClip" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" indexed="YES" destinationEntity="VSVideoClip" inverseName="annotations" inverseEntity="VSVideoClip"/>
+    </entity>
+    <entity name="VSCalibration" representedClassName="VSCalibration" syncable="YES">
+        <attribute name="axisHorizontal" optional="YES" attributeType="String" defaultValueString="x" maxValueString="1"/>
+        <attribute name="axisVertical" optional="YES" attributeType="String" defaultValueString="z" maxValueString="1"/>
+        <attribute name="cameraMeanPLD" optional="YES" attributeType="Double" defaultValueString="0"/>
+        <attribute name="cameraX" optional="YES" attributeType="Double" defaultValueString="0"/>
+        <attribute name="cameraY" optional="YES" attributeType="Double" defaultValueString="0"/>
+        <attribute name="cameraZ" optional="YES" attributeType="Double" defaultValueString="0"/>
+        <attribute name="distortionCenterX" optional="YES" attributeType="Double" defaultValueString="0"/>
+        <attribute name="distortionCenterY" optional="YES" attributeType="Double" defaultValueString="0"/>
+        <attribute name="distortionHoldOutResidual" optional="YES" attributeType="Double"/>
+        <attribute name="distortionK1" attributeType="Double" defaultValueString="0"/>
+        <attribute name="distortionK2" attributeType="Double" defaultValueString="0"/>
+        <attribute name="distortionK3" attributeType="Double" defaultValueString="0"/>
+        <attribute name="distortionK4" attributeType="Double" defaultValueString="0"/>
+        <attribute name="distortionK5" attributeType="Double" defaultValueString="0"/>
+        <attribute name="distortionK6" attributeType="Double" defaultValueString="0"/>
+        <attribute name="distortionK7" attributeType="Double" defaultValueString="0"/>
+        <attribute name="distortionP1" attributeType="Double" defaultValueString="0"/>
+        <attribute name="distortionP2" attributeType="Double" defaultValueString="0"/>
+        <attribute name="distortionP3" attributeType="Double" defaultValueString="0"/>
+        <attribute name="distortionP4" attributeType="Double" defaultValueString="0"/>
+        <attribute name="distortionReductionAchieved" attributeType="Double" defaultValueString="0"/>
+        <attribute name="distortionRemainingPerPoint" optional="YES" attributeType="Double" defaultValueString="0"/>
+        <attribute name="frontQuadratSurfaceRefractiveIndex" optional="YES" attributeType="Double" defaultValueString="1.585" minValueString="1"/>
+        <attribute name="frontQuadratSurfaceThickness" optional="YES" attributeType="Double" defaultValueString="0.009525" minValueString="0"/>
+        <attribute name="matrixQuadratBackToScreen" optional="YES" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromData"/>
+        <attribute name="matrixQuadratFrontToScreen" optional="YES" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromData"/>
+        <attribute name="matrixScreenToQuadratBack" optional="YES" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromData"/>
+        <attribute name="matrixScreenToQuadratFront" optional="YES" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromData"/>
+        <attribute name="mediumRefractiveIndex" optional="YES" attributeType="Double" defaultValueString="1.3364" minValueString="1"/>
+        <attribute name="planeCoordBack" optional="YES" attributeType="Float" defaultValueString="0"/>
+        <attribute name="planeCoordFront" optional="YES" attributeType="Float" defaultValueString="0"/>
+        <attribute name="quadratNodesBack" optional="YES" attributeType="Transformable" valueTransformerName="VSQuadratNodeListTransformerName"/>
+        <attribute name="quadratNodesFront" optional="YES" attributeType="Transformable" valueTransformerName="VSQuadratNodeListTransformerName"/>
+        <attribute name="residualBackLeastSquares" optional="YES" attributeType="Float" defaultValueString="0"/>
+        <attribute name="residualBackPixel" optional="YES" attributeType="Float" defaultValueString="0"/>
+        <attribute name="residualBackWorld" optional="YES" attributeType="Float" defaultValueString="0"/>
+        <attribute name="residualFrontLeastSquares" optional="YES" attributeType="Float" defaultValueString="0"/>
+        <attribute name="residualFrontPixel" optional="YES" attributeType="Float" defaultValueString="0"/>
+        <attribute name="residualFrontWorld" optional="YES" attributeType="Float" defaultValueString="0"/>
+        <attribute name="shouldCorrectRefraction" optional="YES" attributeType="Boolean"/>
+        <relationship name="distortionLines" optional="YES" toMany="YES" deletionRule="Cascade" indexed="YES" destinationEntity="VSDistortionLine" inverseName="calibration" inverseEntity="VSDistortionLine"/>
+        <relationship name="pointsBack" optional="YES" toMany="YES" deletionRule="Cascade" indexed="YES" destinationEntity="VSCalibrationPointBack" inverseName="calibration" inverseEntity="VSCalibrationPointBack"/>
+        <relationship name="pointsFront" optional="YES" toMany="YES" deletionRule="Cascade" indexed="YES" destinationEntity="VSCalibrationPointFront" inverseName="calibration" inverseEntity="VSCalibrationPointFront"/>
+        <relationship name="videoClip" minCount="1" maxCount="1" deletionRule="Nullify" indexed="YES" destinationEntity="VSVideoClip" inverseName="calibration" inverseEntity="VSVideoClip"/>
+    </entity>
+    <entity name="VSCalibrationPoint" representedClassName="VSCalibrationPoint" isAbstract="YES" parentEntity="VSScreenPoint" syncable="YES">
+        <attribute name="index" attributeType="Integer 16" defaultValueString="1" minValueString="1" indexed="YES"/>
+        <attribute name="worldHcoord" optional="YES" attributeType="Float" defaultValueString="0"/>
+        <attribute name="worldVcoord" optional="YES" attributeType="Float" defaultValueString="0"/>
+    </entity>
+    <entity name="VSCalibrationPointBack" representedClassName="VSCalibrationPoint" parentEntity="VSCalibrationPoint" syncable="YES">
+        <relationship name="calibration" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" indexed="YES" destinationEntity="VSCalibration" inverseName="pointsBack" inverseEntity="VSCalibration"/>
+    </entity>
+    <entity name="VSCalibrationPointFront" representedClassName="VSCalibrationPoint" parentEntity="VSCalibrationPoint" syncable="YES">
+        <relationship name="calibration" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" indexed="YES" destinationEntity="VSCalibration" inverseName="pointsFront" inverseEntity="VSCalibration"/>
+    </entity>
+    <entity name="VSDistortionLine" representedClassName="VSDistortionLine" syncable="YES">
+        <attribute name="timecode" optional="YES" attributeType="String"/>
+        <relationship name="calibration" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" indexed="YES" destinationEntity="VSCalibration" inverseName="distortionLines" inverseEntity="VSCalibration"/>
+        <relationship name="distortionPoints" optional="YES" toMany="YES" deletionRule="Cascade" indexed="YES" destinationEntity="VSDistortionPoint" inverseName="distortionLine" inverseEntity="VSDistortionPoint"/>
+    </entity>
+    <entity name="VSDistortionPoint" representedClassName="VSDistortionPoint" parentEntity="VSScreenPoint" syncable="YES">
+        <attribute name="index" attributeType="Integer 16" defaultValueString="0" minValueString="0" indexed="YES"/>
+        <relationship name="distortionLine" minCount="1" maxCount="1" deletionRule="Nullify" indexed="YES" destinationEntity="VSDistortionLine" inverseName="distortionPoints" inverseEntity="VSDistortionLine"/>
+    </entity>
+    <entity name="VSEventScreenPoint" representedClassName="VSEventScreenPoint" parentEntity="VSScreenPoint" syncable="YES">
+        <attribute name="backFrameWorldH" optional="YES" attributeType="Double"/>
+        <attribute name="backFrameWorldV" optional="YES" attributeType="Double"/>
+        <attribute name="frontFrameWorldH" optional="YES" attributeType="Double"/>
+        <attribute name="frontFrameWorldV" optional="YES" attributeType="Double"/>
+        <relationship name="hintLinesOut" optional="YES" toMany="YES" deletionRule="Nullify" indexed="YES" destinationEntity="VSHintLine" inverseName="fromScreenPoint" inverseEntity="VSHintLine"/>
+        <relationship name="point" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" indexed="YES" destinationEntity="VSPoint" inverseName="screenPoints" inverseEntity="VSPoint"/>
+        <relationship name="videoClip" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" indexed="YES" destinationEntity="VSVideoClip" inverseName="eventScreenPoints" inverseEntity="VSVideoClip"/>
+    </entity>
+    <entity name="VSHintLine" representedClassName="VSHintLine" syncable="YES">
+        <attribute name="backSurfaceX" optional="YES" attributeType="Float" defaultValueString="0"/>
+        <attribute name="backSurfaceY" optional="YES" attributeType="Float" defaultValueString="0"/>
+        <attribute name="frontSurfaceX" optional="YES" attributeType="Float" defaultValueString="0"/>
+        <attribute name="frontSurfaceY" optional="YES" attributeType="Float" defaultValueString="0"/>
+        <relationship name="fromScreenPoint" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" indexed="YES" destinationEntity="VSEventScreenPoint" inverseName="hintLinesOut" inverseEntity="VSEventScreenPoint"/>
+        <relationship name="toVideoClip" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" indexed="YES" destinationEntity="VSVideoClip" inverseName="hintLines" inverseEntity="VSVideoClip"/>
+    </entity>
+    <entity name="VSPoint" representedClassName="VSPoint" parentEntity="VSPoint3D" syncable="YES">
+        <attribute name="index" attributeType="Integer 16" defaultValueString="0" minValueString="0" indexed="YES"/>
+        <attribute name="meanPLD" optional="YES" attributeType="Double" defaultValueString="0"/>
+        <attribute name="nearestCameraDistance" optional="YES" attributeType="Double" defaultValueString="0"/>
+        <attribute name="reprojectionErrorNorm" optional="YES" attributeType="Double" defaultValueString="0"/>
+        <attribute name="timecode" attributeType="String"/>
+        <relationship name="screenPoints" optional="YES" toMany="YES" deletionRule="Cascade" indexed="YES" destinationEntity="VSEventScreenPoint" inverseName="point" inverseEntity="VSEventScreenPoint"/>
+        <relationship name="trackedEvent" minCount="1" maxCount="1" deletionRule="Nullify" indexed="YES" destinationEntity="VSTrackedEvent" inverseName="points" inverseEntity="VSTrackedEvent"/>
+    </entity>
+    <entity name="VSPoint3D" representedClassName="VSPoint3D" isAbstract="YES" syncable="YES">
+        <attribute name="worldX" optional="YES" attributeType="Float" defaultValueString="0"/>
+        <attribute name="worldY" optional="YES" attributeType="Float" defaultValueString="0"/>
+        <attribute name="worldZ" optional="YES" attributeType="Float" defaultValueString="0"/>
+    </entity>
+    <entity name="VSProject" representedClassName="VSProject" syncable="YES">
+        <attribute name="appVersionCreated" optional="YES" attributeType="String"/>
+        <attribute name="appVersionLastSaved" optional="YES" attributeType="String"/>
+        <attribute name="calibrationTimecode" optional="YES" attributeType="String"/>
+        <attribute name="capturePathForMovies" optional="YES" attributeType="String"/>
+        <attribute name="capturePathForStills" optional="YES" attributeType="String"/>
+        <attribute name="currentTimecode" optional="YES" attributeType="String"/>
+        <attribute name="dateCreated" optional="YES" attributeType="String"/>
+        <attribute name="dateLastExported" optional="YES" attributeType="String"/>
+        <attribute name="dateLastSaved" optional="YES" attributeType="String"/>
+        <attribute name="distortionDisplayMode" attributeType="String" defaultValueString="Uncorrected"/>
+        <attribute name="exportClipSelectedClipName" optional="YES" attributeType="String"/>
+        <attribute name="exportPathForData" optional="YES" attributeType="String"/>
+        <attribute name="movieCaptureEndTime" optional="YES" attributeType="String"/>
+        <attribute name="movieCaptureStartTime" optional="YES" attributeType="String"/>
+        <attribute name="name" optional="YES" attributeType="String" defaultValueString="UnnamedPair"/>
+        <attribute name="notes" optional="YES" attributeType="String"/>
+        <attribute name="updatedSinceLastExport" attributeType="Boolean" defaultValueString="YES"/>
+        <attribute name="useIterativeTriangulation" attributeType="Boolean" defaultValueString="YES"/>
+        <relationship name="masterClip" optional="YES" minCount="1" maxCount="1" deletionRule="Cascade" indexed="YES" destinationEntity="VSVideoClip" inverseName="isMasterClipOf" inverseEntity="VSVideoClip"/>
+        <relationship name="trackedEventTypes" optional="YES" toMany="YES" deletionRule="Nullify" indexed="YES" destinationEntity="VSTrackedEventType" inverseName="project" inverseEntity="VSTrackedEventType"/>
+        <relationship name="trackedObjectTypes" optional="YES" toMany="YES" deletionRule="Nullify" indexed="YES" destinationEntity="VSTrackedObjectType" inverseName="project" inverseEntity="VSTrackedObjectType"/>
+        <relationship name="trackedObjects" optional="YES" toMany="YES" deletionRule="Cascade" indexed="YES" destinationEntity="VSTrackedObject" inverseName="project" inverseEntity="VSTrackedObject"/>
+        <relationship name="videoClips" optional="YES" toMany="YES" minCount="1" deletionRule="Cascade" indexed="YES" destinationEntity="VSVideoClip" inverseName="project" inverseEntity="VSVideoClip"/>
+    </entity>
+    <entity name="VSScreenPoint" representedClassName="VSScreenPoint" isAbstract="YES" syncable="YES">
+        <attribute name="screenX" attributeType="Float" defaultValueString="0"/>
+        <attribute name="screenY" attributeType="Float" defaultValueString="0"/>
+    </entity>
+    <entity name="VSTrackedEvent" representedClassName="VSTrackedEvent" parentEntity="VSVisibleItem" syncable="YES">
+        <attribute name="index" attributeType="Integer 16" defaultValueString="0" indexed="YES"/>
+        <attribute name="name" optional="YES" attributeType="String"/>
+        <attribute name="observer" attributeType="String" defaultValueString="None"/>
+        <relationship name="points" optional="YES" toMany="YES" deletionRule="Cascade" indexed="YES" destinationEntity="VSPoint" inverseName="trackedEvent" inverseEntity="VSPoint"/>
+        <relationship name="trackedObjects" toMany="YES" deletionRule="Nullify" indexed="YES" destinationEntity="VSTrackedObject" inverseName="trackedEvents" inverseEntity="VSTrackedObject"/>
+        <relationship name="type" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" indexed="YES" destinationEntity="VSTrackedEventType" inverseName="trackedEvents" inverseEntity="VSTrackedEventType"/>
+    </entity>
+    <entity name="VSTrackedEventType" representedClassName="VSTrackedEventType" parentEntity="VSVisibleItem" syncable="YES">
+        <attribute name="connectingLineLabelShowLength" attributeType="Boolean" defaultValueString="YES"/>
+        <attribute name="connectingLineLabelShowSpeed" attributeType="Boolean" defaultValueString="NO"/>
+        <attribute name="connectingLineLengthLabelFontSize" attributeType="Float" defaultValueString="14" minValueString="1"/>
+        <attribute name="connectingLineLengthLabelFractionDigits" attributeType="Integer 16" defaultValueString="1"/>
+        <attribute name="connectingLineLengthLabelUnitMultiplier" attributeType="Float" defaultValueString="1000"/>
+        <attribute name="connectingLineLengthLabelUnits" attributeType="String" defaultValueString="mm"/>
+        <attribute name="connectingLineLengthLabeled" attributeType="Integer 16" defaultValueString="2" minValueString="0" maxValueString="2"/>
+        <attribute name="connectingLineThickness" attributeType="Float" defaultValueString="3" minValueString="0.5"/>
+        <attribute name="connectingLineType" optional="YES" attributeType="String" defaultValueString="None"/>
+        <attribute name="maxNumPoints" optional="YES" attributeType="Integer 16" defaultValueString="0"/>
+        <attribute name="name" optional="YES" attributeType="String" defaultValueString="New Event Type"/>
+        <attribute name="requiresSameTimecode" optional="YES" attributeType="Boolean" defaultValueString="NO"/>
+        <relationship name="project" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" indexed="YES" destinationEntity="VSProject" inverseName="trackedEventTypes" inverseEntity="VSProject"/>
+        <relationship name="trackedEvents" optional="YES" toMany="YES" deletionRule="Nullify" indexed="YES" destinationEntity="VSTrackedEvent" inverseName="type" inverseEntity="VSTrackedEvent"/>
+    </entity>
+    <entity name="VSTrackedObject" representedClassName="VSTrackedObject" parentEntity="VSVisibleItem" syncable="YES">
+        <attribute name="index" attributeType="Integer 16" defaultValueString="0" indexed="YES"/>
+        <attribute name="name" optional="YES" attributeType="String"/>
+        <attribute name="observer" attributeType="String" defaultValueString="None"/>
+        <relationship name="portraits" optional="YES" toMany="YES" deletionRule="Cascade" ordered="YES" indexed="YES" destinationEntity="VSTrackedObjectPortrait" inverseName="trackedObject" inverseEntity="VSTrackedObjectPortrait"/>
+        <relationship name="project" minCount="1" maxCount="1" deletionRule="Nullify" indexed="YES" destinationEntity="VSProject" inverseName="trackedObjects" inverseEntity="VSProject"/>
+        <relationship name="trackedEvents" optional="YES" toMany="YES" deletionRule="Nullify" indexed="YES" destinationEntity="VSTrackedEvent" inverseName="trackedObjects" inverseEntity="VSTrackedEvent"/>
+        <relationship name="type" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" indexed="YES" destinationEntity="VSTrackedObjectType" inverseName="trackedObjects" inverseEntity="VSTrackedObjectType"/>
+    </entity>
+    <entity name="VSTrackedObjectPortrait" representedClassName="VSTrackedObjectPortrait" syncable="YES">
+        <attribute name="frameString" optional="YES" attributeType="String"/>
+        <attribute name="imageData" attributeType="Binary" allowsExternalBinaryDataStorage="YES"/>
+        <attribute name="timecode" attributeType="String"/>
+        <relationship name="sourceVideoClip" optional="YES" maxCount="1" deletionRule="Nullify" indexed="YES" destinationEntity="VSVideoClip" inverseName="portraitsFromClip" inverseEntity="VSVideoClip"/>
+        <relationship name="trackedObject" optional="YES" maxCount="1" deletionRule="Nullify" indexed="YES" destinationEntity="VSTrackedObject" inverseName="portraits" inverseEntity="VSTrackedObject"/>
+    </entity>
+    <entity name="VSTrackedObjectType" representedClassName="VSTrackedObjectType" parentEntity="VSVisibleItem" syncable="YES">
+        <attribute name="name" attributeType="String" defaultValueString="New Object Type"/>
+        <relationship name="project" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" indexed="YES" destinationEntity="VSProject" inverseName="trackedObjectTypes" inverseEntity="VSProject"/>
+        <relationship name="trackedObjects" optional="YES" toMany="YES" deletionRule="Nullify" indexed="YES" destinationEntity="VSTrackedObject" inverseName="type" inverseEntity="VSTrackedObject"/>
+    </entity>
+    <entity name="VSVideoClip" representedClassName="VSVideoClip" syncable="YES">
+        <attribute name="clipName" optional="YES" attributeType="String"/>
+        <attribute name="fileName" optional="YES" attributeType="String"/>
+        <attribute name="muted" attributeType="Boolean" defaultValueString="NO"/>
+        <attribute name="syncIsLocked" attributeType="Boolean" defaultValueString="NO"/>
+        <attribute name="syncOffset" optional="YES" attributeType="String"/>
+        <attribute name="windowFrame" optional="YES" attributeType="String"/>
+        <relationship name="annotations" optional="YES" toMany="YES" deletionRule="Cascade" indexed="YES" destinationEntity="VSAnnotation" inverseName="videoClip" inverseEntity="VSAnnotation"/>
+        <relationship name="calibration" optional="YES" minCount="1" maxCount="1" deletionRule="Cascade" indexed="YES" destinationEntity="VSCalibration" inverseName="videoClip" inverseEntity="VSCalibration"/>
+        <relationship name="eventScreenPoints" optional="YES" toMany="YES" deletionRule="Cascade" indexed="YES" destinationEntity="VSEventScreenPoint" inverseName="videoClip" inverseEntity="VSEventScreenPoint"/>
+        <relationship name="hintLines" optional="YES" toMany="YES" deletionRule="Nullify" indexed="YES" destinationEntity="VSHintLine" inverseName="toVideoClip" inverseEntity="VSHintLine"/>
+        <relationship name="isMasterClipOf" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" indexed="YES" destinationEntity="VSProject" inverseName="masterClip" inverseEntity="VSProject"/>
+        <relationship name="portraitsFromClip" optional="YES" toMany="YES" deletionRule="Nullify" indexed="YES" destinationEntity="VSTrackedObjectPortrait" inverseName="sourceVideoClip" inverseEntity="VSTrackedObjectPortrait"/>
+        <relationship name="project" minCount="1" maxCount="1" deletionRule="Nullify" indexed="YES" destinationEntity="VSProject" inverseName="videoClips" inverseEntity="VSProject"/>
+    </entity>
+    <entity name="VSVisibleItem" representedClassName="VSVisibleItem" isAbstract="YES" syncable="YES">
+        <attribute name="color" optional="YES" attributeType="Transformable" valueTransformerName="VSColorCoreDataTransformerName"/>
+        <attribute name="duration" optional="YES" attributeType="Float" defaultValueString="1"/>
+        <attribute name="fadeTime" optional="YES" attributeType="Float" defaultValueString="0.5"/>
+        <attribute name="notes" optional="YES" attributeType="String"/>
+        <attribute name="shape" optional="YES" attributeType="String" defaultValueString="Circle"/>
+        <attribute name="size" optional="YES" attributeType="Float" defaultValueString="15"/>
+    </entity>
+    <elements>
+        <element name="VSAnnotation" positionX="0" positionY="0" width="128" height="128"/>
+        <element name="VSCalibration" positionX="200" positionY="0" width="128" height="128"/>
+        <element name="VSCalibrationPoint" positionX="400" positionY="0" width="128" height="128"/>
+        <element name="VSCalibrationPointBack" positionX="600" positionY="0" width="128" height="128"/>
+        <element name="VSCalibrationPointFront" positionX="800" positionY="0" width="128" height="128"/>
+        <element name="VSDistortionLine" positionX="0" positionY="200" width="128" height="128"/>
+        <element name="VSDistortionPoint" positionX="200" positionY="200" width="128" height="128"/>
+        <element name="VSEventScreenPoint" positionX="400" positionY="200" width="128" height="128"/>
+        <element name="VSHintLine" positionX="600" positionY="200" width="128" height="128"/>
+        <element name="VSPoint" positionX="800" positionY="200" width="128" height="128"/>
+        <element name="VSPoint3D" positionX="0" positionY="400" width="128" height="128"/>
+        <element name="VSProject" positionX="200" positionY="400" width="128" height="128"/>
+        <element name="VSScreenPoint" positionX="400" positionY="400" width="128" height="128"/>
+        <element name="VSTrackedEvent" positionX="600" positionY="400" width="128" height="128"/>
+        <element name="VSTrackedEventType" positionX="800" positionY="400" width="128" height="128"/>
+        <element name="VSTrackedObject" positionX="0" positionY="600" width="128" height="128"/>
+        <element name="VSTrackedObjectPortrait" positionX="200" positionY="600" width="128" height="128"/>
+        <element name="VSTrackedObjectType" positionX="400" positionY="600" width="128" height="128"/>
+        <element name="VSVideoClip" positionX="600" positionY="600" width="128" height="128"/>
+        <element name="VSVisibleItem" positionX="800" positionY="600" width="128" height="128"/>
+    </elements>
+</model>
