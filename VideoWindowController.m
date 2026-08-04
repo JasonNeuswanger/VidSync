@@ -902,7 +902,22 @@ static NSString * const VSVideoResizeControlIdentifier = @"resizeControl";
 	id observedObject = [bindingInfo objectForKey:NSObservedObjectKey];
 	NSString *observedKeyPath = [bindingInfo objectForKey:NSObservedKeyPathKey];
 	if (observedObject == nil || observedKeyPath == nil) return NO;
-	return [[observedObject valueForKeyPath:observedKeyPath] boolValue];
+
+	// The raw keypath value is whatever the model holds, which is often not a boolean at all --
+	// these bindings watch videoClip.isMasterClipOf, a VSProject or nil, and rely on an NSIsNotNil
+	// transformer to turn it into one. Apply the binding's transformer before asking for a boolean.
+	id value = [observedObject valueForKeyPath:observedKeyPath];
+	NSDictionary *options = [bindingInfo objectForKey:NSOptionsKey];
+	NSValueTransformer *transformer = [options objectForKey:NSValueTransformerBindingOption];
+	if (transformer == nil) {
+		NSString *transformerName = [options objectForKey:NSValueTransformerNameBindingOption];
+		if ([transformerName length] > 0) transformer = [NSValueTransformer valueTransformerForName:transformerName];
+	}
+	if (transformer != nil) value = [transformer transformedValue:value];
+
+	// Anything still not boolean-ish counts as "not hidden" rather than risking another
+	// unrecognized selector on a code path that runs every time the window resizes.
+	return [value respondsToSelector:@selector(boolValue)] ? [value boolValue] : NO;
 }
 
 - (BOOL) hasLoadedVideo
