@@ -53,6 +53,8 @@
 - (void) relocateClip;
 
 - (BOOL) respondsToSyncedControls;
+- (BOOL) shouldHideSyncOffsetDisplay;
+- (NSString *) syncOffsetFrameCountString;	// signed whole-frame offset for display, e.g. "+142 frames"
 
 - (NSNumber *) timeScale;
 

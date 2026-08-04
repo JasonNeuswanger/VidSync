@@ -141,6 +141,10 @@ static NSString * const VSVideoResizeControlIdentifier = @"resizeControl";
 	assetImageGenerator.appliesPreferredTrackTransform = YES;  // otherwise frames grabbed from rotated (i.e. vertical phone) video come out sideways, unlike what AVPlayerView shows
 	videoTrack = [[asset tracksWithMediaType:AVMediaTypeVideo] firstObject];
 	videoAsset = asset;
+	// videoTrack is an ivar assignment, so no KVO fires for values derived from the track; the
+	// sync-offset display needs the track's frame rate, so renotify it now that the rate is known.
+	[self.videoClip willChangeValueForKey:@"syncOffsetFrameCountString"];
+	[self.videoClip didChangeValueForKey:@"syncOffsetFrameCountString"];
 	playerItem = [AVPlayerItem playerItemWithAsset:asset];
 	playerView.player = [AVPlayer playerWithPlayerItem:playerItem];
 	playerView.player.muted = [self.videoClip.muted boolValue];
@@ -908,10 +912,16 @@ static NSString * const VSVideoResizeControlIdentifier = @"resizeControl";
 	// transformer to turn it into one. Apply the binding's transformer before asking for a boolean.
 	id value = [observedObject valueForKeyPath:observedKeyPath];
 	NSDictionary *options = [bindingInfo objectForKey:NSOptionsKey];
-	NSValueTransformer *transformer = [options objectForKey:NSValueTransformerBindingOption];
-	if (transformer == nil) {
-		NSString *transformerName = [options objectForKey:NSValueTransformerNameBindingOption];
-		if ([transformerName length] > 0) transformer = [NSValueTransformer valueTransformerForName:transformerName];
+
+	// Binding options use NSNull as a placeholder for "not set" rather than omitting the key, so
+	// every lookup here has to be type-checked rather than merely nil-checked.
+	id transformer = [options objectForKey:NSValueTransformerBindingOption];
+	if (![transformer isKindOfClass:[NSValueTransformer class]]) {
+		transformer = nil;
+		id transformerName = [options objectForKey:NSValueTransformerNameBindingOption];
+		if ([transformerName isKindOfClass:[NSString class]] && [transformerName length] > 0) {
+			transformer = [NSValueTransformer valueTransformerForName:transformerName];
+		}
 	}
 	if (transformer != nil) value = [transformer transformedValue:value];
 

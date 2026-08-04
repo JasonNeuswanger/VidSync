@@ -83,6 +83,40 @@
 	return ([self.syncIsLocked boolValue] || (showAdvancedControlsWithOnlyMasterClip && [self.isMasterClipOf isEqualTo:self.project] && [self.project.videoClips count] == 1));
 }
 
+// Drives the "Sync Offset" label and value in the clip window: shown only for a non-master clip
+// whose sync is locked. NSTextField has no "hidden2" binding, so the OR of the two conditions has
+// to be computed here rather than stacked in the xib.
++ (NSSet *) keyPathsForValuesAffectingShouldHideSyncOffsetDisplay
+{
+	return [NSSet setWithObjects:@"isMasterClipOf",@"syncIsLocked",nil];
+}
+
+- (BOOL) shouldHideSyncOffsetDisplay
+{
+	return (self.isMasterClipOf != nil || ![self.syncIsLocked boolValue]);
+}
+
+// The clip window shows the sync offset as a signed whole frame count ("+142", "-37"), which is what
+// the user actually reasons about when nudging clips into sync, rather than the stored timecode string.
++ (NSSet *) keyPathsForValuesAffectingSyncOffsetFrameCountString
+{
+	// windowController matters because the frame count needs the video track's frame rate, which
+	// only exists once a window controller has loaded the asset; without it the binding would keep
+	// the empty value it computed before the video finished loading.
+	return [NSSet setWithObjects:@"syncOffset",@"windowController",nil];
+}
+
+- (NSString *) syncOffsetFrameCountString
+{
+	if (self.syncOffset == nil) return @"";
+	double offsetSeconds = CMTimeGetSeconds([UtilityFunctions CMTimeFromString:self.syncOffset]);
+	if (!isfinite(offsetSeconds)) return @"";
+	float clipFrameRate = [self frameRate];
+	if (clipFrameRate <= 0.0f) return [NSString stringWithFormat:@"%+.3f s",offsetSeconds];	// frame rate unknown until the track loads
+	long frames = lround(offsetSeconds * clipFrameRate);
+	return [NSString stringWithFormat:@"%+ld frames",frames];
+}
+
 - (NSNumber *) timeScale
 {
 	return [NSNumber numberWithInt:self.windowController.videoTrack.naturalTimeScale];

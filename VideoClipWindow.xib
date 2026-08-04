@@ -63,7 +63,7 @@
                         </connections>
                     </button>
                     <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="33">
-                        <rect key="frame" x="253" y="476" width="67" height="14"/>
+                        <rect key="frame" x="387" y="476" width="67" height="14"/>
                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
                         <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Sync Offset:" id="34">
                             <font key="font" metaFont="smallSystem"/>
@@ -71,24 +71,11 @@
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                         <connections>
-                            <binding destination="-2" name="hidden" keyPath="videoClip.isMasterClipOf" id="6gx-tB-LgC">
-                                <dictionary key="options">
-                                    <string key="NSValueTransformerName">NSIsNotNil</string>
-                                </dictionary>
-                            </binding>
-                            <binding destination="-2" name="hidden2" keyPath="videoClip.syncIsLocked" previousBinding="6gx-tB-LgC" id="zm0-7X-kls">
-                                <dictionary key="options">
-                                    <integer key="NSMultipleValuesPlaceholder" value="-1"/>
-                                    <integer key="NSNoSelectionPlaceholder" value="-1"/>
-                                    <integer key="NSNotApplicablePlaceholder" value="-1"/>
-                                    <integer key="NSNullPlaceholder" value="-1"/>
-                                    <string key="NSValueTransformerName">NSNegateBoolean</string>
-                                </dictionary>
-                            </binding>
+                            <binding destination="-2" name="hidden" keyPath="videoClip.shouldHideSyncOffsetDisplay" id="6gx-tB-LgC"/>
                         </connections>
                     </textField>
                     <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="hX2-gK-7S6">
-                        <rect key="frame" x="324" y="476" width="218" height="14"/>
+                        <rect key="frame" x="458" y="476" width="80" height="14"/>
                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
                         <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Sync Offset" id="6v0-NF-cnE">
                             <font key="font" metaFont="smallSystem"/>
@@ -96,21 +83,8 @@
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                         <connections>
-                            <binding destination="-2" name="hidden" keyPath="videoClip.isMasterClipOf" id="Tup-lm-j5Y">
-                                <dictionary key="options">
-                                    <string key="NSValueTransformerName">NSIsNotNil</string>
-                                </dictionary>
-                            </binding>
-                            <binding destination="-2" name="hidden2" keyPath="videoClip.syncIsLocked" previousBinding="Tup-lm-j5Y" id="HTF-HV-45A">
-                                <dictionary key="options">
-                                    <integer key="NSMultipleValuesPlaceholder" value="-1"/>
-                                    <integer key="NSNoSelectionPlaceholder" value="-1"/>
-                                    <integer key="NSNotApplicablePlaceholder" value="-1"/>
-                                    <integer key="NSNullPlaceholder" value="-1"/>
-                                    <string key="NSValueTransformerName">NSNegateBoolean</string>
-                                </dictionary>
-                            </binding>
-                            <binding destination="-2" name="value" keyPath="videoClip.syncOffset" id="7h8-zH-9ps">
+                            <binding destination="-2" name="hidden" keyPath="videoClip.shouldHideSyncOffsetDisplay" id="Tup-lm-j5Y"/>
+                            <binding destination="-2" name="value" keyPath="videoClip.syncOffsetFrameCountString" id="7h8-zH-9ps">
                                 <dictionary key="options">
                                     <bool key="NSAllowsEditingMultipleValuesSelection" value="NO"/>
                                 </dictionary>
