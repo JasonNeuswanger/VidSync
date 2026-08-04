@@ -24,6 +24,7 @@
 
 
 #import "AppDelegate.h"
+#import "VSCrashReporter.h"
 
 @implementation AppDelegate
 
@@ -38,6 +39,11 @@
 
 - (void) applicationDidFinishLaunching:(NSNotification *)notification
 {
+	// Crash handling first, so even a crash later in launch gets recorded; then the offer to email
+	// any report the previous run left behind.
+	[VSCrashReporter install];
+	[VSCrashReporter offerToSendPendingReport];
+
 	// The stock Window menu items get their glyphs from the system, so Tile Windows has to supply its
 	// own to match them. Set here rather than in the nib because Interface Builder's symbol-image
 	// markup is easy to lose, and because this can fall back if a symbol isn't available.
