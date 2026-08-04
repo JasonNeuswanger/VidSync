@@ -29,6 +29,13 @@
 // matching the gap between the content view and the AVPlayerView in VideoClipWindow.xib.
 static const CGFloat VSVideoControlStripHeight = 26.0f;
 
+// Below this content width the controls above the video run into each other. That used to be handled by
+// keeping the window wide and letting the video shrink inside it, which defeated the point of the smallest
+// resize presets. Now the window is allowed to follow the video all the way down, and everything in the
+// strip except the resize control hides once there is no longer room to lay it out.
+static const CGFloat VSVideoControlStripCrowdingWidth = 560.0f;
+static NSString * const VSVideoResizeControlIdentifier = @"resizeControl";
+
 
 @implementation VideoWindowController
 
@@ -142,7 +149,8 @@ static const CGFloat VSVideoControlStripHeight = 26.0f;
 	
 	movieSize = [VideoWindowController displaySizeOfVideoTrack:videoTrack];
 	if (self.videoClip.windowFrame == nil) [self resizeVideoToFactor:1.0];  // Load new videos at full size
-	
+
+	[self updateControlStripVisibility];	// a restored window frame can be narrow enough to need the compact strip from the start
 	[self fitVideoOverlay];
 	[self processSynchronizationStatus];    // Must be run after the overlay is created, so it can be set not to receive mouse events if the clip is not synced
 	
@@ -310,6 +318,7 @@ static const CGFloat VSVideoControlStripHeight = 26.0f;
 
 - (void)windowDidResize:(NSNotification *)notification // delegate method for the NSWindow being controlled
 {
+	[self updateControlStripVisibility];	// outside the guard below; the strip has to react to a drag-resize whether or not media has loaded
 	if (self.playerItem != nil) { // ignores the resize event when the windows first pop up, before the media is loaded
 		[self fitVideoOverlay];
 		self.videoClip.windowFrame = [[self window] stringWithSavedFrame];
@@ -854,14 +863,32 @@ static const CGFloat VSVideoControlStripHeight = 26.0f;
 	NSWindow *window = [self window];
 	NSSize videoSize = NSMakeSize(sizeFactor*movieSize.width,sizeFactor*movieSize.height);
 
-	// The strip of controls above the video sets a floor on the window's width, below which the video
-	// just gets pillarboxed inside the window; fitVideoOverlay keeps it at the right scale either way.
-	// minSize is a frame size, so it has to be converted before being compared to a content size.
+	// The window still can't go below its own minimum, but that minimum is now only what the resize control
+	// itself needs rather than the whole strip, so the small presets shrink the window instead of pillarboxing
+	// the video inside a window held open by controls. minSize is a frame size, so it has to be converted
+	// before being compared to a content size.
 	NSSize minContentSize = [window contentRectForFrameRect:NSMakeRect(0.0f,0.0f,window.minSize.width,window.minSize.height)].size;
 	NSSize newContentSize = NSMakeSize(MAX(videoSize.width,minContentSize.width),
 									   MAX(videoSize.height + VSVideoControlStripHeight,minContentSize.height));
 	[window setContentSize:newContentSize];
+	[self updateControlStripVisibility];
 	[self fitVideoOverlay];		// setContentSize: doesn't notify the delegate when the size is unchanged, so don't rely on windowDidResize: for this
+}
+
+- (void) updateControlStripVisibility
+{
+	// Everything in the strip above the video hides when the window is too narrow to lay it out, leaving only
+	// the resize control so the window can always be brought back up to a workable size. The strip is every
+	// direct subview of the content view apart from the player; anything added there later will hide too,
+	// which is the intended default -- tag a view with the resize control's identifier to keep it visible.
+	NSView *contentView = [[self window] contentView];
+	if (contentView == nil) return;
+	BOOL crowded = ([contentView frame].size.width < VSVideoControlStripCrowdingWidth);
+	for (NSView *subview in [contentView subviews]) {
+		if ([subview isKindOfClass:[AVPlayerView class]]) continue;
+		if ([[subview identifier] isEqualToString:VSVideoResizeControlIdentifier]) continue;
+		[subview setHidden:crowded];
+	}
 }
 
 - (BOOL) hasLoadedVideo
