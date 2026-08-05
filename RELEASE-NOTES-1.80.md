@@ -28,6 +28,33 @@ calibration now includes the camera's central sight line and angular field of vi
 
 ## Other changes
 
+### Numbers that may change
+
+A batch of correctness fixes in the calibration and triangulation math means some figures
+will read differently than they did in 1.721. The new values are the right ones.
+
+- **Mean remaining distortion per point now reads higher, and is correct.** Plumblines with
+  fewer than three points are straight by definition and contribute nothing to the fit, but
+  they were still counted in the denominator, which quietly flattered the reported residual.
+  Only lines that can actually contribute are counted now.
+- **Fitted distortion parameters may differ slightly.** The quantity being minimised is no
+  longer divided by total line length, and a fit that stalled at the iteration limit used to
+  be accepted as though it had converged, which also stopped the remaining starting guesses
+  from being tried. Undistorted screen coordinates shift accordingly.
+- **Refraction-corrected coordinates no longer go undefined in edge cases.** Angles very
+  slightly outside the valid range for their inverse cosine produced undefined results, as
+  could a square root of a marginally negative number; both are now clamped.
+- **Triangulation reads its screen points in a fixed order.** The previous code re-derived
+  the point list on every pass through the loop and depended on an ordering the system does
+  not guarantee, which could mismatch sight lines to their points.
+- Solving with fewer than two contributing lines returns nothing rather than the output of a
+  singular matrix.
+
+If you reopen an older project and want its stored values brought onto the current math, use
+**Recalculate All Points**. This is also the fix for projects analysed across the 1.64
+boundary years ago, whose stored reprojection errors can be larger than they should be by a
+factor of about 1.4 for two-camera points.
+
 ### Measurement and calibration
 - Hint lines are traced along the line rather than sorted by horizontal position, are
   rebuilt whenever a point is recalculated, and treat "unpaired" as a property of the point
