@@ -31,6 +31,8 @@
 @synthesize visibleScreenPoints;
 @synthesize visibleAnnotations;
 @synthesize vwc;    // VideoWindowController this view's window belongs to
+@synthesize isRenderingForExport;
+@synthesize exportRenderTime;
 
 
 - (id)initWithFrame:(NSRect)frame andWindowController:(VideoWindowController *)windowController
@@ -102,10 +104,15 @@
 #pragma mark
 #pragma mark Drawing Methods
 
-- (void)drawRect:(NSRect)rect 
+- (void)drawRect:(NSRect)rect
+{
+	[self drawOverlayContent];
+}
+
+- (void) drawOverlayContent	// shared by on-screen drawRect: and offscreen export rendering
 {
 	BOOL showPixelErrorOverlay = [[[[NSUserDefaultsController sharedUserDefaultsController] values] valueForKey:@"showPixelErrorOverlay"] boolValue];
-	
+
 	[[NSColor clearColor] set]; // Use clearColor when not testing size
 	NSRectFill([self bounds]);  // without the clearColor fill, this layer fills with a non-transparent gray and completely obscures the video
 	[self calculateVisibleScreenPoints];
@@ -120,10 +127,73 @@
 	if (showPixelErrorOverlay) [self drawScreenPointToIdealScreenPointComparison];
 }
 
+#pragma mark
+#pragma mark Export Rendering
+
+- (CMTime) renderMasterTime
+{
+	if (isRenderingForExport) return exportRenderTime;
+	return [vwc.document currentMasterTime];
+}
+
+- (NSString *) renderMasterTimeString
+{
+	if (isRenderingForExport) return [UtilityFunctions CMStringFromTime:exportRenderTime onScale:[[vwc.videoClip.project.masterClip timeScale] intValue]];
+	return [vwc.document currentMasterTimeString];
+}
+
+- (BOOL) clipIsAtCalibrationTimeForRender
+{
+	if (!isRenderingForExport) return [vwc.videoClip isAtCalibrationTime];
+	// Offline, "is the clip at the calibration time" is just "is the render time the calibration timecode";
+	// the player-position part of isAtCalibrationTime is meaningless because no player is being moved.
+	return [UtilityFunctions timeString:vwc.videoClip.project.calibrationTimecode isEqualToTimeString:[self renderMasterTimeString]];
+}
+
+- (CGImageRef) newOverlayImageForExportAtMasterTime:(CMTime)masterTime pixelSize:(CGSize)pixelSize
+{
+	NSRect viewBounds = [self bounds];
+	if (viewBounds.size.width < 1 || viewBounds.size.height < 1 || pixelSize.width < 1 || pixelSize.height < 1) return NULL;
+	NSBitmapImageRep *rep = [[NSBitmapImageRep alloc] initWithBitmapDataPlanes:NULL
+													  pixelsWide:(NSInteger) round(pixelSize.width)
+													  pixelsHigh:(NSInteger) round(pixelSize.height)
+												   bitsPerSample:8
+												 samplesPerPixel:4
+													    hasAlpha:YES
+													    isPlanar:NO
+												  colorSpaceName:NSCalibratedRGBColorSpace
+													 bytesPerRow:0
+													 bitsPerPixel:0];
+	if (rep == nil) return NULL;
+	NSGraphicsContext *context = [NSGraphicsContext graphicsContextWithBitmapImageRep:rep];
+	if (context == nil) return NULL;
+	[NSGraphicsContext saveGraphicsState];
+	[NSGraphicsContext setCurrentContext:context];
+	CGContextClearRect([context CGContext],CGRectMake(0,0,pixelSize.width,pixelSize.height));
+	// Scale so the drawing code works in its usual overlay coordinates but fills the full-resolution
+	// bitmap; being vector drawing, everything comes out crisp rather than upscaled, with the same
+	// proportions the user sees on screen.
+	NSAffineTransform *scaleToPixels = [NSAffineTransform transform];
+	[scaleToPixels scaleXBy:pixelSize.width/viewBounds.size.width yBy:pixelSize.height/viewBounds.size.height];
+	[scaleToPixels concat];
+	self.isRenderingForExport = YES;
+	self.exportRenderTime = masterTime;
+	@try {
+		[self drawOverlayContent];
+	} @finally {
+		self.isRenderingForExport = NO;
+	}
+	[context flushGraphics];
+	[NSGraphicsContext restoreGraphicsState];
+	CGImageRef image = [rep CGImage];
+	if (image != NULL) CGImageRetain(image);	// keep it alive past rep's autorelease; caller releases
+	return image;
+}
+
 - (void) calculateVisibleScreenPoints;
 {
 	NSMutableSet *tempVisibleScreenPoints = [NSMutableSet set];
-	CMTime now = [vwc.document currentMasterTime];
+	CMTime now = [self renderMasterTime];
 	for (VSEventScreenPoint *screenPoint in vwc.videoClip.eventScreenPoints) {
 		if (CMTimeRangeContainsTime(screenPoint.totalTimeRange,now)) {
 			[tempVisibleScreenPoints addObject:screenPoint];
@@ -138,7 +208,7 @@
 - (void) calculateVisibleAnnotations;
 {
 	NSMutableSet *tempVisibleAnnotations = [NSMutableSet new];
-	CMTime now = [vwc.document currentMasterTime];
+	CMTime now = [self renderMasterTime];
 	for (VSAnnotation *annotation in vwc.videoClip.annotations) {
 		CMTime startTime = [UtilityFunctions CMTimeFromString:annotation.startTimecode];
 		CMTime solidDuration = CMTimeMake([annotation.duration doubleValue] * [[vwc.videoClip timeScale] longValue], [[vwc.videoClip timeScale] intValue]);
@@ -161,6 +231,7 @@
 }
 
 - (void) drawPortraitSelectionBox {
+	if (isRenderingForExport) return;	// portrait frames are transient input feedback, not annotation content
 	// If the user just double-clicked on a portrait to view it in the video window, draw the frame but then set it to disappear on the next screen draw.
 	if (vwc.shouldShowPortraitFrame != nil && ![vwc.shouldShowPortraitFrame isEqualToString:@""]) {
 		NSColor *selectionColor = [UtilityFunctions userDefaultColorForKey:@"pointSelectionIndicatorColor"];
@@ -230,7 +301,7 @@
 	NSMutableString *annotationText = [[NSMutableString alloc] initWithString:annotation.notes];
 	
 	if ([annotation.appendsTimer boolValue] == YES) {
-		CMTime timeElapsed = CMTimeSubtract([vwc.document currentMasterTime], [UtilityFunctions CMTimeFromString:annotation.startTimecode]);
+		CMTime timeElapsed = CMTimeSubtract([self renderMasterTime], [UtilityFunctions CMTimeFromString:annotation.startTimecode]);
 		[annotationText appendFormat:@"\n%@",[UtilityFunctions CMStringFromTime:timeElapsed]];
 	}
 	
@@ -253,7 +324,7 @@
 	
 	[annotationString drawWithRect:drawingRect options:NSStringDrawingTruncatesLastVisibleLine|NSStringDrawingUsesLineFragmentOrigin];
 	
-	if ([[vwc.videoClip.project.document.annotationsController selectedObjects] count] > 0 && [[[vwc.videoClip.project.document.annotationsController selectedObjects] objectAtIndex:0] isEqualTo:annotation]) {
+	if (!isRenderingForExport && [[vwc.videoClip.project.document.annotationsController selectedObjects] count] > 0 && [[[vwc.videoClip.project.document.annotationsController selectedObjects] objectAtIndex:0] isEqualTo:annotation]) {
 		NSColor *selectionColor = [UtilityFunctions userDefaultColorForKey:@"pointSelectionIndicatorColor"];
 		[[NSColor colorWithDeviceRed:[selectionColor redComponent] green:[selectionColor greenComponent] blue:[selectionColor blueComponent] alpha:annotation.tempOpacity] set];
 		NSRect selectionRect = NSMakeRect(drawingRect.origin.x - selectionPadding,drawingRect.origin.y - selectionPadding,drawingRect.size.width + 2*selectionPadding,drawingRect.size.height + 2*selectionPadding);
@@ -391,7 +462,7 @@
 	for (VSDistortionLine *distortionLine in distortionLines) {
 		
 		// If the value below is 2, show all lines; otherwise, make sure they're from the current timecode
-		if (showDistortionLinesFromWhichTimecodes == 2 || [UtilityFunctions timeString:distortionLine.timecode isEqualToTimeString:[vwc.videoClip.project.document currentMasterTimeString]]) {
+		if (showDistortionLinesFromWhichTimecodes == 2 || [UtilityFunctions timeString:distortionLine.timecode isEqualToTimeString:[self renderMasterTimeString]]) {
 			
 			distortionPoints = [[distortionLine.distortionPoints allObjects] sortedArrayUsingDescriptors:[NSArray arrayWithObject:indexDescriptor]]; // all points on current line, sorted by index
 			
@@ -526,7 +597,7 @@
 	}
 	
 	// Draw the selection indicator if we're drawing a clip with a current selection
-	if ([[vwc.videoClip.project.document.distortionPointsController selectedObjects] count] > 0) {
+	if (!isRenderingForExport && [[vwc.videoClip.project.document.distortionPointsController selectedObjects] count] > 0) {
 		VSDistortionPoint *selectedDistortionPoint = [[vwc.videoClip.project.document.distortionPointsController selectedObjects] objectAtIndex:0];
 		if ([selectedDistortionPoint.distortionLine.calibration.videoClip isEqualTo:vwc.videoClip]) {
 			NSPoint selectedPoint = [vwc convertVideoToOverlayCoords:NSMakePoint([selectedDistortionPoint.screenX floatValue],[selectedDistortionPoint.screenY floatValue])];
@@ -539,7 +610,7 @@
 
 - (void) drawMeasurementScreenPoints
 {
-	CMTime now = [vwc.document currentMasterTime];
+	CMTime now = [self renderMasterTime];
 	NSSet *trackedEventsNeedingConnectingLinesDrawn = [NSSet set];
 	for (VSEventScreenPoint *screenPoint in self.visibleScreenPoints) {
 		float currentOpacity = 1.0;
@@ -582,7 +653,7 @@
 	NSMutableArray *sortedPoints = [NSMutableArray new];
 	for (VSPoint *point in allSortedPoints) {   // This filtering prevents showing connecting lines to points in the future
 		CMTime pointTime = [UtilityFunctions CMTimeFromString:point.timecode];
-		CMTime currentTime = [vwc.document currentMasterTime];
+		CMTime currentTime = [self renderMasterTime];
 		if (CMTimeCompare(pointTime,currentTime) <= 0) {
 			[sortedPoints addObject:point];
 		}
@@ -947,7 +1018,7 @@
 		[line2path stroke];
 	}
 	
-	BOOL pointIsSelected = ([[screenPoint.videoClip.project.document.eventsPointsController selectedObjects] count] > 0 && [[screenPoint.videoClip.project.document.eventsPointsController selectedObjects] containsObject:screenPoint.point]);
+	BOOL pointIsSelected = (!isRenderingForExport && [[screenPoint.videoClip.project.document.eventsPointsController selectedObjects] count] > 0 && [[screenPoint.videoClip.project.document.eventsPointsController selectedObjects] containsObject:screenPoint.point]);
 	if (pointIsSelected) [self drawSelectionIndicatorAtPoint:point forShapeOfSize:shapeSize opacity:opacity];
 }
 
@@ -999,7 +1070,7 @@
 		NSMutableSet __block *currentHintLines = [NSMutableSet set];
 		[vwc.videoClip.hintLines enumerateObjectsUsingBlock:^(id obj, BOOL *stop) {
 			VSHintLine *hintLine = obj;
-			if ([UtilityFunctions timeString:hintLine.fromScreenPoint.point.timecode isEqualToTimeString:[vwc.videoClip.project.document currentMasterTimeString]]) [currentHintLines addObject:obj];
+			if ([UtilityFunctions timeString:hintLine.fromScreenPoint.point.timecode isEqualToTimeString:[self renderMasterTimeString]]) [currentHintLines addObject:obj];
 		}];
 		if ([hintLinesSetting isEqualToString:@"All"]) {
 			visibleHintLines = currentHintLines;
@@ -1060,7 +1131,7 @@
 
 - (void) drawCalibrationScreenPoints
 {
-	if ([vwc.videoClip isAtCalibrationTime]) {
+	if ([self clipIsAtCalibrationTimeForRender]) {
 		for (VSCalibrationPoint *backPoint in vwc.videoClip.calibration.pointsBack) {
 			[self drawCalibrationScreenPoint:backPoint forSurface:@"Back"];
 		}
@@ -1110,7 +1181,7 @@
 	NSRectFill(centerPoint);
 	// draw the selection indicator, if the point is selected
 	
-	BOOL pointIsSelected = ([[pointsArrayController selectedObjects] count] > 0 && [[pointsArrayController selectedObjects] containsObject:calibrationPoint]);
+	BOOL pointIsSelected = (!isRenderingForExport && [[pointsArrayController selectedObjects] count] > 0 && [[pointsArrayController selectedObjects] containsObject:calibrationPoint]);
 	if (pointIsSelected) [self drawSelectionIndicatorAtPoint:point forShapeOfSize:radius opacity:1.0];
 	
 	// draw the text label

@@ -26,6 +26,7 @@
 #import <Cocoa/Cocoa.h>
 #import "PortraitBrowserView.h"
 @class MagnifiedPreviewView;
+@class VSExportQueue;
 @class VideoClipArrayController;
 @class TrackedObjectArrayController;
 @class TrackedEventArrayController;
@@ -103,8 +104,6 @@
 	IBOutlet NSTabView *__weak calibrationInputTabView;
 	
 	IBOutlet NSPopUpButton *__weak exportClipSelectionPopUpButton;
-	IBOutlet NSProgressIndicator *__weak videoCaptureProgressIndicator;
-	IBOutlet NSTextField *__weak videoCaptureProgressDescription;
 	
 	IBOutlet NSProgressIndicator *__weak pointRecalculateProgressIndicator;
 	IBOutlet NSPanel *__weak pointRecalculatePanel;
@@ -126,7 +125,7 @@
 	
 	BOOL objectsTableSelectionChangeNotificationCascadeEnabled, eventsTableSelectionChangeNotificationCascadeEnabled;
 	
-	NSMutableSet *activeExportSessions;
+	VSExportQueue *__strong exportQueue;	// created lazily by exportQueueCreatingIfNeeded the first time a capture is queued
 
 	BOOL awaitingInitialWindowLayout;	// YES from the time the document's windows are created until the last video finishes loading
 
@@ -180,6 +179,9 @@
 
 @property (assign) BOOL objectsTableSelectionChangeNotificationCascadeEnabled;
 @property (assign) BOOL eventsTableSelectionChangeNotificationCascadeEnabled;
+
+- (VSExportQueue *) exportQueueCreatingIfNeeded;	// the document's background video export queue
+- (void) playShutterClickSound;
 
 - (id) initWithType:(NSString *)type error:(NSError **)error;
 - (void) windowControllerDidLoadNib:(NSWindowController *)windowController;

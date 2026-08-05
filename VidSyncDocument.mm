@@ -25,6 +25,8 @@
 #import "opencv2/opencv.hpp"
 
 #import "VidSyncDocument.h"
+#import "VSExportQueue.h"
+#import <objc/message.h>
 
 @implementation VidSyncDocument
 
@@ -106,7 +108,6 @@ static void *AVSPPlayerCurrentTimeContext = &AVSPPlayerCurrentTimeContext;
 		[decimalFormatter setGroupingSeparator:@""];
 		[decimalFormatter setMinimumFractionDigits:15];
 		[decimalFormatter setLocale:[NSLocale localeWithLocaleIdentifier:@"en_US_POSIX"]];	// otherwise a comma-decimal locale writes exports no consumer can parse
-		activeExportSessions = [NSMutableSet new];
 	}
 	return self;
 }
@@ -1068,17 +1069,40 @@ static VSTypeImportConflictChoice VSRunTypeImportConflictAlert(NSArray *conflict
 	[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:whb.helpURL]];
 }
 
+- (VSExportQueue *) exportQueueCreatingIfNeeded
+{
+	if (exportQueue == nil) exportQueue = [[VSExportQueue alloc] initWithDocument:self];
+	return exportQueue;
+}
+
+- (void) playShutterClickSound
+{
+	[shutterClick play];
+}
+
 #pragma mark
 #pragma mark Document-closing cleanup behavior
 
-/*
- - (void) canCloseDocumentWithDelegate:(id)delegate shouldCloseSelector:(SEL)shouldCloseSelector contextInfo:(void *)contextInfo
- {
- 
- // This is just called to check if the document CAN be closed; before the user has chosen yes/no/cancel
- 
- }
- */
+- (void) canCloseDocumentWithDelegate:(id)delegate shouldCloseSelector:(SEL)shouldCloseSelector contextInfo:(void *)contextInfo
+{
+	// Closing while exports run used to proceed silently: the workers kept going against the closing
+	// document's windows, so overlay exports finished as annotation-free files with nobody watching.
+	if ([exportQueue hasActiveTasks]) {
+		NSAlert *exportsRunningAlert = [[NSAlert alloc] init];
+		[exportsRunningAlert setMessageText:@"A video export is still running"];
+		[exportsRunningAlert setInformativeText:@"Closing this project now will cancel the export(s) still queued or in progress in its export window."];
+		[exportsRunningAlert addButtonWithTitle:@"Keep Exporting"];
+		[exportsRunningAlert addButtonWithTitle:@"Cancel Exports and Close"];
+		if ([exportsRunningAlert runModal] == NSAlertFirstButtonReturn) {
+			if (delegate != nil && shouldCloseSelector != NULL) {
+				((void (*)(id, SEL, NSDocument *, BOOL, void *))objc_msgSend)(delegate, shouldCloseSelector, self, NO, contextInfo);
+			}
+			return;
+		}
+		[exportQueue cancelAllActiveTasks];
+	}
+	[super canCloseDocumentWithDelegate:delegate shouldCloseSelector:shouldCloseSelector contextInfo:contextInfo];
+}
 
 - (void) close
 {

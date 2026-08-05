@@ -191,6 +191,8 @@
 	// initial values for capture settings
 	
 	[initialValueDict setObject:[NSNumber numberWithBool:YES] forKey:@"includeOverlaysInExportedFiles"];
+	[initialValueDict setObject:[NSNumber numberWithInt:0] forKey:@"captureVideoCodec"];				// 0 = H.264, 1 = H.265
+	[initialValueDict setObject:[NSNumber numberWithBool:YES] forKey:@"includeSoundInCapturedVideos"];
 	[initialValueDict setObject:[NSNumber numberWithBool:YES] forKey:@"includeProjectNameInCapturedFileName"];
 	[initialValueDict setObject:[NSNumber numberWithBool:YES] forKey:@"includeMasterTimecodeInCapturedFileName"];
 	[initialValueDict setObject:[NSNumber numberWithBool:YES] forKey:@"includeClipNameInCapturedFileName"];

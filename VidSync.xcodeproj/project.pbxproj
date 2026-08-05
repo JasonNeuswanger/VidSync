@@ -43,6 +43,9 @@
 		9655B9831AA4EED2009D8D40 /* SyncedPlaybackPanelScrubberBackground.m in Sources */ = {isa = PBXBuildFile; fileRef = 9655B9821AA4EED2009D8D40 /* SyncedPlaybackPanelScrubberBackground.m */; };
 		9658610511738CA700BC99D5 /* Example Quadrat.VidSyncQuadrat in Resources */ = {isa = PBXBuildFile; fileRef = 9658610311738CA700BC99D5 /* Example Quadrat.VidSyncQuadrat */; };
 		9658610611738CA700BC99D5 /* Example Types.VidSyncTypes in Resources */ = {isa = PBXBuildFile; fileRef = 9658610411738CA700BC99D5 /* Example Types.VidSyncTypes */; };
+		A1B2C3D4E5F6071829304C03 /* VSClipExportTask.m in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6071829304C02 /* VSClipExportTask.m */; };
+		A1B2C3D4E5F6071829304C13 /* VSExportQueue.m in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6071829304C12 /* VSExportQueue.m */; };
+		A1B2C3D4E5F6071829304C23 /* VSExportQueueWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6071829304C22 /* VSExportQueueWindowController.m */; };
 		A1B2C3D4E5F6071829304B03 /* VSCrashReporter.m in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6071829304B02 /* VSCrashReporter.m */; };
 		966839911BF46F28000F5AEB /* VSWebHelpButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 966839901BF46F28000F5AEB /* VSWebHelpButton.m */; };
 		967311743019D009001AE033 /* VSDocumentViewState.m in Sources */ = {isa = PBXBuildFile; fileRef = 967311733019D009001AE033 /* VSDocumentViewState.m */; };
@@ -206,6 +209,12 @@
 		9655B9821AA4EED2009D8D40 /* SyncedPlaybackPanelScrubberBackground.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SyncedPlaybackPanelScrubberBackground.m; sourceTree = "<group>"; };
 		9658610311738CA700BC99D5 /* Example Quadrat.VidSyncQuadrat */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = "Example Quadrat.VidSyncQuadrat"; sourceTree = "<group>"; };
 		9658610411738CA700BC99D5 /* Example Types.VidSyncTypes */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = "Example Types.VidSyncTypes"; sourceTree = "<group>"; };
+		A1B2C3D4E5F6071829304C01 /* VSClipExportTask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VSClipExportTask.h; sourceTree = "<group>"; };
+		A1B2C3D4E5F6071829304C02 /* VSClipExportTask.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VSClipExportTask.m; sourceTree = "<group>"; };
+		A1B2C3D4E5F6071829304C11 /* VSExportQueue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VSExportQueue.h; sourceTree = "<group>"; };
+		A1B2C3D4E5F6071829304C12 /* VSExportQueue.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VSExportQueue.m; sourceTree = "<group>"; };
+		A1B2C3D4E5F6071829304C21 /* VSExportQueueWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VSExportQueueWindowController.h; sourceTree = "<group>"; };
+		A1B2C3D4E5F6071829304C22 /* VSExportQueueWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VSExportQueueWindowController.m; sourceTree = "<group>"; };
 		A1B2C3D4E5F6071829304B01 /* VSCrashReporter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VSCrashReporter.h; sourceTree = "<group>"; };
 		A1B2C3D4E5F6071829304B02 /* VSCrashReporter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VSCrashReporter.m; sourceTree = "<group>"; };
 		9668398F1BF46F28000F5AEB /* VSWebHelpButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VSWebHelpButton.h; sourceTree = "<group>"; };
@@ -1234,6 +1243,12 @@
 				96AE95801162ED6600118398 /* EventAwareTableView.m */,
 				96AE97AC1164F92700118398 /* ObjectAddPanel.h */,
 				96AE97AD1164F92700118398 /* ObjectAddPanel.m */,
+				A1B2C3D4E5F6071829304C01 /* VSClipExportTask.h */,
+				A1B2C3D4E5F6071829304C02 /* VSClipExportTask.m */,
+				A1B2C3D4E5F6071829304C11 /* VSExportQueue.h */,
+				A1B2C3D4E5F6071829304C12 /* VSExportQueue.m */,
+				A1B2C3D4E5F6071829304C21 /* VSExportQueueWindowController.h */,
+				A1B2C3D4E5F6071829304C22 /* VSExportQueueWindowController.m */,
 				A1B2C3D4E5F6071829304B01 /* VSCrashReporter.h */,
 				A1B2C3D4E5F6071829304B02 /* VSCrashReporter.m */,
 				9668398F1BF46F28000F5AEB /* VSWebHelpButton.h */,
@@ -1386,6 +1401,9 @@
 				969D6CE8115C079700A6D5A3 /* VSHintLine.m in Sources */,
 				964A49E218C29B030051EAFB /* AppDelegate.m in Sources */,
 				9612EC2E18B9744700BBED62 /* CalibDistortionPtArrayController.m in Sources */,
+				A1B2C3D4E5F6071829304C03 /* VSClipExportTask.m in Sources */,
+				A1B2C3D4E5F6071829304C13 /* VSExportQueue.m in Sources */,
+				A1B2C3D4E5F6071829304C23 /* VSExportQueueWindowController.m in Sources */,
 				A1B2C3D4E5F6071829304B03 /* VSCrashReporter.m in Sources */,
 				966839911BF46F28000F5AEB /* VSWebHelpButton.m in Sources */,
 				96A5DEBD1162501500D58616 /* VideoOverlayWindow.m in Sources */,

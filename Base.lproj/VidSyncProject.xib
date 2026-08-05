@@ -40,8 +40,6 @@
                 <outlet property="trackedEventsController" destination="101602" id="102058"/>
                 <outlet property="trackedObjectTypesController" destination="101330" id="103423"/>
                 <outlet property="trackedObjectsController" destination="101506" id="102059"/>
-                <outlet property="videoCaptureProgressDescription" destination="gdv-gx-rWp" id="sSS-0A-hVW"/>
-                <outlet property="videoCaptureProgressIndicator" destination="102511" id="102947"/>
                 <outlet property="videoClipArrayController" destination="100325" id="100596"/>
                 <outlet property="window" destination="5" id="18"/>
             </connections>
@@ -3858,6 +3856,43 @@ IA
                                                                     <binding destination="100044" name="value" keyPath="selection.movieCaptureStartTime" id="102952"/>
                                                                 </connections>
                                                             </textField>
+                                                            <textField focusRingType="none" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="vcd-lb-001">
+                                                                <rect key="frame" x="22" y="92" width="85" height="17"/>
+                                                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                                <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Video codec:" id="vcd-lc-001">
+                                                                    <font key="font" metaFont="system"/>
+                                                                    <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                                                    <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                                                </textFieldCell>
+                                                            </textField>
+                                                            <popUpButton verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="vcd-pu-001">
+                                                                <rect key="frame" x="110" y="88" width="170" height="26"/>
+                                                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                                <popUpButtonCell key="cell" type="push" title="H.264 — most compatible" bezelStyle="rounded" alignment="left" controlSize="small" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" selectedItem="vcd-mi-264" id="vcd-pc-001">
+                                                                    <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
+                                                                    <font key="font" metaFont="smallSystem"/>
+                                                                    <menu key="menu" id="vcd-mn-001">
+                                                                        <items>
+                                                                            <menuItem title="H.264 — most compatible" state="on" id="vcd-mi-264"/>
+                                                                            <menuItem title="H.265 — smaller files" id="vcd-mi-265"/>
+                                                                        </items>
+                                                                    </menu>
+                                                                </popUpButtonCell>
+                                                                <connections>
+                                                                    <binding destination="100045" name="selectedIndex" keyPath="values.captureVideoCodec" id="vcd-bd-001"/>
+                                                                </connections>
+                                                            </popUpButton>
+                                                            <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="vcs-ck-001">
+                                                                <rect key="frame" x="295" y="90" width="112" height="18"/>
+                                                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                                <buttonCell key="cell" type="check" title="Include sound" bezelStyle="regularSquare" imagePosition="left" alignment="left" state="on" inset="2" id="vcs-cc-001">
+                                                                    <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                                                    <font key="font" metaFont="system"/>
+                                                                </buttonCell>
+                                                                <connections>
+                                                                    <binding destination="100045" name="value" keyPath="values.includeSoundInCapturedVideos" id="vcs-bd-001"/>
+                                                                </connections>
+                                                            </button>
                                                             <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="102492">
                                                                 <rect key="frame" x="343" y="55" width="166" height="32"/>
                                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
@@ -3869,10 +3904,6 @@ IA
                                                                     <action selector="captureVideoClips:" target="-2" id="102948"/>
                                                                 </connections>
                                                             </button>
-                                                            <progressIndicator wantsLayer="YES" verticalHuggingPriority="750" fixedFrame="YES" maxValue="1" displayedWhenStopped="NO" bezeled="NO" style="bar" translatesAutoresizingMaskIntoConstraints="NO" id="102511">
-                                                                <rect key="frame" x="23" y="87" width="480" height="20"/>
-                                                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                                            </progressIndicator>
                                                             <textField focusRingType="none" verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="102949">
                                                                 <rect key="frame" x="15" y="17" width="496" height="33"/>
                                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
@@ -3915,15 +3946,6 @@ IA
                                                                 <rect key="frame" x="28" y="118" width="170" height="17"/>
                                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                                 <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="End time for captured clip" id="102507">
-                                                                    <font key="font" metaFont="system"/>
-                                                                    <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
-                                                                    <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                                                                </textFieldCell>
-                                                            </textField>
-                                                            <textField focusRingType="none" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="gdv-gx-rWp">
-                                                                <rect key="frame" x="21" y="63" width="251" height="17"/>
-                                                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                                                <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" id="SX7-xW-kya">
                                                                     <font key="font" metaFont="system"/>
                                                                     <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                                                     <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
@@ -3980,7 +4002,7 @@ IA
                                                             <textField focusRingType="none" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="102483">
                                                                 <rect key="frame" x="2" y="240" width="199" height="17"/>
                                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                                                <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Movie Clip (.mov) Capture Path" id="102488">
+                                                                <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Movie Clip (.mp4) Capture Path" id="102488">
                                                                     <font key="font" metaFont="system"/>
                                                                     <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                                                     <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
@@ -4253,7 +4275,7 @@ IA
                                                     <textField focusRingType="none" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="102446">
                                                         <rect key="frame" x="445" y="21" width="81" height="17"/>
                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title=".jpg or .mov" id="102447">
+                                                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title=".jpg or .mp4" id="102447">
                                                             <font key="font" metaFont="system"/>
                                                             <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>

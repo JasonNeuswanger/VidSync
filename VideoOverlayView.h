@@ -34,15 +34,18 @@
 @class VSPoint;
 
 @interface VideoOverlayView : NSView {
-	
+
 	NSTrackingArea *__strong trackingArea;
 	NSArray *__strong quadratCoordinateGrids;
-	
+
 	NSSet *__strong visibleScreenPoints;
 	NSSet *__strong visibleAnnotations;
-	
+
 	VideoWindowController *__weak vwc;
-	
+
+	BOOL isRenderingForExport;		// while set, drawing uses exportRenderTime instead of the live playback time and skips interactive chrome
+	CMTime exportRenderTime;
+
 }
 
 @property (weak) VideoWindowController *vwc;
@@ -50,8 +53,26 @@
 @property (strong) NSSet * visibleScreenPoints;
 @property (strong) NSSet * visibleAnnotations;
 
+@property (assign) BOOL isRenderingForExport;
+@property (assign) CMTime exportRenderTime;
+
 - (void)drawRect:(NSRect)rect;
+- (void)drawOverlayContent;
 - (id)initWithFrame:(NSRect)frame andWindowController:(VideoWindowController *)windowController;
+
+// Time accessors all drawing goes through: the live master time normally, the export time while
+// rendering offscreen for the export queue. clipIsAtCalibrationTimeForRender is the export-aware
+// stand-in for VSVideoClip's isAtCalibrationTime, which reads the live player position.
+- (CMTime) renderMasterTime;
+- (NSString *) renderMasterTimeString;
+- (BOOL) clipIsAtCalibrationTimeForRender;
+
+// Renders the overlay for an arbitrary master time into a fresh bitmap of the given pixel size
+// (normally the video's native size), without moving the video or touching the screen. Drawing
+// happens in the view's own coordinate system under a scaling transform, so everything lands
+// exactly where it does on screen but at full video resolution. Returns a +1 retained CGImage
+// (or NULL); the caller must CGImageRelease it. Main thread only.
+- (CGImageRef) newOverlayImageForExportAtMasterTime:(CMTime)masterTime pixelSize:(CGSize)pixelSize;
 
 - (void) calculateVisibleScreenPoints;
 - (void) drawHintLines;
