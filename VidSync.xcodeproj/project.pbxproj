@@ -1516,9 +1516,8 @@
 					"$(PROJECT_DIR)/gsl-2.6-universal",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 14.6;
-				MARKETING_VERSION = 1.8;
+				MARKETING_VERSION = 1.80;
 				ONLY_ACTIVE_ARCH = NO;
-				OTHER_CODE_SIGN_FLAGS = "--deep";
 				"OTHER_LDFLAGS[arch=*]" = "";
 				PRODUCT_BUNDLE_IDENTIFIER = com.jasonneuswanger.VidSyncApp;
 				PRODUCT_NAME = VidSync;
@@ -1543,7 +1542,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				COMBINE_HIDPI_IMAGES = YES;
-				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = LT2NESQX96;
 				ENABLE_HARDENED_RUNTIME = YES;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -1573,9 +1572,8 @@
 					"$(PROJECT_DIR)/gsl-2.6-universal",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 14.6;
-				MARKETING_VERSION = 1.8;
+				MARKETING_VERSION = 1.80;
 				ONLY_ACTIVE_ARCH = NO;
-				OTHER_CODE_SIGN_FLAGS = "--deep";
 				PRODUCT_BUNDLE_IDENTIFIER = com.jasonneuswanger.VidSyncApp;
 				PRODUCT_NAME = VidSync;
 				PROVISIONING_PROFILE = "";
