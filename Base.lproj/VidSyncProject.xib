@@ -56,7 +56,7 @@
             <value key="minSize" type="size" width="589" height="657"/>
             <view key="contentView" id="6">
                 <rect key="frame" x="0.0" y="0.0" width="589" height="657"/>
-                <autoresizingMask key="autoresizingMask"/>
+                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                 <subviews>
                     <tabView fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="100031">
                         <rect key="frame" x="1" y="-5" width="586" height="656"/>
@@ -457,7 +457,7 @@
                                                                 <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
                                                                 <clipView key="contentView" id="E6E-0K-jLN">
                                                                     <rect key="frame" x="1" y="1" width="232" height="142"/>
-                                                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                                                    <autoresizingMask key="autoresizingMask"/>
                                                                     <subviews>
                                                                         <tableView identifier="PlumblinesTableView" verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnSelection="YES" multipleSelection="NO" autosaveColumns="NO" rowHeight="14" headerView="103637" id="103636" customClass="EventAwareTableView">
                                                                             <rect key="frame" x="0.0" y="0.0" width="232" height="125"/>
@@ -623,7 +623,7 @@
                                                                 <autoresizingMask key="autoresizingMask" flexibleMinX="YES" heightSizable="YES"/>
                                                                 <clipView key="contentView" id="vm2-fg-kIE">
                                                                     <rect key="frame" x="1" y="1" width="232" height="203"/>
-                                                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                                                    <autoresizingMask key="autoresizingMask"/>
                                                                     <subviews>
                                                                         <tableView identifier="PlumblinePointsTableView" verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnSelection="YES" multipleSelection="NO" autosaveColumns="NO" rowHeight="14" headerView="103690" id="103689" customClass="EventAwareTableView">
                                                                             <rect key="frame" x="0.0" y="0.0" width="232" height="186"/>
@@ -834,7 +834,7 @@
                                                                 <autoresizingMask key="autoresizingMask" flexibleMaxY="YES"/>
                                                                 <clipView key="contentView" id="sgi-Eg-U8J">
                                                                     <rect key="frame" x="1" y="1" width="264" height="123"/>
-                                                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                                                    <autoresizingMask key="autoresizingMask"/>
                                                                     <subviews>
                                                                         <customView fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Ehg-CV-s2J">
                                                                             <rect key="frame" x="0.0" y="-86" width="250" height="207"/>
@@ -1313,7 +1313,7 @@
                                                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                                     <clipView key="contentView" id="zSj-hg-g4T">
                                                                                         <rect key="frame" x="1" y="1" width="232" height="352"/>
-                                                                                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                                                                        <autoresizingMask key="autoresizingMask"/>
                                                                                         <subviews>
                                                                                             <tableView identifier="FrontFrameTableView" verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnReordering="NO" multipleSelection="NO" autosaveColumns="NO" rowHeight="14" headerView="100745" id="100744" customClass="EventAwareTableView">
                                                                                                 <rect key="frame" x="0.0" y="0.0" width="232" height="335"/>
@@ -1758,7 +1758,7 @@
                                                                             <autoresizingMask key="autoresizingMask" heightSizable="YES"/>
                                                                             <clipView key="contentView" drawsBackground="NO" id="bhg-2a-63f">
                                                                                 <rect key="frame" x="1" y="1" width="78" height="136"/>
-                                                                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                                                                <autoresizingMask key="autoresizingMask"/>
                                                                                 <subviews>
                                                                                     <textView importsGraphics="NO" richText="NO" verticallyResizable="YES" findStyle="panel" allowsUndo="YES" usesRuler="YES" allowsNonContiguousLayout="YES" smartInsertDelete="YES" id="102387">
                                                                                         <rect key="frame" x="0.0" y="0.0" width="78" height="136"/>
@@ -1845,7 +1845,7 @@
                                                                             <autoresizingMask key="autoresizingMask" heightSizable="YES"/>
                                                                             <clipView key="contentView" drawsBackground="NO" id="29e-Bj-U9n">
                                                                                 <rect key="frame" x="1" y="1" width="78" height="136"/>
-                                                                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                                                                <autoresizingMask key="autoresizingMask"/>
                                                                                 <subviews>
                                                                                     <textView importsGraphics="NO" richText="NO" verticallyResizable="YES" usesFontPanel="YES" findStyle="panel" allowsUndo="YES" usesRuler="YES" allowsNonContiguousLayout="YES" smartInsertDelete="YES" id="102393">
                                                                                         <rect key="frame" x="0.0" y="0.0" width="78" height="136"/>
@@ -2587,7 +2587,7 @@ IA
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                             <clipView key="contentView" id="qIV-QB-8ub">
                                                 <rect key="frame" x="1" y="1" width="555" height="152"/>
-                                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                                <autoresizingMask key="autoresizingMask"/>
                                                 <subviews>
                                                     <tableView identifier="MeasurementEventsTableView" verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnSelection="YES" multipleSelection="NO" autosaveColumns="NO" rowHeight="14" headerView="101109" id="101110" customClass="EventAwareTableView">
                                                         <rect key="frame" x="0.0" y="0.0" width="933" height="135"/>
@@ -2803,7 +2803,7 @@ IA
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
                                             <clipView key="contentView" id="HbR-iC-8zz">
                                                 <rect key="frame" x="1" y="1" width="555" height="80"/>
-                                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                                <autoresizingMask key="autoresizingMask"/>
                                                 <subviews>
                                                     <tableView identifier="MeasurementPointsTableView" verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnSelection="YES" multipleSelection="NO" autosaveColumns="NO" rowHeight="14" headerView="101123" id="101122" customClass="EventAwareTableView">
                                                         <rect key="frame" x="0.0" y="0.0" width="1151" height="63"/>
@@ -3012,7 +3012,7 @@ IA
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                             <clipView key="contentView" id="2MG-kq-sSG">
                                                 <rect key="frame" x="1" y="1" width="291" height="208"/>
-                                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                                <autoresizingMask key="autoresizingMask"/>
                                                 <subviews>
                                                     <tableView identifier="MeasurementObjectsTableView" verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnSelection="YES" multipleSelection="NO" autosaveColumns="NO" rowHeight="14" headerView="101138" id="101137" customClass="EventAwareTableView">
                                                         <rect key="frame" x="0.0" y="0.0" width="670" height="191"/>
@@ -3659,7 +3659,7 @@ IA
                                             <autoresizingMask key="autoresizingMask"/>
                                             <clipView key="contentView" drawsBackground="NO" id="Osu-NX-Aan">
                                                 <rect key="frame" x="1" y="1" width="532" height="116"/>
-                                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                                <autoresizingMask key="autoresizingMask"/>
                                                 <subviews>
                                                     <textView importsGraphics="NO" richText="NO" verticallyResizable="YES" findStyle="panel" allowsUndo="YES" allowsNonContiguousLayout="YES" smartInsertDelete="YES" id="FRp-jj-4lM">
                                                         <rect key="frame" x="0.0" y="0.0" width="532" height="116"/>
@@ -3704,7 +3704,7 @@ IA
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                             <clipView key="contentView" id="7ne-qF-ayi">
                                                 <rect key="frame" x="1" y="1" width="531" height="268"/>
-                                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                                <autoresizingMask key="autoresizingMask"/>
                                                 <subviews>
                                                     <tableView identifier="AnnotationsTableView" verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnReordering="NO" columnSelection="YES" multipleSelection="NO" autosaveColumns="NO" rowHeight="22" headerView="102201" id="102200" customClass="EventAwareTableView">
                                                         <rect key="frame" x="0.0" y="0.0" width="598" height="251"/>
@@ -7025,7 +7025,7 @@ IA
                         </textFieldCell>
                     </textField>
                     <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="103881">
-                        <rect key="frame" x="112" y="396" width="146" height="28"/>
+                        <rect key="frame" x="117" y="396" width="146" height="28"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <buttonCell key="cell" type="push" title="Autodetect Plumblines" bezelStyle="rounded" alignment="center" controlSize="small" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="103882">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
@@ -7277,7 +7277,7 @@ There is nothing to configure. Every threshold is either an absolute one on a lo
                         </textFieldCell>
                     </textField>
                     <button toolTip="Open the help page explaining automatic plumbline detection" horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="V8N-z7-S5w" customClass="VSWebHelpButton">
-                        <rect key="frame" x="90" y="397" width="25" height="25"/>
+                        <rect key="frame" x="82" y="397" width="25" height="25"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <buttonCell key="cell" type="help" bezelStyle="helpButton" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="05B-2o-Uyy">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
