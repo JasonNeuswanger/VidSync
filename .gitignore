@@ -25,3 +25,7 @@ VidSync.xcodeproj/project.xcworkspace/xcuserdata/*
 tools/chessboard-harness/harness
 tools/chessboard-harness/harness.dSYM/
 __pycache__/
+
+# Build output from command-line xcodebuild runs in this worktree
+dd/
+DerivedData/
