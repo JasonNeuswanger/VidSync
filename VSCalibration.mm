@@ -1973,6 +1973,48 @@ static NSUInteger VSCoordinatePairsInQuadratDescription(NSAttributedString *desc
 	}
 }
 
+// Every OpenCV entry point below starts from a still frame, and -stillCGImageFromVSVideoClip:
+// answers with NULL whenever AVFoundation cannot produce one. CGImageToMat does not reject a
+// NULL image: it builds an empty 0x0 Mat that still reports four channels, so the emptiness
+// slips past a channel test and lands in cvtColor, which throws cv::Exception. Nothing in the
+// app catches C++ exceptions on this path, so that throw unwound all the way out of
+// -[NSApplication run] and killed the process with SIGABRT. Checking the CGImage and the Mat
+// it converts to is what keeps a frame that cannot be read from being a crash.
+- (BOOL) frameIsUsableForDetection:(CGImageRef)videoFrameCG asMatrix:(const cv::Mat &)videoFrameImage
+{
+	if (videoFrameCG != NULL && !videoFrameImage.empty()) return YES;
+	NSAlert *alert = [[NSAlert alloc] init];
+	[alert setMessageText:@"Couldn't read a video frame for this clip."];
+	[alert setInformativeText:[NSString stringWithFormat:@"VidSync could not get a frame from “%@” at the current time.\n\nFrames for a clip are taken at the master timecode shifted by that clip's sync offset, so this usually means the current time falls outside this clip's own footage, or the clip's video is not loaded. Move to a time where this clip is showing video, check its sync offset on the Project tab, and try again.", self.videoClip.clipName ?: @"this clip"]];
+	[alert addButtonWithTitle:@"OK"];
+	[alert setAlertStyle:NSAlertStyleWarning];
+	[alert runModal];
+	return NO;
+}
+
+// The lattice method puts up a progress sheet before it does any work, so every way out of it
+// has to take that sheet back down or the clip's window is left permanently blocked.
+- (void) dismissDetectionProgressWindow:(NSWindow *)progressWindow
+{
+	if ([progressWindow sheetParent] != nil) {
+		[[progressWindow sheetParent] endSheet:progressWindow];
+	}
+	[progressWindow orderOut:nil];
+}
+
+// Reports an OpenCV or other C++ failure instead of letting it terminate the application.
+- (void) reportDetectionException:(const char *)what
+{
+	NSString *detail = (what != NULL) ? [NSString stringWithUTF8String:what] : nil;
+	NSLog(@"Plumbline detection failed with a C++ exception: %@", detail ?: @"(no description)");
+	NSAlert *alert = [[NSAlert alloc] init];
+	[alert setMessageText:@"Plumbline detection failed on this frame."];
+	[alert setInformativeText:[NSString stringWithFormat:@"The image processing step reported an error, so no plumblines were created and the clip is unchanged. Try a different frame, or use the two-point seed line to point the detector at the board.\n\nTechnical detail:\n%@", detail ?: @"(no description available)"]];
+	[alert addButtonWithTitle:@"OK"];
+	[alert setAlertStyle:NSAlertStyleWarning];
+	[alert runModal];
+}
+
 // Shortest run of lattice corners worth emitting as a plumbline. Short lines carry little
 // information about distortion but count equally in the orthogonal-regression cost, so the
 // floor is a little above the legacy method's.
@@ -2019,15 +2061,11 @@ static const size_t kMinAutodetectedPlumblines = 8;
 	CGImageRef videoFrameCG = [self.videoClip.project.document stillCGImageFromVSVideoClip:self.videoClip atMasterTime:[self.videoClip.project.document currentMasterTime] showOverlay:FALSE];
 	// Do NOT release videoFrameCG; see the ownership note in autodetectChessboardPlumblinesLegacy.
 	cv::Mat videoFrameImage;
-	CGImageToMat(videoFrameCG, videoFrameImage); // included from <opencv2/imgcodecs/macosx.h>
-	cv::Mat gray;
-	if (videoFrameImage.channels() == 1) {
-		gray = videoFrameImage;
-	} else {
-		cvtColor(videoFrameImage, gray, cv::COLOR_BGR2GRAY);
+	if (videoFrameCG != NULL) CGImageToMat(videoFrameCG, videoFrameImage); // included from <opencv2/imgcodecs/macosx.h>
+	if (![self frameIsUsableForDetection:videoFrameCG asMatrix:videoFrameImage]) {
+		[self dismissDetectionProgressWindow:progressWindow];
+		return;
 	}
-
-	vidsync::CornerDetectionResult detection = vidsync::detectChessboardCorners(gray);
 
 	// If the user has drawn exactly one line with exactly two points, treat it as a hint about
 	// where the board is and which way its grid runs, overriding the automatic search. This is
@@ -2047,28 +2085,54 @@ static const size_t kMinAutodetectedPlumblines = 8;
 		hint.to = cv::Point2f([seedPoint2.screenX floatValue], (float)[self.videoClip clipHeight] - [seedPoint2.screenY floatValue]);
 	}
 
-	vidsync::SeedLattice seed = vidsync::findSeedLattice(detection.corners, detection.estimatedCellSize,
-														 cv::Size(gray.cols, gray.rows), hint, gray);
-
+	// Everything OpenCV touches runs inside one try. A cv::Exception is not an Objective-C object,
+	// so it never reaches an NSUncaughtExceptionHandler and nothing else on this path catches it;
+	// until now any error the detector raised on an awkward frame unwound straight out of
+	// -[NSApplication run] and killed the application. Nothing below this block has written to the
+	// managed object context yet, so bailing out here leaves the clip exactly as it was.
+	cv::Mat gray;
+	vidsync::CornerDetectionResult detection = {};
+	vidsync::SeedLattice seed = {};
 	vidsync::GrownLattice lattice;
 	vidsync::RefinementResult refinement;
 	std::vector<vidsync::Plumbline> plumblines;
 	size_t rawPlumblineCount = 0;
 	size_t rawPlumblinePointCount = 0;
-	if (seed.valid) {
-		// Growth and refinement are run alternately to convergence rather than once each, because
-		// each refinement pass manufactures corners that let the next growth pass cross a band of
-		// junctions the detector missed. Refinement appends the corners it finds in the image, so
-		// this works on the detection's own corner vector and the lattice it returns indexes into
-		// the enlarged one. `lattice` receives the first growth pass, for the log below.
-		refinement = vidsync::assembleLattice(detection.corners, seed, gray, cv::Size(gray.cols, gray.rows), &lattice);
-		if (lattice.valid) {
-			lattice = refinement.lattice;
-			plumblines = vidsync::extractPlumblines(detection.corners, lattice, kMinPlumblinePoints);
-			rawPlumblineCount = plumblines.size();
-			for (size_t i = 0; i < plumblines.size(); i++) rawPlumblinePointCount += plumblines[i].points.size();
-			if (plumblines.size() < kMinAutodetectedPlumblines) plumblines.clear();
+	try {
+		if (videoFrameImage.channels() == 1) {
+			gray = videoFrameImage;
+		} else {
+			cvtColor(videoFrameImage, gray, cv::COLOR_BGR2GRAY);
 		}
+
+		detection = vidsync::detectChessboardCorners(gray);
+
+		seed = vidsync::findSeedLattice(detection.corners, detection.estimatedCellSize,
+										cv::Size(gray.cols, gray.rows), hint, gray);
+
+		if (seed.valid) {
+			// Growth and refinement are run alternately to convergence rather than once each, because
+			// each refinement pass manufactures corners that let the next growth pass cross a band of
+			// junctions the detector missed. Refinement appends the corners it finds in the image, so
+			// this works on the detection's own corner vector and the lattice it returns indexes into
+			// the enlarged one. `lattice` receives the first growth pass, for the log below.
+			refinement = vidsync::assembleLattice(detection.corners, seed, gray, cv::Size(gray.cols, gray.rows), &lattice);
+			if (lattice.valid) {
+				lattice = refinement.lattice;
+				plumblines = vidsync::extractPlumblines(detection.corners, lattice, kMinPlumblinePoints);
+				rawPlumblineCount = plumblines.size();
+				for (size_t i = 0; i < plumblines.size(); i++) rawPlumblinePointCount += plumblines[i].points.size();
+				if (plumblines.size() < kMinAutodetectedPlumblines) plumblines.clear();
+			}
+		}
+	} catch (const cv::Exception &e) {
+		[self dismissDetectionProgressWindow:progressWindow];
+		[self reportDetectionException:e.what()];
+		return;
+	} catch (const std::exception &e) {
+		[self dismissDetectionProgressWindow:progressWindow];
+		[self reportDetectionException:e.what()];
+		return;
 	}
 
 	NSLog(@"Autodetected chessboard plumblines for %@ at %@: frame=%dx%d corners=%lu seed=%d lattice=%d rawLines=%lu rawLinePoints=%lu savedLines=%lu. Seed: %@ Growth: %@ Refinement: %@",
@@ -2126,17 +2190,25 @@ static const size_t kMinAutodetectedPlumblines = 8;
 	// Keep the lattice diagonals aside so the next distortion solve can be checked against
 	// directions it was not fitted to. Cleared when no lattice was built, so a stale set from a
 	// previous run cannot be reported against fresh parameters.
+	// The plumblines are already saved by this point, so a failure gathering the held-out diagonals
+	// costs only the cross-check, not the calibration; it is reported to the log and the set is
+	// cleared rather than being allowed to abort the application.
 	if (lattice.valid) {
-		std::vector<std::vector<cv::Point2f> > diagonals = vidsync::extractDiagonalRuns(detection.corners, lattice, kMinPlumblinePoints);
-		NSMutableArray *stored = [NSMutableArray arrayWithCapacity:diagonals.size()];
-		for (size_t i = 0; i < diagonals.size(); i++) {
-			NSMutableArray *run = [NSMutableArray arrayWithCapacity:diagonals[i].size()];
-			for (size_t k = 0; k < diagonals[i].size(); k++) {
-				[run addObject:[NSValue valueWithPoint:NSMakePoint(diagonals[i][k].x, clipHeight - diagonals[i][k].y)]];
+		try {
+			std::vector<std::vector<cv::Point2f> > diagonals = vidsync::extractDiagonalRuns(detection.corners, lattice, kMinPlumblinePoints);
+			NSMutableArray *stored = [NSMutableArray arrayWithCapacity:diagonals.size()];
+			for (size_t i = 0; i < diagonals.size(); i++) {
+				NSMutableArray *run = [NSMutableArray arrayWithCapacity:diagonals[i].size()];
+				for (size_t k = 0; k < diagonals[i].size(); k++) {
+					[run addObject:[NSValue valueWithPoint:NSMakePoint(diagonals[i][k].x, clipHeight - diagonals[i][k].y)]];
+				}
+				[stored addObject:run];
 			}
-			[stored addObject:run];
+			self.holdOutDiagonals = stored;
+		} catch (const std::exception &e) {
+			NSLog(@"Could not extract hold-out diagonals for %@: %s", self.videoClip.clipName, e.what());
+			self.holdOutDiagonals = nil;
 		}
-		self.holdOutDiagonals = stored;
 	} else {
 		self.holdOutDiagonals = nil;
 	}
@@ -2144,10 +2216,7 @@ static const size_t kMinAutodetectedPlumblines = 8;
 	if (!plumblines.empty()) self.videoClip.project.distortionDisplayMode = @"Uncorrected";
 	[self.videoClip.windowController refreshOverlay];
 
-	if ([progressWindow sheetParent] != nil) {
-		[[progressWindow sheetParent] endSheet:progressWindow];
-	}
-	[progressWindow orderOut:nil];
+	[self dismissDetectionProgressWindow:progressWindow];
 }
 
 - (void) autodetectChessboardPlumblinesLegacy
@@ -2173,16 +2242,17 @@ static const size_t kMinAutodetectedPlumblines = 8;
 		
 	CGImageRef videoFrameCG = [self.videoClip.project.document stillCGImageFromVSVideoClip:self.videoClip atMasterTime:[self.videoClip.project.document currentMasterTime] showOverlay:FALSE];
 	cv::Mat videoFrameImage;
-	CGImageToMat(videoFrameCG, videoFrameImage); // included from <opencv2/imgcodecs/macosx.h>
+	if (videoFrameCG != NULL) CGImageToMat(videoFrameCG, videoFrameImage); // included from <opencv2/imgcodecs/macosx.h>
 	// Do NOT release videoFrameCG. stillCGImageFromVSVideoClip: returns the result of
 	// -[NSImage CGImageForProposedRect:context:hints:], which follows the Get Rule and does not
 	// transfer ownership; the image is owned by the NSImage's backing NSCGImageSnapshotRep, which
 	// releases it when that autoreleased NSImage deallocs. Releasing here freed the image early and
 	// crashed later in -[NSCGImageSnapshotRep dealloc] on the next autorelease pool drain. The
 	// Create reference from copyCGImageAtTime: is already balanced inside stillCGImageFromVSVideoClip:.
+	if (![self frameIsUsableForDetection:videoFrameCG asMatrix:videoFrameImage]) return;
 	videoFrameImage.reshape(1);	// convert to single-channel for feature tracking
 	cvtColor(videoFrameImage, videoFrameImage, cv::COLOR_BGR2GRAY);
-	
+
 	std::vector<cv::Point2f> foundCorners;
 		
 	// Find the corner positions -- they'll be pretty much the only good "features to track" when the chessboard takes up the entire screen.
@@ -2305,12 +2375,19 @@ static const size_t kMinAutodetectedPlumblines = 8;
 	NSPoint snapSearchOrigin = NSMakePoint(clickedPoint.x - snapSearchHalfWidth,([self.videoClip clipHeight] - clickedPoint.y) - snapSearchHalfWidth);
 	CGRect snapSearchRect = CGRectMake(snapSearchOrigin.x, snapSearchOrigin.y, snapSearchHalfWidth*2, snapSearchHalfWidth*2);
 	
-	CGImageRef localVideoFrameCG = CGImageCreateWithImageInRect(videoFrameCG,snapSearchRect);
-	
+	// Both of these can be NULL: the frame grab when AVFoundation cannot produce a frame at this
+	// time, and the crop when the search box around the click falls outside the image. Either way
+	// CGImageToMat would build an empty Mat that throws out of cvtColor below, so give up on
+	// snapping and hand back the raw click -- an unsnapped point is a far better outcome than a
+	// crash, and this runs on every click.
+	CGImageRef localVideoFrameCG = (videoFrameCG != NULL) ? CGImageCreateWithImageInRect(videoFrameCG,snapSearchRect) : NULL;
+	if (localVideoFrameCG == NULL) return clickedPoint;
+
 	cv::Mat videoFrameImage;
 	CGImageToMat(localVideoFrameCG, videoFrameImage); // included from <opencv2/imgcodecs/macosx.h>
 	CGImageRelease(localVideoFrameCG);
-	
+	if (videoFrameImage.empty()) return clickedPoint;
+
 	videoFrameImage.reshape(1);
 	cvtColor(videoFrameImage, videoFrameImage, cv::COLOR_BGR2GRAY);
 	

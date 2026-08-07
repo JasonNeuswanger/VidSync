@@ -58,6 +58,12 @@
 				[document addWindowController:newVideoWindowController];
 			}
 			if (!newClip.project.masterClip) newClip.project.masterClip = newClip;
+			// A clip that has never been synced used to keep the nil syncOffset it was created with,
+			// and nil parsed to an invalid CMTime that made every frame grab for this clip fail.
+			// Written after the window controller exists so timeScale reports the real media
+			// timescale; if the video did not load, CMStringFromTime: yields the "0:00:00:00.0/0"
+			// sentinel, which parses straight back to zero.
+			newClip.syncOffset = [UtilityFunctions CMStringFromTime:CMTimeMake(0,[newClip.timeScale intValue])];
 			self.nameOfNewClip = nil;
 			[newClipNamePanel performClose:self];
 		}

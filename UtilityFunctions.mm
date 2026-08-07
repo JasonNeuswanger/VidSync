@@ -265,6 +265,15 @@
 + (CMTime) CMTimeFromString:(NSString *)timeString;
 {
 	// Time strings from QTMakeTime anyway are of the form 0:00:15:14.29/30
+	// A nil string has to be caught here rather than left to the @catch below: messaging nil
+	// never raises, so every parse step silently yielded zero and the method returned
+	// CMTimeMake(0,0), which is an *invalid* CMTime rather than a zero one. That invalid value
+	// then poisoned CMTimeSubtract(masterTime, offset) wherever a clip's syncOffset had never
+	// been written, and AVAssetImageGenerator answers an invalid time with a NULL image and a
+	// bare -11800. That NULL was what reached OpenCV and aborted the app during plumbline
+	// detection. Any clip that has not been synced yet has a nil syncOffset, so this was
+	// reachable in every project.
+	if (timeString == nil) return kCMTimeZero;
 	@try {
 		if ([timeString isEqualToString:@"0:00:00:00.0/0"]) {
 			return kCMTimeZero;
@@ -284,6 +293,10 @@
 		int32_t timescale = [[parts3 objectAtIndex:1] intValue];
 		int64_t totaltime = (int64_t)timescale * (86400*days + 3600*hours + 60*minutes + seconds) + subseconds;
 		//NSLog(@"For time %@, totaltime was %llu and timescale was %d.", timeString, totaltime, timescale);
+		// CMTimeMake with a non-positive timescale returns an invalid CMTime, which propagates
+		// through every later CMTime operation and is only noticed somewhere far away. A string
+		// that parses to no timescale carries no time, so answer with zero rather than poison.
+		if (timescale <= 0) return kCMTimeZero;
 		return CMTimeMake(sign * totaltime, timescale);
 	} @catch (id exception) {
 		NSLog(@"Exception in CMTimeFromString processing string %@", timeString);

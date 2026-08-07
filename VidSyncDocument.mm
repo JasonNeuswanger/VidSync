@@ -163,6 +163,14 @@ static void *AVSPPlayerCurrentTimeContext = &AVSPPlayerCurrentTimeContext;
 			// Fixes a weird glitch that appeared in the 2021 updates in which master clips were coming back with nil rather than zero syncOffsets,
 			// leading to various errors down the line when treating clips the same including referencing their syncOffset.
 			clip.syncOffset = [UtilityFunctions CMStringFromTime:CMTimeMake(0,[clip.timeScale intValue])];
+		} else if (clip.syncOffset == nil) {
+			// The repair above only ever covered the master clip, so a secondary clip the user had
+			// not synced yet kept a nil syncOffset indefinitely -- across saves, since nothing else
+			// writes the attribute until a sync happens. Zero is the right starting value: an unsynced
+			// clip is by definition assumed to share the master's timeline until told otherwise.
+			// Only when actually nil, so opening a document does not register an undo action and
+			// leave a freshly opened project looking edited.
+			clip.syncOffset = [UtilityFunctions CMStringFromTime:CMTimeMake(0,[clip.timeScale intValue])];
 		}
 		VideoWindowController __strong *vwc = [[VideoWindowController alloc] initWithVideoClip:clip inManagedObjectContext:[self managedObjectContext]];
 		[self observeWindowControllerVideoRate:vwc];
