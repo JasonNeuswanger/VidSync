@@ -27,6 +27,10 @@
 #import <fcntl.h>
 #import <unistd.h>
 #import <signal.h>
+#import <cxxabi.h>
+#import <exception>
+#import <typeinfo>
+#import <string>
 
 // The recipient address, base64-encoded so the raw address doesn't sit in the public repository
 // for scrapers to harvest; it is decoded only at the moment the user chooses to send a report.
@@ -37,6 +41,7 @@ static NSString *const VSCrashReportRecipientBase64 = @"amFzb25uZXVzd2FuZ2VyQGdt
 static char vsCrashReportPath[PATH_MAX];
 static char vsCrashReportHeader[512];
 static NSUncaughtExceptionHandler *vsPreviousExceptionHandler = NULL;
+static std::terminate_handler vsPreviousTerminateHandler = NULL;
 static volatile sig_atomic_t vsCrashReportWritten = 0;	// an uncaught exception ends in abort(), and SIGABRT must not overwrite the richer exception report
 
 static const int vsCrashSignals[] = {SIGSEGV,SIGBUS,SIGILL,SIGFPE,SIGABRT,SIGTRAP};
@@ -80,6 +85,54 @@ static void VSCrashExceptionHandler(NSException *exception)
 	if (vsPreviousExceptionHandler != NULL) vsPreviousExceptionHandler(exception);
 }
 
+// The Objective-C runtime's terminate handler reports Objective-C exceptions through the handler
+// installed by NSSetUncaughtExceptionHandler, which is how VSCrashExceptionHandler above gets a
+// name, a reason and a symbolic stack. A C++ exception is not an Objective-C object, so it takes
+// that runtime's "not one of mine" branch and the process aborts having reported nothing: the
+// resulting file says only "Fatal signal: SIGABRT" over a backtrace of the abort path. That is
+// exactly what a cv::Exception out of the OpenCV calibration code looked like from here, and it
+// cost a release to work out. This handler runs first, records what the C++ exception actually
+// was, and then chains to the runtime's handler so the Objective-C path behaves as before.
+static void VSCrashTerminateHandler(void)
+{
+	const std::type_info *exceptionType = __cxxabiv1::__cxa_current_exception_type();
+
+	// Objective-C exceptions are thrown as `id`. Leave those completely alone -- not just
+	// unreported but untouched, because rethrowing to inspect one can consume it, and the
+	// Objective-C handler further down the chain needs it still in flight to do its job.
+	BOOL isObjectiveC = (exceptionType != NULL && *exceptionType == typeid(id));
+
+	if (exceptionType != NULL && !isObjectiveC) {
+		std::string typeName = exceptionType->name();
+		int demangleStatus = 0;
+		char *demangled = __cxxabiv1::__cxa_demangle(exceptionType->name(), NULL, NULL, &demangleStatus);
+		if (demangleStatus == 0 && demangled != NULL) typeName = demangled;
+		if (demangled != NULL) free(demangled);
+
+		std::string message;
+		try {
+			throw;	// safe: checked above that an exception is in flight, and nothing escapes
+		} catch (const std::exception &e) {
+			if (e.what() != NULL) message = e.what();
+		} catch (...) {
+		}
+
+		NSString *report = [NSString stringWithFormat:
+						@"%sUncaught C++ exception: %s\nReason: %s\n\nBacktrace:\n%@\n\n"
+						 "Note: the backtrace above is the stack at abort, not at the throw. A C++ exception that\n"
+						 "passed through an AppKit @catch on its way out has already had its throwing frames\n"
+						 "unwound, so the exception type and reason are the identifying information here.\n",
+						vsCrashReportHeader,
+						typeName.c_str(),
+						message.empty() ? "(the exception carried no message)" : message.c_str(),
+						[[NSThread callStackSymbols] componentsJoinedByString:@"\n"]];
+		if ([report writeToFile:[NSString stringWithUTF8String:vsCrashReportPath] atomically:YES encoding:NSUTF8StringEncoding error:NULL]) vsCrashReportWritten = 1;
+	}
+
+	if (vsPreviousTerminateHandler != NULL) vsPreviousTerminateHandler();
+	abort();	// a terminate handler may not return; if the chained one did, end it here
+}
+
 @implementation VSCrashReporter
 
 + (NSString *) pendingReportPath
@@ -103,6 +156,9 @@ static void VSCrashExceptionHandler(NSException *exception)
 
 	vsPreviousExceptionHandler = NSGetUncaughtExceptionHandler();
 	NSSetUncaughtExceptionHandler(&VSCrashExceptionHandler);
+	// std::set_terminate returns the handler it displaces, which at this point is the Objective-C
+	// runtime's. Keeping and calling it is what preserves Objective-C exception reporting.
+	vsPreviousTerminateHandler = std::set_terminate(&VSCrashTerminateHandler);
 	for (size_t i = 0; i < sizeof(vsCrashSignals)/sizeof(vsCrashSignals[0]); i++) signal(vsCrashSignals[i],&VSCrashSignalHandler);
 }
 
