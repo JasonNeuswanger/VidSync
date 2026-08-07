@@ -1516,7 +1516,7 @@
 					"$(PROJECT_DIR)/gsl-2.6-universal",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 14.6;
-				MARKETING_VERSION = 1.80;
+				MARKETING_VERSION = 1.81;
 				ONLY_ACTIVE_ARCH = NO;
 				"OTHER_LDFLAGS[arch=*]" = "";
 				PRODUCT_BUNDLE_IDENTIFIER = com.jasonneuswanger.VidSyncApp;
@@ -1572,7 +1572,7 @@
 					"$(PROJECT_DIR)/gsl-2.6-universal",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 14.6;
-				MARKETING_VERSION = 1.80;
+				MARKETING_VERSION = 1.81;
 				ONLY_ACTIVE_ARCH = NO;
 				PRODUCT_BUNDLE_IDENTIFIER = com.jasonneuswanger.VidSyncApp;
 				PRODUCT_NAME = VidSync;
